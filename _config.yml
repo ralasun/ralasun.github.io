@@ -28,7 +28,7 @@ author:
   description: <strong>한걸음씩</strong>, 그리고 <strong>꾸준히</strong> 나아가기
   image: /public/img/profile_v1.jpg # md5 hash of your email address
   contact: 
-    linkedin:  www.linkedin.com/in/ralasun
+    linkedin:  https://www.linkedin.com/in/ralasun
     github:    https://github.com/ralasun
     # facebook:  <hide>
     #twitter:   https://twitter.com/Li_Zhihao
