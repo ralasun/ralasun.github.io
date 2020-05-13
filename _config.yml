@@ -1,6 +1,6 @@
 # Site Info
 title: Ralasun Blog
-tagline: 'for every field of data science including DL, ML, and RL'
+tagline: 'for every field of data science'
 description: 'A Jekyll theme adapted from <a href="http://lanyon.getpoole.com/" target="_blank">Lanyon</a>. Made by <a href="http://codinfox.github.io" target="_blank">@codinfox</a>.'
 baseurl: ""
 url: "http://ralasun.github.io"
@@ -45,8 +45,6 @@ nav:
     - { Tags: '/blog/tags/' }
   About:          
     - '/about/'
-  Github Project: 
-    - 'http://codinfox.github.io/'
 
 # Where are tags and categories displayed
 tag_page: '/blog/tags/'
@@ -59,5 +57,5 @@ hero:
 # Puglins
 mathjax: true # whether support mathjax
 google_analytics_token: 'UA-00000000-1' # leave blank if you don't want google analytics
-disqus_short_name: 'your_short_name' # leave blank if you don't want disqus
+disqus_short_name: 'ralasun-github-io' # leave blank if you don't want disqus
 
