@@ -53,7 +53,7 @@ tag_page: '/blog/tags/'
 category_page: '/blog/categories/'
 
 hero:
-  image: /public/img/main.png
+  image: /public/img/main_low.jpg
   caption: ""
 
 # Puglins
