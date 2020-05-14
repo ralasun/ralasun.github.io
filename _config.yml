@@ -41,7 +41,7 @@ nav:
     - '/'
   Blog:           
     - '/blog/'
-    - { Posts: '/blog/posts/' }
+    - { Posts: '/blog/categories/' }
     - { Tags: '/blog/tags/' }
   About:          
     - '/about/'
