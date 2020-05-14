@@ -1,6 +1,9 @@
 ---
 layout: post
 title: Example content
+date: 2014-01-01 
+categories: jekyll
+tags: jekyll
 ---
 
 
