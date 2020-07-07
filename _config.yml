@@ -7,6 +7,8 @@ url: "http://ralasun.github.io"
 logo: '/public/logo.jpg'
 
 # Site configurations
+plugins :
+  - jeky--sitemap
 gems:
   - jekyll-paginate
   - jekyll-sitemap
