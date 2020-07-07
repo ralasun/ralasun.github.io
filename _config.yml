@@ -9,6 +9,7 @@ logo: '/public/logo.jpg'
 # Site configurations
 gems:
   - jekyll-paginate
+  - jekyll-sitemap
 markdown: kramdown
 kramdown:
   input: GFM
@@ -30,9 +31,6 @@ author:
   contact: 
     linkedin:  https://www.linkedin.com/in/ralasun
     github:    https://github.com/ralasun
-    # facebook:  <hide>
-    #twitter:   https://twitter.com/Li_Zhihao
-    #weibo:     http://weibo.com/41173780
     email:     mailto:sunhwalsh91@gmail.com
 
 # Navigation (2nd level links supported)
