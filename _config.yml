@@ -1,14 +1,12 @@
 # Site Info
-title: Ralasun Blog
-tagline: 'for every field of data science'
+title: 'Ralasun Blog'
+tagline: 'Ralasun Blog for Data Science'
 description: ''
 baseurl: ""
 url: "http://ralasun.github.io"
 logo: '/public/logo.jpg'
 
 # Site configurations
-plugins :
-  - jeky--sitemap
 gems:
   - jekyll-paginate
   - jekyll-sitemap
