@@ -7,7 +7,7 @@ url: "http://ralasun.github.io"
 logo: '/public/logo.jpg'
 
 # Site configurations
-gems:
+plugins:
   - jekyll-paginate
 
 markdown: kramdown

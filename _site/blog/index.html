@@ -458,7 +458,7 @@ Tree decomposition에 의해, 두 클러스터 간에 공유되는 원자 갯수
     
 
     <article>
-      <p>Grammar Variational Auto-Encoder(GVAE)는 Gomez-Bomb barelli et al.(2016)<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup>의 VAE기반으로 생성된 신약 후보 물질들이 대부분 유효하지 않는 것에 문제를 제기하여, SMILES string 생성 문법을 직접적으로 제약 조건으로 걸어 유효한 신약 후보 물질을 생성하는 모델입니다.</p>
+      <p>Grammar Variational Auto-Encoder(GVAE)는 Gomez-Bomb barelli et al.(2016)<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>의 VAE기반으로 생성된 신약 후보 물질들이 대부분 유효하지 않는 것에 문제를 제기하여, SMILES string 생성 문법을 직접적으로 제약 조건으로 걸어 유효한 신약 후보 물질을 생성하는 모델입니다.</p>
 <h2 id="problem">Problem</h2>
 <p>신약 후보 물질의 SMILES string 생성 모델들(RNN, VAE)의 단점은 유효하지 않은 string을 생성하는 경우가 많이 발생한다는 것입니다.</p>
 
@@ -471,7 +471,7 @@ Tree decomposition에 의해, 두 클러스터 간에 공유되는 원자 갯수
 
 <p>따라서 본 논문에서는 이러한 이슈를 완화하기 위해 SMILES string을 생성하는 문법에 관한 정보를 모델에게 직접적으로 알려줌으로써 유효한 SMILES string을 생성하도록 하는 모델(Grammar VAE)을 제안하였습니다.</p>
 
-<h2 id="context-free-grammars">Context-free grammars<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote">2</a></sup></h2>
+<h2 id="context-free-grammars">Context-free grammars<sup id="fnref:2"><a href="#fn:2" class="footnote">2</a></sup></h2>
 <p>SMILES string을 생성하는 문법은 문맥 자유 문법(Context-free grammar, CFG)을 따릅니다. 다른 나라 언어를 이해하거나 그 나라 언어로 대화나 글을 쓰기 위해선 문법을 이해하고 있어야 합니다. 마찬가지로 프로그래밍 언어를 이해하기 위해선 그 언어를 정의한 문법을 이해하고 있어야 합니다. 대다수 프로그래밍 언어들이 CFG기반입니다. CFG은 <a href="https://en.wikipedia.org/wiki/Chomsky_hierarchy">촘스키 위계</a>의 type-2에 해당하는 문법입니다.</p>
 
 <p align="center">
@@ -527,10 +527,10 @@ $$p(\text{x}_t = k|\alpha,\text{z}) = \frac{m_{\alpha, \,k}exp(f_{tk})}{\sum_{j=
 <p>위와 같은 방법으로 $t \rightarrow T_{max}$ 가 될 때까지, sampling을 하면 한 화합물을 구성하는 생성규칙들을 출력하였고, 결국 문법적으로 유효한 화합물을 생성한 것입니다.</p>
 
 <h3 id="bayesian-optimization">Bayesian Optimization</h3>
-<p>Gomez-Bomb barelli et al.(2016)<sup id="fnref:1:1" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup>를 보면, 약물 특성을 포함한 latent space를 구축하기 위해, latent layer에 약물 특성을 예측하는 MLP layer를 추가하여 학습을 진행합니다. 마찬가지로, 약물 특성이 담긴 latent space를 구축하기 위해 VAE 학습 완료 후, Sparse Gaussian Process(SGP)를 이용하여 예측모델을 학습합니다. 여기서 사용된 약물 특성은 penalized logP 입니다.</p>
+<p>Gomez-Bomb barelli et al.(2016)<sup id="fnref:1:1"><a href="#fn:1" class="footnote">1</a></sup>를 보면, 약물 특성을 포함한 latent space를 구축하기 위해, latent layer에 약물 특성을 예측하는 MLP layer를 추가하여 학습을 진행합니다. 마찬가지로, 약물 특성이 담긴 latent space를 구축하기 위해 VAE 학습 완료 후, Sparse Gaussian Process(SGP)를 이용하여 예측모델을 학습합니다. 여기서 사용된 약물 특성은 penalized logP 입니다.</p>
 
 <h2 id="experiment-result">Experiment Result</h2>
-<p>GVAE 모델의 성능은 Gomez-Bomb barelli et. al.(2016)<sup id="fnref:1:2" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup>와 유사한 VAE인 Character VAE(CVAE) 성능과 비교하였습니다. 정성적인 평가를 위해, 임의의 수학표현식을 생성하여 유효한 수학표현식을 만드는지를 확인하였습니다.</p>
+<p>GVAE 모델의 성능은 Gomez-Bomb barelli et. al.(2016)<sup id="fnref:1:2"><a href="#fn:1" class="footnote">1</a></sup>와 유사한 VAE인 Character VAE(CVAE) 성능과 비교하였습니다. 정성적인 평가를 위해, 임의의 수학표현식을 생성하여 유효한 수학표현식을 만드는지를 확인하였습니다.</p>
 
 <p align="center">
 <img width="500" alt="gvae-result1" src="https://user-images.githubusercontent.com/37501153/85487426-82943a00-b607-11ea-95d6-ffe2cc26c922.jpeg" />
@@ -559,13 +559,13 @@ $$p(\text{x}_t = k|\alpha,\text{z}) = \frac{m_{\alpha, \,k}exp(f_{tk})}{\sum_{j=
 
 <p>GVAE는 이제까지 여러 Generative Model이 상당 수가 SMILES 문법에 어긋나는 string을 출력한다라는 단점을 보완하는 논문입니다. 하지만 valid한 string이 얼마나 신약개발에 적합한 string인지에 대한 결과는 논문에 실리지 않았습니다(<del>이 부분은 대부분의 신약개발 논문들이 나와있지 않는 것으로 보입니다.</del>). 하지만 valid한 string을 내놓는 것에 있어서 제일 실용적인(practical)하지도 않을까 생각이 듭니다.</p>
 
-<div class="footnotes" role="doc-endnotes">
+<div class="footnotes">
   <ol>
-    <li id="fn:1" role="doc-endnote">
-      <p><a href="https://pubs.acs.org/doi/abs/10.1021/acscentsci.7b00572">Gómez-Bombarelli, Rafael, et al. “Automatic chemical design using a data-driven continuous representation of molecules.” ACS central science 4.2 (2018): 268-276.</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a> <a href="#fnref:1:1" class="reversefootnote" role="doc-backlink">&#8617;<sup>2</sup></a> <a href="#fnref:1:2" class="reversefootnote" role="doc-backlink">&#8617;<sup>3</sup></a></p>
+    <li id="fn:1">
+      <p><a href="https://pubs.acs.org/doi/abs/10.1021/acscentsci.7b00572">Gómez-Bombarelli, Rafael, et al. “Automatic chemical design using a data-driven continuous representation of molecules.” ACS central science 4.2 (2018): 268-276.</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a> <a href="#fnref:1:1" class="reversefootnote">&#8617;<sup>2</sup></a> <a href="#fnref:1:2" class="reversefootnote">&#8617;<sup>3</sup></a></p>
     </li>
-    <li id="fn:2" role="doc-endnote">
-      <p><a href="https://upcount.tistory.com/99">Context-free grammar, https://upcount.tistory.com/99</a> <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    <li id="fn:2">
+      <p><a href="https://upcount.tistory.com/99">Context-free grammar, https://upcount.tistory.com/99</a> <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
     </li>
   </ol>
 </div>
