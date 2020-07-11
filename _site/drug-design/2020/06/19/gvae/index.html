@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Grammar Variational Autoencoder 논문 리뷰 &middot; Ralasun Blog
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/main.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://raw.githubusercontent.com/ralasun/ralasun.github.io/master/public/favicon.png">
+  <link rel="shortcut icon" href="https://raw.githubusercontent.com/ralasun/ralasun.github.io/master/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  
+  <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_SVG"> </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });
+  </script>
+  
+</head>
+
+
+  <body>
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="sidebar-personal-info">
+      <div class="sidebar-personal-info-section">
+        <img src="http://localhost:4000/public/img/profile_v1.jpg"/>
+      </div>
+      <div class="sidebar-personal-info-section">
+        <p><strong>한걸음씩</strong>, 그리고 <strong>꾸준히</strong> 나아가기</p>
+      </div>
+      
+      
+      
+      <div class="sidebar-personal-info-section">
+        <p> Follow me: 
+        
+        
+        
+        <a href="https://www.linkedin.com/in/ralasun">
+          <i class="fa fa-linkedin" aria-hidden="true"></i>
+        </a>
+        
+        |
+        
+        
+        
+        <a href="https://github.com/ralasun">
+          <i class="fa fa-github" aria-hidden="true"></i>
+        </a>
+        
+        |
+        
+        
+        
+        <a href="mailto:sunhwalsh91@gmail.com">
+          <i class="fa fa-envelope" aria-hidden="true"></i>
+        </a>
+        
+        
+        
+        </p>
+      </div>
+      
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    
+      
+      
+      
+
+      
+
+      <span class="">
+        <a class="sidebar-nav-item " href="/">
+          Home
+        </a>
+
+        
+      </span>
+
+    
+      
+      
+      
+
+      
+
+      <span class="foldable">
+        <a class="sidebar-nav-item " href="/blog/">
+          Blog
+        </a>
+
+        
+          
+            
+            
+            
+              <a class="sidebar-nav-item sidebar-nav-item-sub " href="/blog/categories/">
+                Posts
+              </a>
+          
+        
+          
+            
+            
+            
+              <a class="sidebar-nav-item sidebar-nav-item-sub " href="/blog/tags/">
+                Tags
+              </a>
+          
+        
+      </span>
+
+    
+      
+      
+      
+
+      
+
+      <span class="">
+        <a class="sidebar-nav-item " href="/about/">
+          About
+        </a>
+
+        
+      </span>
+
+    
+  </nav>
+
+  <div class="sidebar-item">
+    <p>
+    &copy; 2020 Seonhwa Lee. This work is liscensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home" title="Ralasun Blog">
+              <img class="masthead-logo" width="200" height="30" src="http://localhost:4000/public/logo.jpg"/>
+            </a>
+            <small>Ralasun Blog for Data Science</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="post">
+  <h1 class="post-title">Grammar Variational Autoencoder 논문 리뷰</h1>
+  <span class="post-date">19 Jun 2020</span>
+   | 
+  
+    <a href="/blog/tags/#vae" class="post-tag">vae</a>
+  
+    <a href="/blog/tags/#generative-model" class="post-tag">generative-model</a>
+  
+    <a href="/blog/tags/#drug-design" class="post-tag">drug-design</a>
+  
+  
+  <article>
+    <p>Grammar Variational Auto-Encoder(GVAE)는 Gomez-Bomb barelli et al.(2016)<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup>의 VAE기반으로 생성된 신약 후보 물질들이 대부분 유효하지 않는 것에 문제를 제기하여, SMILES string 생성 문법을 직접적으로 제약 조건으로 걸어 유효한 신약 후보 물질을 생성하는 모델입니다.</p>
+<h2 id="problem">Problem</h2>
+<p>신약 후보 물질의 SMILES string 생성 모델들(RNN, VAE)의 단점은 유효하지 않은 string을 생성하는 경우가 많이 발생한다는 것입니다.</p>
+
+<ul>
+  <li>Valid String : c1ccccc1 (benzene)</li>
+  <li>Invalid String : c1ccccc2 (??)</li>
+</ul>
+
+<p>Gomez-Bomb barelli et al.(2016)가 제안한 VAE는 decoder를 통해 연속적인 latent space에서 discrete한 SMILES string을 생성합니다. 그러나, 유효하지 않는 string에 대한 확률이 높아지도록 학습이 된 경우, 학습이 완료가 된 후에도 계속 올바르지 않은 SMILES string이 생성되는 문제가 발생합니다.</p>
+
+<p>따라서 본 논문에서는 이러한 이슈를 완화하기 위해 SMILES string을 생성하는 문법에 관한 정보를 모델에게 직접적으로 알려줌으로써 유효한 SMILES string을 생성하도록 하는 모델(Grammar VAE)을 제안하였습니다.</p>
+
+<h2 id="context-free-grammars">Context-free grammars<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote">2</a></sup></h2>
+<p>SMILES string을 생성하는 문법은 문맥 자유 문법(Context-free grammar, CFG)을 따릅니다. 다른 나라 언어를 이해하거나 그 나라 언어로 대화나 글을 쓰기 위해선 문법을 이해하고 있어야 합니다. 마찬가지로 프로그래밍 언어를 이해하기 위해선 그 언어를 정의한 문법을 이해하고 있어야 합니다. 대다수 프로그래밍 언어들이 CFG기반입니다. CFG은 <a href="https://en.wikipedia.org/wiki/Chomsky_hierarchy">촘스키 위계</a>의 type-2에 해당하는 문법입니다.</p>
+
+<p align="center">
+<img width="300" src="https://user-images.githubusercontent.com/37501153/86242024-f2458e80-bbde-11ea-81ba-397850c09b5d.png" />
+<figcaption align="center">그림1. 촘스키 위계</figcaption>    
+</p>
+<p>문맥 자유 문법은 $G=(V, \Sigma, R, S)$ 4개의 순서쌍으로 구성됩니다.</p>
+<ul>
+  <li>V : non-terminal 심볼들의 유한집합</li>
+  <li>$\Sigma$ : terminal 심볼들의 유한집합</li>
+  <li>R : 생성규칙(production rules)의 유한집합</li>
+  <li>S : 시작(start) 심볼</li>
+</ul>
+
+<p>예를 들어, 문법 G=({A}, {a,b,c}, P, A), P : A $\rightarrow$ aA, A $\rightarrow$ abc가 있다면, 문법아래 생성될 수 있는 string은 aabc입니다. 위의 예는 단순하지만 생성 규칙에 따라 나올 수 있는 string의 경우의 수는 매우 많습니다. 이렇게 생성된 string을 tree구조로도 표현할 수 있습니다.</p>
+
+<p>문법 G=({S}, {a,b}, P, S), P : S $\rightarrow$ SS | aSb | $\epsilon$ 이라면, 생성규칙에 따라 생성된 string중 하나는 $S \rightarrow SS \rightarrow aSbS \rightarrow abS \rightarrow abaSb \rightarrow abaaSbb \rightarrow abaabb$ 입니다. 이를 tree구조로 나타내면 아래 그림과 같습니다.</p>
+<p align="center">
+<img src="https://www.tutorialspoint.com/automata_theory/images/yield_of_a_tree.jpg" width="500px" />
+<figcaption align="center">그림2. CFG grammar 예시</figcaption>      
+</p>
+<p>GVAE는 CFG의 아이디어를 이용한 모델입니다. CFG기반의 SMILES grammar가 있으며, encoder의 입력값은 SMILES string이 아니라 각 화합물 SMILES string을 생성하기 위해 사용된 생성규칙들입니다. 마찬가지로, decoding 결과는 SMILES string이 아니라, SMILES string에 관한 생성 규칙입니다. 시퀀스 별로 그 다음으로 나올 가능성이 높은 생성 규칙이 결과로 나옵니다. 세부적인 모델 설명은 아래와 같습니다.</p>
+
+<h2 id="methods">Methods</h2>
+<p>본 논문에서 사용된 VAE의 encoder와 decoder는 Gomez-Bomb barelli et al.(2016)와 동일한 구조를 사용하였습니다.</p>
+<h3 id="encoding">encoding</h3>
+<p align="center">
+<img width="1151" alt="gvae" src="https://user-images.githubusercontent.com/37501153/85167983-afadb900-b2a4-11ea-9ce0-48aab485b3f5.png" />  
+<figcaption align="center">그림3. GVAE encoder</figcaption>
+</p>
+<p>위 그림은 모델의 encoder가 SMILES grammar와 함께 구현되는 과정에 관한 것입니다. 그림3의 1번은 SMILES grammar의 일부입니다. 전체 SMILES grammars는 논문 참고하시기 바랍니다. 예를 들어 벤젠 SMILES string인 c1ccccc1을 encoding 한다고 했을 때(2번), SMILES grammar에 따라 벤젠 SMILEs string의 parse tree를 구축합니다. 그런 뒤, 이 parse tree를 위에서부터 아래, 왼쪽에서 오른쪽 방향으로 생성 규칙들로 다시 분해된 후(3번), 분해된 각 규칙들은 원핫벡터로 변환됩니다(4번 그림). 이 때, 원핫벡터의 차원 $K$ 은 SMILES grammar 생성 규칙의 개수입니다. $T(X)$ 를 분해된 생성규칙들의 개수라 할 때, 벤젠의 생성규칙을 인코딩한 행렬의 차원은 $T(X)\times K$ 가 됩니다. 그 후, Deep CNN을 거쳐서, 벤젠에 대한 생성규칙을 latent space 상에 $z$ 로 맵핑합니다.</p>
+
+<h3 id="decoding">decoding</h3>
+<p align="center">
+<img width="1142" alt="gvae-decoding" src="https://user-images.githubusercontent.com/37501153/85188683-852f2080-b2e3-11ea-9dc1-d8d3714d695e.png" />
+<figcaption align="center">그림4. GVAE decoder</figcaption>
+</p>
+
+<p>다음은 latent space상에 $z$ 로 맵핑된 벤젠 생성규칙이 어떻게 다시 discrete한 시퀀스를 가진 생성규칙들로 이뤄진 string으로 변환되는지에 관한 과정에 대한 설명입니다. GVAE에서 Decoder의 핵심은 항상 유효(valid)한 string이 나오도록 생성규칙들을 선택하는 것입니다. 먼저, 잠재 벡터 $z$ 를 RNN layer를 통과하여 시퀀스 별로 logit이 출력됩니다(그림4의 2번). logit 벡터의 각 차원은 하나의 SMILES grammar 생성규칙에 대응됩니다. 타임 시퀀스의 최대 길이는 $T_{max}$ 이며 따라서 최대로 나올 수 있는 logit 벡터의 갯수도 $T_{max}$ 입니다.</p>
+
+<h5 id="masking-vector">Masking Vector</h5>
+<p>decoding 결과로 출력된 일련의 생성규칙 시퀀스들이 유효하기 위해서  last-in first-out(LIFO) stack과 masking vector가 등장합니다.</p>
+<p align="center">
+<img alt="decoding process" src="https://user-images.githubusercontent.com/37501153/85480797-8f129580-b5fb-11ea-893b-2f25053851e3.jpeg" />
+<figcaption align="center">그림5. decoding process</figcaption>
+</p>
+<p>그림 5.는 stack과 masking vector를 이용한 decoding과정을 나타낸 그림입니다. 제일 첫 심볼은 항상 smiles가 나와야 하므로, (1)처럼 smiles를 stack합니다. 그 다음, smiles를 뽑은 후, smiles으로 시작하는 생성규칙은 1 그 외 나머지는 0으로 구성된 masking vector를 구성한 뒤 첫번째 시퀀스 logit가 element-wise 곱을 합니다((3)). 그런 다음, 아래 mask된 분포에 따라 sampling을 하면 (4)와 같이, smiles $\rightarrow$ chain 생성규칙이 출력됩니다.</p>
+
+<p style="text-align:center">
+$$p(\text{x}_t = k|\alpha,\text{z}) = \frac{m_{\alpha, \,k}exp(f_{tk})}{\sum_{j=1}^Km_{\alpha, \,k}exp(f_{tj})}$$
+<figcaption align="center">수식1. masked distribution at timestep t</figcaption>
+</p>
+<p>위와 같은 방법으로 $t \rightarrow T_{max}$ 가 될 때까지, sampling을 하면 한 화합물을 구성하는 생성규칙들을 출력하였고, 결국 문법적으로 유효한 화합물을 생성한 것입니다.</p>
+
+<h3 id="bayesian-optimization">Bayesian Optimization</h3>
+<p>Gomez-Bomb barelli et al.(2016)<sup id="fnref:1:1" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup>를 보면, 약물 특성을 포함한 latent space를 구축하기 위해, latent layer에 약물 특성을 예측하는 MLP layer를 추가하여 학습을 진행합니다. 마찬가지로, 약물 특성이 담긴 latent space를 구축하기 위해 VAE 학습 완료 후, Sparse Gaussian Process(SGP)를 이용하여 예측모델을 학습합니다. 여기서 사용된 약물 특성은 penalized logP 입니다.</p>
+
+<h2 id="experiment-result">Experiment Result</h2>
+<p>GVAE 모델의 성능은 Gomez-Bomb barelli et. al.(2016)<sup id="fnref:1:2" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup>와 유사한 VAE인 Character VAE(CVAE) 성능과 비교하였습니다. 정성적인 평가를 위해, 임의의 수학표현식을 생성하여 유효한 수학표현식을 만드는지를 확인하였습니다.</p>
+
+<p align="center">
+<img width="500" alt="gvae-result1" src="https://user-images.githubusercontent.com/37501153/85487426-82943a00-b607-11ea-95d6-ffe2cc26c922.jpeg" />
+<figcaption align="center">그림6. 결과 1</figcaption>
+</p>
+
+<p>&lt;그림 6.&gt;의 Table 1.은두 모델의 embedding 공간의 smoothness를 보여주는 결과입니다. 각각 두 개의 식(볼드체)을 encoding 한 뒤, latent space 상의 두 점을 선형보간법(linear interpolation)을 한 것입니다. 보시면, GVAE는 100% 유효한 수학식이 공간 위에 있지만 CVAE는 그렇지 않은 것을 확인하실 수 있습니다. 이처럼, <strong>GVAE가 유효한 string으로 구성된 latent space를 더 잘 구축한다는 것입니다.</strong></p>
+
+<p>Table 2.은  각 latent space에서 z를 여러 번 샘플링 한 후, decoding 결과 유효한 수학표현식 또는 분자 string의 비율을 나타낸 것입니다. GVAE가 CVAE보다 문법적으로 의미있는 string을 더 잘 출력함을 확인할 수 있습니다.</p>
+
+<p align="center">
+<img width="500" alt="gvae-result2" src="https://user-images.githubusercontent.com/37501153/85489804-888c1a00-b60b-11ea-8ae0-95f8367bb94c.jpeg" />
+<figcaption align="center">그림 7. 결과 2</figcaption>
+</p>
+
+<p>그림 7의 결과는 penalized logP와 latent vector를 가지고 Bayesian Optimization한 결과, penalized logP score가 높은 순으로 3개를 뽑은 결과입니다. CVAE와 GVAE 모두 유효한 string을 내놨을 때, GVAE의 약물 특성에 관한 score가 더 높습니다. 즉, <strong>GVAE를 Bayesian Optimization까지 완료 후 형성된 latent space는 valid한 string을 내뱉는 공간을 형성했을 뿐만 아니라 약물 특성을 잘 포함하는 공간을 구축했음을 의미합니다.</strong></p>
+
+<p align="center">
+<img width="500" alt="gvae-result2" src="https://user-images.githubusercontent.com/37501153/85491367-5c25cd00-b60e-11ea-93b5-6c92003622ee.jpeg" />
+<figcaption align="center">그림 8. 결과 3</figcaption>
+</p>
+
+<p>그림 8의 결과는 약물 특성(penalized logP)에 관한 예측 성능에 관한 표입니다. Loss function을 Log-Likelihood와 RMSE를 모두 사용했을 때, GVAE가 CVAE보다 성능이 더 낫습니다. <del>다만, 개인적인 의견으로는 두개의 성능 차이는 거의 나지 않는 것으로 보입니다.</del></p>
+
+<h2 id="논문-한줄-리뷰평">논문 한줄 리뷰평</h2>
+
+<p>GVAE는 이제까지 여러 Generative Model이 상당 수가 SMILES 문법에 어긋나는 string을 출력한다라는 단점을 보완하는 논문입니다. 하지만 valid한 string이 얼마나 신약개발에 적합한 string인지에 대한 결과는 논문에 실리지 않았습니다(<del>이 부분은 대부분의 신약개발 논문들이 나와있지 않는 것으로 보입니다.</del>). 하지만 valid한 string을 내놓는 것에 있어서 제일 실용적인(practical)하지도 않을까 생각이 듭니다.</p>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p><a href="https://pubs.acs.org/doi/abs/10.1021/acscentsci.7b00572">Gómez-Bombarelli, Rafael, et al. “Automatic chemical design using a data-driven continuous representation of molecules.” ACS central science 4.2 (2018): 268-276.</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a> <a href="#fnref:1:1" class="reversefootnote" role="doc-backlink">&#8617;<sup>2</sup></a> <a href="#fnref:1:2" class="reversefootnote" role="doc-backlink">&#8617;<sup>3</sup></a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p><a href="https://upcount.tistory.com/99">Context-free grammar, https://upcount.tistory.com/99</a> <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+  </article>
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/drug-design/2020/07/06/jtvae/">
+            Junction Tree Variational Autoencoder for Molecular Graph Generation 논문 리뷰
+            <small>06 Jul 2020</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+
+<div class="comments">
+  <h2>Comments</h2>
+  <div id="disqus_thread"></div>
+  <script>
+var disqus_config = function () {
+  this.page.url = 'http://localhost:4000/drug-design/2020/06/19/gvae/'; // Replace PAGE_URL with your page's canonical URL variable
+  this.page.identifier = '/drug-design/2020/06/19/gvae'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = '//ralasun-github-io.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if (target === toggle) {
+            checkbox.checked = !checkbox.checked;
+            e.preventDefault();
+          } else if (checkbox.checked && !sidebar.contains(target)) {
+            /* click outside the sidebar when sidebar is open */
+            checkbox.checked = false;
+          }
+        }, false);
+      })(document);
+    </script>
+    
+    <script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-166283746-1', 'auto');
+ga('send', 'pageview');
+    </script>
+    
+  </body>
+  
+  <script id="dsq-count-scr" src="//ralasun-github-io.disqus.com/count.js" async></script>
+  
+</html>
