@@ -1,22 +1,45 @@
-#_site
-.sass-cache
-.jekyll-cache
-.jekyll-metadata
-vendor
+# Ignore docs files
+_gh_pages
+_site
+.ruby-version
 
-# 내용 추가
-*.gem
+# Numerous always-ignore extensions
+*.diff
+*.err
+*.orig
+*.log
+*.rej
+*.swo
+*.swp
+*.zip
+*.vi
+*~
+
+# OS or Editor folders
+.DS_Store
+._*
+Thumbs.db
+.cache
+.project
+.settings
+.tmproj
+*.esproj
+nbproject
 *.sublime-project
 *.sublime-workspace
-.bundle
-.DS_Store
-.jekyll-cache
-.jekyll-metadata
-.sass-cache
-_asset_bundler_cache
-codekit-config.json
-example/_site
-Gemfile.lock
+.idea
+
+# Komodo
+*.komodoproject
+.komodotools
+
+# grunt-html-validation
+validation-status.json
+validation-report.json
+
+# Folders to ignore
 node_modules
-npm-debug.log*
-vendor/bundle
+bower_components
+
+# sass
+.sass-cache
