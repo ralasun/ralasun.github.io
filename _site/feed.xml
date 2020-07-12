@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-07-12T17:24:39+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ralasun Resarch Blog</title><subtitle></subtitle><author><name>Seonhwa Lee</name></author><entry><title type="html">Reinforcement Learning 소개[1]</title><link href="http://localhost:4000/reinforcement%20learning/2020/07/11/introRL(1)/" rel="alternate" type="text/html" title="Reinforcement Learning 소개[1]" /><published>2020-07-11T00:00:00+09:00</published><updated>2020-07-11T00:00:00+09:00</updated><id>http://localhost:4000/reinforcement%20learning/2020/07/11/introRL(1)</id><content type="html" xml:base="http://localhost:4000/reinforcement%20learning/2020/07/11/introRL(1)/">&lt;p&gt;이번 포스팅은 강화학습이 기존에 알려진 여러 방법론들과의 비교를 통한 강화학습 특성과 구성요소를 다룹니다. CS234 1강, Deep Mind의 David Silver 강화학습 강의 1강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 1 기반으로 작성하였습니다.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-07-12T17:27:42+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ralasun Resarch Blog</title><subtitle></subtitle><author><name>Seonhwa Lee</name></author><entry><title type="html">Reinforcement Learning 소개[1]</title><link href="http://localhost:4000/reinforcement%20learning/2020/07/11/introRL(1)/" rel="alternate" type="text/html" title="Reinforcement Learning 소개[1]" /><published>2020-07-11T00:00:00+09:00</published><updated>2020-07-11T00:00:00+09:00</updated><id>http://localhost:4000/reinforcement%20learning/2020/07/11/introRL(1)</id><content type="html" xml:base="http://localhost:4000/reinforcement%20learning/2020/07/11/introRL(1)/">&lt;p&gt;이번 포스팅은 강화학습이 기존에 알려진 여러 방법론들과의 비교를 통한 강화학습 특성과 구성요소를 다룹니다. CS234 1강, Deep Mind의 David Silver 강화학습 강의 1강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 1 기반으로 작성하였습니다.&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;p align=&quot;center&quot;&gt;
@@ -192,7 +192,7 @@ $H_{1:t} \to S_t \to H_{t+1:\infty}$&lt;/blockquote&gt;
 
 &lt;hr /&gt;
 
-&lt;p&gt;이번 포스팅은 여기까지 마치겠습니다. Reinforcement Learning 소개(2)에 이어서 포스팅하도록 하겠습니다.&lt;/p&gt;
+&lt;p&gt;이번 포스팅은 여기까지 마치겠습니다. &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/11/introRL(2)&quot;&gt;Reinforcement Learning 소개(2)&lt;/a&gt;에 이어서 포스팅하도록 하겠습니다.&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;ol&gt;
