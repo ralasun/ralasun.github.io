@@ -4,13 +4,219 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-07-11T12:10:32+09:00</updated>
+ <updated>2020-07-12T14:52:01+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Reinforcement Learning 소개[1]</title>
+   <link href="http://localhost:4000/reinforcement%20learning/2020/07/11/introRL(1)/"/>
+   <updated>2020-07-11T00:00:00+09:00</updated>
+   <id>http://localhost:4000/reinforcement%20learning/2020/07/11/introRL(1)</id>
+   <content type="html">&lt;p&gt;이번 포스팅은 강화학습이 기존에 알려진 여러 방법론들과의 비교를 통한 강화학습 특성과 구성요소를 다룹니다. CS234 1강, Deep Mind의 David Silver 강화학습 강의 1강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 1 기반으로 작성하였습니다.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img width=&quot;450&quot; alt=&quot;introRL&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87217901-2f511400-c389-11ea-96de-492485cf0b9d.png&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 1.&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;아래 그림과 같이, Computer Science, Engineering, Mathematics 등 다양한 분야에서 여러 문제들을 풀기 위한 방법론들이 있습니다. 예를 들어, Pyschology 분야의 Classical/Operant Conditioning은 동물들의 의사결정에 대해 연구하고, Enginnering 분야의 Optimal Control와 Mathematics 분야의 Operation Research는 자연 현상을 일련의 시퀀스로 파악하여 공학적 또는 수학적 관점에서 ‘어떻게 하면 최상의 결과를 얻을까?’ 를 연구합니다. 즉, 이러한 연구들의 공통점은 각 분야에서 정의한 문제 해결을 위해 &lt;b&gt;과학적 의사결정(scientific decision making)&lt;/b&gt;을 연구한다는 것입니다.&lt;/p&gt;
+
+&lt;p&gt;이와 마찬가지로, 강화학습도 &lt;b&gt;“좋은 의사결정을 내리기 위한 방법”&lt;/b&gt;에 관한 연구입니다. 특히, &lt;b&gt;“순차적인 의사결정이 필요한 문제”&lt;/b&gt;를 풀기 위한 방법론입니다(Learn to make good sequences of decisions). 여기서, “good decisions”은 결국 최적의 해결책(optimal soltuion)을 찾는 것을 의미하고, “learn”은 학습하는 대상이 처한 상황이 어떤지 모른 채, 직접 부딪혀 나가면서 경험을 통해 배워나가는 것을 의미합니다. 이는 마치, 사람이 학습해 나가는 방법과도 유사하죠.&lt;/p&gt;
+
+&lt;blockquote&gt;Sutton 교재에서, 강화학습이 사람의 학습 방법과 유사하다고 기술되어 있습니다. 유아기 때, 걷기까지 걷는 방법을 알려주는 선생님이 존재하지 않고, 아기가 스스로 여러번 시도와 실패 끝에 걷는 방법을 터득합니다. 강화학습도 이러한 측면에서의 특성을 가지고 있습니다.&lt;/blockquote&gt;
+
+&lt;h1&gt;Characteristics of Reinforcement Learning&lt;/h1&gt;
+&lt;p&gt;강화학습의 특징을 다른 방법론과 비교를 통해 알아봅시다. 강화학습의 특징을 우선 정리하고, 그 후 비교를 통해 구체적으로 알아볼 것입니다. 강화학습은 아래와 같이 4가지 특징을 가지고 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Optimization&lt;/li&gt;
+&lt;li&gt;Delayed consequences&lt;/li&gt;
+&lt;li&gt;Exploration&lt;/li&gt;
+&lt;li&gt;Generalization&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;
+&lt;b&gt;1. Optimization&lt;/b&gt;&lt;br /&gt;
+good decision이란 최적의 해결책(optimal solution)에 해당된다고 하였습니다. 즉, Optimization은 강화학습의 목적에 해당되며, 그 목적은 좋은 결정을 내리기 위한 최적의 방법을 찾는 것입니다.
+&lt;blockquote&gt;Goal is to find an optimal way to make decisions&lt;/blockquote&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;b&gt;2. Delayed Consequences&lt;/b&gt;&lt;br /&gt;
+순차적인 의사결정 문제에서, 현재 내린 결정은 후에 일어날 상황에 영향을 줄 수 있습니다. 예를 들어, 돈을 저축하는 건 현재 시점에선 마이너스 행위일 수도 있지만, 만기 이후를 생각하면 플러스 행위입니다. 즉, 현재 내린 결정에 대한 영향력을 확실히 알 수가 없고(delayed consequences), 이로 인해 결정의 좋고 나쁨을 평가하는 것이 어렵습니다.  
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;b&gt;3. Exploration&lt;/b&gt;&lt;br /&gt;
+위에서, 강화'학습'은 에이전트(학습하는 사람, 기계 등을 지칭)가 학습하는 상황/대상에 대한 어떠한 정보가 없기 때문에 스스로 배워나가는 것이라 하였습니다. 따라서, 에이전트는 무수히 많은 의사결정을 통해 탐험을 해야합니다. 자전거를 타는 기술을 익히기 위해 수많은 실패를 하는 것처럼 말입니다. 그러나, 이 '탐험'도 '잘'해야 합니다. 어떠한 탐험을 하느냐에 따라 경험하는 것이 다르기 때문입니다. 이렇게 얻어진 경험이 좋은 경험일 수도 나쁜 경험일 수도 있습니다.&lt;/p&gt;
+
+&lt;p&gt;
+&lt;b&gt;4. Generalization&lt;/b&gt;&lt;br /&gt;
+여러 머신러닝 방법론과 마찬가지로, 강화학습은 특정 문제만 풀수 있는 에이전트가 아니라 일반화된 문제를 풀 수 있는 에이전트를 학습하고 싶습니다. 바둑을 예로 들어봅시다. 강화학습을 통해 바둑게임 에이전트를 만들고자 할 때, 대전을 하는 상대방이 어떠한 전략을 가지고 있던 간에 항상 이길 수 있는 에이전트를 만드는 것이 목표지 특정 전략에만 강한 에이전트를 만들고 싶은 것이 아닙니다. &lt;br /&gt;&lt;br /&gt;
+위와 같은 이유로, rule-based 방식으로 순차적 의사결정문제를 풀기가 어렵습니다. rule-based 기반 해결책은 generalization 특성을 갖지 못하기 때문입니다. 
+&lt;blockquote&gt;pre-programmed policy is hard to get generalization on the problem we want to tackle.&lt;/blockquote&gt;
+&lt;/p&gt;
+&lt;p&gt;‌
+강화학습은 위와 같이 4가지 특성을 가지고 있습니다. 이제 여러 방법론(Planning, supervised learning, unsupervised learning, imitation learning)과 비교를 통해 위 4가지 특성에 대해 강화학습이 다른 방법론과 어떻게 다른지 알아 봅시다.&lt;/p&gt;
+
+&lt;h2&gt;AI Planning vs Reinforcement Learning&lt;/h2&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img alt=&quot;planning&quot; width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87219220-56f9a980-c394-11ea-933d-1e59431206ac.jpeg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 2. planning&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;Planning이란 에이전트가 학습하는 환경에 대한 정보를 완벽히 알고 있는 경우입니다. 그림 2.는 유명한 아타리 게임입니다. 만약에 아타리 게임의 에이전트가 게임 콘솔 안의 모든 게임 알고리즘과 하드웨어 작동 방식등 완벽하게 알고 있다고 해봅시다.(&lt;del&gt;거의 불가능한 상황이긴 합니다.&lt;/del&gt;)&lt;/p&gt;
+&lt;blockquote&gt;
+Agent just computes good sequence of decisions but given model of how decisions impact world
+&lt;/blockquote&gt;
+
+&lt;p&gt;이 말은 에이전트가 현재 게임 상황에서 왼쪽/오른쪽 움직임에 대해 나올 결과를 완벽히 알 수 있다는 뜻입니다. 즉, 에이전트는 더이상 ‘학습’이 아니라 어떻게 의사 결정을 내릴지 ‘계획’하면 되는 것이지요. 따라서, planning은 4가지 특성 중, exploration은 해당되지 않습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Optimization&lt;/li&gt;
+&lt;li&gt;Delayed consequences&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;Exploration&lt;/del&gt;&lt;/li&gt;
+&lt;li&gt;Generalization&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Supervised/Unsupervised Learning vs Reinforcement Learning&lt;/h2&gt;
+&lt;p&gt;지도학습은 라벨이 있는 데이터 셋 ${{(x_1,y_1), \dots ,(x_i,y_i))}}$ 을 학습 한 후, 입력 $x_i$ 가 들어오면 입력에 대한 라벨 $\hat y_i$ 를 예측하는 문제입니다. 반면에 비지도 학습은 라벨이 없는 데이터 셋에 대하여 ${{x_1, \dots ,x_i}}$ 에 대하여 학습을 통해 데이터 셋의 구조를 파악하는 것입니다. 강화학습과의 차이점은 데이터 셋의 유무에 있습니다. 강화학습은 어떻게 보면, 탐험을 통해 데이터 셋을 스스로 구축해 나가는 것이라 볼 수 있지만, 지도/비지도 학습은 이 경험에 해당되는 데이터 셋이 주어진 것이기 때문에, 탐험을 할 필요가 없습니다. 또다른 차이점은 의사결정에 해당되는 라벨 예측 행위가 추후 또다른 예측 행위에 영향을 주지 않습니다. 따라서, exploration과 delayed consequences가 없습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Optimization&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;Delayed consequences&lt;/del&gt;&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;Exploration&lt;/del&gt;&lt;/li&gt;
+&lt;li&gt;Generalization&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Imitation Learning vs. Reinforcement Learning&lt;/h2&gt;
+&lt;p&gt;둘의 차이점을 비교하기 전에, &lt;a href=&quot;https://medium.com/@SmartLabAI/a-brief-overview-of-imitation-learning-8a8a75c44a9c&quot;&gt;imitation learning&lt;/a&gt;이 뭔지 간략하게 알아봅시다. 좋은 의사결정을 내리기 위한 에이전트를 강화학습을 통해 만들기 위해선 에이전트가 탐험 시 내린 의사결정에 대한 좋고 나쁨을 알려줘야 합니다. 우리는 이를 ‘보상’이라 합니다. 그러나 현실 문제에서 정확한 보상함수를 정의내리기가 어렵습니다. 따라서 이를 해결하기 위해 나온 방법이 imitation learning입니다. 에이전트가 직접 탐험하는 것이 아니라 모방하고 싶은 에이전트의 행동을 지도학습 방식으로 해결하는 것입니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img alt=&quot;imitation learning&quot; width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87220082-f9695b00-c39b-11ea-8488-2e9906448f0e.jpg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 3. Imitation Learning&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;따라서, imitation learning은 모방하고 싶은 에이전트의 경험을 데이터 셋으로서 활용하기 때문에 exploration 요소가 없습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Optimization&lt;/li&gt;
+&lt;li&gt;Delayed consequences&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;Exploration&lt;/del&gt;&lt;/li&gt;
+&lt;li&gt;Generalization&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1&gt;The Reinforcement Learning Problem&lt;/h1&gt;
+&lt;p&gt;이번 섹션에서는 강화학습 문제를 정의하기 위해 필요한 요소들을 알아봅시다.&lt;/p&gt;
+
+&lt;h2&gt;Rewards &amp;amp; Sequential Decision Making&lt;/h2&gt;
+&lt;p&gt;좋은 행동을 하는 에이전트를 강화학습을 통해 만들기 위해선 에이전트가 탐험할 때 결정한 행동에 대한 좋고 나쁨을 알려줘야 합니다. 우리는 이를 ‘보상’이라 합니다.&lt;/p&gt;
+&lt;blockquote&gt;강화학습에서 '의사 결정'을 '행동'이라 부릅니다.&lt;/blockquote&gt;
+&lt;p&gt;보상 $R_t$ 는 $t$ 스텝에서 에이전트가 의사결정을 잘 내리고 있는지에 대해 환경이 주는 즉각적인 피드백 지표(imediate reward)입니다. 즉, 에이전트의 목표는 매 스텝마다 받는 보상을 누적했을 때, 이 누적값이 최대화가 되도록 의사결정을 하는 것입니다. 이 말은 에이전트는 당장 받는 보상이 아니라 앞으로 받을 보상을 고려해서 행동한다는 것입니다. 이러한 아이디어는 가설로 구축할 수 있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;blockquote&gt;&lt;b&gt;reward hypothesis&lt;/b&gt;&lt;br /&gt;
+That all of what we mean by goals and purposes can be well thought of as the maximization of the expected value of the cumulative sum of a received scalar signal.&lt;/blockquote&gt;
+&lt;/p&gt;
+&lt;p&gt;예를 들어, 게임같은 경우 이기면 (+)보상을, 질 경우 (-)보상으로 보상을 정의내릴 수 있습니다. 또한 발전소를 컨트롤 하는 경우, 전력을 생산하는 경우엔 (+)보상을 줄 수 있지만 만약에 안전 임계치를 초과한 경우 (-)보상으로 정의내릴 수 있습니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img alt=&quot;sequential-decision-making&quot; width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87220849-6e3f9380-c3a2-11ea-8f9b-cf5320abca64.jpg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 4. Sequential Decision Making&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;따라서, 강화학습의 목표는 순차적인 의사결정을 통해 누적 보상의 기댓값을 최대화하는 것입니다. 현재 행동은 앞으로 할 행동들에 영향을 줄 수 있으며 더 많은 보상을 나중에 받기 위해 현재 당장 받을 즉각적인 보상은 포기할 수도 있습니다.&lt;/p&gt;
+
+&lt;p&gt;그러면 보상은 누가 주는 걸까요 ? 바로 에이전트가 놓여있는 환경입니다. 에이전트 이외 그 밖의 요소가 환경이 될 수 있습니다. 예를 들어, 주식시장을 살펴봅시다. 주식의 매매 여부를 결정하는 주체는 에이전트이고, 팔기, 사기, 그대로 두기는 행동(의사결정)입니다. 만약에 에이전트가 주식을 파는 행동을 하였다면, 이 행동의 좋고 나쁨은 어떻게 결정될까요? 우리는 흔히, 내가 판 주식이 올랐다면 이 행동은 나쁜거라고 생각할 수 있습니다&lt;del&gt;(왜냐면, 더 있다가 팔면 좋았을 테니깐요.)&lt;/del&gt;. 그럼 내가 판 주식이 오르게 하는 건 어떤걸까요? 바로 주체 이외의 여러 요소들에 의해 결정됩니다. 그 주식과 관련된 여러 기업일 수도 있고, 정치도 해당될 수 있고, 여러 가지 요소가 주식에 영향을 줍니다. 바로 이러한 부분이 강화학습에서의 ‘환경’입니다.&lt;/p&gt;
+&lt;blockquote&gt;예상할 수 있듯이, 환경을 정의내리기엔 매우 어렵습니다.&lt;/blockquote&gt;
+&lt;p&gt;따라서, 강화학습의 목표를 다시 정의내리자면, &lt;b&gt;주체는 &lt;em&gt;“환경과의 상호작용”&lt;/em&gt;을 통해서 누적 보상을 최대화&lt;/b&gt;하는 것입니다. 그림 4와 그림5는 주체가 환경과의 상호작용하는 일련의 과정을 보여줍니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img width=&quot;500&quot; alt=&quot;agent-env-interaction&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87221282-c4620600-c3a5-11ea-8a6e-adcce86b754e.png&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 5. 주체와 환경간의 상호작용&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;매 스텝에서, 에이전트가 누적보상이 최대가 되도록 행동 $A_t$ (action) 을 결정하면, 환경은 선택한 행동에 대한 결과 $O_{t+1}$ (observation) 와 행동에 대한 실제 보상 $R_{t+1}$ (imediate reward) 을 알려줍니다. 주식시장을 다시 예로 들어보면, 주체가 주식을 파는 것이 행동 결정이고, 추후에 그 기업의 주식이 오르는 것이 행동에 대한 결과이며, 이에 대해 돈을 잃는 것이 실제 보상입니다.&lt;/p&gt;
+
+&lt;h2&gt;History and State&lt;/h2&gt;
+&lt;p&gt;연속적인 의사 결정(sequential decision making)이기 때문에, 매스텝마다 행동 $A$, 관찰 $O$, 보상 $R$이 발생합니다. 따라서 발생한 모든 행동, 관찰, 보상에 대한 시퀀스를 히스토리(history)라고 합니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;H_t = O_1, R_1, A_1, \dots, A_{t-1}, O_t, R_t&lt;/script&gt;
+
+&lt;blockquote&gt;The history is the sequence of observations, actions, rewards. In other words, It is all observable variables up to time t&lt;/blockquote&gt;
+&lt;p&gt;따라서, 에이전트는 히스토리 기반으로 다음에 취할 행동을 선택합니다. 왜냐하면, 히스토리는 이전에 발생한 모든 일들을 다 기록하기 때문에 꽤나 행동 선택에 꽤나 괜찮은 근거가 될 수 있기 때문입니다.&lt;/p&gt;
+
+&lt;p&gt;그러나, 행동을 선택할 때마다, 매번 이전 과거 정보를 파악하는 건 힘든 일입니다. 따라서 에이전트는 다음 행동을 선택하는데 &lt;b&gt;상태(state)정보&lt;/b&gt;를 이용합니다.
+상태정보가 행동 선택의 근거가 되기 위해선 상태는 과거 히스토리 정보를 담고 있어야 합니다. 따라서, 수학적으로 표현하면 상태는 히스토리의 함수입니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;S_t = f(H_t)&lt;/script&gt;
+
+&lt;blockquote&gt;State is information assumed to determine what happens next&lt;/blockquote&gt;
+
+&lt;p&gt;상태에는 크게 Environment State(World State), Agent State, Information State가 있습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Environment State(World State)&lt;/b&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img alt=&quot;environment state&quot; width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87238822-aa2a3580-c442-11ea-8b87-a098c7288a58.jpeg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 6. Environment State&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;환경 상태 $S^e_t$ 는 주체 이외의 환경에 대한 상태로, 예를 들어 게임에서는 게임의 콘솔 내부일수도 있고, 주식시장에서는 주식에 영향을 주는 모든 요소일수 있습니다. 에이전트는 사실 환경을 볼 수 없으며 볼 수 있다 하더라도 불필요한 정보들이 많을 것입니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Agent State&lt;/b&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img alt=&quot;agent state&quot; width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87238872-49e7c380-c443-11ea-880a-40d6a5738804.jpeg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 7. Agent State&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;에이전트 상태 $S^a_t$ 는 행동하는 주체의 상태를 표현한 것입니다(the agent’s internal representation). 에이전트는 이 상태를 기반으로 다음 행동을 선택하고, 강화학습 시 사용되는 상태 정보입니다. 또한, 히스토리의 함수 $S_t^a=f(H_t)$ 로 표현될 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Information State&lt;/b&gt;&lt;br /&gt;
+정보 상태(information state)는 마코브 성질을 가지는 마코브 상태입니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img src=&quot;https://user-images.githubusercontent.com/37501153/87239025-2d4c8b00-c445-11ea-9c11-473ca87cd331.jpg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 8. Markov State&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;$S_t$ 가 주어졌을 때 $S_{t+1}$ 의 확률은 $t$ 시점까지의 모든 상태가 주어졌을 때 $S_{t+1}$ 의 확률과 같으면 마코브 상태입니다. 즉, 현재상태 이전의 과거정보들은 미래정보에 대해 아무런 영향을 주지 않는다는 것입니다. 그 이유는 이미 현재 상태는 과거 정보를 충분히 포함하고 있기 때문에, 이 정보만으로 미래를 파악하기에 충분하다는 것입니다.&lt;/p&gt;
+
+&lt;blockquote&gt;The state is sufficient statistic of the future.&lt;br /&gt;
+The future is independent of the past given the present
+$H_{1:t} \to S_t \to H_{t+1:\infty}$&lt;/blockquote&gt;
+&lt;p&gt;마코브 상태로는 환경상태 $S^e_t$ 와 히스토리 $H_t$ 입니다. $S^e_t$ 는 주체한테 미치는 영향을 모두 포함하고 있기 때문에 마코브 상태이고 마찬가지로 $H_t$도 관찰가능한 일련의 모든 시퀀스를 포함하고 있기 때문에 역시 마코브 상태입니다.&lt;/p&gt;
+
+&lt;h2&gt;MDP and POMDP&lt;/h2&gt;
+&lt;p&gt;강화학습 문제를 정의하기 위해서, 상태, 행동, 보상에 대한 정의가 필요합니다. 하지만 상태는 마코브 상태일수도 있고 아닐 수도 있습니다. 그럼 각각에 따라 강화학습 문제를 접근하는 방법도 달라집니다. 아래에서 더 살펴봅시다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Fully Observable Environments&lt;/b&gt;&lt;br /&gt;
+에이전트가 환경 상태를 직접적으로 관찰할 수 있을 때, 에이전트는 Fully Observability를 가집니다. 이는 결국 에이전트 상태가 환경상태와 동일한 경우입니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;O_t = S^a_t = S^e_t&lt;/script&gt;
+
+&lt;p&gt;일반적으로, 에이전트가 Fully Observability를 가질 때, Markov Decision Process(MDP)를 따른다고 합니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Partially Observable Environments&lt;/b&gt;&lt;br /&gt;
+에이전트가 환경을 간접적으로 관찰할 수 밖에 없을 때, 에이전트는 Partial observability를 가집니다. 예를 들어, 로봇은 카메라 센서로만 인식할 수 있는 장애물만 파악할 수 있습니다. 카드게임에서는 상대방의 카드패는 알 수 없고, 본인이 가진 카드만 알 수 있습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;O_t = S^a_t \neq S^e_t&lt;/script&gt;
+
+&lt;p&gt;이 경우 에이전트 상태는 환경 상태와 동일하지 않으며, 에이전트가 partially observable Markov Decision process(POMDP)를 따릅니다.&lt;/p&gt;
+
+&lt;p&gt;에이전트는 본인의 상태를 반드시 정의내려야 합니다. 전체 히스토리를 에이전트 상태로 둘 수도 있고, ‘환경에 대한 정보가 ~할 것이다’라는 믿음으로 구축할 수도 있습니다. 아니면, RNN을 이용하여 인코딩된 벡터로 에이전트 상태를 나타낼 수도 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;use history : $S_t^a = H_t$ &lt;/li&gt;
+&lt;li&gt;&lt;span style=&quot;color:red&quot;&gt;Beliefs&lt;/span&gt; of environment state : $S_t^a = (P[S^e_t = s^1], \dots, P[s^e_t = s^n])$ &lt;/li&gt;
+&lt;li&gt;Recurrent neural network : $S^a_t = \sigma(S^a_{t-1}W_s+O_tW_o)$ &lt;/li&gt;&lt;/ul&gt;
+
+&lt;p&gt;&lt;b&gt;Deterministic ? Stochastic?&lt;/b&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87239676-bf0bc680-c44c-11ea-821e-7f85a6a00d21.jpg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 9. Deterministic vs. Stochastic&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;강화학습 문제를 MDP인지 POMDP로 보는 관점말고도 deterministic한지 stochastic한지 보는 관점도 있습니다. deterministic한 강화학습 문제는 환경이 에이전트의 행동에 따라 변할 때 그 결과 오로지 하나의 결과만 보여줍니다(single observation and reward). 그러나, stochastic한 강화학습 문제는 에이전트의 행동에 따라 환경이 변할 때, 가능성 있는 여러 결과를 보여줍니다. 물론 그 결과가 나올 확률과 함께 말이죠.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;이번 포스팅은 여기까지 마치겠습니다. Reinforcement Learning 소개(2)에 이어서 포스팅하도록 하겠습니다.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;http://web.stanford.edu/class/cs234/slides/lecture1.pdf&quot;&gt;CS234 Winter 2019 course Lecture 1&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://incompleteideas.net/book/bookdraft2017nov5.pdf&quot;&gt;Richard S. Sutton and Andre G. Barto : Reinforcement Learning : An Introduction&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.davidsilver.uk/wp-content/uploads/2020/03/intro_RL.pdf&quot;&gt;David Silver Lecture 1&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://medium.com/@SmartLabAI/a-brief-overview-of-imitation-learning-8a8a75c44a9c&quot;&gt;Imitation learning : a brief over view of imitation learning, https://medium.com/@SmartLabAI/a-brief-overview-of-imitation-learning-8a8a75c44a9c&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>Junction Tree Variational Autoencoder for Molecular Graph Generation 논문 리뷰</title>
