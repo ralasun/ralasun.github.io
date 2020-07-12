@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-07-12T23:53:31+09:00</updated>
+ <updated>2020-07-13T00:07:32+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -28,7 +28,7 @@
 &lt;figcaption align=&quot;center&quot;&gt;그림 1. Markov Property&lt;/figcaption&gt;
 &lt;/p&gt;
 
-&lt;p&gt;지난 포스팅에서 대부분의 문제들은 그러나 Partial Observability를 가지는 POMDP라 하였습니다. 그러나, POMDP를 풀기 위해서도 MDP가 중요합니다. 그 이유는 POMDP는 MDP의 상태를 히스토리로 두고 풀 수 있기 때문입니다.&lt;/p&gt;
+&lt;p&gt;지난 포스팅에서 대부분의 문제들은 Partial Observability를 가지는 POMDP라 하였습니다. 그러나, POMDP를 풀기 위해서도 MDP가 중요합니다. 그 이유는 POMDP는 MDP의 상태를 히스토리로 두고 풀 수 있기 때문입니다.&lt;/p&gt;
 
 &lt;p&gt;MDP를 자세히 이해하기 위해서 Markov process(Markov Chain)와 Markov Reward Process를 먼저 살펴본 뒤, MDP를 살펴보도록 하겠습니다.&lt;/p&gt;
 
@@ -156,6 +156,9 @@ MDP에서 좋은 의사결정을 하기 위해, 에이전트 내부에 행동 �
 
 &lt;p&gt;policy와의 가중평균으로 MRP의 상태변이함수가 됩니다. 이 두식의 변환은 결국 MDP에서의 벨만방정식을 풀 때, MRP에서 사용한 방법(simulation, analytic solution, iterative method)을 동일하게 사용해도 되는 것을 뜻합니다.&lt;/p&gt;
 
+&lt;blockquote&gt;policy 정의는 일반적으로 stochastic하게 표현하지만 deterministic한 policy도 있습니다. 예를 들면 다음과 같습니다.&lt;br /&gt;&lt;blockquote&gt;stochastic policy : for action { $a_1$, $a_2$ }, $\pi(a_1|s_1)=0.3, \pi(a_1|s_1)=0.7$&lt;br /&gt;
+deterministic policy : $\pi(s_1)=a_1$&lt;/blockquote&gt;&lt;/blockquote&gt;
+
 &lt;p&gt;&lt;b&gt;Value Function and Bellman Expectation Equation&lt;/b&gt;&lt;br /&gt;
 MDP아래에서 Value Function을 다시 살펴봅시다. 기존에 상태만은 고려한 state value function이 있고, 이젠 행동까지 고려한 state-action value function이 있습니다.&lt;/p&gt;
 
@@ -172,6 +175,9 @@ MDP아래에서 Value Function을 다시 살펴봅시다. 기존에 상태만은
 &lt;img src=&quot;https://user-images.githubusercontent.com/37501153/87249534-914d6e80-c49a-11ea-8ae2-7e9d042ab586.jpg&quot; /&gt;
 &lt;figcaption align=&quot;center&quot;&gt;그림 12. 4종류 bellman equation&lt;/figcaption&gt;&lt;/p&gt;
 &lt;p&gt;총 4종류의 back-up diagram이 나오며, 이는 4종류의 bellman equation을 뜻합니다.&lt;/p&gt;
+
+&lt;h2&gt;Bellman Optimality Equation&lt;/h2&gt;
+&lt;p&gt;이제까지 가치함수를 recursive 관계로 표현된 bellman expectation equation을 살펴봤습니다.&lt;/p&gt;
 
 &lt;hr /&gt;
 
