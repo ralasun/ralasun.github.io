@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-07-13T14:56:21+09:00</updated>
+ <updated>2020-07-13T15:00:40+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -348,7 +348,7 @@
 
 &lt;hr /&gt;
 
-&lt;p&gt;이상으로, Reinforcement Learning 소개[2] 포스팅을 마치겠습니다. 다음 포스팅은 Markov Decision Process에 대해 진행하겠습니다.&lt;/p&gt;
+&lt;p&gt;이상으로, Reinforcement Learning 소개[2] 포스팅을 마치겠습니다. 다음 포스팅은 &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/12/mdp/&quot;&gt;Markov Decision Process&lt;/a&gt;을 알아보도록 하겠습니다.&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;ol&gt;
