@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-07-13T00:07:32+09:00</updated>
+ <updated>2020-07-13T14:56:21+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -28,7 +28,7 @@
 &lt;figcaption align=&quot;center&quot;&gt;그림 1. Markov Property&lt;/figcaption&gt;
 &lt;/p&gt;
 
-&lt;p&gt;지난 포스팅에서 대부분의 문제들은 Partial Observability를 가지는 POMDP라 하였습니다. 그러나, POMDP를 풀기 위해서도 MDP가 중요합니다. 그 이유는 POMDP는 MDP의 상태를 히스토리로 두고 풀 수 있기 때문입니다.&lt;/p&gt;
+&lt;p&gt;지난 포스팅에서 대부분의 문제들은 그러나 Partial Observability를 가지는 POMDP라 하였습니다. 그러나, POMDP를 풀기 위해서도 MDP가 중요합니다. 그 이유는 POMDP는 MDP의 상태를 히스토리로 두고 풀 수 있기 때문입니다.&lt;/p&gt;
 
 &lt;p&gt;MDP를 자세히 이해하기 위해서 Markov process(Markov Chain)와 Markov Reward Process를 먼저 살펴본 뒤, MDP를 살펴보도록 하겠습니다.&lt;/p&gt;
 
@@ -129,7 +129,7 @@
 
 &lt;p&gt;이제까지 MRP를 정의하였고 MRP를 정의내리기 위해 필요한  return, 가치함수, 가치함수로 유도되는 벨만방정식도 살펴보았습니다. 이제 Markov Decision Process를 살필 준비가 되었습니다.&lt;/p&gt;
 
-&lt;h2&gt;Markov Decision Process&lt;/h2&gt;
+&lt;h1&gt;Markov Decision Process&lt;/h1&gt;
 &lt;p&gt;Markov Decision Process(MDP)는 MRP에 행동(actions)이 더해진 것입니다. 즉, 명시적인 의사결정이 등장합니다.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;
 &lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87247097-9acfda00-c48c-11ea-9c4a-7732a7c7e9d0.png&quot; /&gt;
@@ -139,8 +139,8 @@
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;p(s',r|s, a) = P[S_{t+1}=s', R_{t+1}=r|S_{t}=s, A_{t}=a]&lt;/script&gt;
 
-&lt;p&gt;&lt;b&gt;Policies&lt;/b&gt;&lt;br /&gt;
-MDP에서 좋은 의사결정을 하기 위해, 에이전트 내부에 행동 전략을 가지고 있어야 합니다. 이를 policy라 합니다. 정책의 정의는 아래 식처럼,&lt;/p&gt;
+&lt;h2&gt;Policies&lt;/h2&gt;
+&lt;p&gt;MDP에서 좋은 의사결정을 하기 위해, 에이전트 내부에 행동 전략을 가지고 있어야 합니다. 이를 policy라 합니다. 정책의 정의는 아래 식처럼,&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;\pi(a|s)= P[A_t=a|S_t=s]&lt;/script&gt;
 
@@ -156,11 +156,8 @@ MDP에서 좋은 의사결정을 하기 위해, 에이전트 내부에 행동 �
 
 &lt;p&gt;policy와의 가중평균으로 MRP의 상태변이함수가 됩니다. 이 두식의 변환은 결국 MDP에서의 벨만방정식을 풀 때, MRP에서 사용한 방법(simulation, analytic solution, iterative method)을 동일하게 사용해도 되는 것을 뜻합니다.&lt;/p&gt;
 
-&lt;blockquote&gt;policy 정의는 일반적으로 stochastic하게 표현하지만 deterministic한 policy도 있습니다. 예를 들면 다음과 같습니다.&lt;br /&gt;&lt;blockquote&gt;stochastic policy : for action { $a_1$, $a_2$ }, $\pi(a_1|s_1)=0.3, \pi(a_1|s_1)=0.7$&lt;br /&gt;
-deterministic policy : $\pi(s_1)=a_1$&lt;/blockquote&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;b&gt;Value Function and Bellman Expectation Equation&lt;/b&gt;&lt;br /&gt;
-MDP아래에서 Value Function을 다시 살펴봅시다. 기존에 상태만은 고려한 state value function이 있고, 이젠 행동까지 고려한 state-action value function이 있습니다.&lt;/p&gt;
+&lt;h2&gt;Value Function and Bellman Expectation Equation&lt;/h2&gt;
+&lt;p&gt;MDP아래에서 Value Function을 다시 살펴봅시다. 기존에 상태만은 고려한 state value function이 있고, 이젠 행동까지 고려한 state-action value function이 있습니다.&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;v_{\pi}(s) = \mathbf E[R_{t+1}+\gamma v_{\pi}(S_{t+1})|S_t=s]&lt;/script&gt;
 
@@ -176,8 +173,51 @@ MDP아래에서 Value Function을 다시 살펴봅시다. 기존에 상태만은
 &lt;figcaption align=&quot;center&quot;&gt;그림 12. 4종류 bellman equation&lt;/figcaption&gt;&lt;/p&gt;
 &lt;p&gt;총 4종류의 back-up diagram이 나오며, 이는 4종류의 bellman equation을 뜻합니다.&lt;/p&gt;
 
-&lt;h2&gt;Bellman Optimality Equation&lt;/h2&gt;
-&lt;p&gt;이제까지 가치함수를 recursive 관계로 표현된 bellman expectation equation을 살펴봤습니다.&lt;/p&gt;
+&lt;h2&gt;Bellman Optimal Equation&lt;/h2&gt;
+&lt;p&gt;이제까지 알아본 가치함수(또는 벨만 기대 방정식)는 일정 정책 아래에서의 가치를 구한 것이기 때문에, 정책의 가치라고도 생각할 수 있습니다. 그러나 강화학습의 목표는 reward hypothesis에 따라, 누적보상이 최대가 되는 “최적 정책”을 찾는 것입니다. 그럼 최적 정책은 어떻게 찾을까요? 여러 정책들 간의 비교를 통해서 찾을 수 있습니다. 이와 관련된 개념이 ‘partial ordering’입니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;partial ordering&lt;/b&gt;&lt;br /&gt;
+여러 정책들 간 비교가 가능하다는 건 ‘이 정책이 다른 정책보다 낫다’가 수학적으로 비교가 가능하다는 것입니다. 따라서 이 수학적 비교의 척도가 되는 것이 가치함수간의 비교입니다.
+정책 $\pi$ 가 다른 정책 $\pi’$ 보다 나을려면, 각 정책 아래 가치함수를 구했을 때 모든 상태에 대해서 $v_{\pi}(s) \geq v_{\pi’}(s)$ 입니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\pi \geq \pi', if\,\,and\,\,only\,\,if\,\,v_{\pi}(s) \geq v_{\pi'}(s), for \,\,all\,\,\,s \in S&lt;/script&gt;
+
+&lt;p&gt;즉, 최소한 하나의 정책이 다른 정책보다 같거나 나은 정책이 존재한다는 것입니다. 이것이 바로 최적 정책(optimal policy) $\pi_\ast$ 이고 이때 가치 함수를 최적 가치 함수(optimal value function) $v_\ast(s)$ 라 합니다. 가치함수의 종류에는 상태-가치 함수와 상태-행동 가치 함수가 있습니다. 최적 상태-가치 함수(optimal state-value function) $v_*(s)$ 는&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;v_*(s) = \underset{\pi}max\,v_{\pi}(s)&lt;/script&gt;
+
+&lt;p&gt;이고, 최적 상태-행동 가치함수(optimal state-action value function) $q_*(s,a)$ 는&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;q_*(s,a)  = \underset{\pi}max\,q_{\pi}(s,a)&lt;/script&gt;
+
+&lt;p&gt;입니다. MDP에서 최적 가치 함수를 찾았다면, 이는 결국 일련의 최고의 결정을 수행할 수 있는 것을 뜻하고, sequntial decision making 문제를 “해결”한 것입니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Bellman Optimality Equations&lt;/b&gt;&lt;br /&gt;
+상태 가치 함수와 상태-행동 가치 함수를  back-up diagram을 이용하여 4종류의 bellman expectation equation을 세울 수 있었습니다. 마찬가지로, 최적 상태 가치 함수와 최적 상태-행동 가치 함수를 같은 방식으로 4종류의 bellman optimality equation을 세울 수 있습니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img src=&quot;https://user-images.githubusercontent.com/37501153/87273683-c1395800-c514-11ea-9df3-bdf38cafc876.jpg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 13. Bellman Optimality Equation&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;벨만 기대 방정식과 벨만 최적 방정식은 현 상태와 이전 상태 사이에서의 recursive한 관계를 가진다는 것이 특징입니다. MDP문제를 푸는 방법(벨만 방정식을 푸는 방법)중 하나인 Dynamic Progamming은 바로 이 recursive한 관계를 이용하여 iterative하게 해답을 찾아나가는 과정입니다. DP는 추후 포스팅에서 다루도록 하겠습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Finding an Optimality and Solving the Bellman Optimality Equation&lt;/b&gt;&lt;br /&gt;
+이제까지 최적정책의 정의와 최적정책을 찾기 위한 최적 가치 함수에 대해서 알아봤습니다. 그런데 아직 해결이 안된 부분이 있습니다. 바로, &lt;b&gt;최적 가치 함수를 이용하여 어떻게 최적 정책을 찾을까?&lt;/b&gt;에 관한 물음과 &lt;b&gt;상태의 갯수가 많은 상황에서, 즉 복잡도가 높은 MDP문제에서 방정식을 어떻게 풀까?&lt;/b&gt;에 관한 물음입니다. 먼저 전자부터 살펴보겠습니다.&lt;/p&gt;
+
+&lt;p&gt;벨만 최적 방정식을 풀어서 $v_\ast$ 를 구했다면, 정책을 구하는 건 어렵지 않습니다. 그림 13.에서 1번, 3번 최적방정식에서,&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\pi_\ast(s) = arg \underset a max(q_\ast(s,a))&lt;/script&gt;
+
+&lt;p&gt;$q_\ast(s,a)$ 가 최대가 되는 행동 a 가 바로 상태 s에 대한 최적 정책입니다. Recursive한 관계에서 살펴보면,&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\pi_\ast(s) = arg \underset a max(R^a_s + \gamma\sum_{s'}P^a_{ss'}v_\ast(s'))&lt;/script&gt;
+
+&lt;p&gt;와 같습니다. 즉, 최적 정책을 찾을 땐 greedy하게 찾습니다. greedy한 이유는 정책의 행동을 선택할 때, 앞으로의 모든 상황을 고려하는 것이 아니라 다음 상태의 상황만을 고려하기 때문입니다. 그러나 greedy하게 선택해도 될까요 ? 정답은 yes 입니다. 왜냐하면 &lt;strong&gt;이미 가치함수를 구하는 과정에서 미래 상황까지 고려한 가치를 구했기 때문에 이것을 기반으로 한 greedy 선택 안에는 이미 long-term sequence를 고려한 것&lt;/strong&gt;입니다.&lt;/p&gt;
+
+&lt;p&gt;마지막으로, 방정식을 푸는 방법에 대한 물음입니다. 이미 이전에 벨만 기대 방정식을 푸는 방법에 대해서 살펴보았습니다. 벨만 기대 방정식은 linear equation이기 때문에, 복잡도가 높지 않은 MDP 문제에서 analytic하게 구할 수 있습니다. 그러나 복잡도가 높은 MDP문제는 불가능하므로, iterative method인 dynammic progamming, monte-carlo evalution, Temporal difference가 있다고 하였습니다. 반면에, 벨만 최적 방정식은 non-linear equation이기 때문에 analytic하게 풀 수는 없습니다. 따라서 위에서 언급한 iterative method를 적용해야 합니다.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;이상으로 MDP 포스팅을 마치겠습니다. 다음 포스팅은 Dynamic Progamming에 대해 진행하겠습니다.&lt;/p&gt;
 
 &lt;hr /&gt;
 
