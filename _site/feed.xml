@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-07-13T16:30:50+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ralasun Resarch Blog</title><subtitle></subtitle><author><name>Seonhwa Lee</name></author><entry><title type="html">MDP를 푸는 방법, Dynamic Programming</title><link href="http://localhost:4000/reinforcement%20learning/2020/07/13/dp/" rel="alternate" type="text/html" title="MDP를 푸는 방법, Dynamic Programming" /><published>2020-07-13T00:00:00+09:00</published><updated>2020-07-13T00:00:00+09:00</updated><id>http://localhost:4000/reinforcement%20learning/2020/07/13/dp</id><content type="html" xml:base="http://localhost:4000/reinforcement%20learning/2020/07/13/dp/">&lt;p&gt;지난 &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/12/mdp/&quot;&gt;MDP 포스팅&lt;/a&gt;에 이어서, 이번 포스팅은 MDP를 iterative하게 푸는 방법 중 하나인 Dynamic Programming(DP)에 대해서 다룹니다. CS234 2강, Deep Mind의 David Silver 강화학습 강의 3강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 4 기반으로 작성하였습니다.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-07-13T16:36:44+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ralasun Resarch Blog</title><subtitle></subtitle><author><name>Seonhwa Lee</name></author><entry><title type="html">MDP를 푸는 방법, Dynamic Programming</title><link href="http://localhost:4000/reinforcement%20learning/2020/07/13/dp/" rel="alternate" type="text/html" title="MDP를 푸는 방법, Dynamic Programming" /><published>2020-07-13T00:00:00+09:00</published><updated>2020-07-13T00:00:00+09:00</updated><id>http://localhost:4000/reinforcement%20learning/2020/07/13/dp</id><content type="html" xml:base="http://localhost:4000/reinforcement%20learning/2020/07/13/dp/">&lt;p&gt;지난 &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/12/mdp/&quot;&gt;MDP 포스팅&lt;/a&gt;에 이어서, 이번 포스팅은 MDP를 iterative하게 푸는 방법 중 하나인 Dynamic Programming(DP)에 대해서 다룹니다. CS234 2강, Deep Mind의 David Silver 강화학습 강의 3강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 4 기반으로 작성하였습니다.&lt;/p&gt;
 
 &lt;hr /&gt;
 
@@ -26,9 +26,9 @@
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;v_{k+1}(s)=\sum_a\pi(a|s)\sum_{s',r}p(s',r|s,a)[r+\gamma v_{k}(s')]&lt;/script&gt;
 
-&lt;p&gt;k=0부터 수렴할 때까지 반복적으로 계산하는 것입니다. 즉 가치 함수를 초기화한 후, $v_0 \to v_1 \to v_2 \to \cdots \to v_\pi$ 으로 수렴할 때까지 &lt;span style=&quot;color:red&quot;&gt;&lt;strong&gt;모든 상태에 대해서 동시에 업데이트&lt;/strong&gt;&lt;/span&gt;하는 것입니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://imgur.com/CAgioB4&quot; /&gt;
+&lt;p&gt;k=0부터 수렴할 때까지 반복적으로 계산하는 것입니다. 즉 가치 함수를 초기화한 후, $v_0 \to v_1 \to v_2 \to \cdots \to v_\pi$ 으로 수렴할 때까지 &lt;span style=&quot;color:red&quot;&gt;&lt;b&gt;모든 상태에 대해서 동시에 업데이트&lt;/b&gt;&lt;/span&gt;하는 것입니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt; 
+&lt;img width=&quot;500&quot; src=&quot;https://i.imgur.com/WzCwUj1.jpg&quot; /&gt;
 &lt;figcaption align=&quot;center&quot;&gt;그림 3.  Iterative Policy Evaluation&lt;/figcaption&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
