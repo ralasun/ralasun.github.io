@@ -4,13 +4,143 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-07-14T14:12:54+09:00</updated>
+ <updated>2020-07-29T14:42:24+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Model-Free Policy Evaluation, Monte Carlo와 Temporal Difference에 대하여</title>
+   <link href="http://localhost:4000/reinforcement%20learning/2020/07/28/mc-td-eval/"/>
+   <updated>2020-07-28T00:00:00+09:00</updated>
+   <id>http://localhost:4000/reinforcement%20learning/2020/07/28/mc-td-eval</id>
+   <content type="html">&lt;p&gt;이번 포스팅과 다음 포스팅은 유한개의 상태와 행동집합에 대해 환경 모델을 모를 때, sequential decision process를 푸는 방법에 다룹니다. 지난 &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/13/dp/&quot;&gt;DP 포스팅&lt;/a&gt;에서, policy iteration을 이용하여 MDP를 풀었습니다. 마찬가지로 환경 모델을 알지 못한 경우도 유사하게 접근할 수 있습니다. policy iteration은 policy evaluation과 policy control로 나뉘는데 이번 포스팅은 policy evaluation을 푸는 방법에 다룰 것이고 다음 포스팅은 policy control에 대해 다루도록 하겠습니다. CS234 3강, Deep Mind의 David Silver 강화학습 강의 4강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 5, 6 기반으로 작성하였습니다.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;policy evaluation은 현 정책이 얼마나 좋은지 평가하는 것으로, 현 정책 아래 가치함수를 구하는 것입니다. DP는 환경 모델을 알 때, 벨만 기대 방정식을 이용하여 iterative한 방법으로 현 정책 아래에서 가치함수를 구하는 과정입니다. 현 상태에서 특정 행동을 취할 때, 나올 수 있는 다음 상태와 받을 보상을 알고 있기 때문에 아래 식과 같이 expectation을 직접 “계산”을 할 수 있었습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;v_\pi(s) = \sum_a\pi(a|s)\sum_{s',r}p(s',r|s,a)[r+\gamma v_\pi(s')]&lt;/script&gt;
+
+&lt;p&gt;(이러한 이유로, DP는 learning이 아니라 planning이라 했었습니다.) 그러나 환경 모델을 알지 못할 때, 즉, 상태 변환 모델과 보상 모델을 알지 못할 때 어떻게 정책을 평가할 수 있을까요? 바로 경험(experience)을 직접하는 것입니다. 시퀀스를 직접 밟아 나가면서 가치함수를 학습해 나가는 것입니다. 이 때, 경험을 통해 가치함수를 학습하는 방법을 두가지가 있습니다. Monte Carlo 방식와 Temporal Difference 방식입니다. 먼저, Monte Carlo policy evaluation 부터 알아보겠습니다.&lt;/p&gt;
+
+&lt;h2&gt;Monte-Carlo Policy Evaluation&lt;/h2&gt;
+&lt;p&gt;Monte-Carlo Policy Evaluation을 살펴보기 전에, Monte-Carlo 방식을 우선 알아보겠습니다.&lt;/p&gt;
+
+&lt;h3&gt;Monte-Carlo Methods&lt;/h3&gt;
+&lt;p&gt;Monte-Carlo 방법은 무작위 샘플링을 통해 우리가 알아보고자 하는 시스템의 분포를 추정하는 것입니다. 아래 그림은 Monte-Carlo 방식으로 원의 넓이를 추정하는 것입니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img alt=&quot;mc-pi&quot; width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88665561-c2c06e00-d119-11ea-82cd-672553bac47d.gif&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 1. Monte-Carlo 예&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p&gt;원의 넓이를 구하는 방법이 너무나 복잡하거나 알 수 없다고 가정해 봅시다. 이런 상황에서 원의 넓이를 가장 쉽게 구하는 방법은 점을 무수히 많이 뿌려본 뒤, 사각형의 넓이 $\times$  (원 안에 들어온 점의 갯수 / 전체 점의 갯수) 로 원의 넓이를 추정할 수 있습니다. 이처럼 Monte-Carlo방식은 점을 무수히 많이 찍는 것처럼 무작위 샘플링으로 데이터를 많이 수집하게 되면 우리가 알고자 하는 시스템의 분포를 추정할 수 있다는 개념입니다.&lt;/p&gt;
+
+&lt;h3&gt;Monte-Carlo Policy Evaluation&lt;/h3&gt;
+&lt;p&gt;따라서, Monte-Carlo Policy Evaluation이란 에이전트가 환경과 직접 상호작용하여 상태, 행동, 보상으로 이뤄진 시퀀스를 무수히 많이 &lt;span style=&quot;color:red&quot;&gt;sampling&lt;/span&gt;하여 경험을 얻고, 그 경험을 바탕으로 가치함수를 구하는 것입니다. 즉, 무작위 샘플링을 통해 환경 모델을 내재적으로 추정하는 것이죠. ‘내재적’이라 표현한 이유는 추정하고자 하는 것이 상태 변이 확률 또는 보상 확률이 아니라 value function이기 때문입니다. 결국 value function를 구하기 위해선 환경 정보를 알고 있어야 구할 수 있는데(DP에서의 Policy Evaluation 참고) 샘플링을 통해 이를 구하는 것이 내재적으로 환경모델을 추정하는 거라고 생각할 수 있는 것이죠.&lt;/p&gt;
+
+&lt;p&gt;다시 정리하면 Monte-Carlo 방식은 환경에 대한 정보없이, 오로지 ‘경험(experience)’를 통해 학습하는 것입니다.&lt;/p&gt;
+&lt;blockquote&gt;사실 학습은 policy evaluation과 policy control의 상호작용으로 이뤄집니다. 본 포스팅은 학습이라 표현하지만, policy evaluation에 초점을 맞춰 작성하였습니다.&lt;/blockquote&gt;
+&lt;p&gt;value function의 정의를 다시 살펴보면,&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;v_\pi(s) = E_\pi[G_t|s_t=s]&lt;/script&gt;
+
+&lt;p&gt;상태 s에서의 return $G_t$ 에 대한 기댓값입니다. Monte-Carlo 방식으로 value function을 구하면 샘플링한 많은 경험들 중에서 상태 s에서부터의 return $G_t$ 를 직접 구한 뒤, 경험의 갯수만큼 나눠주면 됩니다. 즉, return에 대한 기댓값이 아니라 &lt;span style=&quot;color:red&quot;&gt;return에 관한 평균값&lt;/span&gt;입니다.&lt;/p&gt;
+&lt;blockquote&gt;Monte-Carlo policy evaluation uses empirical mean return instead of expected return. In other words, Policy is evaluated based on averaging sample returns.&lt;/blockquote&gt;
+&lt;p&gt;아래 예시를 통해, 어떻게 계산하는지 알아봅시다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88672014-eedfed00-d121-11ea-92ba-d14ed0f22508.jpeg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 2. Monte-Carlo Policy Evaluation 예&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p&gt;&amp;lt;그림 2&amp;gt;와 같이, C1에서 시작한 시퀀스들에 대한 return 값들이 있습니다. $s_t = C1$ 의 value function을 Monte-Carlo 방식으로 추정하면 (-2.25-3.125-3.41-3.20)/4 = -3.0 이 됩니다.&lt;/p&gt;
+
+&lt;p&gt;그러나 Monte-Carlo 방식으로 가치함수를 추정하려면 샘플 시퀀스인 episode가 끝나야 합니다. &lt;span style=&quot;color:red&quot;&gt;즉, 모든 에피소드가 끝나야 Monte-Carlo 방식을 적용할 수 있습니다.&lt;/span&gt; 따라서 에피소드가 끝날 때 까지 기다린 후, 평균값을 업데이트하는 방식으로 적용할 수 있습니다.&lt;/p&gt;
+
+&lt;h4&gt;first-visit MC vs. every-visit MC&lt;/h4&gt;
+&lt;p&gt;Monte-Carlo 방식은 두 가지가 있습니다. first-visit MC와 every-visit MC입니다. 한 에피소드에서 같은 상태를 여러번 반복해서 지나갈 수 있습니다. 이 때, 첫번째 상태에 대한 return값만 value function 업데이트에 이용하고, 나머지는 무시하는 방법이 first-visit MC이고 모든 경우를 고려한 것이 every-visit MC입니다. 아래 그림은 first-visit MC policy evaluation과 every-visit MC policy evaluation 순서입니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+&lt;img width=&quot;400&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88681428-86e2d400-d12c-11ea-92b5-383464f1e817.jpg&quot; /&gt;
+&lt;img width=&quot;400&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88682203-5e0f0e80-d12d-11ea-95f4-983819379c31.jpg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 3. first-visit/every-visit MC Policy Evaluation&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;일반적으로 first-visit MC를 많이 씁니다. 그렇다면 first-visit과 every-visit은 어떤 차이가 있을까요? first-visit MC 같은 경우, 각 상태에 대한 return들은 모두 독립입니다. 왜냐하면 샘플링된 episode가 독립이므로 first-visit만 고려하기 때문에, 각 상태에 대한 return $G_t$ 은 서로 관련이 없고 독립입니다. 즉, 상태 s에 대한 return $G_t$ 는 $v_\pi(s)$ 분포에서, i.i.d성질을 지니게 됩니다(independent and identically distributed). 따라서, 대수 법칙(law of large numbers)에 따라, 상태 s에 대한 return 값을 무수히 많이 샘플링 하게 된다면, return에 대한 평균은 우리가 구하고 싶은 상태 s의 value function 기댓값인 $\mathbb{E_\pi}[G_t \mid s_t=s]$ 에 수렴합니다.&lt;/p&gt;
+
+&lt;p&gt;쉽게 다시 설명하겠습니다. 어떤 상태 s에 대한 가치를 구할 때마다 항상 다르게 나올 수 있습니다. 그런데 충분히 많이 상태 s를 밟는다면 대표적으로 많이 나오는 값이나 그 값 주변 값이 자주 등장하겠지요. 즉, 우리는 $v_\pi(s)$ 가 분포를 이룬다고 생각할 수 있습니다. 그런데 우리가 구하고 싶은 건 분포안에서 $v_\pi(s)$ 를 대표하는 값을 찾고 싶은 것입니다. 즉, 자주 등장하는 값을 말입니다. 따라서, 그 분포의 평균인 기댓값 $\mathbb{E_\pi}[G_t \mid s_t=s]$ 을 말입니다. first-visit MC 방식으로 샘플링한 $G_t$ 는 i.i.d성질을 띄기 때문에, 분포를 정확히 모르지만(분포를 안다면 굳이 샘플링 하지 않고 바로 기댓값이 계산이 가능하겠죠?) 결국 $v_\pi(s)$ 분포를 추정할 수 있고, 이는 우리가 구하고 싶은 기댓값에 수렴할 수 있음을 의미합니다.&lt;/p&gt;
+
+&lt;p&gt;따라서, &lt;span style=&quot;color:red&quot;&gt;first-visit MC 방식에 의한 추정은 unbiased한 성질을 지닙니다.&lt;/span&gt; 반면에, &lt;span style=&quot;color:red&quot;&gt;every-visit MC 방식에 의한 추정은 biased한 성질을 띕니다.&lt;/span&gt; 한 에피소드 내에서 같은 상태를 여러 번 반복해서 지나갔다면, 그 상태들 간은 독립적이지 않고, 상관관계를 가지게 됩니다. 따라서, i.i.d하지 않기 때문에 biased합니다. 그렇기 때문에 MC 방식에 의한 policy evaluation은 first-visit MC를 선호하는 편이라 합니다(sutton and barto교재 및 stanford강의 참고).&lt;/p&gt;
+
+&lt;h4&gt;Incremental Monte-Carlo Updates&lt;/h4&gt;
+&lt;p&gt;Value function을 업데이트하는 방식을 에피소드가 끝날 때마다 마치 온라인 방식처럼 순차적으로 업데이트할 수 있습니다. 시퀀스 $x_1, x_2, \dots$ 에 대한 평균 $\mu_1, \mu_2, \dots$ 가 있을 때,&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align*} \mu_k&amp;=\frac{1}{k}\sum_{j=1}^{k}x_j\\&amp;=\frac{1}{k}\left(x_k+\sum_{j=1}^{k-1}x_j\right)\\&amp;=\frac{1}{k}\left(x_k + (k-1)\mu_{k-1}\right)\\&amp;=\mu_{k-1}+\frac{1}{k}\left(x_k-\mu_{k-1}\right)\end{align*} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;입니다. 따라서, episode $S_1, A_1, R_2, \dots, S_T$ 가 끝날 때마다 아래와 같이 업데이트 할 수 있습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;N(S_t) \leftarrow N(S_t) + 1&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;V(S_t) \leftarrow V(S_t) + \frac{1}{N(S_t)}\left(G_t-V(S_t)\right)&lt;/script&gt;
+
+&lt;p&gt;두번째 식을 마치 $\left(G_t-V(S_t)\right)$ 를 새로운 데이터와 기존 평균과의 오차 즉 에러항으로 본다면, 기존 평균값을 오차의 방향으로 1/k만큼 수정해 나간다고 해석할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;위의 업데이트 방식은 맨 처음에 샘플한 에피소드부터, 가장 최근에 샘플한 에피소드까지 모두 중요하게 생각함을 의미합니다. 왜냐하면 동등하게 에피소드 개수만큼으로 나누고 있기 때문입니다. 하지만 시간에 따라 조금씩 변하는 문제 같은 경우(non-stationary)에 위와 같은 업데이트 방식은 적합하지 않습니다. 따라서, 새 에피소드와 기존 평균사이의 오차를 항상 일정 크기만큼 업데이트하여 시간이 지날수록 오래된 과거는 잊고 가장 최근 사건을 좀 더 기억할 수 있게끔 해줍니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;V(S_t) \leftarrow V(S_t) + \alpha\left(G_t-V(S_t)\right)&lt;/script&gt;
+
+&lt;h2&gt;Temporal-Difference Policy Evaluation&lt;/h2&gt;
+&lt;p&gt;다음은 Temporal-Difference Policy Evaluation에 대해 알아보겠습니다. Temporal-Difference(TD) 도 Monte-Carlo(MC) 와 마찬가지로 환경 모델을 알지 못할 때(model-free), 직접 경험하여 Sequential decision process 문제를 푸는 방법입니다. Temporal-Difference 학습은 Monte-Carlo와 Dynamic Programming을 합쳐 놓은 방식입니다.  MC처럼, 환경모델을 알지 못하기 때문에 직접 &lt;span style=&quot;color:red&quot;&gt;sampling&lt;/span&gt;한 데이터를 통해 학습을 해야 합니다. DP처럼, 에피소드가 끝날 때까지 기다리지 않고 다른 가치 추정치를 가지고 현재 상태 가치를 추정합니다. 이를 &lt;span style=&quot;color:red&quot;&gt;bootstrap&lt;/span&gt;이라 합니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88749790-01444000-d18f-11ea-8e52-bc959e3e20ef.jpeg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 4. DP에서의 bootstrap&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p&gt;TD는 MC와 다르게 &lt;span style=&quot;color:red&quot;&gt;무한한 에피소드에 대해서도 적용&lt;/span&gt;할 수 있습니다. 그 이유는 MC는 업데이트를 하기 위해서 한 에피소드가 끝날 때까지 기다려야 합니다. 그래야 return $G_t$ 를 구한 뒤, 업데이트를 할 수 있기 때문입니다. &lt;b&gt;따라서, MC는 에피소드 샘플링을 통해 실제 return $G_t$ 을 향해 $V(S_t)$ 를 수정해나갑니다.&lt;/b&gt;&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;V(S_t) \leftarrow V(S_t) + \alpha\left(G_t-V(S_t)\right)&lt;/script&gt;
+
+&lt;p&gt;반면에, TD는 에피소드가 끝날 때까지 기다릴 필요 없이, 다음 상태를 밟을 때까지만 기다렸다가 업데이트합니다. 그렇기 때문에 에피소드가 끝나지 않는 시퀀스에 대해서도 적용할 수 있으며, 시퀀스를 밟아나가면서 그때그때 가치함수를 수정해 나갈 수 있습니다. 이러한 특징으로 인해, TD 방법은 &lt;span style=&quot;color:red&quot;&gt;online learning이 가능&lt;/span&gt;합니다. 이 부분이 TD의 매우 큰 장점입니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;V(S_t) \leftarrow + \alpha[R_{t+1}+\gamma V(S_{t+1})-V(S_t)]&lt;/script&gt;
+
+&lt;p&gt;TD policy evaluation을 상세히 살펴보면, DP에서의 벨만 기대 방정식을 이용한 policy evaluation과 유사한 것을 보실 수 있습니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88760395-e7fbbd80-d1a7-11ea-8e22-a202c0814dbc.jpeg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 5. DP와 TD&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p&gt;그러나 DP는 환경모델을 알기 때문에, 다음 상태가 될 수 있는 모든 후보들을 고려하여 가중 평균을 한 추정값으로 다음 상태의 가치 추정값만을 가지로 현재 상태의 가치를 업데이트합니다. 반면에, TD는 환경에 대한 정보가 없기 때문에 다음 상태까지 직접 밟아보는 것입니다. 이것을 ‘다음 상태 s’를 직접 샘플링하였다’라고 합니다. 그러나 DP처럼 다른 상태의 추정값을 가지고 현재 상태값을 수정하고자 합니다. 이를 bootstrap이라 합니다. 즉, TD에서의 bootstrap은 아래 그림 처럼 이해할 수 있습니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88756436-9bf84b00-d19e-11ea-9c9f-94791c8b32f6.jpg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 6. TD policy evaluation by bootstrapping&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p&gt;따라서, MC는 실제 return $G_t$ 를 향해 $V(S_t)$ 를 수정해 나가지만 &lt;b&gt;TD는 estimate $G_t$ 을 향해 $V(S_t)$ 를 고쳐나가면서 시퀀스를 진행합니다.&lt;/b&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;&lt;ul&gt;
+&lt;li&gt;MC Policy Evaluation :&lt;br /&gt;update value $V(S_t)$ toward actual return $G_t$&lt;/li&gt;
+&lt;li&gt;TD Policy Evaluation :&lt;br /&gt; update value $V(S_t)$ toward estimated return $R_{t+1} + \gamma V(S_{t+1})-V(S_t)$&lt;/li&gt;&lt;/ul&gt;&lt;/blockquote&gt;
+
+&lt;h3&gt;General form of update rule&lt;/h3&gt;
+&lt;p&gt;위의 MC/TD 업데이트 식은 일반적으로 아래와 같은 형태를 띕니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;NewEstimate \leftarrow OldEstimate + StepSize \left[Target - OldEstimate\right]&lt;/script&gt;
+
+&lt;p&gt;$\left[Target - OldEstimate\right]$ 는 오차를 나타냅니다. MC와 TD 모두 Target을 향해 기존 Estimate을 업데이트합니다. 그러나, 기존 estimate을 새로운 target으로 교체하는 건 위험합니다. 왜냐하면 초기단계에서는 새로운 target이 우리가 찾는 정답이 아닐 수도 있기 때문에, target과 기존 estimate의 오차의 일부만큼만 조금씩 수정해 나갑니다. MC target은 $G_t$ 이고, TD target은 $R_{t+1}+\gamma V(S_{t+1})$ 입니다. 또한, MC error는 $G_t - V(S_t)$ 이고, TD error는 $R_{t+1}+\gamma V(S_{t+1}) - V(S_t)$ 입니다. 보통  TD error는 $\delta_t$ 로 표현합니다. 왜냐하면, 같은 에피소드 내에서, TD error는 매 t step마다 다르기 때문입니다.&lt;/p&gt;
+
+&lt;h3&gt; Temporal Difference Policy Evaluation Algorithm &lt;/h3&gt;
+&lt;p&gt;TD policy evaluation 알고리즘 순서도는 아래와 같습니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88760737-93a50d80-d1a8-11ea-8094-57124c27e696.png&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 7. TD(0) policy evaluation algorithm&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p&gt;일정 정책 $\pi$ 아래, (S, A, R, S’)를 샘플링하고, 업데이트합니다. 그런 다음 (S’, A’, R, S’‘)를 샘플링하고 업데이트합니다. 이 과정을 V(S)가 수렴할 때까지 반복합니다. 여기서 한가지 의문점이 있습니다. MC방식은 unbiased estimator이기 때문에 대수의 법칙에 따라, true expected estimate에 수렴한다고 하였습니다. 과연 TD방식은 수렴할까요? 이는 &lt;a href=&quot;&quot;&gt;다음 포스팅 Model-Free Control&lt;/a&gt;에서 다루도록 하겠습니다.&lt;/p&gt;
+&lt;h2&gt;Monte-Carlo vs. Temporal-Difference&lt;/h2&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Model-Free Policy Control, Monte Carlo와 Temporal Difference에 대하여</title>
+   <link href="http://localhost:4000/reinforcement%20learning/2020/07/20/mc-td-control/"/>
+   <updated>2020-07-20T00:00:00+09:00</updated>
+   <id>http://localhost:4000/reinforcement%20learning/2020/07/20/mc-td-control</id>
+   <content type="html">
+</content>
+ </entry>
  
  <entry>
    <title>Dynamic Programming, Policy Iteration부터 Value Iteration까지</title>
