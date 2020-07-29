@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-07-29T14:47:23+09:00</updated>
+ <updated>2020-07-29T15:22:49+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -136,8 +136,17 @@
 &lt;p align=&quot;center&quot;&gt;
 &lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88760737-93a50d80-d1a8-11ea-8094-57124c27e696.png&quot; /&gt;
 &lt;figcaption align=&quot;center&quot;&gt;그림 7. TD(0) policy evaluation algorithm&lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;일정 정책 $\pi$ 아래, (S, A, R, S’)를 샘플링하고, 업데이트합니다. 그런 다음 (S’, A’, R, S’‘)를 샘플링하고 업데이트합니다. 이 과정을 V(S)가 수렴할 때까지 반복합니다. 여기서 한가지 의문점이 있습니다. MC방식은 unbiased estimator이기 때문에 대수의 법칙에 따라, true expected estimate에 수렴한다고 하였습니다. 과연 TD방식은 수렴할까요? 이는 &lt;a href=&quot;&quot;&gt;다음 포스팅 Model-Free Control&lt;/a&gt;에서 다루도록 하겠습니다.&lt;/p&gt;
+&lt;p&gt;일정 정책 $\pi$ 아래, (S, A, R, S’)를 샘플링하고, 업데이트합니다. 그런 다음 (S’, A’, R, S’‘)를 샘플링하고 업데이트합니다. 이 과정을 V(S)가 수렴할 때까지 반복합니다. 여기서 한가지 의문점이 있습니다. MC방식은 unbiased estimator이기 때문에 대수의 법칙에 따라, true expected estimate에 수렴한다고 하였습니다. 과연 TD방식은 수렴할까요? 이는 &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/29/mc-td-control/&quot;&gt;다음 포스팅 Model-Free Control&lt;/a&gt;에서 다루도록 하겠습니다.&lt;/p&gt;
+
+&lt;p&gt;TD policy evaluation 예를 살펴보겠습니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88761833-eaabe200-d1aa-11ea-8c41-5b60f2d76259.jpg&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 8. TD policy evaluation 예(1)&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p&gt;먼저 $(s_3, a_1, 0, s_2)$ 에 대해 $v(s_3)$ 를 업데이트하고, 그 다음 $(s_2, a_1, 0, s_2)$ 에 대해 $v(s_2)$ 를, $(s_2, a_1, 0, s_1)$ 에 대해 $v(s_2)$ 를, 마지막으로 $(s_1, a_1, 1, terminal)$ 에 대해 $v(s_1)$ 을 업데이트하면 한 에피소드에 대해 업데이트를 완료하게 됩니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88763595-59d70580-d1ae-11ea-8d31-d892a0e42267.jpeg&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 9. TD policy evaluation 예(2)&lt;/figcaption&gt;&lt;/p&gt;
+
 &lt;h2&gt;Monte-Carlo vs. Temporal-Difference&lt;/h2&gt;
+&lt;p&gt;이제까진 MC와 TD방식으로 policy evaluation하는 것을 보았습니다. 그러면 두 방식의 차이와 장/단점에 대해서 알아보겠습니다.&lt;/p&gt;
+
+&lt;h3&gt;Bias/Variance Trade-Off&lt;/h3&gt;
 
 </content>
  </entry>
