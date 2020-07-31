@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-07-31T11:06:16+09:00</updated>
+ <updated>2020-07-31T11:33:13+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -926,9 +926,9 @@ $H_{1:t} \to S_t \to H_{t+1:\infty}$&lt;/blockquote&gt;
  
  <entry>
    <title>Junction Tree Variational Autoencoder for Molecular Graph Generation 논문 리뷰</title>
-   <link href="http://localhost:4000/drug%20design/2020/07/06/jtvae/"/>
+   <link href="http://localhost:4000/drug%20discovery/2020/07/06/jtvae/"/>
    <updated>2020-07-06T00:00:00+09:00</updated>
-   <id>http://localhost:4000/drug%20design/2020/07/06/jtvae</id>
+   <id>http://localhost:4000/drug%20discovery/2020/07/06/jtvae</id>
    <content type="html">&lt;p&gt;Junction Tree Variational Auto-encoder(JT-VAE)는 기존 SMILES string 기반 생성 모델들이 SMILES string을 사용하는 것에 문제를 제기하여 캐릭터가 아니라 molecular graph가 직접 입력으로 들어가는 모델입니다. 또한, 유효한 화합물 구조를 생성하기 위해 Junction Tree Algorithm에서 아이디어를 착안하여 모델을 제시하였습니다.&lt;/p&gt;
 
 &lt;h2&gt; Problem &lt;/h2&gt;
@@ -1160,9 +1160,9 @@ Tree decomposition에 의해, 두 클러스터 간에 공유되는 원자 갯수
  
  <entry>
    <title>Grammar Variational Autoencoder 논문 리뷰</title>
-   <link href="http://localhost:4000/drug%20design/2020/06/19/gvae/"/>
+   <link href="http://localhost:4000/drug%20discovery/2020/06/19/gvae/"/>
    <updated>2020-06-19T00:00:00+09:00</updated>
-   <id>http://localhost:4000/drug%20design/2020/06/19/gvae</id>
+   <id>http://localhost:4000/drug%20discovery/2020/06/19/gvae</id>
    <content type="html">&lt;p&gt;Grammar Variational Auto-Encoder(GVAE)는 Gomez-Bomb barelli et al.(2016)&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;의 VAE기반으로 생성된 신약 후보 물질들이 대부분 유효하지 않는 것에 문제를 제기하여, SMILES string 생성 문법을 직접적으로 제약 조건으로 걸어 유효한 신약 후보 물질을 생성하는 모델입니다.&lt;/p&gt;
 &lt;h2 id=&quot;problem&quot;&gt;Problem&lt;/h2&gt;
 &lt;p&gt;신약 후보 물질의 SMILES string 생성 모델들(RNN, VAE)의 단점은 유효하지 않은 string을 생성하는 경우가 많이 발생한다는 것입니다.&lt;/p&gt;
