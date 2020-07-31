@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-07-31T11:03:46+09:00</updated>
+ <updated>2020-07-31T11:06:16+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -176,42 +176,41 @@ MC는 zero bias이기 때문에 초기값에 상관없이 항상 수렴하게 �
   &lt;tr&gt;
     &lt;td&gt;
     &lt;ul&gt;&lt;li&gt;high variance and zero bias&lt;/li&gt;&lt;li&gt;good convergence properties, even with function approximation&lt;/li&gt;&lt;li&gt;not very sensitive to initial value&lt;/li&gt;&lt;li&gt;very simple to understand but may not be efficient due to applying only to episodic task&lt;/li&gt;&lt;li&gt;can apply both to markov domain and non-markov domain&lt;/li&gt;&lt;/ul&gt;&lt;/td&gt;
-    &lt;td&gt;&lt;ul&gt;&lt;li&gt;low variance and high bias&lt;/li&gt;&lt;li&gt;could converge to true estimate, but it could fail with function approximation&lt;/li&gt;&lt;li&gt;more sensitive to initial value&lt;/li&gt;&lt;li&gt;usually more efficient than MC&lt;/li&gt;&lt;li&gt;can apply to markov domain&lt;/li&gt;&amp;lt;/td&amp;gt;
-  &amp;lt;/tr&amp;gt;
-&amp;lt;/table&amp;gt;
+    &lt;td&gt;&lt;ul&gt;&lt;li&gt;low variance and high bias&lt;/li&gt;&lt;li&gt;could converge to true estimate, but it could fail with function approximation&lt;/li&gt;&lt;li&gt;more sensitive to initial value&lt;/li&gt;&lt;li&gt;usually more efficient than MC&lt;/li&gt;&lt;li&gt;can apply to markov domain&lt;/li&gt;&lt;/ul&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
 
-TD가 MC보다 수렴이 더 빠른 것에 대해 수학적으로 증명된 적은 없습니다. 그러나, 실험적으로 확인했을 때 TD가 MC보다 수렴이 빠릅니다. 이에 관해 Sutton과 berto교재에 MC와 TD의 수렴에 관한 예제가 있습니다.
+&lt;p&gt;TD가 MC보다 수렴이 더 빠른 것에 대해 수학적으로 증명된 적은 없습니다. 그러나, 실험적으로 확인했을 때 TD가 MC보다 수렴이 빠릅니다. 이에 관해 Sutton과 berto교재에 MC와 TD의 수렴에 관한 예제가 있습니다.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;
 &lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88873551-d671ee80-d257-11ea-9f09-c62328dee7f3.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 11. Random Walk 예(1)&lt;/figcaption&gt;&lt;/p&gt;
-위의 예는 C에서 시작하여 각 스텝마다 왼쪽 또는 오른쪽으로 0.5의 확률로 동일하게 갈 수 있다고 할 때, 양 끝의 사각형에 도달하면 에피소드가 끝나는 문제입니다. 각 상태 A, B, C, D, E에서 value를 MC와 TD를 이용하여 구한 결과는 아래와 같습니다. 이때, 각 상태에서의 true value는 1/6, 2/3, 3/6, 4/6, 5/6입니다. 
+&lt;p&gt;위의 예는 C에서 시작하여 각 스텝마다 왼쪽 또는 오른쪽으로 0.5의 확률로 동일하게 갈 수 있다고 할 때, 양 끝의 사각형에 도달하면 에피소드가 끝나는 문제입니다. 각 상태 A, B, C, D, E에서 value를 MC와 TD를 이용하여 구한 결과는 아래와 같습니다. 이때, 각 상태에서의 true value는 1/6, 2/3, 3/6, 4/6, 5/6입니다.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;
 &lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88898226-624f3f00-d287-11ea-97fc-0029133d082c.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 12. Random Walk 예(2)&lt;/figcaption&gt;&lt;/p&gt;
-왼쪽 그림은 TD(0)를 여러 에피소드를 거쳤을 때, 각 상태에서의 value입니다. 100 에피소드 정도 진행했을 때, true value에 수렴하는 것을 확인할 수 있습니다. 오른쪽 그림은 step size $\alpha$ 를 달리했을 때 각각 MC와 TD에서의 RMS error 입니다. 실험적으로 TD가 MC보다 더 빨리 수렴합니다. 
+&lt;p&gt;왼쪽 그림은 TD(0)를 여러 에피소드를 거쳤을 때, 각 상태에서의 value입니다. 100 에피소드 정도 진행했을 때, true value에 수렴하는 것을 확인할 수 있습니다. 오른쪽 그림은 step size $\alpha$ 를 달리했을 때 각각 MC와 TD에서의 RMS error 입니다. 실험적으로 TD가 MC보다 더 빨리 수렴합니다.&lt;/p&gt;
 
-&lt;b&gt;differences between MC and TD trough Batch Update&lt;/b&gt;&lt;br /&gt;
-MC와 TD의 작동원리를 보여주는 사례를 하나 더 소개하겠습니다. 먼저 그전에 batch update에 대해 설명하도록 하겠습니다. k개의 에피소드 또는 k개의 스텝을 미리 샘플링 해 놓은 뒤, k개의 MC 또는 TD 방식의 error를 각각 구해서 다 합한 후, 한 번 update를 하는 방식을 batch update이라 합니다. 아래 예를 각각 MC와 TD 방식의 batch update로 풀어보겠습니다.
+&lt;p&gt;&lt;b&gt;differences between MC and TD trough Batch Update&lt;/b&gt;&lt;br /&gt;
+MC와 TD의 작동원리를 보여주는 사례를 하나 더 소개하겠습니다. 먼저 그전에 batch update에 대해 설명하도록 하겠습니다. k개의 에피소드 또는 k개의 스텝을 미리 샘플링 해 놓은 뒤, k개의 MC 또는 TD 방식의 error를 각각 구해서 다 합한 후, 한 번 update를 하는 방식을 batch update이라 합니다. 아래 예를 각각 MC와 TD 방식의 batch update로 풀어보겠습니다.&lt;/p&gt;
 
-아래와 같이 8개의 에피소드가 있습니다. 첫번째 에피소드는 A에서 시작해서 reward를 0을 받고, 그 다음 B로 가고 reward를 0을 받고 끝납니다. 그 다음 여섯개 에피소드는 B에서 시작해서 reward를 1을 받고 끝납니다. 마지막 하나는 B에서 시작해서 reward를 1을 받고 끝납니다. 이때, MC와 TD방식으로 V(A), V(B)가 각각 어떻게 될까요 ?
+&lt;p&gt;아래와 같이 8개의 에피소드가 있습니다. 첫번째 에피소드는 A에서 시작해서 reward를 0을 받고, 그 다음 B로 가고 reward를 0을 받고 끝납니다. 그 다음 여섯개 에피소드는 B에서 시작해서 reward를 1을 받고 끝납니다. 마지막 하나는 B에서 시작해서 reward를 1을 받고 끝납니다. 이때, MC와 TD방식으로 V(A), V(B)가 각각 어떻게 될까요 ?&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;
 &lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88902645-75fda400-d28d-11ea-952d-ced88051631e.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 13. Batch update 예시&lt;/figcaption&gt;&lt;/p&gt;
 
-MC방식으로 한다면, $V(A)=0, V(B)=\frac{3}{4}$ 입니다. 그러나 TD방식으로 한다면 $V(B)=0$ 이지만 $V(A)=\frac{3}{4}$ 입니다. $V(A)$ 에서 차이가 나는 이유는 MC는 mean squared error를 최소화하는 방식으로 해답을 구하지만, TD는 markov model의 likelihood를 최대화하는 방식으로 해답을 구하기 때문입니다. 
+&lt;p&gt;MC방식으로 한다면, $V(A)=0, V(B)=\frac{3}{4}$ 입니다. 그러나 TD방식으로 한다면 $V(B)=0$ 이지만 $V(A)=\frac{3}{4}$ 입니다. $V(A)$ 에서 차이가 나는 이유는 MC는 mean squared error를 최소화하는 방식으로 해답을 구하지만, TD는 markov model의 likelihood를 최대화하는 방식으로 해답을 구하기 때문입니다.&lt;/p&gt;
 
-$$\sum_{k=1}^{K}\sum_{t=1}^{T_k}\left(G_t^k - V(s_t^k)\right)^2$$ 
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\sum_{k=1}^{K}\sum_{t=1}^{T_k}\left(G_t^k - V(s_t^k)\right)^2&lt;/script&gt;
 
 &lt;ul&gt;&lt;li&gt;MC converges to solution with minimum mean-squared error&lt;/li&gt;&lt;li&gt;Best fit to the observed returns&lt;/li&gt;&lt;/ul&gt;
 
-MC는 관측된 return이 true value estimate과의 차이가 최소화시키는 방향으로 갑니다. 반면에, TD는 markov property 성질을 이용하기 때문에 MDP를 해결하는 방향으로 갑니다. 실제 구현은 아니지만 내재적으로는 마치 환경모델의 transition model과 reward model의 maximum likelihood를 구한 뒤 DP를 푸는 방식과 유사하게 작동하는 것입니다. 실제로 위의 예제를 아래 방식으로 환경 모델을 구한 뒤 DP로 접근하면 똑같은 해답을 구할 수 있습니다.
+&lt;p&gt;MC는 관측된 return이 true value estimate과의 차이가 최소화시키는 방향으로 갑니다. 반면에, TD는 markov property 성질을 이용하기 때문에 MDP를 해결하는 방향으로 갑니다. 실제 구현은 아니지만 내재적으로는 마치 환경모델의 transition model과 reward model의 maximum likelihood를 구한 뒤 DP를 푸는 방식과 유사하게 작동하는 것입니다. 실제로 위의 예제를 아래 방식으로 환경 모델을 구한 뒤 DP로 접근하면 똑같은 해답을 구할 수 있습니다.&lt;/p&gt;
 
-$$\hat P^a_{s,s'} = \frac{1}{N(s,a)}\sum_{k=1}{K}\sum_{t=1}{T_k}\mathbf 1(s_t^k, a_t^k, s_{t+1}^k = s, a, s')$$
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\hat P^a_{s,s'} = \frac{1}{N(s,a)}\sum_{k=1}{K}\sum_{t=1}{T_k}\mathbf 1(s_t^k, a_t^k, s_{t+1}^k = s, a, s')&lt;/script&gt;
 
-$$\hat R^a_s = \frac{1}{N(s,a)}\sum_{k=1}{K}\sum_{t=1}{T_k}\mathbf 1(s_t^k, a_t^k=s,a)r^k_t$$
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\hat R^a_s = \frac{1}{N(s,a)}\sum_{k=1}{K}\sum_{t=1}{T_k}\mathbf 1(s_t^k, a_t^k=s,a)r^k_t&lt;/script&gt;
 
 &lt;ul&gt;&lt;li&gt;TD(0) converges to solution of max likelihood Markov model&lt;/li&gt;&lt;li&gt;Solution to the MDP $&amp;lt;S, A, \hat P, \hat R, \gamma &amp;gt;$ that best fits the data&lt;/li&gt;&lt;/ul&gt;
 
-***
-이상으로 이번 포스팅을 마치겠습니다. 다음 포스팅은 [Model-Free Control](https://ralasun.github.io/reinforcement%20learning/2020/07/29/mc-td-control/)에 대해 진행하겠습니다.
-&lt;/ul&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;hr /&gt;
+&lt;p&gt;이상으로 이번 포스팅을 마치겠습니다. 다음 포스팅은 &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/29/mc-td-control/&quot;&gt;Model-Free Control&lt;/a&gt;에 대해 진행하겠습니다.&lt;/p&gt;
 </content>
  </entry>
  
