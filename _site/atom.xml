@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-07-29T15:22:49+09:00</updated>
+ <updated>2020-07-31T10:51:12+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -26,7 +26,7 @@
    <link href="http://localhost:4000/reinforcement%20learning/2020/07/28/mc-td-eval/"/>
    <updated>2020-07-28T00:00:00+09:00</updated>
    <id>http://localhost:4000/reinforcement%20learning/2020/07/28/mc-td-eval</id>
-   <content type="html">&lt;p&gt;이번 포스팅과 다음 포스팅은 유한개의 상태와 행동집합에 대해 환경 모델을 모를 때, sequential decision process를 푸는 방법에 다룹니다. 지난 &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/13/dp/&quot;&gt;DP 포스팅&lt;/a&gt;에서, policy iteration을 이용하여 MDP를 풀었습니다. 마찬가지로 환경 모델을 알지 못한 경우도 유사하게 접근할 수 있습니다. policy iteration은 policy evaluation과 policy control로 나뉘는데 이번 포스팅은 policy evaluation을 푸는 방법에 다룰 것이고 다음 포스팅은 policy control에 대해 다루도록 하겠습니다. CS234 3강, Deep Mind의 David Silver 강화학습 강의 4강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 5, 6 기반으로 작성하였습니다.&lt;/p&gt;
+   <content type="html">&lt;p&gt;이번 포스팅과 다음 포스팅은 유한개의 상태, 유한개의 행동에 대해 환경 모델을 모를 때, sequential decision process를 푸는 방법에 다룹니다. 지난 &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/13/dp/&quot;&gt;DP 포스팅&lt;/a&gt;에서, policy iteration을 이용하여 MDP를 풀었습니다. 마찬가지로 환경 모델을 알지 못한 경우도 유사하게 접근할 수 있습니다. policy iteration은 policy evaluation과 policy control로 나뉘는데 이번 포스팅은 policy evaluation을 푸는 방법에 다룰 것이고 다음 포스팅은 policy control에 대해 다루도록 하겠습니다. CS234 3강, Deep Mind의 David Silver 강화학습 강의 4강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 5, 6 기반으로 작성하였습니다.&lt;/p&gt;
 
 &lt;hr /&gt;
 
@@ -144,10 +144,79 @@
 &lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88763595-59d70580-d1ae-11ea-8d31-d892a0e42267.jpeg&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 9. TD policy evaluation 예(2)&lt;/figcaption&gt;&lt;/p&gt;
 
 &lt;h2&gt;Monte-Carlo vs. Temporal-Difference&lt;/h2&gt;
-&lt;p&gt;이제까진 MC와 TD방식으로 policy evaluation하는 것을 보았습니다. 그러면 두 방식의 차이와 장/단점에 대해서 알아보겠습니다.&lt;/p&gt;
+&lt;p&gt;이제까진 MC와 TD방식으로 policy evaluation하는 것을 보았습니다. 그러면 두 방식의 특성을 비교하겠습니다.&lt;/p&gt;
 
 &lt;h3&gt;Bias/Variance Trade-Off&lt;/h3&gt;
+&lt;p&gt;MC와 TD의 특징을 bias-variance trade-off 관점에서 보겠습니다. MC는 위에서 설명한 것처럼, return $G_t$ 는 $v_\pi(S_t)$ 의 unbiased estimate 입니다. 따라서 &lt;span style=&quot;color:red&quot;&gt;MC는 low bias의 특징&lt;/span&gt;을 띕니다. 반면에, TD는 bootstrap 기반이기 때문에 TD target $R_{t+1} + \gamma V(S_{t+1})$ 은 $v_\pi(S_t)$ 의 biased estimate 입니다. 따라서 &lt;span style=&quot;color:red&quot;&gt;TD는 high bias 특징&lt;/span&gt;을 가집니다.&lt;/p&gt;
 
+&lt;p&gt;그러나, variance관점에서 두 방식은 반대입니다. MC같은 경우, 한 에피소드가 끝날 때까지 계속 샘플링을 해야합니다. 이로인해, random성이 많이 증가하게 되죠. 반면에, TD같은 경우 업데이트를 위해 (s, a, r, s’)을 한번만 샘플링 하기 때문에 MC에 비해 random성이 작습니다. 이러한 특징으로 인해, &lt;span style=&quot;color:red&quot;&gt;MC는 high variance를, TD는 low variance&lt;/span&gt;를 갖습니다.&lt;/p&gt;
+&lt;blockquote&gt;&lt;ul&gt;&lt;li&gt;Return depends on many random actions, transitions, rewards&lt;/li&gt;&lt;li&gt;TD target depends on one random action, transition, reward&lt;/li&gt;&lt;/ul&gt;&lt;/blockquote&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88870731-15507600-d251-11ea-96b6-5d3850150ecf.jpeg&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 10. Graphical Illustration of Bias-Variance trade off&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;h3&gt;Properties of MC and TD&lt;/h3&gt;
+&lt;p&gt;위의 bias-variance trade-off 성질로 인해 MC와 TD는 아래와 같은 특성을 같습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;MC : high variance and zero bias&lt;/b&gt;&lt;br /&gt;
+MC는 zero bias이기 때문에 초기값에 상관없이 항상 수렴하게 됩니다. 이러한 수렴을 잘하는 특징 덕분에 좋은 근사 가치 함수도 갖게 됩니다(value function approximation, 추후에 포스팅 예정). 그러나, high variance인해 항상 true expected value에 수렴함에 불구하고, 언제 수렴할지는 불분명합니다. 왜냐하면, high variance로 인해 수렴할 때까지 굉장히 많은 에피소드 샘플링이 필요하기 때문입니다. 그리고 한 에피소드가 끝날 때까지 기다려야 하는데, 에피소드의 길이가 긴 경우 더욱 적용하기 어렵습니다. 따라서 실용성 측면에서 떨어지는 단점이 있습니다.&lt;/p&gt;
+
+&lt;p&gt;MC가 zero bias를 가질 수 있는 이유는 $G_t$ 가 i.i.d성질을 가지기 때문이라고 설명하였습니다. 이는 $V(S_t)$ 를 계산하는데 $S_t$ 의 markov property를 이용하지 않음을 뜻합니다. 따라서, Markov domain인 아닌 경우 MC를 적용하여 문제를 해결할 수 있습니다(handling non-markovian domains).&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;TD : low variance and high bias&lt;/b&gt;&lt;br /&gt;
+반면에 TD는 low variance로 인해 수렴이 가능하다면, MC에 비해 수렴지점까지 빨리 도달할 수 있습니다(그림 11,12 참고). 하지만 초기값에 따라 수렴여부가 달라지고(sensitive to initial value), 그리고 근사 가치 함수를 찾지 못할 수도 있습니다. 하지만, on-line 학습이 가능하기 때문에, 따라서 쉽게 적용할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;TD는 $V(S_t)$ 를 계산하기 위해서 $V(S_{t+1})$ estimate 을 이용합니다(bootstrap). 이는 MC와는 다르게 markov property를 이용합니다. 따라서, TD는 Markovian domain에서 적용가능합니다.&lt;/p&gt;
+
+&lt;p&gt;위에서 설명한 MC와 TD의 특성을 정리하면 아래와 같습니다.&lt;/p&gt;
+
+&lt;table style=&quot;width:100%&quot;&gt;
+  &lt;tr&gt;
+    &lt;th&gt;&lt;b&gt;Monte Carlo&lt;/b&gt;&lt;/th&gt;
+    &lt;th&gt;&lt;b&gt;Temporal Difference&lt;/b&gt;&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;
+  - high variance and zero bias
+  - good convergence properties, even with function approximation
+  - not very sensitive to initial value
+  - very simple to understand but may not be efficient due to applying only to episodic task
+  - can apply both to markov domain and non-markov domain&lt;/td&gt;
+    &lt;td&gt;
+  - low variance and high bias 
+  - could converge to true estimate, but it could fail with function approximation
+  - more sensitive to initial value
+  - usually more efficient than MC
+  - can apply to markov domain&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;TD가 MC보다 수렴이 더 빠른 것에 대해 수학적으로 증명된 적은 없습니다. 그러나, 실험적으로 확인했을 때 TD가 MC보다 수렴이 빠릅니다. 이에 관해 Sutton과 berto교재에 MC와 TD의 수렴에 관한 예제가 있습니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88873551-d671ee80-d257-11ea-9f09-c62328dee7f3.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 11. Random ㅉalk 예(1)&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p&gt;위의 예는 C에서 시작하여 각 스텝마다 왼쪽 또는 오른쪽으로 0.5의 확률로 동일하게 갈 수 있다고 할 때, 양 끝의 사각형에 도달하면 에피소드가 끝나는 문제입니다. 각 상태 A, B, C, D, E에서 value를 MC와 TD를 이용하여 구한 결과는 아래와 같습니다. 이때, 각 상태에서의 true value는 1/6, 2/3, 3/6, 4/6, 5/6입니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88898226-624f3f00-d287-11ea-97fc-0029133d082c.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 12. Random Walk 예(2)&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p&gt;왼쪽 그림은 TD(0)를 여러 에피소드를 거쳤을 때, 각 상태에서의 value입니다. 100 에피소드 정도 진행했을 때, true value에 수렴하는 것을 확인할 수 있습니다. 오른쪽 그림은 step size $\alpha$ 를 달리했을 때 각각 MC와 TD에서의 RMS error 입니다. 실험적으로 TD가 MC보다 더 빨리 수렴합니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;differences between MC and TD trough Batch Update&lt;/b&gt;&lt;br /&gt;
+MC와 TD의 작동원리를 보여주는 사례를 하나 더 소개하겠습니다. 먼저 그전에 batch update에 대해 설명하도록 하겠습니다. k개의 에피소드 또는 k개의 스텝을 미리 샘플링 해 놓은 뒤, k개의 MC 또는 TD 방식의 error를 각각 구해서 다 합한 후, 한 번 update를 하는 방식을 batch update이라 합니다. 아래 예를 각각 MC와 TD 방식의 batch update로 풀어보겠습니다.&lt;/p&gt;
+
+&lt;p&gt;아래와 같이 8개의 에피소드가 있습니다. 첫번째 에피소드는 A에서 시작해서 reward를 0을 받고, 그 다음 B로 가고 reward를 0을 받고 끝납니다. 그 다음 여섯개 에피소드는 B에서 시작해서 reward를 1을 받고 끝납니다. 마지막 하나는 B에서 시작해서 reward를 1을 받고 끝납니다. 이때, MC와 TD방식으로 V(A), V(B)가 각각 어떻게 될까요 ?&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88902645-75fda400-d28d-11ea-952d-ced88051631e.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 13. Batch update 예시&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;MC방식으로 한다면, $V(A)=0, V(B)=\frac{3}{4}$ 입니다. 그러나 TD방식으로 한다면 $V(B)=0$ 이지만 $V(A)=\frac{3}{4}$ 입니다. $V(A)$ 에서 차이가 나는 이유는 MC는 mean squared error를 최소화하는 방식으로 해답을 구하지만, TD는 markov model의 likelihood를 최대화하는 방식으로 해답을 구하기 때문입니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;\sum_{k=1}^{K}\sum_{t=1}^{T_k}\left(G_t^k - V(s_t^k)\right)^2&lt;/script&gt;&lt;/p&gt;
+&lt;figcaption align=&quot;center&quot;&gt;MC : Best fit to the observed returns&lt;/figcaption&gt;
+
+&lt;p&gt;MC는 관측된 return이 true value estimate과의 차이가 최소화시키는 방향으로 갑니다. 반면에, TD는 markov property 성질을 이용하기 때문에 MDP를 해결하는 방향으로 갑니다. 실제 구현은 아니지만 내재적으로는 마치 환경모델의 transition model과 reward model의 maximum likelihood를 구한 뒤 DP를 푸는 방식과 유사하게 작동하는 것입니다. 실제로 위의 예제를 아래 방식으로 환경 모델을 구한 뒤 DP로 접근하면 똑같은 해답을 구할 수 있습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\hat P^a_{s,s'} = \frac{1}{N(s,a)}\sum_{k=1}{K}\sum_{t=1}{T_k}\mathbf 1(s_t^k, a_t^k, s_{t+1}^k = s, a, s')&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\hat R^a_s = \frac{1}{N(s,a)}\sum_{k=1}{K}\sum_{t=1}{T_k}\mathbf 1(s_t^k, a_t^k=s,a)r^k_t&lt;/script&gt;
+
+&lt;hr /&gt;
+&lt;p&gt;이상으로 이번 포스팅을 마치겠습니다. 다음 포스팅은 &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/29/mc-td-control/&quot;&gt;Model-Free Control&lt;/a&gt;에 대해 진행하겠습니다.&lt;/p&gt;
 </content>
  </entry>
  
