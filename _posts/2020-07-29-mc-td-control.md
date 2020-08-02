@@ -70,9 +70,27 @@ $$\pi(a \mid s) =
 		\end{cases}$$
 
 <h3> on-policy Monte-Carlo Control </h3>
+<i>이 단락에서 다루는 MC Control은 on-policy 기반입니다. on-policy와 off-policy의 차이는 off-policy MC Control에서 설명하도록 하겠습니다.</i>
 <p align='center'><img width="835" alt="mcgpi" src="https://user-images.githubusercontent.com/37501153/89014690-d9043f00-d350-11ea-98b7-544f99f73981.png"><figcaption align='center'>그림 6. Monte-Carlo Policy Iteration</figcaption></p> 
 
+진짜로 이제 MC기반의 Control에 대해 알아보겠습니다. 위에서 model-free인 경우도 Generalized Policy Iteration을 통해 최적 가치함수와 최적 정책을 찾는다고 하였습니다. MC기반 policy evaluation은 상태-행동 가치 함수인 $Q_\pi$ 를 찾는 것이고, MC기반 policy improvement는 $\epsilon-greedy$ 를 따릅니다. 그런데, <그림 6.>의 왼쪽 그림처럼, policy evaluation을 $Q_\pi$ 를 수많은 에피소드를 샘플링해서 수렴할 때 반복하는 건 너무 번거롭습니다. 따라서 DP의 value iteration처럼 에피소드 하나가 끝날 때까지만 상태-행동 가치 함수 Q를 업데이트하고, policy improvement를 수행합니다.
 
+이런 방식의 MC 기반 GPI가 과연 최적 정책을 찾게 해주는지에 대해선 아직 해결해야 할 문제가 남았습니다. $\epsilon-greedy$ 방식이 진짜로 정책을 발전 시키는지에 대한 문제와 하나의 최정정책, 가치함수로의 수렴하는지에 대한 문제입니다. 먼저 첫번째 문제부터 살펴보겠습니다.
+
+<b>$\epsilon-greedy$ Improvement</b><br>
+$\epsilon-greedy$ 방식으로 정책을 발전시키려면 $V_{\pi_{i+1}}(s) \geq V_{\pi_{i}}(s)$ 를 만족해야 합니다. 아래는 이와 관련된 증명입니다.
+<p align='center'>
+<img src='https://user-images.githubusercontent.com/37501153/89119377-16033980-d4e9-11ea-8e30-c556dbf7263f.jpg'><figcaption align='center'>그림 7. $\epsilon-greedy$ policy improvement</figcaption></p>
+
+$Q^{\pi_i}(s,\pi_{i+1}(s)) \geq V_\pi(s)$ 이므로, $V_{\pi_{i+1}}(s) \geq V_{\pi_{i}}(s)$ 가 성립합니다. 이렇게 되는 자세한 과정은 지난 [DP 포스팅 policy improvement](https://ralasun.github.io/reinforcement%20learning/2020/07/13/dp/)쪽을 참고 바랍니다. 따라서, $\epsilon-greedy$ 에 의한 정책 발전이 일어납니다.
+
+<b>Greedy in the Limit of Infinite Exploration</b><br>
+정책 발전이 일어나는 것과 동시에, 매 스텝마다 정책을 발전시키려면 결국 greedy한 정책으로 수렴해야 합니다. $\epsilon-greedy$ 방식은 모든 행동이 선택될 확률이 non-zero probability라 가정을 하지만, 결국 iteration을 반복해 나가면서 하나의 행동에 대해 $\pi(a \mid s) = 1$ 의 확률을 가져야 되는 것입니다. 이것에 관한 내용을 Greedy in the Limit of Infinite Exploration(GLIE) 라 합니다. 따라서, GLIE를 만족해야 수렴된 정책을 가질 수 있습니다.
+<p align='center'>
+<img width='500' src='https://user-images.githubusercontent.com/37501153/89119773-c5411000-d4eb-11ea-9982-1904dd2dcfc3.jpg'><figcaption align='center'>그림 8. Greedy in the Limit with Infinite Exploration(GLIE)</figcaption></p>
+
+$e-greedy$ 가 GLIE를 만족하게 하는 가장 심플한 방법은 $\epsilon = \frac{1}{k}$ 로 하여 매 스텝마다 $\epsilon$ 을 감소시켜 0에 수렴하게 하는 것입니다. 따라서, GLIE Monte-Carlo Control 알고리즘을 정리하면 아래와 같습니다.
+<p align='center'><img width='500' src='https://user-images.githubusercontent.com/37501153/89120084-4699a200-d4ee-11ea-8bfe-9c2cfe05a53a.jpg'><figcaption align='center'>그림 9. On Policy Monte-Carlo Control</figcaption></p>
 
 <h3>off-policy Monte-Carlo Control</h3>
 

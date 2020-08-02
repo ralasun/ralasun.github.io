@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-07-31T17:54:05+09:00</updated>
+ <updated>2020-08-02T18:35:15+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -84,7 +84,27 @@
 		\end{cases} %]]&gt;&lt;/script&gt;
 
 &lt;h3&gt; on-policy Monte-Carlo Control &lt;/h3&gt;
+&lt;p&gt;&lt;i&gt;이 단락에서 다루는 MC Control은 on-policy 기반입니다. on-policy와 off-policy의 차이는 off-policy MC Control에서 설명하도록 하겠습니다.&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;835&quot; alt=&quot;mcgpi&quot; src=&quot;https://user-images.githubusercontent.com/37501153/89014690-d9043f00-d350-11ea-98b7-544f99f73981.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 6. Monte-Carlo Policy Iteration&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;진짜로 이제 MC기반의 Control에 대해 알아보겠습니다. 위에서 model-free인 경우도 Generalized Policy Iteration을 통해 최적 가치함수와 최적 정책을 찾는다고 하였습니다. MC기반 policy evaluation은 상태-행동 가치 함수인 $Q_\pi$ 를 찾는 것이고, MC기반 policy improvement는 $\epsilon-greedy$ 를 따릅니다. 그런데, &amp;lt;그림 6.&amp;gt;의 왼쪽 그림처럼, policy evaluation을 $Q_\pi$ 를 수많은 에피소드를 샘플링해서 수렴할 때 반복하는 건 너무 번거롭습니다. 따라서 DP의 value iteration처럼 에피소드 하나가 끝날 때까지만 상태-행동 가치 함수 Q를 업데이트하고, policy improvement를 수행합니다.&lt;/p&gt;
+
+&lt;p&gt;이런 방식의 MC 기반 GPI가 과연 최적 정책을 찾게 해주는지에 대해선 아직 해결해야 할 문제가 남았습니다. $\epsilon-greedy$ 방식이 진짜로 정책을 발전 시키는지에 대한 문제와 하나의 최정정책, 가치함수로의 수렴하는지에 대한 문제입니다. 먼저 첫번째 문제부터 살펴보겠습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;$\epsilon-greedy$ Improvement&lt;/b&gt;&lt;br /&gt;
+$\epsilon-greedy$ 방식으로 정책을 발전시키려면 $V_{\pi_{i+1}}(s) \geq V_{\pi_{i}}(s)$ 를 만족해야 합니다. 아래는 이와 관련된 증명입니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img src=&quot;https://user-images.githubusercontent.com/37501153/89119377-16033980-d4e9-11ea-8e30-c556dbf7263f.jpg&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 7. $\epsilon-greedy$ policy improvement&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;$Q^{\pi_i}(s,\pi_{i+1}(s)) \geq V_\pi(s)$ 이므로, $V_{\pi_{i+1}}(s) \geq V_{\pi_{i}}(s)$ 가 성립합니다. 이렇게 되는 자세한 과정은 지난 &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/13/dp/&quot;&gt;DP 포스팅 policy improvement&lt;/a&gt;쪽을 참고 바랍니다. 따라서, $\epsilon-greedy$ 에 의한 정책 발전이 일어납니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Greedy in the Limit of Infinite Exploration&lt;/b&gt;&lt;br /&gt;
+정책 발전이 일어나는 것과 동시에, 매 스텝마다 정책을 발전시키려면 결국 greedy한 정책으로 수렴해야 합니다. $\epsilon-greedy$ 방식은 모든 행동이 선택될 확률이 non-zero probability라 가정을 하지만, 결국 iteration을 반복해 나가면서 하나의 행동에 대해 $\pi(a \mid s) = 1$ 의 확률을 가져야 되는 것입니다. 이것에 관한 내용을 Greedy in the Limit of Infinite Exploration(GLIE) 라 합니다. 따라서, GLIE를 만족해야 수렴된 정책을 가질 수 있습니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/89119773-c5411000-d4eb-11ea-9982-1904dd2dcfc3.jpg&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 8. Greedy in the Limit with Infinite Exploration(GLIE)&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;$e-greedy$ 가 GLIE를 만족하게 하는 가장 심플한 방법은 $\epsilon = \frac{1}{k}$ 로 하여 매 스텝마다 $\epsilon$ 을 감소시켜 0에 수렴하게 하는 것입니다. 따라서, GLIE Monte-Carlo Control 알고리즘을 정리하면 아래와 같습니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/89120084-4699a200-d4ee-11ea-8bfe-9c2cfe05a53a.jpg&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 9. On Policy Monte-Carlo Control&lt;/figcaption&gt;&lt;/p&gt;
 
 &lt;h3&gt;off-policy Monte-Carlo Control&lt;/h3&gt;
 
@@ -249,17 +269,22 @@ MC는 zero bias이기 때문에 초기값에 상관없이 항상 수렴하게 �
   &lt;/tr&gt;
   &lt;tr&gt;
     &lt;td&gt;
-    &lt;ul&gt;&lt;li&gt;high variance and zero bias&lt;/li&gt;&lt;li&gt;good convergence properties, even with function approximation&lt;/li&gt;&lt;li&gt;not very sensitive to initial value&lt;/li&gt;&lt;li&gt;very simple to understand but may not be efficient due to applying only to episodic task&lt;/li&gt;&lt;li&gt;can apply both to markov domain and non-markov domain&lt;/li&gt;&lt;/ul&gt;&lt;/td&gt;
-    &lt;td&gt;&lt;ul&gt;&lt;li&gt;low variance and high bias&lt;/li&gt;&lt;li&gt;could converge to true estimate, but it could fail with function approximation&lt;/li&gt;&lt;li&gt;more sensitive to initial value&lt;/li&gt;&lt;li&gt;usually more efficient than MC&lt;/li&gt;&lt;li&gt;can apply to markov domain&lt;/li&gt;&lt;/ul&gt;&lt;/td&gt;
+    &lt;ul&gt;&lt;li&gt;high variance and zero bias&lt;/li&gt;&lt;li&gt;good convergence properties, even with function approximation&lt;/li&gt;&lt;li&gt;not very sensitive to initial value&lt;/li&gt;&lt;li&gt;very simple to understand but may not be efficient due to applying only to episodic task&lt;/li&gt;&lt;li&gt;can apply both to markov domain and non-markov domain&lt;/li&gt;&lt;li&gt;sample and no bootstrap&lt;/li&gt;&lt;/ul&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;ul&gt;&lt;li&gt;low variance and high bias&lt;/li&gt;&lt;li&gt;could converge to true estimate, but it could fail with function approximation&lt;/li&gt;&lt;li&gt;more sensitive to initial value&lt;/li&gt;&lt;li&gt;usually more efficient than MC&lt;/li&gt;&lt;li&gt;can apply to markov domain&lt;/li&gt;&lt;li&gt;sample and bootstrap&lt;/li&gt;&lt;/ul&gt;&lt;/td&gt;
   &lt;/tr&gt;
 &lt;/table&gt;
 
+&lt;p&gt;위 표에서 마지막 특성에 관하여 MC, TD와 DP 사이의 관계를 back-up diagram과 함께 잘 나타낸 그림이 있습니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/89119964-23222780-d4ed-11ea-97b9-335a7d66c5d4.jpg&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 11. TD, MC and DP&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p&gt;DP같은 경우, 환경 모델을 잘 알기 때문에 다음 스텝에 대해 full backup을 그린 관계와 같습니다. 그러나 에피소드가 끝날 때까지 backup을 그릴 필요가 없기 때문에 shallow-backup이고, bootstrap을 이용합니다. 반면에, TD같은 경우, 다음 상태에 대해 한 상태에 대해서만 샘플링을 하기 때문에 sample-backup이며, DP와 마찬가지로 한 스텝만 내다보기 때문에 shallow-backup이며 bootstrap을 이용합니다. 마지막으로 MC같은 경우, 모든 에피소드가 끝날 때까지 기다려야 하기 때문에 deep-backup이고, 샘플링을 하여 경험을 쌓기 때문에 sample-backup입니다. 그러나 bootstrap을 이용하지 않습니다.&lt;/p&gt;
+
 &lt;p&gt;TD가 MC보다 수렴이 더 빠른 것에 대해 수학적으로 증명된 적은 없습니다. 그러나, 실험적으로 확인했을 때 TD가 MC보다 수렴이 빠릅니다. 이에 관해 Sutton과 berto교재에 MC와 TD의 수렴에 관한 예제가 있습니다.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88873551-d671ee80-d257-11ea-9f09-c62328dee7f3.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 11. Random Walk 예(1)&lt;/figcaption&gt;&lt;/p&gt;
+&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88873551-d671ee80-d257-11ea-9f09-c62328dee7f3.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 12. Random Walk 예(1)&lt;/figcaption&gt;&lt;/p&gt;
 &lt;p&gt;위의 예는 C에서 시작하여 각 스텝마다 왼쪽 또는 오른쪽으로 0.5의 확률로 동일하게 갈 수 있다고 할 때, 양 끝의 사각형에 도달하면 에피소드가 끝나는 문제입니다. 각 상태 A, B, C, D, E에서 value를 MC와 TD를 이용하여 구한 결과는 아래와 같습니다. 이때, 각 상태에서의 true value는 1/6, 2/3, 3/6, 4/6, 5/6입니다.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88898226-624f3f00-d287-11ea-97fc-0029133d082c.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 12. Random Walk 예(2)&lt;/figcaption&gt;&lt;/p&gt;
+&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88898226-624f3f00-d287-11ea-97fc-0029133d082c.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 13. Random Walk 예(2)&lt;/figcaption&gt;&lt;/p&gt;
 &lt;p&gt;왼쪽 그림은 TD(0)를 여러 에피소드를 거쳤을 때, 각 상태에서의 value입니다. 100 에피소드 정도 진행했을 때, true value에 수렴하는 것을 확인할 수 있습니다. 오른쪽 그림은 step size $\alpha$ 를 달리했을 때 각각 MC와 TD에서의 RMS error 입니다. 실험적으로 TD가 MC보다 더 빨리 수렴합니다.&lt;/p&gt;
 
 &lt;p&gt;&lt;b&gt;differences between MC and TD trough Batch Update&lt;/b&gt;&lt;br /&gt;
@@ -267,7 +292,7 @@ MC와 TD의 작동원리를 보여주는 사례를 하나 더 소개하겠습니
 
 &lt;p&gt;아래와 같이 8개의 에피소드가 있습니다. 첫번째 에피소드는 A에서 시작해서 reward를 0을 받고, 그 다음 B로 가고 reward를 0을 받고 끝납니다. 그 다음 여섯개 에피소드는 B에서 시작해서 reward를 1을 받고 끝납니다. 마지막 하나는 B에서 시작해서 reward를 1을 받고 끝납니다. 이때, MC와 TD방식으로 V(A), V(B)가 각각 어떻게 될까요 ?&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88902645-75fda400-d28d-11ea-952d-ced88051631e.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 13. Batch update 예시&lt;/figcaption&gt;&lt;/p&gt;
+&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88902645-75fda400-d28d-11ea-952d-ced88051631e.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 14. Batch update 예시&lt;/figcaption&gt;&lt;/p&gt;
 
 &lt;p&gt;MC방식으로 한다면, $V(A)=0, V(B)=\frac{3}{4}$ 입니다. 그러나 TD방식으로 한다면 $V(B)=0$ 이지만 $V(A)=\frac{3}{4}$ 입니다. $V(A)$ 에서 차이가 나는 이유는 MC는 mean squared error를 최소화하는 방식으로 해답을 구하지만, TD는 markov model의 likelihood를 최대화하는 방식으로 해답을 구하기 때문입니다.&lt;/p&gt;
 
