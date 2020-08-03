@@ -131,7 +131,7 @@ $$V(S_t) \leftarrow V(S_t) + \alpha(G_t^{\pi/\mu} - V(S_t))$$
 <h3>Sarsa : On-policy TD Control</h3>
 TD control도 MC control과 마찬가지로, Generalized policy iteration(GPI) 을 따릅니다. Policy evaluation만 TD update을 이용하고 그 외 다른 건 모두 MC control와 같습니다.
 
-$$Q(S,A) \leftarrows Q(S,A) + \alpha(R+\gamma Q(S',A') - Q(S,A))$$
+$$Q(S,A) \leftarrow Q(S,A) + \alpha(R+\gamma Q(S',A') - Q(S,A))$$
 
 위 update 식에서 샘플링 단위가 (S, A, R, S', A')이기 때문에 Sarsa 라는 이름이 붙여졌습니다. Srasa 알고리즘 전체는 아래와 같습니다.
 
