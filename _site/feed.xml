@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-11-22T17:05:58+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ralasun Resarch Blog</title><subtitle></subtitle><author><name>Seonhwa Lee</name></author><entry><title type="html">2. RDD, Resilient Distributed DataSet에 대하여</title><link href="http://localhost:4000/spark%20programming/2020/11/20/rdd/" rel="alternate" type="text/html" title="2. RDD, Resilient Distributed DataSet에 대하여" /><published>2020-11-20T00:00:00+09:00</published><updated>2020-11-20T00:00:00+09:00</updated><id>http://localhost:4000/spark%20programming/2020/11/20/rdd</id><content type="html" xml:base="http://localhost:4000/spark%20programming/2020/11/20/rdd/">&lt;p&gt;이번 포스팅은 “빅데이터 분석을 위한 스파크2 프로그래밍 - Chaper2. RDD” 를 읽고 정리하였습니다. 정리 순서는 책 순서와 동일하고, 책을 읽어가면서 이해가 안되는 부분을 추가적으로 정리하였습니다.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-11-22T17:27:33+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ralasun Resarch Blog</title><subtitle></subtitle><author><name>Seonhwa Lee</name></author><entry><title type="html">2. RDD, Resilient Distributed DataSet에 대하여</title><link href="http://localhost:4000/spark%20programming/2020/11/20/rdd/" rel="alternate" type="text/html" title="2. RDD, Resilient Distributed DataSet에 대하여" /><published>2020-11-20T00:00:00+09:00</published><updated>2020-11-20T00:00:00+09:00</updated><id>http://localhost:4000/spark%20programming/2020/11/20/rdd</id><content type="html" xml:base="http://localhost:4000/spark%20programming/2020/11/20/rdd/">&lt;p&gt;이번 포스팅은 “빅데이터 분석을 위한 스파크2 프로그래밍 - Chaper2. RDD” 를 읽고 정리하였습니다. 정리 순서는 책 순서와 동일하고, 책을 읽어가면서 이해가 안되는 부분을 추가적으로 정리하였습니다.&lt;/p&gt;
 
 &lt;h2&gt;2.1 RDD&lt;/h2&gt;
 &lt;h3&gt;2.1.1 들어가기에 앞서&lt;/h3&gt;
@@ -22,9 +22,56 @@
 &lt;p&gt;반면에, action은 동작을 수행해서 원하는 타입의 결과를 만들어내는 것이므로, saveAsTextFile로 수행됩니다. 따라서, saveAsTextFile은 action 연산에 해당됩니다.&lt;/p&gt;
 
 &lt;h4&gt;지연 동작과 최적화&lt;/h4&gt;
-&lt;p&gt;지연 동작이란, 액션 연산이 수행되기 전까지 실제로 트랜스포메이션 연산을 수행하지 않는 것입니다. 이는 RDD의 특성 중 하나인 ‘회복력’과 관련있습니다. 액션 연산이 수행되기 전까지 동작이 &lt;b&gt;지연&lt;/b&gt;이 되는데, 대신에 RDD가 생성되는 방법을 기억하는 것입니다. 따라서 문제가 발생하더라도 기존에 RDD가 생성되는 방법을 기억하여 연산 수행에 문제가 없도록 하는 것입니다. 이는 위의 예시에서 reduceByKey까지는 실제로 트랜스포메이션 연산을 수행하는 것이 아니라 해당 연산을 순서대로 기억해놨다가, saveAsFile연산이 수행될 때(액션 연산이 수행될 때) 비로소 트랜스포메이션 연산도 수행된느 것입니다.&lt;/p&gt;
+&lt;p&gt;지연 동작이란, 액션 연산이 수행되기 전까지 실제로 트랜스포메이션 연산을 수행하지 않는 것입니다. 이는 RDD의 특성 중 하나인 ‘회복력’과 관련있습니다. 액션 연산이 수행되기 전까지 동작이 &lt;b&gt;지연&lt;/b&gt;이 되는데, 대신에 RDD가 생성되는 방법을 기억하는 것입니다. 따라서 문제가 발생하더라도 기존에 RDD가 생성되는 방법을 기억하여 연산 수행에 문제가 없도록 하는 것입니다. 이는 위의 예시에서 reduceByKey까지는 실제로 트랜스포메이션 연산을 수행하는 것이 아니라 해당 연산을 순서대로 기억해놨다가, saveAsFile연산이 수행될 때(액션 연산이 수행될 때) 비로소 트랜스포메이션 연산도 수행된 것입니다.&lt;/p&gt;
 
-&lt;p&gt;지연 동작 방식의 큰 장점은 &lt;b&gt;실행계획의 최적화&lt;/b&gt;입니다.&lt;/p&gt;</content><author><name>Seonhwa Lee</name></author><category term="Spark Programming" /><category term="data-engineering," /><category term="spark" /><summary type="html">이번 포스팅은 “빅데이터 분석을 위한 스파크2 프로그래밍 - Chaper2. RDD” 를 읽고 정리하였습니다. 정리 순서는 책 순서와 동일하고, 책을 읽어가면서 이해가 안되는 부분을 추가적으로 정리하였습니다. 2.1 RDD 2.1.1 들어가기에 앞서 RDD를 공부하기 전 기억하고 넘어가야 할 것들에 대해 정리하였습니다. 스파크 클러스터 클러스터란 여러 대의 서버가 마치 한대의 서버처럼 동작하는 것을 뜻합니다. 스파크는 클러스터 환경에서 동작하며 대량의 데이터를 여러 서버에서 병렬 처리합니다 분산 데이터로서의 RDD RDD는 Resilient Distrubuted Datasets으로, ‘회복력을 가진 분산 데이터 집합’이란 뜻입니다. (Resilient : 회복력이 있는) 데이터를 처리하는 과정에서 문제가 발생하더라도 스스로 복구할 수 있는 것을 의미합니다. 이는 그 다음 설명 트랜스포메이션과 액션과 지연(lazy) 동작과 최적화 부분과 함께 다시 설명드리도록 하겠습니다. 트랜스포메이션과 액션 RDD가 제공하는 연산은 크게 트랜스포메이션과 액션이 있습니다. “연산”은 흔히 “메서드”로 이해하시면 됩니다. 트랜스포메이션은 RDD의 변형을 일으키는 연산이고, 실제로 동작이 수행되지는 않습니다. 그림 1. RDD 예시 그림 2.RDD 예시(2) 아래 예시를 보면, 데이터를 읽어 RDD를 생성해서 file변수에 저장한 뒤, flatMap -&amp;gt; map -&amp;gt; reduceByKey 함수를 거치면서 RDD[2], RDD[3], RDD[8]을 새로 생성하는 것을 볼 수 있습니다. 이렇게 transformation을 이전 RDD를 변형해서 새로운 RDD를 생성하는 것입니다. 반면에, action은 동작을 수행해서 원하는 타입의 결과를 만들어내는 것이므로, saveAsTextFile로 수행됩니다. 따라서, saveAsTextFile은 action 연산에 해당됩니다. 지연 동작과 최적화 지연 동작이란, 액션 연산이 수행되기 전까지 실제로 트랜스포메이션 연산을 수행하지 않는 것입니다. 이는 RDD의 특성 중 하나인 ‘회복력’과 관련있습니다. 액션 연산이 수행되기 전까지 동작이 지연이 되는데, 대신에 RDD가 생성되는 방법을 기억하는 것입니다. 따라서 문제가 발생하더라도 기존에 RDD가 생성되는 방법을 기억하여 연산 수행에 문제가 없도록 하는 것입니다. 이는 위의 예시에서 reduceByKey까지는 실제로 트랜스포메이션 연산을 수행하는 것이 아니라 해당 연산을 순서대로 기억해놨다가, saveAsFile연산이 수행될 때(액션 연산이 수행될 때) 비로소 트랜스포메이션 연산도 수행된느 것입니다. 지연 동작 방식의 큰 장점은 실행계획의 최적화입니다.</summary></entry><entry><title type="html">Model-Free Policy Control, Monte Carlo와 Temporal Difference에 대하여</title><link href="http://localhost:4000/reinforcement%20learning/2020/07/29/mc-td-control/" rel="alternate" type="text/html" title="Model-Free Policy Control, Monte Carlo와 Temporal Difference에 대하여" /><published>2020-07-29T00:00:00+09:00</published><updated>2020-07-29T00:00:00+09:00</updated><id>http://localhost:4000/reinforcement%20learning/2020/07/29/mc-td-control</id><content type="html" xml:base="http://localhost:4000/reinforcement%20learning/2020/07/29/mc-td-control/">&lt;p&gt;이번 포스팅은 지난 포스팅 &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/28/mc-td-eval/&quot;&gt;Model-Free Policy Evaluation&lt;/a&gt;에 이어 Model-Free Policy Control에 대해 다루도록 하겠습니다. CS234 4강, Deep Mind의 David Silver 강화학습 강의 5강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 5, 6 기반으로 작성하였습니다.&lt;/p&gt;
+&lt;p&gt;지연 동작 방식의 큰 장점은 &lt;b&gt;실행계획의 최적화&lt;/b&gt;입니다.&lt;/p&gt;
+
+&lt;h4&gt;RDD의 불변성&lt;/h4&gt;
+&lt;p&gt;오류로 인해 스파크의 데이터가 일부 유실되면, 데이터를 다시 만들어내는 방식으로 복구되는 것이 RDD의 불변성입니다. 이는 위에서 계속 언급한 “회복력”과 관련됩니다.&lt;/p&gt;
+
+&lt;p&gt;RDD는 RDD1-&amp;gt;RDD2-&amp;gt; … 가 되면서 한번 만들어진 RDD는 내용이 변경되지 않습니다. RDD를 만드는 방법을 기억해서 문제가 발생 시 언제든지 똑같은 데이터를 생성할 수 있습니다.&lt;/p&gt;
+
+&lt;h4&gt;파티션과 HDFS&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;RDD데이터는 클러스터를 구성하는 여러 서버에 나뉘어서 저장됨&lt;/li&gt;
+  &lt;li&gt;이 때, 분할된 데이터를 파티션 단위로 관리합니다.&lt;/li&gt;
+  &lt;li&gt;HDFS는 하둡의 파일 시스템(hadoop distributed file system)&lt;/li&gt;
+  &lt;li&gt;스파크는 하둡 파일 입출력 API에 의존성을 가지고 있음.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;Job, Executor, 드라이버 프로그램&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Job : 스파크 프로그램 실행하는 것 = 스파크 잡(job)을 실행하는 것&lt;/li&gt;
+  &lt;li&gt;하나의 잡은 클러스터에서 병렬로 처리됨&lt;/li&gt;
+  &lt;li&gt;이 때, 클러스터를 구성하는 각 서버마다 executor라는 프로세스가 생성&lt;/li&gt;
+  &lt;li&gt;각 executor는 할당된 파티션 데이터를 처리함&lt;/li&gt;
+  &lt;li&gt;드라이버란 ? 스파크에서 잡을 실행하는 프로그램으로, 메인함수를 가지고 있는 프로그램&lt;/li&gt;
+  &lt;li&gt;드라이버에서 스파크 컨테스트를 생성하고 그 인스턴스를 포함하고 있는 프로그램&lt;/li&gt;
+  &lt;li&gt;스파크컨테스트를 생성해 클러스터의 각 워커 노드들에게 작업을 지시하고 결과를 취합하는 역할을 수행&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;’'’Java
+public static void main(String[] args) {
+    if (ArrayUtils.getLength(args) != 3) {
+      System.out.println(“Usage: WordCount &lt;Master&gt; &lt;input /&gt; &lt;Output&gt;&quot;);
+      return;
+    }
+    // Step1: SparkContext 생성
+    JavaSparkContext sc = getSparkContext(&quot;WordCount&quot;, args[0]);
+    try {
+      // Step2: 입력 소스로부터 RDD 생성
+      JavaRDD&lt;String&gt; inputRDD = getInputRDD(sc, args[1]);
+      // Step3: 필요한 처리를 수행
+      JavaPairRDD&amp;lt;String, Integer&amp;gt; resultRDD = process(inputRDD);
+      // Step4: 수행 결과 처리
+      handleResult(resultRDD, args[2]);
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      // Step5: Spark와의 연결 종료
+      sc.stop();
+    }
+  }'''&lt;/String&gt;&lt;/Output&gt;&lt;/Master&gt;&lt;/p&gt;</content><author><name>Seonhwa Lee</name></author><category term="Spark Programming" /><category term="data-engineering," /><category term="spark" /><summary type="html">이번 포스팅은 “빅데이터 분석을 위한 스파크2 프로그래밍 - Chaper2. RDD” 를 읽고 정리하였습니다. 정리 순서는 책 순서와 동일하고, 책을 읽어가면서 이해가 안되는 부분을 추가적으로 정리하였습니다. 2.1 RDD 2.1.1 들어가기에 앞서 RDD를 공부하기 전 기억하고 넘어가야 할 것들에 대해 정리하였습니다. 스파크 클러스터 클러스터란 여러 대의 서버가 마치 한대의 서버처럼 동작하는 것을 뜻합니다. 스파크는 클러스터 환경에서 동작하며 대량의 데이터를 여러 서버에서 병렬 처리합니다 분산 데이터로서의 RDD RDD는 Resilient Distrubuted Datasets으로, ‘회복력을 가진 분산 데이터 집합’이란 뜻입니다. (Resilient : 회복력이 있는) 데이터를 처리하는 과정에서 문제가 발생하더라도 스스로 복구할 수 있는 것을 의미합니다. 이는 그 다음 설명 트랜스포메이션과 액션과 지연(lazy) 동작과 최적화 부분과 함께 다시 설명드리도록 하겠습니다. 트랜스포메이션과 액션 RDD가 제공하는 연산은 크게 트랜스포메이션과 액션이 있습니다. “연산”은 흔히 “메서드”로 이해하시면 됩니다. 트랜스포메이션은 RDD의 변형을 일으키는 연산이고, 실제로 동작이 수행되지는 않습니다. 그림 1. RDD 예시 그림 2.RDD 예시(2) 아래 예시를 보면, 데이터를 읽어 RDD를 생성해서 file변수에 저장한 뒤, flatMap -&amp;gt; map -&amp;gt; reduceByKey 함수를 거치면서 RDD[2], RDD[3], RDD[8]을 새로 생성하는 것을 볼 수 있습니다. 이렇게 transformation을 이전 RDD를 변형해서 새로운 RDD를 생성하는 것입니다. 반면에, action은 동작을 수행해서 원하는 타입의 결과를 만들어내는 것이므로, saveAsTextFile로 수행됩니다. 따라서, saveAsTextFile은 action 연산에 해당됩니다. 지연 동작과 최적화 지연 동작이란, 액션 연산이 수행되기 전까지 실제로 트랜스포메이션 연산을 수행하지 않는 것입니다. 이는 RDD의 특성 중 하나인 ‘회복력’과 관련있습니다. 액션 연산이 수행되기 전까지 동작이 지연이 되는데, 대신에 RDD가 생성되는 방법을 기억하는 것입니다. 따라서 문제가 발생하더라도 기존에 RDD가 생성되는 방법을 기억하여 연산 수행에 문제가 없도록 하는 것입니다. 이는 위의 예시에서 reduceByKey까지는 실제로 트랜스포메이션 연산을 수행하는 것이 아니라 해당 연산을 순서대로 기억해놨다가, saveAsFile연산이 수행될 때(액션 연산이 수행될 때) 비로소 트랜스포메이션 연산도 수행된 것입니다. 지연 동작 방식의 큰 장점은 실행계획의 최적화입니다. RDD의 불변성 오류로 인해 스파크의 데이터가 일부 유실되면, 데이터를 다시 만들어내는 방식으로 복구되는 것이 RDD의 불변성입니다. 이는 위에서 계속 언급한 “회복력”과 관련됩니다. RDD는 RDD1-&amp;gt;RDD2-&amp;gt; … 가 되면서 한번 만들어진 RDD는 내용이 변경되지 않습니다. RDD를 만드는 방법을 기억해서 문제가 발생 시 언제든지 똑같은 데이터를 생성할 수 있습니다. 파티션과 HDFS RDD데이터는 클러스터를 구성하는 여러 서버에 나뉘어서 저장됨 이 때, 분할된 데이터를 파티션 단위로 관리합니다. HDFS는 하둡의 파일 시스템(hadoop distributed file system) 스파크는 하둡 파일 입출력 API에 의존성을 가지고 있음. Job, Executor, 드라이버 프로그램 Job : 스파크 프로그램 실행하는 것 = 스파크 잡(job)을 실행하는 것 하나의 잡은 클러스터에서 병렬로 처리됨 이 때, 클러스터를 구성하는 각 서버마다 executor라는 프로세스가 생성 각 executor는 할당된 파티션 데이터를 처리함 드라이버란 ? 스파크에서 잡을 실행하는 프로그램으로, 메인함수를 가지고 있는 프로그램 드라이버에서 스파크 컨테스트를 생성하고 그 인스턴스를 포함하고 있는 프로그램 스파크컨테스트를 생성해 클러스터의 각 워커 노드들에게 작업을 지시하고 결과를 취합하는 역할을 수행 ’'’Java public static void main(String[] args) { if (ArrayUtils.getLength(args) != 3) { System.out.println(“Usage: WordCount &quot;); return; } // Step1: SparkContext 생성 JavaSparkContext sc = getSparkContext(&quot;WordCount&quot;, args[0]); try { // Step2: 입력 소스로부터 RDD 생성 JavaRDD inputRDD = getInputRDD(sc, args[1]); // Step3: 필요한 처리를 수행 JavaPairRDD&amp;lt;String, Integer&amp;gt; resultRDD = process(inputRDD); // Step4: 수행 결과 처리 handleResult(resultRDD, args[2]); } catch (Exception e) { e.printStackTrace(); } finally { // Step5: Spark와의 연결 종료 sc.stop(); } }'''</summary></entry><entry><title type="html">Model-Free Policy Control, Monte Carlo와 Temporal Difference에 대하여</title><link href="http://localhost:4000/reinforcement%20learning/2020/07/29/mc-td-control/" rel="alternate" type="text/html" title="Model-Free Policy Control, Monte Carlo와 Temporal Difference에 대하여" /><published>2020-07-29T00:00:00+09:00</published><updated>2020-07-29T00:00:00+09:00</updated><id>http://localhost:4000/reinforcement%20learning/2020/07/29/mc-td-control</id><content type="html" xml:base="http://localhost:4000/reinforcement%20learning/2020/07/29/mc-td-control/">&lt;p&gt;이번 포스팅은 지난 포스팅 &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/28/mc-td-eval/&quot;&gt;Model-Free Policy Evaluation&lt;/a&gt;에 이어 Model-Free Policy Control에 대해 다루도록 하겠습니다. CS234 4강, Deep Mind의 David Silver 강화학습 강의 5강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 5, 6 기반으로 작성하였습니다.&lt;/p&gt;
 
 &lt;hr /&gt;
 
