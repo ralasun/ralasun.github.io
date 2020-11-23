@@ -182,6 +182,60 @@ MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], proces
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/time%20series%20analysis/2020/11/23/time-series-intro(1)/">
+        1-1. Introduction to Time Series
+      </a>
+    </h1>
+
+    <span class="post-date">23 Nov 2020</span>
+     | 
+    
+    <a href="/blog/tags/#time-series" class="post-tag">time-series,</a>
+    
+    <a href="/blog/tags/#time-series-analysis" class="post-tag">time-series-analysis</a>
+    
+    
+
+    <article>
+      <p>이번 포스팅을 시작으로, 시계열 분석에 대해서 다루도록 하겠습니다. 메인 교재는 Brockwell와 Richard A. Davis의 &lt; Introduction to Time Series and Forecasting &gt; 와 패스트캠퍼스의 &lt;파이썬을 활용한 시계열 분석 A-Z&gt; 를 듣고 정리하였습니다.</p>
+
+<h2>1.1. Examples of Time Series</h2>
+
+<h2>1.2. Objectives of Time Series Analysis</h2>
+
+<h2>1.3. Some Simple Time Series Models</h2>
+
+<h3>1.3.3 A General Approach to Time Series Modeling</h3>
+<p>시계열 분석에 대해 깊게 들어가기 전에, 시계열 데이터 모델링하는 방법에 대해 대략적으로 알아봅시다.</p>
+
+<p>1) 그래프로 그린 후, 그래프 상에서 아래와 같은 요소가 있는지 체크한다.(Plot the series and examine the main features of the graph)<br /></p>
+<ul><li>trend</li><li>a seasonal component</li><li>any apparent sharp changes in behavior</li><li>any outlying observations</li></ul>
+
+<p>2) 정상상태의 잔차를 얻기 위해, trend와 seasonality 요소를 제거한다. (Remove the trend and seasonal components to get stationary residuals)<br />
+     trend와 seasonality 요소를 제거하기 전에, 전처리를 해야하는 경우가 있습니다. 예를 들어, 아래와 같이 지수적으로 증가하는 경우에, 로그를 취해서 variance가 일정하도록 만든 후 모델링을 하면 정확도를 높일 수 있습니다.</p>
+
+<p align="center"><img src="https://imgur.com/V85l07h.png" /><figcaption align="center">그림 1. 로그 취하기 전</figcaption></p>
+<p align="center"><img src="https://imgur.com/e0GKRKU.png" /><figcaption align="center">그림 1. 로그 취한 후</figcaption></p>
+
+<p>이외에도 여러 방법이 있습니다. 추후에 설명하도록 하겠습니다. 어쨌든, 이 모든 방법들의 핵심은 <b>정상상태의 잔차</b>를 만드는 것입니다.</p>
+
+<p>3) auto-correlation 함수, 여러 다양한 통계량을 이용하여 잔차를 핏팅할 모델을 선택한다. (Choose a model to fit the residuals, making use of various sample statistics including the sample autocorrelation function)</p>
+
+<p>4) 핏팅된 모델로 예측한다.<br /> 
+     여기서 잔차를 예측하는 것이고, 예측된 잔차를 원래 예측해야 할 값으로 변환한다.</p>
+
+
+    <article>
+    <div class="post-more">
+      
+      <a href="/time%20series%20analysis/2020/11/23/time-series-intro(1)/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
+      
+      <a href="/time%20series%20analysis/2020/11/23/time-series-intro(1)/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
+    </div>
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/spark%20programming/2020/11/20/rdd/">
         2-1. RDD, Resilient Distributed DataSet에 대하여
       </a>
@@ -1002,246 +1056,6 @@ Value iteration을 수식으로 표현하면 아래와 같습니다.</p>
       <a href="/reinforcement%20learning/2020/07/13/dp/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
       
       <a href="/reinforcement%20learning/2020/07/13/dp/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
-    </div>
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/reinforcement%20learning/2020/07/12/mdp/">
-        Markov Process에서 Markov Decision Process까지
-      </a>
-    </h1>
-
-    <span class="post-date">12 Jul 2020</span>
-     | 
-    
-    <a href="/blog/tags/#cs234" class="post-tag">cs234</a>
-    
-    <a href="/blog/tags/#reinforcement-learning" class="post-tag">reinforcement-learning</a>
-    
-    <a href="/blog/tags/#david-silver" class="post-tag">david-silver</a>
-    
-    <a href="/blog/tags/#sutton" class="post-tag">sutton</a>
-    
-    
-
-    <article>
-      <p>이전 포스팅 <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/11/introRL(1)">강화학습 소개[1]</a>, <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/11/introRL(2)">강화학습 소개[2]</a>에 이어서, MDP에 대해 다룹니다. CS234 2강, Deep Mind의 David Silver 강화학습 강의 2강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 3 기반으로 작성하였습니다.</p>
-
-<hr />
-
-<p>강화학습은 sequential decision process 문제를 푸는 방법입니다. 그렇다면 sequential decision process를 풀기 위해서 수학적으로 표현해야 하는데 이것이 바로 Markov Decision Process(MDP)입니다. 또한 MDP는 에이전트 상태가 마코브 성질을 따르는 경우이기 때문에, 환경모델을 완벽하게 아는 Fully Observability를 가집니다.</p>
-<blockquote>MDPs are a mathematically idealized form of the reinforecement learning problem for which precise theoretical statements can be made. - Sutton and Barto, Reinforcement Learning: An Introduction</blockquote>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/87244726-49b6ea80-c47a-11ea-92aa-0e293341492a.jpeg" />
-<figcaption align="center">그림 1. Markov Property</figcaption>
-</p>
-
-<p>지난 포스팅에서 대부분의 문제들은 그러나 Partial Observability를 가지는 POMDP라 하였습니다. 그러나, POMDP를 풀기 위해서도 MDP가 중요합니다. 그 이유는 POMDP는 MDP의 상태를 히스토리로 두고 풀 수 있기 때문입니다.</p>
-
-<p>MDP를 자세히 이해하기 위해서 Markov process(Markov Chain)와 Markov Reward Process를 먼저 살펴본 뒤, MDP를 살펴보도록 하겠습니다.</p>
-
-<h1>Markov Process</h1>
-<p>Markov Process(Markov chain)은 마코브 성질을 가지는 랜덤 상태 $S_1, S_2, \dots$ 들의 시퀀스입니다. Finite Markov Process인 경우 상태들의 집합은 유한개로 구성됩니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/87244920-efb72480-c47b-11ea-9a04-dd74b9832c99.jpeg" />
-<figcaption align="center">그림 2. Markov process</figcaption>
-</p>
-<p>상태들간의 변환 확률 행렬(state transition matrix)은 현재 상태에서 다른 상태로 갈 확률을 모든 상태에 대해 행렬 형태로 나타낸 것입니다. 현재 상태 s에서 다음 상태 s’로 갈 확률은</p>
-
-<script type="math/tex; mode=display">P_{ss'}= \mathbf P[S_{t+1}=s'|S_t=s]</script>
-
-<p>입니다. 따라서, 상태 변환 확률 행렬 $\mathit P$ 는 아래와 같습니다. 각 행의 합은 1이 됩니다.</p>
-
-<script type="math/tex; mode=display">% <![CDATA[
-\mathit P = \left( \begin{matrix}
-		\mathit P_{11} & \cdots & \mathit P_{1n}\\
-		\vdots & \ddots & \vdots\\
-		\mathit P_{n1} & \cdots & \mathit P_{nn}\\
-		\end{matrix} \right) %]]></script>
-
-<p>Markov Process 예를 들어봅시다. 아래 예는 학생들의 수업을 듣는 패턴을 Markov Process로 나타낸 것입니다. 동그라미는 학생들의 상태(facebook, class1, …)이며, 화살표는 각 상태에서 다른 상태로 넘어갈 확률을 나타냅니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/87245061-2a6d8c80-c47d-11ea-8f14-2af98ec61e0c.jpeg" />
-<figcaption align="center">그림 2. Student Markov Process </figcaption></p>
-<p>그림 2.를 보면, 시작하는 상태가 같아도 밟고 지나가는 상태들의 경우가 모두 다를 수 있습니다. 예를 들어서, Class1에서 시작하여도</p>
-<ul>
-<li>C1 C2 C3 Pass Sleep</li>
-<li>C1 fb fb C1 C2 Sleep</li>
-<li>C1 C2 C3 Pub C2 C3 Pass Sleep</li></ul>
-<p>이처럼, 실제로 이렇게 샘플된 시퀀스를 <b>에피소드(episode)</b>라 부릅니다.</p>
-
-<h1>Markov Reward Process</h1>
-<p>다음으로는 Markov Reward Process(MRP)를 살펴봅시다. MRP는 Markov chain에 reward가 더해진 것입니다. 임의의 상태들의 시퀀스를 상태 변환 확률에 따라 밟아가면서 각 상태에 도착할 때마다 보상을 얼마나 받는지도 시퀀스로서 파악하는 것입니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/87245196-740aa700-c47e-11ea-9b03-e4659ba28c84.png" />
-<figcaption align="center">그림 3. Markov Reward Process</figcaption></p>
-<p>$R_s$ 는 보상함수로, 상태 $S_s$ 일 때, 받을 수 있는 즉각적인 보상에 대한 기댓값이다. 여기서 중요한 점은 <b>앞으로 받을 보상들을 고려한 누적 보상값이 아닌 즉각적으로 받는 보상(immediate reward)</b>입니다.</p>
-
-<p>지난 포스팅에서 환경모델은 크게 상태변이모델과 보상모델로 구성된다고 했습니다. 따라서, 상태변이확률과 보상함수를 결합하여 환경 모델을 아래와 같이 표현할 수도 있습니다. 이는 현재 상태 t-1 스텝에서, 다음 스텝에 받을 보상과 상태가 r과 s’이 될 확률입니다.</p>
-
-<script type="math/tex; mode=display">p(s',r|s) = P[S_{t+1}=s', R_{t+1}=r|S_{t}=s]</script>
-
-<p>아래는 학생 Markov Reward Process 예시입니다. 빨간색으로 표시된 숫자가 각 상태에서 받는 즉각적인 보상입니다.</p>
-<p align="center">
-<img width="350" src="https://user-images.githubusercontent.com/37501153/87245285-2e9aa980-c47f-11ea-9981-0f512f0078c0.png" />
-<figcaption align="center">그림 4. Student MRP</figcaption></p>
-
-<h2>return and value function</h2>
-<p>MRP에서 Reward는 즉각적인 보상입니다. 그러나 우리가 궁극적으로 하고 싶은 건 매 스텝마다 받는 보상을 누적했을 때, 이 누적값이 최대화가 되도록 하는 것입니다(reward hypothesis - <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/11/introRL(1)">지난 포스팅 참조</a>.) 따라서, 누적된 보상은 어떻게 구할까요 ? 이를 위해 필요한 개념이 return과 value function입니다.</p>
-
-<p><b>Return and Horizon</b><br />
-먼저, horizon에 대한 개념을 살펴봅시다. horizon은 에피소드에서의 t 스텝 갯수입니다. 유한 개일수도 무한 개일수도 있습니다. 유한개일 경우 finite MRP(또는 finite MDP)라 합니다.</p>
-
-<p>Return은 t 스텝에서부터 horizon까지 디스카운트된 누적 보상(discounted sum of rewards)의 합입니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/87245504-de244b80-c480-11ea-9786-3093366daf5e.png" />
-<figcaption align="center">그림 5. Return</figcaption></p>
-<p>discount factor $\gamma \in [0,1]$ 은 미래 보상을 현재 가치로 환산해주는 요소입니다. 왜 현재 가치로 환산해야 할까요? 여러가지 이유가 있습니다. 먼저 수학적으로 계산 시 수렴해야 하기 때문입니다. 그렇지 않으면 반환값이나 앞으로 설명할 가치함수가 전혀 수렴되지 않기 때문이죠. 다른 이유로는 미래에 대한 불확실성 때문입니다. 금융에서 이자를 떠올리시면 됩니다. discount factor가 1에 가까울수록 미래보상을 더 중요한거고 0에 가까울수록 현재보상이 더 중요한 것입니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/87245719-9f8f9080-c482-11ea-88b0-3bc33ad3889a.jpeg" />
-<figcaption align="center">그림 6. Return(2)</figcaption></p>
-<p>만약에 종결 상태가 있는 경우, 즉 horizon이 유한한 경우, $\gamma=1$ 로 둘 수 있습니다.</p>
-
-<p>아래 그림은 student MRP에서, 각 episode마다 return을 계산한 것입니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/87245967-e088a480-c484-11ea-9845-f576166f57e4.png" />
-<figcaption align="center">그림 7. Return 예시</figcaption></p>
-
-<p><b>Value Function</b><br />
-가치함수는 현재 놓여진 상태가 얼마나 좋은지를 알려주는 함수입니다. ‘얼마나 좋은지’에 대한 개념은 결국 현재 상태에서 앞으로 시퀀스를 밟아나갈 때 받을 누적보상이 얼마나 클까?와 관련됩니다. 따라서 가치 함수의 정의는 return의 기댓값입니다. MRP에서는 현재 에이전트의 행동에 관한 요소가 없기 때문에, 상태 가치 함수이지만, 추후에 MDP는 행동요소가 포함되어 있기 때문에 MDP에서의 가치함수는 상태-행동 가치 함수입니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/87245875-2133ee00-c484-11ea-8587-50bf90c43442.png" />
-<figcaption align="center">그림 8. value function</figcaption></p>
-<p>상태 가치 함수는 어떻게 계산할 수 있을까요? 가장 간단하게는 에피소드를 엄청나게 많이 샘플링하는 것입니다. 그 다음 각 에피소드마다 return을 계산하고, 그 return값들을 평균내면 됩니다. 이를 simulation 이라 합니다. 그러나 마코브 성질을 이용하면 가치함수는 recursive한 형태로 변하게 됩니다. 이것이 바로 bellman equation입니다.</p>
-
-<h2>Bellman Equation for MRPs</h2>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/87246187-a9b38e00-c486-11ea-8150-6f1a7354d6be.jpeg" />
-<figcaption align="center">그림 9. Bellman equation 유도</figcaption></p>
-<p>가치함수는 위 그림처럼 현 상태에서의 즉각적인 보상 $R_{t+1}$ 와 다음 상태에서 받을 누적 보상 $\gamma v(S_{t+1})$ 로 분해되며 recursive한 구조를 가집니다. 이는 <b>현재 상태 가치와 다음 상태 가치사이의 관계</b>를 나타냅니다. 이 방정식이 바로 벨만 방정식(Bellman Equation)입니다.</p>
-
-<p>벨만 방정식은 현재 상태와 다음 상태 사이의 관계를 나타내기 때문에 아래와 같이 back-up diagram으로 많이 표현합니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/87246759-4c214080-c48a-11ea-8b7f-c0a7800fef30.jpeg" />
-<figcaption align="center">그림 10. back-up diagram for bellman equation</figcaption></p>
-
-<p>finite MDP인 경우, 아래 그림과 같이 행렬방정식으로 표현됩니다. 벨만 방정식이 선형방정식으로, 아래와 같이 직접적으로 풀 수 있으나 계산 복잡도가 높습니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/87246872-fa2cea80-c48a-11ea-8a25-a57082c47176.jpeg" />
-<figcaption align="center">그림 11. Analytic Solution for Value of MRP</figcaption></p>
-
-<p>상태, 행동집합의 크기가 작은 경우엔 행렬방정식으로 풀 수 있지만 크기가 큰 경우에는 불가능합니다. 따라서 이런 경우엔 iterative한 방법으로 방정식을 풀 수 있습니다. iterative 방법들에 대해선 추후에 다루도록 하겠습니다.</p>
-<ul><li>dynamic programming</li>
-<li>monte-carlo evaluation</li>
-<li>temporal difference learning</li></ul>
-
-<p>이제까지 MRP를 정의하였고 MRP를 정의내리기 위해 필요한  return, 가치함수, 가치함수로 유도되는 벨만방정식도 살펴보았습니다. 이제 Markov Decision Process를 살필 준비가 되었습니다.</p>
-
-<h1>Markov Decision Process</h1>
-<p>Markov Decision Process(MDP)는 MRP에 행동(actions)이 더해진 것입니다. 즉, 명시적인 의사결정이 등장합니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/87247097-9acfda00-c48c-11ea-9c4a-7732a7c7e9d0.png" />
-<figcaption align="center">그림 11. Markov  Decision Process	</figcaption></p>
-
-<p>위에서 언급했듯이, 환경모델은 상태변이모델과 보상모델로 이뤄졌기 때문에, MRP에서 이를 하나로 나타낼 수 있었습니다. 마찬가지로, MDP에서 환경모델은 행동(action)까지 고려한 통합된 환경모델은 아래와 같습니다.</p>
-
-<script type="math/tex; mode=display">p(s',r|s, a) = P[S_{t+1}=s', R_{t+1}=r|S_{t}=s, A_{t}=a]</script>
-
-<h2>Policies</h2>
-<p>MDP에서 좋은 의사결정을 하기 위해, 에이전트 내부에 행동 전략을 가지고 있어야 합니다. 이를 policy라 합니다. 정책의 정의는 아래 식처럼,</p>
-
-<script type="math/tex; mode=display">\pi(a|s)= P[A_t=a|S_t=s]</script>
-
-<p>현재 상태 $S_t=s$ 에서, 모든 행동들에 대한 확률 분포입니다. 상태는 마코브 성질을 가지므로, 현재 상태만으로도 의사결정 시 충분한 근거가 될 수 있습니다. 따라서, 현재상태만 조건으로 가진 조건부 확률분포가 되는 것입니다. 또한, MDP의 policy는 시간에 따라 변하지 않습니다(stationary). 이 말은 시간이 지남에 따라 에이전트가 동일한 상태를 여러번 지나간다 해도 그 상태에 있을 때의 행동전략은 변하지 않는다는 뜻입니다.</p>
-
-<p>MDP와 명시적인 policy가 있다면, 이는 MRP문제와 동일합니다. MDP의 보상함수는</p>
-
-<script type="math/tex; mode=display">R^{\pi}(s) = \sum_{a \in A}\pi(a|s)R(s,a)</script>
-
-<p>는 policy와 가중평균으로 MRP의 보상함수로 바뀝니다. 마찬가지로, MDP의 상태변이함수도</p>
-
-<script type="math/tex; mode=display">P^{\pi}(s'|s) = \sum_{a \in A}\pi(a|s)P(s'|s,a)</script>
-
-<p>policy와의 가중평균으로 MRP의 상태변이함수가 됩니다. 이 두식의 변환은 결국 MDP에서의 벨만방정식을 풀 때, MRP에서 사용한 방법(simulation, analytic solution, iterative method)을 동일하게 사용해도 되는 것을 뜻합니다.</p>
-
-<h2>Value Function and Bellman Expectation Equation</h2>
-<p>MDP아래에서 Value Function을 다시 살펴봅시다. 기존에 상태만은 고려한 state value function이 있고, 이젠 행동까지 고려한 state-action value function이 있습니다.</p>
-
-<script type="math/tex; mode=display">v_{\pi}(s) = \mathbf E[R_{t+1}+\gamma v_{\pi}(S_{t+1})|S_t=s]</script>
-
-<script type="math/tex; mode=display">q_{\pi}(s,a) = \mathbf E[R_{t+1}+\gamma q_{\pi}(S_{t+1}, A_{t+1})|S_t=s, A_t=a]</script>
-
-<p>State value function을 현 상태와 다음 상태사이의 관계로 분해한 것처럼, state-action value function도 동일한 방식으로 분해할 수 있습니다. 이렇게 분해된 식은 Bellman expectation equation 또는 bellman equation이라 합니다.</p>
-
-<blockquote>$v_{\pi}$, $q_{\pi}$ 의미는 정책 $\pi$ 에 따라 행동했을 때의 가치함수를 의미합니다.</blockquote>
-
-<p>MRP에서, 벨만 방정식을 back-up diagram으로 나타낸 것처럼 $v_{\pi}$, $q_{\pi}$ 도 back-up diagram으로 표현가능합니다.</p>
-<p align="center">
-<img src="https://user-images.githubusercontent.com/37501153/87249534-914d6e80-c49a-11ea-8ae2-7e9d042ab586.jpg" />
-<figcaption align="center">그림 12. 4종류 bellman equation</figcaption></p>
-<p>총 4종류의 back-up diagram이 나오며, 이는 4종류의 bellman equation을 뜻합니다.</p>
-
-<h2>Bellman Optimal Equation</h2>
-<p>이제까지 알아본 가치함수(또는 벨만 기대 방정식)는 일정 정책 아래에서의 가치를 구한 것이기 때문에, 정책의 가치라고도 생각할 수 있습니다. 그러나 강화학습의 목표는 reward hypothesis에 따라, 누적보상이 최대가 되는 “최적 정책”을 찾는 것입니다. 그럼 최적 정책은 어떻게 찾을까요? 여러 정책들 간의 비교를 통해서 찾을 수 있습니다. 이와 관련된 개념이 ‘partial ordering’입니다.</p>
-
-<p><b>partial ordering</b><br />
-여러 정책들 간 비교가 가능하다는 건 ‘이 정책이 다른 정책보다 낫다’가 수학적으로 비교가 가능하다는 것입니다. 따라서 이 수학적 비교의 척도가 되는 것이 가치함수간의 비교입니다.
-정책 $\pi$ 가 다른 정책 $\pi’$ 보다 나을려면, 각 정책 아래 가치함수를 구했을 때 모든 상태에 대해서 $v_{\pi}(s) \geq v_{\pi’}(s)$ 입니다.</p>
-
-<script type="math/tex; mode=display">\pi \geq \pi', if\,\,and\,\,only\,\,if\,\,v_{\pi}(s) \geq v_{\pi'}(s), for \,\,all\,\,\,s \in S</script>
-
-<p>즉, 최소한 하나의 정책이 다른 정책보다 같거나 나은 정책이 존재한다는 것입니다. 이것이 바로 최적 정책(optimal policy) $\pi_\ast$ 이고 이때 가치 함수를 최적 가치 함수(optimal value function) $v_\ast(s)$ 라 합니다. 가치함수의 종류에는 상태-가치 함수와 상태-행동 가치 함수가 있습니다. 최적 상태-가치 함수(optimal state-value function) $v_*(s)$ 는</p>
-
-<script type="math/tex; mode=display">v_*(s) = \underset{\pi}max\,v_{\pi}(s)</script>
-
-<p>이고, 최적 상태-행동 가치함수(optimal state-action value function) $q_*(s,a)$ 는</p>
-
-<script type="math/tex; mode=display">q_*(s,a)  = \underset{\pi}max\,q_{\pi}(s,a)</script>
-
-<p>입니다. MDP에서 최적 가치 함수를 찾았다면, 이는 결국 일련의 최고의 결정을 수행할 수 있는 것을 뜻하고, sequntial decision making 문제를 “해결”한 것입니다.</p>
-
-<p><b>Bellman Optimality Equations</b><br />
-상태 가치 함수와 상태-행동 가치 함수를  back-up diagram을 이용하여 4종류의 bellman expectation equation을 세울 수 있었습니다. 마찬가지로, 최적 상태 가치 함수와 최적 상태-행동 가치 함수를 같은 방식으로 4종류의 bellman optimality equation을 세울 수 있습니다.</p>
-<p align="center">
-<img src="https://user-images.githubusercontent.com/37501153/87273683-c1395800-c514-11ea-9df3-bdf38cafc876.jpg" />
-<figcaption align="center">그림 13. Bellman Optimality Equation</figcaption></p>
-
-<p>벨만 기대 방정식과 벨만 최적 방정식은 현 상태와 이전 상태 사이에서의 recursive한 관계를 가진다는 것이 특징입니다. MDP문제를 푸는 방법(벨만 방정식을 푸는 방법)중 하나인 Dynamic Progamming은 바로 이 recursive한 관계를 이용하여 iterative하게 해답을 찾아나가는 과정입니다. DP는 추후 포스팅에서 다루도록 하겠습니다.</p>
-
-<p><b>Finding an Optimality and Solving the Bellman Optimality Equation</b><br />
-이제까지 최적정책의 정의와 최적정책을 찾기 위한 최적 가치 함수에 대해서 알아봤습니다. 그런데 아직 해결이 안된 부분이 있습니다. 바로, <b>최적 가치 함수를 이용하여 어떻게 최적 정책을 찾을까?</b>에 관한 물음과 <b>상태의 갯수가 많은 상황에서, 즉 복잡도가 높은 MDP문제에서 방정식을 어떻게 풀까?</b>에 관한 물음입니다. 먼저 전자부터 살펴보겠습니다.</p>
-
-<p>벨만 최적 방정식을 풀어서 $v_\ast$ 를 구했다면, 정책을 구하는 건 어렵지 않습니다. 그림 13.에서 1번, 3번 최적방정식에서,</p>
-
-<script type="math/tex; mode=display">\pi_\ast(s) = arg \underset a max(q_\ast(s,a))</script>
-
-<p>$q_\ast(s,a)$ 가 최대가 되는 행동 a 가 바로 상태 s에 대한 최적 정책입니다. Recursive한 관계에서 살펴보면,</p>
-
-<script type="math/tex; mode=display">\pi_\ast(s) = arg \underset a max(R^a_s + \gamma\sum_{s'}P^a_{ss'}v_\ast(s'))</script>
-
-<p>와 같습니다. 즉, 최적 정책을 찾을 땐 greedy하게 찾습니다. greedy한 이유는 정책의 행동을 선택할 때, 앞으로의 모든 상황을 고려하는 것이 아니라 다음 상태의 상황만을 고려하기 때문입니다. 그러나 greedy하게 선택해도 될까요 ? 정답은 yes 입니다. 왜냐하면 <strong>이미 가치함수를 구하는 과정에서 미래 상황까지 고려한 가치를 구했기 때문에 이것을 기반으로 한 greedy 선택 안에는 이미 long-term sequence를 고려한 것</strong>입니다.</p>
-
-<p>마지막으로, 방정식을 푸는 방법에 대한 물음입니다. 이미 이전에 벨만 기대 방정식을 푸는 방법에 대해서 살펴보았습니다. 벨만 기대 방정식은 linear equation이기 때문에, 복잡도가 높지 않은 MDP 문제에서 analytic하게 구할 수 있습니다. 그러나 복잡도가 높은 MDP문제는 불가능하므로, iterative method인 dynammic progamming, monte-carlo evalution, Temporal difference가 있다고 하였습니다. 반면에, 벨만 최적 방정식은 non-linear equation이기 때문에 analytic하게 풀 수는 없습니다. 따라서 위에서 언급한 iterative method를 적용해야 합니다.</p>
-
-<hr />
-
-<p>이상으로 MDP 포스팅을 마치겠습니다. 다음 포스팅은 Dynamic Progamming에 대해 진행하겠습니다.</p>
-
-<hr />
-
-<ol>
-  <li><a href="http://web.stanford.edu/class/cs234/slides/lecture2.pdf">CS234 Winter 2019 course Lecture 2</a></li>
-  <li><a href="http://incompleteideas.net/book/bookdraft2017nov5.pdf">Richard S. Sutton and Andre G. Barto : Reinforcement Learning : An Introduction</a></li>
-  <li><a href="https://www.davidsilver.uk/wp-content/uploads/2020/03/MDP.pdf">David Silver Lecture 2</a></li>
-</ol>
-
-    <article>
-    <div class="post-more">
-      
-      <a href="/reinforcement%20learning/2020/07/12/mdp/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
-      
-      <a href="/reinforcement%20learning/2020/07/12/mdp/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
     </div>
   </div>
   
