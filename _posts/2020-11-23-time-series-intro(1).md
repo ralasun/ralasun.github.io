@@ -24,7 +24,7 @@ tags: brockwell, richard-davis, statistics, time-series, time-series-analysis, a
 &nbsp;&nbsp;&nbsp;&nbsp; trend와 seasonality 요소를 제거하기 전에, 전처리를 해야하는 경우가 있습니다. 예를 들어, 아래와 같이 지수적으로 증가하는 경우에, 로그를 취해서 variance가 일정하도록 만든 후 모델링을 하면 정확도를 높일 수 있습니다.
 
 <p align='center'><img src='https://imgur.com/V85l07h.png'><figcaption align='center'>그림 1. 로그 취하기 전</figcaption></p>
-<p align='center'><img src='https://imgur.com/e0GKRKU.png'><figcaption align='center'>그림 1. 로그 취한 후</figcaption></p>
+<p align='center'><img src='https://imgur.com/e0GKRKU.png'><figcaption align='center'>그림 2. 로그 취한 후</figcaption></p>
 
 이외에도 여러 방법이 있습니다. 추후에 설명하도록 하겠습니다. 어쨌든, 이 모든 방법들의 핵심은 <b>정상상태의 잔차</b>를 만드는 것입니다.
 
@@ -35,9 +35,11 @@ tags: brockwell, richard-davis, statistics, time-series, time-series-analysis, a
 
 <h2>1.4. Stationary Models and the Autocorrelation Function</h2>
 
-시계열 데이터가 정상상태(stationarity)를 가지기 위해서, 시계열이 확률적인 특징이 시간이 지남에 따라 변하지 않는다는 가정을 충족시켜야 합니다. 
+시계열 데이터가 정상상태(stationarity)를 가지기 위해서, 시계열이 확률적인 특징이 시간이 지남에 따라 변하지 않는다는 가정을 충족시켜야 합니다. 그러나 시계열 데이터는 trend와 seasonality요소로 인해, 평균과 분산이 변할 수 있습니다.
 
 > a time series ${\{X_t, t=0, \pm1, ...\}}$ is said to be stationary if it has statistical properties similar to those of the "time-shifted" series ${\{X_{t+h}, t=0, \pm1, ...\}}$ for each integer h.
+
+> Trends can result in a varying mean over time, whereas seasonality can result in a changing variance over time, both which define a time series as being non-stationary. Stationary datasets are those that have a stable mean and variance, and are in turn much easier to model.
 
 시계열에 대한 평균과 공분산은 아래와 같이 정의됩니다.
 <p align='center'><img src='https://imgur.com/65biJ1q.png'><figcaption align='center'>그림 3. 시계열의 평균과 공분산</figcaption></p>
@@ -75,14 +77,82 @@ White Noise인 경우, 시계열 그래프와 ACF 그래프는 아래와 같습�
 아래는 그림 1. 그래프에 플롯된 데이터를 가지고 그린 ACF입니다. 보시면, ACF가 lag가 커짐에 따라 서서히 감소하는 형태를 띄는데 이는 trend가 있는 데이터에서 나타납니다. 
 <p align='center'><img src='https://imgur.com/N6vk5oN.png'><figcaption align='center'>그림 6. Sequence with trend ACF</figcaption></p>
 
-<h2>Estimation and Elimination of Trend and Seasonal Components</h2>
+<h2>1.5. Estimation and Elimination of Trend and Seasonal Components</h2>
 
+
+trend와 seasonality가 존재하는 시계열의 모델링인 경우, 아래와 같이 additive 형태를 띌 수 있습니다.
+
+$$X_t = m_t + s_t + Y_t$$
+
+시계열 모델링의 최종 목표는 잔차항 $Y_t$ 가 정상상태에 놓이게 하는 것입니다. 따라서 잔차항을 분석하기 위해서 trend 요소 $m_t$ 와 seasonal 요소 $s_t$ 를 제거해야 합니다.
+
+<h3>1.5.1. Estimation and Elimination of Trend in the Absence of Seasonality</h3>
+seasonal 요소가 없고, trend요소만 있는 모델링은 아래와 같이 진행할 수 있습니다. 
+
+$$X_t = m_t + Y_t, \quad t=1, \dots ,n, \; where \; EY_t = 0$$
+
+<h4>method1. Trend Estimation</h4>
+
+trend 요소를 추정하는 방법은 Moving Average와 Smoothing을 이용하는 방법 2가지가 있습니다.
+
+<h5>a) Smoothing with a finite moving average filter</h5>
+
+과거 n개의 시점을 평균을 구해 다음 시점을 예측하는 방식입니다. 
+
+$$W_t = (2q+1)^{-1}\sum_{j=-q}^{q}X_{t-j}$$
+
+이때, $X_t = m_t + Y_t$ 이므로, 아래와 같은 식으로 유도됩니다.
+
+$$W_t = (2q+1)^{-1}\sum_{j=-q}^{q}X_{t-j} = (2q+1)^{-1}\sum_{j=-q}^{q}m_{t-j} + (2q+1)^{-1}\sum_{j=-q}^{q}Y_{t-j}$$
+
+만약에 $m_t$ 가 대략 선형관계를 띄고 있다면 잔차항의 평균은 0에 가까울 것입니다. 즉, 트렌드가 선형관계를 띄고 있을 때, moving average filter를 씌어주면 trend요소만 추출할 수 있는 것을 의미합니다.
+
+$$W_t = (2q+1)^{-1}\sum_{j=-q}^{q}X_{t-j} = (2q+1)^{-1}\sum_{j=-q}^{q}m_{t-j} + (2q+1)^{-1}\sum_{j=-q}^{q}Y_{t-j} \approx m_t$$	 
+
+<p align='center'><img src='https://imgur.com/rEHZBt2.png'></figcaption>그림 7. Moving average filter 취하기 전</figcaption></p>
+
+<p align='center'><img src='https://imgur.com/QPByqUu.png'></figcaption align='center'>그림 8. Moving average filter 취한 후</figcaption></p>
+
+<p align='center'><img src='https://imgur.com/dPTzLn3.png'><figcaption align='center'>그림 9. Trend 제거 후 잔차항</figcaption>
+
+위에 그림 7,8,9 를 살펴 봅시다. 그림 8은 그림 7에서 과거시점 5개를 이용하여 moving average 필터를 씌운 후입니다. 뚜렷한 트렌드가 있지 않음을 보실 수 있습니다. ~~잔차항에 대한 분석은 다시 한번 살펴봐야 할 것 같습니다.~~
+
+<h5>b) Exponential smoothing</h5>
+Moving averages는 과거 n개의 시점에 동일한 가중치를 부여하는 방법입니다. 그러나, 현재시점과 가까울수록 좀 더 현재시점에 영향을 많이 미치는 경우가 일반적으로 생각하기엔 자연스러울 수 있습니다. 예로 주식을 생각하면 될 것 같습니다. 따라서, Exponential smoothing 방법은 현재 시점에 가까울수록 더 큰 가중치를 주는 방법입니다. 
+
+<p align='center'><img src='https://imgur.com/ciknR6Y.png'><figcaption align='center'>그림 10. Exponential Smoothing</figcaption></p>
+
+Exponential Smoothing 수식은 아래와 같습니다.
+
+$$\hat{m}_t = \alpha X_t + (1-\alpha)\hat{m}_{t-1},\,\,t=2, \dots, n,$$
+$$\hat{m}_1=X_1$$
+
+아래 그림은 그림 7을 exponential smoothing을 취한 trend 추정 그래프입니다.
+<p align='center'><img src='https://imgur.com/hKOWuWu.png'><figcaption align='center'>그림 11. Exponential Smoothing 취한 후</figcaption></p>
+
+<h5>c) Smoothing by elimination of high-frequency component</h5>
+trend를 추출하는 방법 중 하나로, 여러 frequency의 합으로 trend를 표현해서 이를 제거하는 것입니다(이 부분은 추후에 4장에 가서 다시 설명하도록 하겠습니다).
+
+<p align='center'><img src='https://imgur.com/hn90Hgr.png'><figcaption align='center'>그림 12. frequency합으로 smoothing을 취한 후( $\alpha=0.4$ )</figcaption></p>
+
+<h4>method2. Trend Elimination by Differencing</h4>
+method1 방법은 trend를 추정한 뒤, 시계열 $\{X_t\}$ 에서 빼주는 방식으로 trend를 제거하였습니다. 이번엔 difference(차분)를 통해서 trend요소를 제거하는 방법을 알아보도록 하겠습니다. Lag-1 difference operator $\bigtriangledown$ 는 아래와 같습니다.
+
+$$\bigtriangledown X_t = X_t-X_{t-1} = (1-B)X_t$$
+
+B는 backward-shift operator로 $BX_t = X{t-1}$ 입니다. j lag difference는 $\bigtriangledown (X_t) = \bigtriangledown (\bigtriangledown^{j-1} (X_t))$ 입니다. 예를 들어, 2-lag difference는 아래와 같습니다.
+
+$$ \begin{align*} \bigtriangledown^2 X_t&=\bigtriangledown (\bigtriangledown (X_t))=\bigtriangledown ((\bigtriangledown (X_t))\\&=(1-B)(1-B)X_t=(1-2B+B^2)X_t = X_t - 2X_{t-1} + X_{t-2}\end{align*} $$
+
+
+ 
 
 
 
 
 ***
+
 1. [Strict Stationarity vs. Weak Stationarity, https://blog.naver.com/sw4r/221024668866](https://blog.naver.com/sw4r/221024668866)
 2. [Strict Stationarity vs. Weak Stationarity, https://m.blog.naver.com/PostView.nhn?blogId=sw4r&logNo=221029452892&proxyReferer=https:%2F%2Fwww.google.com%2F](https://m.blog.naver.com/PostView.nhn?blogId=sw4r&logNo=221029452892&proxyReferer=https:%2F%2Fwww.google.com%2F)
-
+3. []
 
