@@ -109,9 +109,9 @@ $$W_t = (2q+1)^{-1}\sum_{j=-q}^{q}X_{t-j} = (2q+1)^{-1}\sum_{j=-q}^{q}m_{t-j} + 
 
 $$W_t = (2q+1)^{-1}\sum_{j=-q}^{q}X_{t-j} = (2q+1)^{-1}\sum_{j=-q}^{q}m_{t-j} + (2q+1)^{-1}\sum_{j=-q}^{q}Y_{t-j} \approx m_t$$	 
 
-<p align='center'><img src='https://imgur.com/rEHZBt2.png'></figcaption>그림 7. Moving average filter 취하기 전</figcaption></p>
+<p align='center'><img src='https://imgur.com/rEHZBt2.png'><figcaption align='center'>그림 7. Moving average filter 취하기 전</figcaption></p>
 
-<p align='center'><img src='https://imgur.com/QPByqUu.png'></figcaption align='center'>그림 8. Moving average filter 취한 후</figcaption></p>
+<p align='center'><img src='https://imgur.com/QPByqUu.png'><figcaption align='center'>그림 8. Moving average filter 취한 후</figcaption></p>
 
 <p align='center'><img src='https://imgur.com/dPTzLn3.png'><figcaption align='center'>그림 9. Trend 제거 후 잔차항</figcaption>
 
@@ -135,6 +135,11 @@ trend를 추출하는 방법 중 하나로, 여러 frequency의 합으로 trend�
 
 <p align='center'><img src='https://imgur.com/hn90Hgr.png'><figcaption align='center'>그림 12. frequency합으로 smoothing을 취한 후( $\alpha=0.4$ )</figcaption></p>
 
+<h5>d) Polynomial fitting</h5>
+$m_t = a_0 + a_1t + a_2t^2 + \dots + a_nt^n$ 으로 모델링하여, $\sum_{t=1}^n(x_t-m_t)^2$ 을 최소화하는 방식으로 파라미터 $a_k,\,(k=0, \dots, k=n$ 을 구하는 방식으로 trend를 추정할 수 있습니다. 
+
+<del>$X_t - Y_t = m_t$ 에서, $Y_t$ 는 stationary state을 가정하고 있기 때문에, polynomial model을 구축할 수 있는 것입니다.</del>
+
 <h4>method2. Trend Elimination by Differencing</h4>
 method1 방법은 trend를 추정한 뒤, 시계열 $\{X_t\}$ 에서 빼주는 방식으로 trend를 제거하였습니다. 이번엔 difference(차분)를 통해서 trend요소를 제거하는 방법을 알아보도록 하겠습니다. Lag-1 difference operator $\bigtriangledown$ 는 아래와 같습니다.
 
@@ -144,6 +149,39 @@ B는 backward-shift operator로 $BX_t = X{t-1}$ 입니다. j lag difference는 $
 
 $$ \begin{align*} \bigtriangledown^2 X_t&=\bigtriangledown (\bigtriangledown (X_t))=\bigtriangledown ((\bigtriangledown (X_t))\\&=(1-B)(1-B)X_t=(1-2B+B^2)X_t = X_t - 2X_{t-1} + X_{t-2}\end{align*} $$
 
+<h5>Why difference helps eliminating trend components? (Maybe or seasonal components)</h5>
+여기서, 제가 공부하면서 궁금했던 포인트는 왜 difference가 trend 제거에 도움이 되는가? 였습니다. 제가 생각한 답은 아래와 같습니다. trend와 seasonal 요소를 제거하려는 이유는 '고정된 평균과 분산을 가지는 분포'를 가지기 위해서입니다. 그래야지 통계적 모델링이 가능하기 때문입니다. 즉 반대로 말하면, trend와 seasonal 요소는 시간에 따라 평균과 분산이 변함을 의미합니다. 즉 그 변하는 요소를 제거하기 위해서 difference를 하는 것입니다. 
+
+difference를 통해서 변동성을 제거하는 건 고등학교 수학 때 배웠던 미분을 통해 이해할 수 있습니다. 예를 들어, 일차함수 $y=a+bx$ 는 x값에 따라 y값이 변합니다. 그러나 일차미분을 통해 구한 기울기 b값은 고정이 됩니다. 반면에 이차함수 $y=ax^2 + bx + c$ 는 이차미분을 통해 2a라는 고정값을 갖게 됩니다. 여기서 미분 과정을 difference라 생각하시면 됩니다.
+
+> 영어로도 미분이 differentiation 임을 생각하면 와닿습니다.
+
+일차함수 y는 변하는 특성 + 고정된 특성을 둘다 가지고 있는데 일차 미분을 통해 a라는 고정된 특성만을 추출하는 것입니다. 
+
+만약에 trend가 일차함수와 같은 관계를 가지고 있다면 1-lag difference 만으로도 변동성을 잡을 수 있게 되는 것이지요. 마찬가지로 2-lag difference는 trend가 이차함수와 같은 관계를 가지고 있다면 적용되는 것입니다. 
+
+그러나, 과도한 difference는 시계열을 과하게 변동성을 제거해 버려서, over-correction이 될 수도 있기 때문에 조심해야 합니다.
+
+<p align='center'><img src='https://imgur.com/dPdnSMm.png'><figcaption align='center'>그림 13. Difference 적용 전</figcaption></p>
+
+<p align='center'><img src='https://imgur.com/RPMUFSJ.png'><figcaption align='center'>그림 14. Difference 적용 후</figcaption></p>
+
+<h3>1.5.2. Estimation and Elimination of Both Trend and Seasonality</h3>
+
+trend와 seasonal 요소가 다 있는 경우 아래와 같이 표현될 수 있습니다(additive model인 경우). ~~multiplicative model인 케이스도 있습니다.~~
+
+$$X_t = m_t + s_t + Y_t, \,\, t=1, \dots, n,$$
+$$where,\,\,EY_t = 0, s_{t+d}=s_t,\,\,and\,\,\sum_{j=1}^{d}s_j=0$$
+
+아래와 같은 데이터가 있을 때, trend와 seasonal 요소를 제거해 봅시다. 아래 시계열 같은 경우, 주기가 d=12로, 1년 단위로 싸이클이 반복되는 것을 확인할 수 있습니다.
+
+<p align='center'><img src='https://imgur.com/hCcOOp9.png'><figcaption align='center'>그림 15. Accidental Deaths, U.S.A., 1973-1978</figcaption></p>
+
+1. 먼저, trend 요소를 제외합니다. trend 요소를 제외하는 방법으로 moving average filter를 이용할 수 있습니다.
+
+2. 
+
+
 
  
 
@@ -151,8 +189,6 @@ $$ \begin{align*} \bigtriangledown^2 X_t&=\bigtriangledown (\bigtriangledown (X_
 
 
 ***
-
-1. [Strict Stationarity vs. Weak Stationarity, https://blog.naver.com/sw4r/221024668866](https://blog.naver.com/sw4r/221024668866)
-2. [Strict Stationarity vs. Weak Stationarity, https://m.blog.naver.com/PostView.nhn?blogId=sw4r&logNo=221029452892&proxyReferer=https:%2F%2Fwww.google.com%2F](https://m.blog.naver.com/PostView.nhn?blogId=sw4r&logNo=221029452892&proxyReferer=https:%2F%2Fwww.google.com%2F)
-3. []
+1. [Strict Stationarity vs. Weak Stationarity : https://blog.naver.com/sw4r/221024668866](https://blog.naver.com/sw4r/221024668866)
+2. 고려대학교 김성범 교수님 <예측모델> 수업자료 
 
