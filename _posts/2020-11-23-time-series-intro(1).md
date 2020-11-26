@@ -69,9 +69,10 @@ $$\rho_X(h)=\frac{\gamma_X(h)}{\gamma_X(0)}=Cor(X_{t+h}, X_t)$$
 <h3>1.4.1 The Sample Autocorrelation Function</h3>
 
 관측 데이터 가지고 자기 상관의 정도를 볼때, sample auto-correlation 함수(sample ACF)를 사용합니다. Sample ACF는 ACF의 추정으로, 계산은 아래와 같습니다.
-<p align='center'><img src='https://imgur.com/jjzBk3z.png'></figcaption align='center'>그림 4. Sample ACF</figcaption></p>
+<p align='center'><img src='https://imgur.com/jjzBk3z.png'><figcaption align='center'>그림 4. Sample ACF</figcaption></p>
 
 White Noise인 경우, 시계열 그래프와 ACF 그래프는 아래와 같습니다. lag가 1이상인 경우, 거의 ACF값이 0에 가까운 것을 볼 수 있고, 95% 신뢰구간 안에 들어와 있습니다. 
+
 <p align='center'><img src='https://imgur.com/RaoTZJj.png'><figcaption align='center'>그림 5. White Noise ACF</figcaption></p>
 
 아래는 그림 1. 그래프에 플롯된 데이터를 가지고 그린 ACF입니다. 보시면, ACF가 lag가 커짐에 따라 서서히 감소하는 형태를 띄는데 이는 trend가 있는 데이터에서 나타납니다. 
@@ -168,7 +169,7 @@ difference를 통해서 변동성을 제거하는 건 고등학교 수학 때 �
 
 <h3>1.5.2. Estimation and Elimination of Both Trend and Seasonality</h3>
 
-trend와 seasonal 요소가 다 있는 경우 아래와 같이 표현될 수 있습니다(additive model인 경우). ~~multiplicative model인 케이스도 있습니다.~~
+trend와 seasonal 요소가 다 있는 경우 아래와 같이 표현될 수 있습니다(additive model인 경우).<del>multiplicative model인 케이스도 있습니다.</del>
 
 $$X_t = m_t + s_t + Y_t, \,\, t=1, \dots, n,$$
 $$where,\,\,EY_t = 0, s_{t+d}=s_t,\,\,and\,\,\sum_{j=1}^{d}s_j=0$$
@@ -177,9 +178,9 @@ $$where,\,\,EY_t = 0, s_{t+d}=s_t,\,\,and\,\,\sum_{j=1}^{d}s_j=0$$
 
 <p align='center'><img src='https://imgur.com/hCcOOp9.png'><figcaption align='center'>그림 15. Accidental Deaths, U.S.A., 1973-1978</figcaption></p>
 
-1. 먼저, trend 요소를 제외합니다. trend 요소를 제외하는 방법으로 moving average filter를 이용할 수 있습니다.
+<ol><li>먼저, trend 요소를 제외합니다. trend 요소를 제외하는 방법으로 moving average filter를 이용할 수 있습니다.
+</li></ol>
 
-2. 
 
 
 
@@ -189,6 +190,6 @@ $$where,\,\,EY_t = 0, s_{t+d}=s_t,\,\,and\,\,\sum_{j=1}^{d}s_j=0$$
 
 
 ***
-1. [Strict Stationarity vs. Weak Stationarity : https://blog.naver.com/sw4r/221024668866](https://blog.naver.com/sw4r/221024668866)
-2. 고려대학교 김성범 교수님 <예측모델> 수업자료 
+<ol><li>[Strict Stationarity vs. Weak Stationarity : https://blog.naver.com/sw4r/221024668866](https://blog.naver.com/sw4r/221024668866)</li><li>고려대학교 김성범 교수님 <예측모델> 수업자료</li></ol>
+
 
