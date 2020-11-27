@@ -188,8 +188,6 @@ $$where,\,\,EY_t = 0, s_{t+d}=s_t,\,\,and\,\,\sum_{j=1}^{d}s_j=0$$
 
 
 
+<hr>
 
-***
 <ol><li>[Strict Stationarity vs. Weak Stationarity : https://blog.naver.com/sw4r/221024668866](https://blog.naver.com/sw4r/221024668866)</li><li>고려대학교 김성범 교수님 <예측모델> 수업자료</li></ol>
-
-
