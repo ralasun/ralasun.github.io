@@ -1,18 +1,64 @@
 ---
 layout : post
-title: Introduction to Time Series and forecasting 리뷰) 1-1. Introduction to Time Series
+title: Introduction to Time Series and forecasting 리뷰) 1. Introduction to Time Series
 category: Time Series Analysis
-tags: brockwell, richard-davis, statistics, time-series, time-series-analysis, arima, arma 
+tags: time-series time-series-analysis statistics seasonal-decomposition
+
 ---
 이번 포스팅을 시작으로, 시계열 분석에 대해서 다루도록 하겠습니다. 메인 교재는 Brockwell와 Richard A. Davis의 \< Introduction to Time Series and Forecasting \> 와 패스트캠퍼스의 \<파이썬을 활용한 시계열 분석 A\-Z\> 를 듣고 정리하였습니다. 
 
 ---
 
-<h2>1.1. Examples of Time Series</h2>
+<h2>1.1. What is Time Series?</h2>
+
+시계열이란, 일정 시간 간격으로 배치된 데이터들의 수열입니다. 그 중에서 discrete한 시계열이란 관측이 발생한 시각 t의 집합 $T_0$ 가 discrete한 경우이며, 관측치가 시간 구간 안에서 연속적으로 발생한다면 continuous한 시계열입니다.
+
+시계열 시퀀스는 일반적으로 자기 상관성이 있는 수열입니다. 즉, 과거의 데이터가 현재를 넘어서 미래까지 영향을 미치는 것을 뜻합니다.
+
+$$Cov(X_i, X_j) \neq 0$$
+
+따라서, 시계열 데이터로 모델링을 하기 위해선 먼저 데이터를 최대한 분해해서 살펴봐야 합니다. 확률 모델링을 하기 위해선 i.i.d 여야 하기 때문입니다. 일반적으로 시계열 데이터는 trend, seasonality, noise 항으로 구성되어 있습니다. 여기서 시계열 데이터가 자기 상관성을 가지게 되는 요인은 trend와 seasonality 요소 때문이고, noise는 i.i.d한 독립변수로 구성된 에러항입니다.
 
 <h2>1.2. Objectives of Time Series Analysis</h2>
+시계열 분석의 목적은 주로 시계열 데이터를 보고 앞으로 일어날 일들을 예측하는 것입니다. 그러기 위에선 기존에 있는 시계열 데이터를 가지고 추론을 해야합니다. 따라서, 이러한 추론을 하기 위해선 가정에 맞는 적절한 확률 모델을 선택하여 모델링을 진행해야 합니다. 
+
+그러나, 시계열 데이터는 자기 상관성이 존재하는 데이터입니다. 따라서 확률적 모델링을 통해 이 시계열 데이터를 서로 독립인 데이터로 변환해야 하는데 이 과정이 seasonal adjustment 또는 trend and seasonal decomposition입니다. 그 밖에 log transformation, differencing 같은 과정도 존재합니다. 
+
+어쨌든, 시계열 분석의 궁극적인 목표는 독립적인 변수로 최대한 변환한 뒤, 이를 기반으로 확률적 통계 모델링을 해서, inference를 하는 것입니다. Inference 결과는 다시 우리가 얻고자 하는 예측값으로 바꾸기 위한 reverting 과정을 거쳐야 합니다. 왜냐하면, seasonal adjustment나 Decomposition을 통해 상관성을 제거했기 때문에 원하는 예측값을 얻기 위해선 다시 원래대로 이 과정을 뒤집어서 돌아가야 하는 것입니다. 
+
 
 <h2>1.3. Some Simple Time Series Models</h2>
+위에서 말씀 드린 것과 같이 시계열 데이터를 보고 적절한 확률 모델을 선택하는 것은 매우 중요합니다. 따라서, 몇가지 간단한 time series model을 소개하겠습니다.
+
+<h3>1.3.1. Definition of a time series model</h3>
+관측된 $\{x_t\}$ 에 대한 time-series 모델이란, 랜덤 변수 $\{X_t\}$ 시퀀스들의 joint distribution 을 의미합니다. 
+
+> A time series model for the observed data $\{x_t\}$ is a specification of the joint distributions(or possibly only the means and covariances) of a sequence of random variables $\{X_t\}$ of which $\{x_t\}$ is postulated to be a realization.
+
+즉, 랜덤 변수들의 시퀀스 $\{X_1, X_2, \dots \}$ 로 구성된 time-series 확률 모델은 랜덤 벡터 $(X_1, \dots, x_n)' ,\,\, n=1,2,\dots,$ 의 결합 분포입니다. 아래 그림은 랜던 변수들의 시퀀스 $\{S_t, t=1, \dots, 200\}$ 로 나올 수 있는 가능성 중 한가지가 '실현' 된 것입니다. 
+
+<p align='center'><img src='https://imgur.com/izJrvZl.png'><figcaption align='center'>그림 1. Time-series 예시</figcaption></p>
+
+<h3>1.3.2. Some Simple Time Series Model</h3>
+
+<ol><li>iid Noise<br>
+가장 기본적인 time series 모델은 noise항으로만 이뤄진 경우입니다.(거의 현실세계에선 없다고 생각하시면 됩니다.)</li>
+<li>Binary Process<br>
+i.i.d Noise의 종류로, binary 분포를 따르는 noise인 경우입니다. 랜덤 변수들의 시퀀스 $\{X_t,\,\,t=1,2,\dots,\}$ 가 $P[X_t = 1]=p$ , $P[X_t = -1] = 1-p$ 를 따릅니다.</li>
+<li>Models with only Trend<br>
+trend요소와 noise항만 있는 경우입니다. 여기서 trend요소란 패턴이 선형관계를 가지고 있을 때입니다. 자세히 말하면, 시계열이 시간에 따라 증가, 감소, 또는 일정 수준을 유지하는 경우입니다.
+
+$$X_t = m_t + Y_t$$
+
+<p align='center'><img src='https://imgur.com/AjlrE80.png'><figcaption align='center'>그림 2. Time series with only trend component</figcaption></p></li>
+
+<li>Models with only Seaonality<br>
+seasonal요소와 noise항만 있는 경우입니다. 여기서 seasonal요소란 일정한 빈도로 주기적으로 반복되는 패턴을 말합니다. 반면에, 일정하지 않은 빈도로 발생하는 패턴은 Cycle이라 합니다.(여기서는 seasonal 기준으로 설명하겠습니다.)
+
+$$X_t = S_t + Y_t$$</li>
+
+<p align='center'><img src='https://imgur.com/6NZcDiO.png'><figcaption align='center'>그림 3. Times series with only seasonality(period=12month)</figcaption></p>
+</ol>
 
 <h3>1.3.3 A General Approach to Time Series Modeling</h3>
 시계열 분석에 대해 깊게 들어가기 전에, 시계열 데이터 모델링하는 방법에 대해 대략적으로 알아봅시다.
@@ -118,6 +164,10 @@ $$W_t = (2q+1)^{-1}\sum_{j=-q}^{q}X_{t-j} = (2q+1)^{-1}\sum_{j=-q}^{q}m_{t-j} + 
 
 위에 그림 7,8,9 를 살펴 봅시다. 그림 8은 그림 7에서 과거시점 5개를 이용하여 moving average 필터를 씌운 후입니다. 뚜렷한 트렌드가 있지 않음을 보실 수 있습니다. ~~잔차항에 대한 분석은 다시 한번 살펴봐야 할 것 같습니다.~~
 
+Simple Moving Average Filter는 trend가 linear하고, Noise가 White Noise일 때, 시계열 데이터에서 trend요소를 잘 추출할 수 있습니다. 그러나 Non-linear한 trend라면, Noise가 White Noise라 하더라도, trend 추정이 올바르지 않습니다. 그럴 땐, 적절한 가중치를 부여하여 Moving Average Filter를 씌워야 합니다.
+
+$$\sum_{j=-7}^{j=7}a_jX_{t-j} = \sum_{j=-7}^{j=7}a_j m_{t-j}+\sum_{j=-7}^{j=7}a_jY_{t-j} \approx \sum_{j=-7}^{j=7}a_j m_{t-j} = m_t$$
+
 <h5>b) Exponential smoothing</h5>
 Moving averages는 과거 n개의 시점에 동일한 가중치를 부여하는 방법입니다. 그러나, 현재시점과 가까울수록 좀 더 현재시점에 영향을 많이 미치는 경우가 일반적으로 생각하기엔 자연스러울 수 있습니다. 예로 주식을 생각하면 될 것 같습니다. 따라서, Exponential smoothing 방법은 현재 시점에 가까울수록 더 큰 가중치를 주는 방법입니다. 
 
@@ -174,20 +224,74 @@ trend와 seasonal 요소가 다 있는 경우 아래와 같이 표현될 수 있
 $$X_t = m_t + s_t + Y_t, \,\, t=1, \dots, n,$$
 $$where,\,\,EY_t = 0, s_{t+d}=s_t,\,\,and\,\,\sum_{j=1}^{d}s_j=0$$
 
+두 가지 방법을 소개하겠습니다. 먼저, 첫번째 방법입니다.
+
+<h4>1.5.2.1. </h4>
 아래와 같은 데이터가 있을 때, trend와 seasonal 요소를 제거해 봅시다. 아래 시계열 같은 경우, 주기가 d=12로, 1년 단위로 싸이클이 반복되는 것을 확인할 수 있습니다.
 
 <p align='center'><img src='https://imgur.com/hCcOOp9.png'><figcaption align='center'>그림 15. Accidental Deaths, U.S.A., 1973-1978</figcaption></p>
 
-<ol><li>먼저, trend 요소를 제외합니다. trend 요소를 제외하는 방법으로 moving average filter를 이용할 수 있습니다.
-</li></ol>
+<ol><li>먼저, trend 요소를 제외합니다. trend 요소를 제외하는 방법으로 moving average filter를 이용할 수 있습니다.<br><br>
+예를 들어, 시계열 시퀀스 $\{x_1, x_2, \dots, x_n\}$ 이고, 주기 period $d=2q$ 라 한다면, 아래와 같은 moving average filter 식을 세울 수 있습니다.
 
+$$\hat{m_t} = (0.5x_{t-q} + x_{t-q+1} + \dots + x_{t+q-1} + 0.5x_{t+q})/d,\,\, q<t\leq n-q$$ 
 
+> 양 끝에 0.5씩 붙는 이유는 분자의 갯수는 홀수개 즉 $2q+1$ 이지만, 분모는 짝수 $d=2q$ 이기 때문에, 양 끝에 항의 가중치를 0.5씩만 해주는 것입니다.
 
+반면에, 주기가 $d=2q+1$ 이라면, 아래와 같은 식을 세울 수 있습니다.
 
- 
+$$\hat{m_t} = (2q+1)^{-1}\sum_{j=-q}^{q}X_{t-j}$$
+</li>
+<li>그 다음은 seasonality 요소를 구하는 차례입니다. 먼저, 위에서 구한 trend요소를 원 시계열 데이터에서 $x_{k+jd} - \hat{m_{k+jd}}$ 와 같이 제거해야 합니다. 그런 다음, 동일한 주기에 해당하는 $x-\hat{m}$ 요소들을 가지고 평균 $w_k, \,\,(k=1, \dots, d)$ 를 구해줍니다. </li>
+<li>이 때, $w_k$ 들의 평균은 0이 아닐 수 있습니다. 따라서, seasonal 요소들의 평균이 0이 되도록 다시 한번 평균을 빼줍니다.<del>다시 한번 정규화가 되도록 해주는 것입니다.</del>) 
 
+$$\hat{s_k} = w_k - \frac{1}{d}\sum_{i=1}^{d}w_i,\,\,k=1, \dots, d$$
 
+$$and, \,\, \hat{s_k}=\hat{s_{k-d}},\,k>d$$
+
+따라서, deseaonalized된 데이터는 $d_t = x_t - \hat{s_t},\,\, t=1,\dots ,n$ 이며, detrended된 데이터는 $d_t = x_t - \hat{m_t},\,\, t=1, \dots, n$ 입니다.
+</li>
+<li>마지막으로, noise 추정값은 trend와 seasonal 요소를 모두 제거한 항입니다.</li>
+<li>또한 trend 모델링을 위해, 다시 한번 parametric form으로 다시 한번 재추정하는 과정을 거칩니다. Parametric form으로 다시 한번 trend 요소를 재추정 하는 목적은 prediction과 simulation을 하기 위해서 입니다.</li>
+</ol>
+
+<p align='center'><img src='https://imgur.com/srdCVkU.png'><figcaption align='center'>그림 16. Trend and seasonal decomposition 예시</figcaption></p>
+<p align='center'><img src='https://imgur.com/oYkGLqN.png'><figcaption align='center'>그림 17. Trend and seasonal decomposition 예시</figcaption></p>
+
+<h2>1.6. Testing the Estimated Noise Sequence</h2>
+
+1.5까지 과정을 거치면 우린 Noise 항을 갖게 됩니다. 그러나 이 Noise 항이 White Noise 항인지는 확인이 필요합니다. 만약에 white noise 항이 맞다면, noise sequence를 모델링 하는 것입니다. 만약에 noise 항이 white noise가 아니라 여전히 depedency가 보인다면 다른 방법을 적용해야 합니다.
+
+이번 챕터에서는 white noise인지를 확인하는 방법에 대해 살펴봅니다.
+
+<h3>(a) The sample autocorrelation function</h3>
+
+Sample acf를 그려서, 95%신뢰구간 안에 대부분 들어와 있는지 확인합니다. 만약 2,3개 이상이 신뢰구간 밖에 있거나 1개가 유난히 구간 안에 멀리 벗어 났다면, 우린 white noise라고 세웠던 가설을 기각해야 합니다.
+
+<h3>(b) The portmanteau test(Ljung-Box test)</h3>
+
+Portmanteau 검정 통계량은 <b>일정 기간 동안 일련의 관측치가 랜덤이고 독립적인지 여부를 검사하는데 사용합니다</b>. 통계량은 아래와 같습니다(Box-pierece 검정이라고도 합니다.). 
+
+$$Q = n\sum_{j=1}^{h}\hat{\rho(j)^2}$$
+
+$\hat{\rho(j)}$ 가 0에 가깝다면, $\hat{\rho(j)^2}$ 은 더욱 0에 가까울 것이지만, 몇몇 $\hat{\rho(j)}$ 의 절대값이 크다면, 그 항들에 영향을 받아 전체적인 Q값도 커지게 될 것입니다. 
+
+> h는 lag입니다. h를 무리하게 크게 잡는다면, Q값은 커질 위험이 있습니다. 적당한 h를 잡는 것이 중요합니다.
+
+귀무가설은 시차 h에 대한 자기 상관이 0이라는 귀무가설을 검정합니다. 통계량이 지정된 임계값보다 크면 하나 이상의 시차에 대한 자기 상관이 0과 유의하게 다르며, 일정 기간 랜덤 및 독립적이지 않음을 뜻합니다.
+
+아래는 좀 더 refined된 통계량으로 Ljung-Box 라 합니다.
+
+$$Q = n(n+2)\sum_{k=1}^{h}\hat{\rho(k)}/(n-k)$$
+
+그 밖에, turning point test, difference-sign test, rank test, fitting an autoregressive model, checking for normality등이 있습니다. 
+
+<hr>
+이상으로, <Introduction to Time Series and forecasting 리뷰) 1. Introduction to Time Series> 포스팅을 마치겠습니다. 
 
 <hr>
 
-<ol><li>[Strict Stationarity vs. Weak Stationarity : https://blog.naver.com/sw4r/221024668866](https://blog.naver.com/sw4r/221024668866)</li><li>고려대학교 김성범 교수님 <예측모델> 수업자료</li></ol>
+<ol><li>
+<a href url='https://blog.naver.com/sw4r/221024668866'>Strict Stationarity vs. Weak Stationarity, https://blog.naver.com/sw4r/221024668866</a></li>
+<li>고려대학교 김성범 교수님 <예측모델> 수업자료</li>
+<li><a href url = 'https://otexts.com/fppkr/residuals.html'>portmanteau 검정 : https://otexts.com/fppkr/residuals.html</li></ol>
