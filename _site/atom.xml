@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-11-30T11:49:57+09:00</updated>
+ <updated>2020-11-30T12:16:54+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -250,7 +250,7 @@ $$where,\,\,EY_t = 0, s_{t+d}=s_t,\,\,and\,\,\sum_{j=1}^{d}s_j=0$$
 
 두 가지 방법을 소개하겠습니다. 먼저, 첫번째 방법입니다.
 
-&lt;h4&gt;1.5.2.1. &lt;/h4&gt;
+&lt;h4&gt;method 1. Estimation of Trend and Seasonal components&lt;/h4&gt;
 아래와 같은 데이터가 있을 때, trend와 seasonal 요소를 제거해 봅시다. 아래 시계열 같은 경우, 주기가 d=12로, 1년 단위로 싸이클이 반복되는 것을 확인할 수 있습니다.
 
 &lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/hCcOOp9.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 15. Accidental Deaths, U.S.A., 1973-1978&lt;/figcaption&gt;&lt;/p&gt;
@@ -281,6 +281,12 @@ $$and, \,\, \hat{s_k}=\hat{s_{k-d}},\,k&amp;gt;d$$
 
 &lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/srdCVkU.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 16. Trend and seasonal decomposition 예시&lt;/figcaption&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/oYkGLqN.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 17. Trend and seasonal decomposition 예시&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;h4&gt;method 2. Elimination of Trend and Seasonal components by Differencing&lt;/h4&gt;
+Trend 요소를 Differencing 방법을 통해 제거한 것과 동일하게 진행됩니다. Differencing operator $\bigtriangledown_d$ 을 $X_t = m_t + s_t + Y_t$ 식 양변에 취해주면 아래와 같습니다.
+
+$$\bigtriangledown_dX_t = m_t - m_{t-d} + Y_t - Y_{t-d}$$
+
 
 &lt;h2&gt;1.6. Testing the Estimated Noise Sequence&lt;/h2&gt;
 

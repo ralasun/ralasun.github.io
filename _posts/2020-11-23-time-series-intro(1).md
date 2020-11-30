@@ -3,8 +3,8 @@ layout : post
 title: Introduction to Time Series and forecasting 리뷰) 1. Introduction to Time Series
 category: Time Series Analysis
 tags: time-series time-series-analysis statistics seasonal-decomposition
-
 ---
+
 이번 포스팅을 시작으로, 시계열 분석에 대해서 다루도록 하겠습니다. 메인 교재는 Brockwell와 Richard A. Davis의 \< Introduction to Time Series and Forecasting \> 와 패스트캠퍼스의 \<파이썬을 활용한 시계열 분석 A\-Z\> 를 듣고 정리하였습니다. 
 
 ---
@@ -226,7 +226,7 @@ $$where,\,\,EY_t = 0, s_{t+d}=s_t,\,\,and\,\,\sum_{j=1}^{d}s_j=0$$
 
 두 가지 방법을 소개하겠습니다. 먼저, 첫번째 방법입니다.
 
-<h4>1.5.2.1. </h4>
+<h4>method 1. Estimation of Trend and Seasonal components</h4>
 아래와 같은 데이터가 있을 때, trend와 seasonal 요소를 제거해 봅시다. 아래 시계열 같은 경우, 주기가 d=12로, 1년 단위로 싸이클이 반복되는 것을 확인할 수 있습니다.
 
 <p align='center'><img src='https://imgur.com/hCcOOp9.png'><figcaption align='center'>그림 15. Accidental Deaths, U.S.A., 1973-1978</figcaption></p>
@@ -257,6 +257,12 @@ $$and, \,\, \hat{s_k}=\hat{s_{k-d}},\,k>d$$
 
 <p align='center'><img src='https://imgur.com/srdCVkU.png'><figcaption align='center'>그림 16. Trend and seasonal decomposition 예시</figcaption></p>
 <p align='center'><img src='https://imgur.com/oYkGLqN.png'><figcaption align='center'>그림 17. Trend and seasonal decomposition 예시</figcaption></p>
+
+<h4>method 2. Elimination of Trend and Seasonal components by Differencing</h4>
+Trend 요소를 Differencing 방법을 통해 제거한 것과 동일하게 진행됩니다. Differencing operator $\bigtriangledown_d$ 을 $X_t = m_t + s_t + Y_t$ 식 양변에 취해주면 아래와 같습니다.
+
+$$\bigtriangledown_dX_t = m_t - m_{t-d} + Y_t - Y_{t-d}$$
+
 
 <h2>1.6. Testing the Estimated Noise Sequence</h2>
 
