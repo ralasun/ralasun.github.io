@@ -1,0 +1,195 @@
+---
+layout : jupyter
+title : pandas.DataFrame.any() 
+category : Pandas Code Snippet
+tags : pandas python code
+---
+***
+
+평소에 헷갈리는 pandas 사용 관련 코드 모음입니다.
+
+
+
+```python
+import pandas as pd
+```
+
+
+```python
+df = pd.read_csv('./data/top1_1880109251922.csv', index_col=[0])
+df['date'] = pd.to_datetime(df['date'])
+df['Date'] = pd.to_datetime(df['date'])
+df = df.set_index('Date')
+df = df.asfreq('D')
+```
+
+df.isna()는 데이터프레임에서 NaN 요소에 해당되는 부분을 True로 리턴해준다.
+
+
+```python
+df.isna()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>store</th>
+      <th>product_c</th>
+      <th>sales</th>
+    </tr>
+    <tr>
+      <th>Date</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2018-02-01</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2018-02-02</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2018-02-03</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2018-02-04</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2018-02-05</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2019-07-27</th>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2019-07-28</th>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2019-07-29</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2019-07-30</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2019-07-31</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+<p>546 rows × 4 columns</p>
+</div>
+
+
+
+여기서, dataframe.any(axis=0)인 경우엔 각 column의 row를 다 훑어서, row요소들 중 적어도 하나의 row애 True가 있으면, True를 반환합니다.
+
+
+```python
+df.isna().any(axis=0)
+```
+
+
+
+
+    date         True
+    store        True
+    product_c    True
+    sales        True
+    dtype: bool
+
+
+
+반면에, dataframe.any(axis=1)인 경우엔 각 index별로 column요소를 다 훑어서 적어도 하나의 column에 True가 있으면 True를 반환합니다.
+아래 코드를 보면, 해당 index에 data, store, product_c, sales가 모두 True이면 해당 index row는 True를 반환합니다.
+
+
+```python
+df.isna().any(axis=1)
+```
+
+
+
+
+    Date
+    2018-02-01    False
+    2018-02-02    False
+    2018-02-03    False
+    2018-02-04    False
+    2018-02-05    False
+                  ...  
+    2019-07-27     True
+    2019-07-28     True
+    2019-07-29    False
+    2019-07-30    False
+    2019-07-31    False
+    Freq: D, Length: 546, dtype: bool
+
+

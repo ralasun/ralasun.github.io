@@ -182,6 +182,233 @@ MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], proces
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/pandas%20code%20snippet/2020/12/01/pandas-snippet/">
+        pandas.DataFrame.any()
+      </a>
+    </h1>
+
+    <span class="post-date">01 Dec 2020</span>
+     | 
+    
+    <a href="/blog/tags/#pandas" class="post-tag">pandas</a>
+    
+    <a href="/blog/tags/#python" class="post-tag">python</a>
+    
+    <a href="/blog/tags/#code" class="post-tag">code</a>
+    
+    
+
+    <article>
+      <hr />
+
+<p>평소에 헷갈리는 pandas 사용 관련 코드 모음입니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'./data/top1_1880109251922.csv'</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'date'</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'Date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'date'</span><span class="p">])</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">set_index</span><span class="p">(</span><span class="s">'Date'</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">asfreq</span><span class="p">(</span><span class="s">'D'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>df.isna()는 데이터프레임에서 NaN 요소에 해당되는 부분을 True로 리턴해준다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="n">isna</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>store</th>
+      <th>product_c</th>
+      <th>sales</th>
+    </tr>
+    <tr>
+      <th>Date</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2018-02-01</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2018-02-02</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2018-02-03</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2018-02-04</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2018-02-05</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2019-07-27</th>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2019-07-28</th>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2019-07-29</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2019-07-30</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2019-07-31</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+<p>546 rows × 4 columns</p>
+</div>
+
+<p>여기서, dataframe.any(axis=0)인 경우엔 각 column의 row를 다 훑어서, row요소들 중 적어도 하나의 row애 True가 있으면, True를 반환합니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="n">isna</span><span class="p">().</span><span class="nb">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>date         True
+store        True
+product_c    True
+sales        True
+dtype: bool
+</code></pre></div></div>
+
+<p>반면에, dataframe.any(axis=1)인 경우엔 각 index별로 column요소를 다 훑어서 적어도 하나의 column에 True가 있으면 True를 반환합니다.
+아래 코드를 보면, 해당 index에 data, store, product_c, sales가 모두 True이면 해당 index row는 True를 반환합니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="n">isna</span><span class="p">().</span><span class="nb">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Date
+2018-02-01    False
+2018-02-02    False
+2018-02-03    False
+2018-02-04    False
+2018-02-05    False
+              ...  
+2019-07-27     True
+2019-07-28     True
+2019-07-29    False
+2019-07-30    False
+2019-07-31    False
+Freq: D, Length: 546, dtype: bool
+</code></pre></div></div>
+
+
+    <article>
+    <div class="post-more">
+      
+      <a href="/pandas%20code%20snippet/2020/12/01/pandas-snippet/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
+      
+      <a href="/pandas%20code%20snippet/2020/12/01/pandas-snippet/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
+    </div>
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/jupyter-notebook/2020/12/01/example-jupyter-notebook/">
+        jupyter-notebook
+      </a>
+    </h1>
+
+    <span class="post-date">01 Dec 2020</span>
+     | 
+    
+    <a href="/blog/tags/#jupyter-notebook" class="post-tag">jupyter-notebook</a>
+    
+    
+
+    <article>
+      <p>pandas 코드 설명하기</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+
+    <article>
+    <div class="post-more">
+      
+      <a href="/jupyter-notebook/2020/12/01/example-jupyter-notebook/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
+      
+      <a href="/jupyter-notebook/2020/12/01/example-jupyter-notebook/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
+    </div>
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/time%20series%20analysis/2020/11/23/time-series-intro(1)/">
         Introduction to Time Series and forecasting 리뷰) 1. Introduction to Time Series
       </a>
@@ -947,401 +1174,6 @@ $\epsilon-greedy$ 방식으로 정책을 발전시키려면 $V_{\pi_{i+1}}(s) \g
       <a href="/reinforcement%20learning/2020/07/29/mc-td-control/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
       
       <a href="/reinforcement%20learning/2020/07/29/mc-td-control/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
-    </div>
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/reinforcement%20learning/2020/07/28/mc-td-eval/">
-        Model-Free Policy Evaluation, Monte Carlo와 Temporal Difference에 대하여
-      </a>
-    </h1>
-
-    <span class="post-date">28 Jul 2020</span>
-     | 
-    
-    <a href="/blog/tags/#cs234" class="post-tag">cs234</a>
-    
-    <a href="/blog/tags/#reinforcement-learning" class="post-tag">reinforcement-learning</a>
-    
-    <a href="/blog/tags/#david-silver" class="post-tag">david-silver</a>
-    
-    <a href="/blog/tags/#sutton" class="post-tag">sutton</a>
-    
-    
-
-    <article>
-      <p>이번 포스팅과 다음 포스팅은 유한개의 상태, 유한개의 행동에 대해 환경 모델을 모를 때, sequential decision process를 푸는 방법에 다룹니다. 지난 <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/13/dp/">DP 포스팅</a>에서, policy iteration을 이용하여 MDP를 풀었습니다. 마찬가지로 환경 모델을 알지 못한 경우도 유사하게 접근할 수 있습니다. policy iteration은 policy evaluation과 policy control로 나뉘는데 이번 포스팅은 policy evaluation을 푸는 방법에 다룰 것이고 다음 포스팅은 policy control에 대해 다루도록 하겠습니다. CS234 3강, Deep Mind의 David Silver 강화학습 강의 4강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 5, 6 기반으로 작성하였습니다.</p>
-
-<hr />
-
-<p>policy evaluation은 현 정책이 얼마나 좋은지 평가하는 것으로, 현 정책 아래 가치함수를 구하는 것입니다. DP는 환경 모델을 알 때, 벨만 기대 방정식을 이용하여 iterative한 방법으로 현 정책 아래에서 가치함수를 구하는 과정입니다. 현 상태에서 특정 행동을 취할 때, 나올 수 있는 다음 상태와 받을 보상을 알고 있기 때문에 아래 식과 같이 expectation을 직접 “계산”을 할 수 있었습니다.</p>
-
-<script type="math/tex; mode=display">v_\pi(s) = \sum_a\pi(a|s)\sum_{s',r}p(s',r|s,a)[r+\gamma v_\pi(s')]</script>
-
-<p>(이러한 이유로, DP는 learning이 아니라 planning이라 했었습니다.) 그러나 환경 모델을 알지 못할 때, 즉, 상태 변환 모델과 보상 모델을 알지 못할 때 어떻게 정책을 평가할 수 있을까요? 바로 경험(experience)을 직접하는 것입니다. 시퀀스를 직접 밟아 나가면서 가치함수를 학습해 나가는 것입니다. 이 때, 경험을 통해 가치함수를 학습하는 방법을 두가지가 있습니다. Monte Carlo 방식와 Temporal Difference 방식입니다. 먼저, Monte Carlo policy evaluation 부터 알아보겠습니다.</p>
-
-<h2>Monte-Carlo Policy Evaluation</h2>
-<p>Monte-Carlo Policy Evaluation을 살펴보기 전에, Monte-Carlo 방식을 우선 알아보겠습니다.</p>
-
-<h3>Monte-Carlo Methods</h3>
-<p>Monte-Carlo 방법은 무작위 샘플링을 통해 우리가 알아보고자 하는 시스템의 분포를 추정하는 것입니다. 아래 그림은 Monte-Carlo 방식으로 원의 넓이를 추정하는 것입니다.</p>
-<p align="center">
-<img alt="mc-pi" width="500" src="https://user-images.githubusercontent.com/37501153/88665561-c2c06e00-d119-11ea-82cd-672553bac47d.gif" />
-<figcaption align="center">그림 1. Monte-Carlo 예</figcaption></p>
-<p>원의 넓이를 구하는 방법이 너무나 복잡하거나 알 수 없다고 가정해 봅시다. 이런 상황에서 원의 넓이를 가장 쉽게 구하는 방법은 점을 무수히 많이 뿌려본 뒤, 사각형의 넓이 $\times$  (원 안에 들어온 점의 갯수 / 전체 점의 갯수) 로 원의 넓이를 추정할 수 있습니다. 이처럼 Monte-Carlo방식은 점을 무수히 많이 찍는 것처럼 무작위 샘플링으로 데이터를 많이 수집하게 되면 우리가 알고자 하는 시스템의 분포를 추정할 수 있다는 개념입니다.</p>
-
-<h3>Monte-Carlo Policy Evaluation</h3>
-<p>따라서, Monte-Carlo Policy Evaluation이란 에이전트가 환경과 직접 상호작용하여 상태, 행동, 보상으로 이뤄진 시퀀스를 무수히 많이 <span style="color:red">sampling</span>하여 경험을 얻고, 그 경험을 바탕으로 가치함수를 구하는 것입니다. 즉, 무작위 샘플링을 통해 환경 모델을 내재적으로 추정하는 것이죠. ‘내재적’이라 표현한 이유는 추정하고자 하는 것이 상태 변이 확률 또는 보상 확률이 아니라 value function이기 때문입니다. 결국 value function를 구하기 위해선 환경 정보를 알고 있어야 구할 수 있는데(DP에서의 Policy Evaluation 참고) 샘플링을 통해 이를 구하는 것이 내재적으로 환경모델을 추정하는 거라고 생각할 수 있는 것이죠.</p>
-
-<p>다시 정리하면 Monte-Carlo 방식은 환경에 대한 정보없이, 오로지 ‘경험(experience)’를 통해 학습하는 것입니다.</p>
-<blockquote>사실 학습은 policy evaluation과 policy control의 상호작용으로 이뤄집니다. 본 포스팅은 학습이라 표현하지만, policy evaluation에 초점을 맞춰 작성하였습니다.</blockquote>
-<p>value function의 정의를 다시 살펴보면,</p>
-
-<script type="math/tex; mode=display">v_\pi(s) = E_\pi[G_t|s_t=s]</script>
-
-<p>상태 s에서의 return $G_t$ 에 대한 기댓값입니다. Monte-Carlo 방식으로 value function을 구하면 샘플링한 많은 경험들 중에서 상태 s에서부터의 return $G_t$ 를 직접 구한 뒤, 경험의 갯수만큼 나눠주면 됩니다. 즉, return에 대한 기댓값이 아니라 <span style="color:red">return에 관한 평균값</span>입니다.</p>
-<blockquote>Monte-Carlo policy evaluation uses empirical mean return instead of expected return. In other words, Policy is evaluated based on averaging sample returns.</blockquote>
-<p>아래 예시를 통해, 어떻게 계산하는지 알아봅시다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/88672014-eedfed00-d121-11ea-92ba-d14ed0f22508.jpeg" />
-<figcaption align="center">그림 2. Monte-Carlo Policy Evaluation 예</figcaption></p>
-<p>&lt;그림 2&gt;와 같이, C1에서 시작한 시퀀스들에 대한 return 값들이 있습니다. $s_t = C1$ 의 value function을 Monte-Carlo 방식으로 추정하면 (-2.25-3.125-3.41-3.20)/4 = -3.0 이 됩니다.</p>
-
-<p>그러나 Monte-Carlo 방식으로 가치함수를 추정하려면 샘플 시퀀스인 episode가 끝나야 합니다. <span style="color:red">즉, 모든 에피소드가 끝나야 Monte-Carlo 방식을 적용할 수 있습니다.</span> 따라서 에피소드가 끝날 때 까지 기다린 후, 평균값을 업데이트하는 방식으로 적용할 수 있습니다.</p>
-
-<h4>first-visit MC vs. every-visit MC</h4>
-<p>Monte-Carlo 방식은 두 가지가 있습니다. first-visit MC와 every-visit MC입니다. 한 에피소드에서 같은 상태를 여러번 반복해서 지나갈 수 있습니다. 이 때, 첫번째 상태에 대한 return값만 value function 업데이트에 이용하고, 나머지는 무시하는 방법이 first-visit MC이고 모든 경우를 고려한 것이 every-visit MC입니다. 아래 그림은 first-visit MC policy evaluation과 every-visit MC policy evaluation 순서입니다.</p>
-
-<p align="center">
-<img width="400" src="https://user-images.githubusercontent.com/37501153/88681428-86e2d400-d12c-11ea-92b5-383464f1e817.jpg" />
-<img width="400" src="https://user-images.githubusercontent.com/37501153/88682203-5e0f0e80-d12d-11ea-95f4-983819379c31.jpg" />
-<figcaption align="center">그림 3. first-visit/every-visit MC Policy Evaluation</figcaption></p>
-
-<p>일반적으로 first-visit MC를 많이 씁니다. 그렇다면 first-visit과 every-visit은 어떤 차이가 있을까요? first-visit MC 같은 경우, 각 상태에 대한 return들은 모두 독립입니다. 왜냐하면 샘플링된 episode가 독립이므로 first-visit만 고려하기 때문에, 각 상태에 대한 return $G_t$ 은 서로 관련이 없고 독립입니다. 즉, 상태 s에 대한 return $G_t$ 는 $v_\pi(s)$ 분포에서, i.i.d성질을 지니게 됩니다(independent and identically distributed). 따라서, 대수 법칙(law of large numbers)에 따라, 상태 s에 대한 return 값을 무수히 많이 샘플링 하게 된다면, return에 대한 평균은 우리가 구하고 싶은 상태 s의 value function 기댓값인 $\mathbb{E_\pi}[G_t \mid s_t=s]$ 에 수렴합니다.</p>
-
-<p>쉽게 다시 설명하겠습니다. 어떤 상태 s에 대한 가치를 구할 때마다 항상 다르게 나올 수 있습니다. 그런데 충분히 많이 상태 s를 밟는다면 대표적으로 많이 나오는 값이나 그 값 주변 값이 자주 등장하겠지요. 즉, 우리는 $v_\pi(s)$ 가 분포를 이룬다고 생각할 수 있습니다. 그런데 우리가 구하고 싶은 건 분포안에서 $v_\pi(s)$ 를 대표하는 값을 찾고 싶은 것입니다. 즉, 자주 등장하는 값을 말입니다. 따라서, 그 분포의 평균인 기댓값 $\mathbb{E_\pi}[G_t \mid s_t=s]$ 을 말입니다. first-visit MC 방식으로 샘플링한 $G_t$ 는 i.i.d성질을 띄기 때문에, 분포를 정확히 모르지만(분포를 안다면 굳이 샘플링 하지 않고 바로 기댓값이 계산이 가능하겠죠?) 결국 $v_\pi(s)$ 분포를 추정할 수 있고, 이는 우리가 구하고 싶은 기댓값에 수렴할 수 있음을 의미합니다.</p>
-
-<p>따라서, <span style="color:red">first-visit MC 방식에 의한 추정은 unbiased한 성질을 지닙니다.</span> 반면에, <span style="color:red">every-visit MC 방식에 의한 추정은 biased한 성질을 띕니다.</span> 한 에피소드 내에서 같은 상태를 여러 번 반복해서 지나갔다면, 그 상태들 간은 독립적이지 않고, 상관관계를 가지게 됩니다. 따라서, i.i.d하지 않기 때문에 biased합니다. 그렇기 때문에 MC 방식에 의한 policy evaluation은 first-visit MC를 선호하는 편이라 합니다(sutton and barto교재 및 stanford강의 참고).</p>
-
-<h4>Incremental Monte-Carlo Updates</h4>
-<p>Value function을 업데이트하는 방식을 에피소드가 끝날 때마다 마치 온라인 방식처럼 순차적으로 업데이트할 수 있습니다. 시퀀스 $x_1, x_2, \dots$ 에 대한 평균 $\mu_1, \mu_2, \dots$ 가 있을 때,</p>
-
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*} \mu_k&=\frac{1}{k}\sum_{j=1}^{k}x_j\\&=\frac{1}{k}\left(x_k+\sum_{j=1}^{k-1}x_j\right)\\&=\frac{1}{k}\left(x_k + (k-1)\mu_{k-1}\right)\\&=\mu_{k-1}+\frac{1}{k}\left(x_k-\mu_{k-1}\right)\end{align*} %]]></script>
-
-<p>입니다. 따라서, episode $S_1, A_1, R_2, \dots, S_T$ 가 끝날 때마다 아래와 같이 업데이트 할 수 있습니다.</p>
-
-<script type="math/tex; mode=display">N(S_t) \leftarrow N(S_t) + 1</script>
-
-<script type="math/tex; mode=display">V(S_t) \leftarrow V(S_t) + \frac{1}{N(S_t)}\left(G_t-V(S_t)\right)</script>
-
-<p>두번째 식을 마치 $\left(G_t-V(S_t)\right)$ 를 새로운 데이터와 기존 평균과의 오차 즉 에러항으로 본다면, 기존 평균값을 오차의 방향으로 1/k만큼 수정해 나간다고 해석할 수 있습니다.</p>
-
-<p>위의 업데이트 방식은 맨 처음에 샘플한 에피소드부터, 가장 최근에 샘플한 에피소드까지 모두 중요하게 생각함을 의미합니다. 왜냐하면 동등하게 에피소드 개수만큼으로 나누고 있기 때문입니다. 하지만 시간에 따라 조금씩 변하는 문제 같은 경우(non-stationary)에 위와 같은 업데이트 방식은 적합하지 않습니다. 따라서, 새 에피소드와 기존 평균사이의 오차를 항상 일정 크기만큼 업데이트하여 시간이 지날수록 오래된 과거는 잊고 가장 최근 사건을 좀 더 기억할 수 있게끔 해줍니다.</p>
-
-<script type="math/tex; mode=display">V(S_t) \leftarrow V(S_t) + \alpha\left(G_t-V(S_t)\right)</script>
-
-<h2>Temporal-Difference Policy Evaluation</h2>
-<p>다음은 Temporal-Difference Policy Evaluation에 대해 알아보겠습니다. Temporal-Difference(TD) 도 Monte-Carlo(MC) 와 마찬가지로 환경 모델을 알지 못할 때(model-free), 직접 경험하여 Sequential decision process 문제를 푸는 방법입니다. Temporal-Difference 학습은 Monte-Carlo와 Dynamic Programming을 합쳐 놓은 방식입니다.  MC처럼, 환경모델을 알지 못하기 때문에 직접 <span style="color:red">sampling</span>한 데이터를 통해 학습을 해야 합니다. DP처럼, 에피소드가 끝날 때까지 기다리지 않고 다른 가치 추정치를 가지고 현재 상태 가치를 추정합니다. 이를 <span style="color:red">bootstrap</span>이라 합니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/88749790-01444000-d18f-11ea-8e52-bc959e3e20ef.jpeg" />
-<figcaption align="center">그림 4. DP에서의 bootstrap</figcaption></p>
-<p>TD는 MC와 다르게 <span style="color:red">무한한 에피소드에 대해서도 적용</span>할 수 있습니다. 그 이유는 MC는 업데이트를 하기 위해서 한 에피소드가 끝날 때까지 기다려야 합니다. 그래야 return $G_t$ 를 구한 뒤, 업데이트를 할 수 있기 때문입니다. <b>따라서, MC는 에피소드 샘플링을 통해 실제 return $G_t$ 을 향해 $V(S_t)$ 를 수정해나갑니다.</b></p>
-
-<script type="math/tex; mode=display">V(S_t) \leftarrow V(S_t) + \alpha\left(G_t-V(S_t)\right)</script>
-
-<p>반면에, TD는 에피소드가 끝날 때까지 기다릴 필요 없이, 다음 상태를 밟을 때까지만 기다렸다가 업데이트합니다. 그렇기 때문에 에피소드가 끝나지 않는 시퀀스에 대해서도 적용할 수 있으며, 시퀀스를 밟아나가면서 그때그때 가치함수를 수정해 나갈 수 있습니다. 이러한 특징으로 인해, TD 방법은 <span style="color:red">online learning이 가능</span>합니다. 이 부분이 TD의 매우 큰 장점입니다.</p>
-
-<script type="math/tex; mode=display">V(S_t) \leftarrow + \alpha[R_{t+1}+\gamma V(S_{t+1})-V(S_t)]</script>
-
-<p>TD policy evaluation을 상세히 살펴보면, DP에서의 벨만 기대 방정식을 이용한 policy evaluation과 유사한 것을 보실 수 있습니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/88760395-e7fbbd80-d1a7-11ea-8e22-a202c0814dbc.jpeg" />
-<figcaption align="center">그림 5. DP와 TD</figcaption></p>
-<p>그러나 DP는 환경모델을 알기 때문에, 다음 상태가 될 수 있는 모든 후보들을 고려하여 가중 평균을 한 추정값으로 다음 상태의 가치 추정값만을 가지로 현재 상태의 가치를 업데이트합니다. 반면에, TD는 환경에 대한 정보가 없기 때문에 다음 상태까지 직접 밟아보는 것입니다. 이것을 ‘다음 상태 s’를 직접 샘플링하였다’라고 합니다. 그러나 DP처럼 다른 상태의 추정값을 가지고 현재 상태값을 수정하고자 합니다. 이를 bootstrap이라 합니다. 즉, TD에서의 bootstrap은 아래 그림 처럼 이해할 수 있습니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/88756436-9bf84b00-d19e-11ea-9c9f-94791c8b32f6.jpg" />
-<figcaption align="center">그림 6. TD policy evaluation by bootstrapping</figcaption></p>
-<p>따라서, MC는 실제 return $G_t$ 를 향해 $V(S_t)$ 를 수정해 나가지만 <b>TD는 estimate $G_t$ 을 향해 $V(S_t)$ 를 고쳐나가면서 시퀀스를 진행합니다.</b></p>
-
-<blockquote><ul>
-<li>MC Policy Evaluation :<br />update value $V(S_t)$ toward actual return $G_t$</li>
-<li>TD Policy Evaluation :<br /> update value $V(S_t)$ toward estimated return $R_{t+1} + \gamma V(S_{t+1})-V(S_t)$</li></ul></blockquote>
-
-<h3>General form of update rule</h3>
-<p>위의 MC/TD 업데이트 식은 일반적으로 아래와 같은 형태를 띕니다.</p>
-
-<script type="math/tex; mode=display">NewEstimate \leftarrow OldEstimate + StepSize \left[Target - OldEstimate\right]</script>
-
-<p>$\left[Target - OldEstimate\right]$ 는 오차를 나타냅니다. MC와 TD 모두 Target을 향해 기존 Estimate을 업데이트합니다. 그러나, 기존 estimate을 새로운 target으로 교체하는 건 위험합니다. 왜냐하면 초기단계에서는 새로운 target이 우리가 찾는 정답이 아닐 수도 있기 때문에, target과 기존 estimate의 오차의 일부만큼만 조금씩 수정해 나갑니다. MC target은 $G_t$ 이고, TD target은 $R_{t+1}+\gamma V(S_{t+1})$ 입니다. 또한, MC error는 $G_t - V(S_t)$ 이고, TD error는 $R_{t+1}+\gamma V(S_{t+1}) - V(S_t)$ 입니다. 보통  TD error는 $\delta_t$ 로 표현합니다. 왜냐하면, 같은 에피소드 내에서, TD error는 매 t step마다 다르기 때문입니다.</p>
-
-<h3> Temporal Difference Policy Evaluation Algorithm </h3>
-<p>TD policy evaluation 알고리즘 순서도는 아래와 같습니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/88760737-93a50d80-d1a8-11ea-8094-57124c27e696.png" />
-<figcaption align="center">그림 7. TD(0) policy evaluation algorithm</figcaption></p>
-<p>일정 정책 $\pi$ 아래, (S, A, R, S’)를 샘플링하고, 업데이트합니다. 그런 다음 (S’, A’, R, S’‘)를 샘플링하고 업데이트합니다. 이 과정을 V(S)가 수렴할 때까지 반복합니다. 여기서 한가지 의문점이 있습니다. MC방식은 unbiased estimator이기 때문에 대수의 법칙에 따라, true expected estimate에 수렴한다고 하였습니다. 과연 TD방식은 수렴할까요? 이는 <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/29/mc-td-control/">다음 포스팅 Model-Free Control</a>에서 다루도록 하겠습니다.</p>
-
-<p>TD policy evaluation 예를 살펴보겠습니다.</p>
-<p align="center"><img width="500" src="https://user-images.githubusercontent.com/37501153/88761833-eaabe200-d1aa-11ea-8c41-5b60f2d76259.jpg" /><figcaption align="center">그림 8. TD policy evaluation 예(1)</figcaption></p>
-<p>먼저 $(s_3, a_1, 0, s_2)$ 에 대해 $v(s_3)$ 를 업데이트하고, 그 다음 $(s_2, a_1, 0, s_2)$ 에 대해 $v(s_2)$ 를, $(s_2, a_1, 0, s_1)$ 에 대해 $v(s_2)$ 를, 마지막으로 $(s_1, a_1, 1, terminal)$ 에 대해 $v(s_1)$ 을 업데이트하면 한 에피소드에 대해 업데이트를 완료하게 됩니다.</p>
-<p align="center"><img width="500" src="https://user-images.githubusercontent.com/37501153/88763595-59d70580-d1ae-11ea-8d31-d892a0e42267.jpeg" /><figcaption align="center">그림 9. TD policy evaluation 예(2)</figcaption></p>
-
-<h2>Monte-Carlo vs. Temporal-Difference</h2>
-<p>이제까진 MC와 TD방식으로 policy evaluation하는 것을 보았습니다. 그러면 두 방식의 특성을 비교하겠습니다.</p>
-
-<h3>Bias/Variance Trade-Off</h3>
-<p>MC와 TD의 특징을 bias-variance trade-off 관점에서 보겠습니다. MC는 위에서 설명한 것처럼, return $G_t$ 는 $v_\pi(S_t)$ 의 unbiased estimate 입니다. 따라서 <span style="color:red">MC는 low bias의 특징</span>을 띕니다. 반면에, TD는 bootstrap 기반이기 때문에 TD target $R_{t+1} + \gamma V(S_{t+1})$ 은 $v_\pi(S_t)$ 의 biased estimate 입니다. 따라서 <span style="color:red">TD는 high bias 특징</span>을 가집니다.</p>
-
-<p>그러나, variance관점에서 두 방식은 반대입니다. MC같은 경우, 한 에피소드가 끝날 때까지 계속 샘플링을 해야합니다. 이로인해, random성이 많이 증가하게 되죠. 반면에, TD같은 경우 업데이트를 위해 (s, a, r, s’)을 한번만 샘플링 하기 때문에 MC에 비해 random성이 작습니다. 이러한 특징으로 인해, <span style="color:red">MC는 high variance를, TD는 low variance</span>를 갖습니다.</p>
-<blockquote><ul><li>Return depends on many random actions, transitions, rewards</li><li>TD target depends on one random action, transition, reward</li></ul></blockquote>
-<p align="center"><img width="500" src="https://user-images.githubusercontent.com/37501153/88870731-15507600-d251-11ea-96b6-5d3850150ecf.jpeg" /><figcaption align="center">그림 10. Graphical Illustration of Bias-Variance trade off</figcaption></p>
-
-<h3>Properties of MC and TD</h3>
-<p>위의 bias-variance trade-off 성질로 인해 MC와 TD는 아래와 같은 특성을 같습니다.</p>
-
-<p><b>MC : high variance and zero bias</b><br />
-MC는 zero bias이기 때문에 초기값에 상관없이 항상 수렴하게 됩니다. 이러한 수렴을 잘하는 특징 덕분에 좋은 근사 가치 함수도 갖게 됩니다(value function approximation, 추후에 포스팅 예정). 그러나, high variance인해 항상 true expected value에 수렴함에 불구하고, 언제 수렴할지는 불분명합니다. 왜냐하면, high variance로 인해 수렴할 때까지 굉장히 많은 에피소드 샘플링이 필요하기 때문입니다. 그리고 한 에피소드가 끝날 때까지 기다려야 하는데, 에피소드의 길이가 긴 경우 더욱 적용하기 어렵습니다. 따라서 실용성 측면에서 떨어지는 단점이 있습니다.</p>
-
-<p>MC가 zero bias를 가질 수 있는 이유는 $G_t$ 가 i.i.d성질을 가지기 때문이라고 설명하였습니다. 이는 $V(S_t)$ 를 계산하는데 $S_t$ 의 markov property를 이용하지 않음을 뜻합니다. 따라서, Markov domain인 아닌 경우 MC를 적용하여 문제를 해결할 수 있습니다(handling non-markovian domains).</p>
-
-<p><b>TD : low variance and high bias</b><br />
-반면에 TD는 low variance로 인해 수렴이 가능하다면, MC에 비해 수렴지점까지 빨리 도달할 수 있습니다(그림 11,12 참고). 하지만 초기값에 따라 수렴여부가 달라지고(sensitive to initial value), 그리고 근사 가치 함수를 찾지 못할 수도 있습니다. 하지만, on-line 학습이 가능하기 때문에, 따라서 쉽게 적용할 수 있습니다.</p>
-
-<p>TD는 $V(S_t)$ 를 계산하기 위해서 $V(S_{t+1})$ estimate 을 이용합니다(bootstrap). 이는 MC와는 다르게 markov property를 이용합니다. 따라서, TD는 Markovian domain에서 적용가능합니다.</p>
-
-<p>위에서 설명한 MC와 TD의 특성을 정리하면 아래와 같습니다.</p>
-
-<table style="width:100%">
-  <tr>
-    <th><b>Monte Carlo</b></th>
-    <th><b>Temporal Difference</b></th>
-  </tr>
-  <tr>
-    <td>
-    <ul><li>high variance and zero bias</li><li>good convergence properties, even with function approximation</li><li>not very sensitive to initial value</li><li>very simple to understand but may not be efficient due to applying only to episodic task</li><li>can apply both to markov domain and non-markov domain</li><li>sample and no bootstrap</li></ul></td>
-    <td><ul><li>low variance and high bias</li><li>could converge to true estimate, but it could fail with function approximation</li><li>more sensitive to initial value</li><li>usually more efficient than MC</li><li>can apply to markov domain</li><li>sample and bootstrap</li></ul></td>
-  </tr>
-</table>
-
-<p>위 표에서 마지막 특성에 관하여 MC, TD와 DP 사이의 관계를 back-up diagram과 함께 잘 나타낸 그림이 있습니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/89119964-23222780-d4ed-11ea-97b9-335a7d66c5d4.jpg" /><figcaption align="center">그림 11. TD, MC and DP</figcaption></p>
-<p>DP같은 경우, 환경 모델을 잘 알기 때문에 다음 스텝에 대해 full backup을 그린 관계와 같습니다. 그러나 에피소드가 끝날 때까지 backup을 그릴 필요가 없기 때문에 shallow-backup이고, bootstrap을 이용합니다. 반면에, TD같은 경우, 다음 상태에 대해 한 상태에 대해서만 샘플링을 하기 때문에 sample-backup이며, DP와 마찬가지로 한 스텝만 내다보기 때문에 shallow-backup이며 bootstrap을 이용합니다. 마지막으로 MC같은 경우, 모든 에피소드가 끝날 때까지 기다려야 하기 때문에 deep-backup이고, 샘플링을 하여 경험을 쌓기 때문에 sample-backup입니다. 그러나 bootstrap을 이용하지 않습니다.</p>
-
-<p>TD가 MC보다 수렴이 더 빠른 것에 대해 수학적으로 증명된 적은 없습니다. 그러나, 실험적으로 확인했을 때 TD가 MC보다 수렴이 빠릅니다. 이에 관해 Sutton과 berto교재에 MC와 TD의 수렴에 관한 예제가 있습니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/88873551-d671ee80-d257-11ea-9f09-c62328dee7f3.png" /><figcaption align="center">그림 12. Random Walk 예(1)</figcaption></p>
-<p>위의 예는 C에서 시작하여 각 스텝마다 왼쪽 또는 오른쪽으로 0.5의 확률로 동일하게 갈 수 있다고 할 때, 양 끝의 사각형에 도달하면 에피소드가 끝나는 문제입니다. 각 상태 A, B, C, D, E에서 value를 MC와 TD를 이용하여 구한 결과는 아래와 같습니다. 이때, 각 상태에서의 true value는 1/6, 2/3, 3/6, 4/6, 5/6입니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/88898226-624f3f00-d287-11ea-97fc-0029133d082c.png" /><figcaption align="center">그림 13. Random Walk 예(2)</figcaption></p>
-<p>왼쪽 그림은 TD(0)를 여러 에피소드를 거쳤을 때, 각 상태에서의 value입니다. 100 에피소드 정도 진행했을 때, true value에 수렴하는 것을 확인할 수 있습니다. 오른쪽 그림은 step size $\alpha$ 를 달리했을 때 각각 MC와 TD에서의 RMS error 입니다. 실험적으로 TD가 MC보다 더 빨리 수렴합니다.</p>
-
-<p><b>differences between MC and TD trough Batch Update</b><br />
-MC와 TD의 작동원리를 보여주는 사례를 하나 더 소개하겠습니다. 먼저 그전에 batch update에 대해 설명하도록 하겠습니다. k개의 에피소드 또는 k개의 스텝을 미리 샘플링 해 놓은 뒤, k개의 MC 또는 TD 방식의 error를 각각 구해서 다 합한 후, 한 번 update를 하는 방식을 batch update이라 합니다. 아래 예를 각각 MC와 TD 방식의 batch update로 풀어보겠습니다.</p>
-
-<p>아래와 같이 8개의 에피소드가 있습니다. 첫번째 에피소드는 A에서 시작해서 reward를 0을 받고, 그 다음 B로 가고 reward를 0을 받고 끝납니다. 그 다음 여섯개 에피소드는 B에서 시작해서 reward를 1을 받고 끝납니다. 마지막 하나는 B에서 시작해서 reward를 1을 받고 끝납니다. 이때, MC와 TD방식으로 V(A), V(B)가 각각 어떻게 될까요 ?</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/88902645-75fda400-d28d-11ea-952d-ced88051631e.png" /><figcaption align="center">그림 14. Batch update 예시</figcaption></p>
-
-<p>MC방식으로 한다면, $V(A)=0, V(B)=\frac{3}{4}$ 입니다. 그러나 TD방식으로 한다면 $V(B)=0$ 이지만 $V(A)=\frac{3}{4}$ 입니다. $V(A)$ 에서 차이가 나는 이유는 MC는 mean squared error를 최소화하는 방식으로 해답을 구하지만, TD는 markov model의 likelihood를 최대화하는 방식으로 해답을 구하기 때문입니다.</p>
-
-<script type="math/tex; mode=display">\sum_{k=1}^{K}\sum_{t=1}^{T_k}\left(G_t^k - V(s_t^k)\right)^2</script>
-
-<ul><li>MC converges to solution with minimum mean-squared error</li><li>Best fit to the observed returns</li></ul>
-
-<p>MC는 관측된 return이 true value estimate과의 차이가 최소화시키는 방향으로 갑니다. 반면에, TD는 markov property 성질을 이용하기 때문에 MDP를 해결하는 방향으로 갑니다. 실제 구현은 아니지만 내재적으로는 마치 환경모델의 transition model과 reward model의 maximum likelihood를 구한 뒤 DP를 푸는 방식과 유사하게 작동하는 것입니다. 실제로 위의 예제를 아래 방식으로 환경 모델을 구한 뒤 DP로 접근하면 똑같은 해답을 구할 수 있습니다.</p>
-
-<script type="math/tex; mode=display">\hat P^a_{s,s'} = \frac{1}{N(s,a)}\sum_{k=1}{K}\sum_{t=1}{T_k}\mathbf 1(s_t^k, a_t^k, s_{t+1}^k = s, a, s')</script>
-
-<script type="math/tex; mode=display">\hat R^a_s = \frac{1}{N(s,a)}\sum_{k=1}{K}\sum_{t=1}{T_k}\mathbf 1(s_t^k, a_t^k=s,a)r^k_t</script>
-
-<ul><li>TD(0) converges to solution of max likelihood Markov model</li><li>Solution to the MDP $&lt;S, A, \hat P, \hat R, \gamma &gt;$ that best fits the data</li></ul>
-
-<hr />
-
-<p>이상으로 이번 포스팅을 마치겠습니다. 다음 포스팅은 <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/29/mc-td-control/">Model-Free Control</a>에 대해 진행하겠습니다.</p>
-
-    <article>
-    <div class="post-more">
-      
-      <a href="/reinforcement%20learning/2020/07/28/mc-td-eval/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
-      
-      <a href="/reinforcement%20learning/2020/07/28/mc-td-eval/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
-    </div>
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/reinforcement%20learning/2020/07/13/dp/">
-        Dynamic Programming, Policy Iteration부터 Value Iteration까지
-      </a>
-    </h1>
-
-    <span class="post-date">13 Jul 2020</span>
-     | 
-    
-    <a href="/blog/tags/#cs234" class="post-tag">cs234</a>
-    
-    <a href="/blog/tags/#reinforcement-learning" class="post-tag">reinforcement-learning</a>
-    
-    <a href="/blog/tags/#david-silver" class="post-tag">david-silver</a>
-    
-    <a href="/blog/tags/#sutton" class="post-tag">sutton</a>
-    
-    
-
-    <article>
-      <p>지난 <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/12/mdp/">MDP 포스팅</a>에 이어서, 이번 포스팅은 MDP를 iterative하게 푸는 방법 중 하나인 Dynamic Programming(DP)에 대해서 다룹니다. CS234 2강, Deep Mind의 David Silver 강화학습 강의 3강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 4 기반으로 작성하였습니다. 또한, 대부분 수식 표기법은 Sutton 교재를 따랐습니다.</p>
-
-<hr />
-
-<p>일반적으로 Dynamic Programming란 복잡한 문제를 간단한 여러 개의 문제로 나누어 푸는 방법을 말합니다. 지난 시간에서 벨만 방정식(벨만 기대 방정식, 벨만 최적 방정식)은 recursive한 관계를 가지고 있기 때문에, 벨만 방정식을 풀기 위한 솔루션으로 DP 사용이 적합하다고 할 수 있습니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/87278417-5e998980-c51f-11ea-9be2-b1b55ad4c070.jpeg" />
-<figcaption align="center">그림 1. Dynamic programming 조건</figcaption></p>
-
-<p>따라서, 상태 $s \in S$, 행동 $a \in A$, 보상 $r \in R$ 인 환경 모델 $p(s’,s|r,a)$ 을 아는 상황에서, 벨만 기대 방정식과 벨만 최적 방정식의 recursive한 성질을 이용하여 최적 가치 함수 $v_\ast, q_\ast$ 를 구하는 것이 Dynamic Programming을 이용한 MDP 를 푸는 것입니다.</p>
-<p align="center">
-<img width="700" src="https://user-images.githubusercontent.com/37501153/87279033-08c5e100-c521-11ea-8ccc-de84ed44d45f.jpeg" />
-<figcaption align="center">그림 2. 벨만 방정식 : Recursive 관계</figcaption></p>
-<blockquote>MDP문제는 환경모델을 완벽하게 아는 상황이기 때문에, dynamic programming은 'reinforcement learning'이 아니라 'planning' 방법입니다.</blockquote>
-<p>DP설명은 finite MDP에 유한하여 설명하도록 하겠습니다. 일반적으로 continuous MDP문제는 DP방법이 아닌 다른 방법을 이용하여 풀기 때문입니다.</p>
-
-<p>지난 <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/11/introRL(2)">강화학습 소개[2] 포스팅</a>에서, sequential decision making 문제 종류로 evaluation(prediction)과 control을 소개하였습니다. evaluation은 일정 정책 아래, 기대보상을 추정하여 현재 따르는 정책의 좋고/나쁨을 평가하는 것입니다. 즉, 현재 정책의 평가가 되는 것입니다. control은 정책들의 평가를 기반으로 최적의 정책을 찾는 것입니다. evaluation과 control은 독립적인 과정이 아니라 서로 연계되어 있는 과정이라 하였습니다. 마찬가지로 Dynamic Programing도 evaluation에 해당하는 Policy Evaluation과 control에 해당하는 Policy Improvement로 구성됩니다. 각각에 대해 알아봅시다.</p>
-<blockquote>DP설명은 finite MDP에 유한하여 설명하도록 하겠습니다. 일반적으로 continuous MDP문제는 DP방법이 아닌 다른 방법을 이용하여 풀기 때문입니다.</blockquote>
-
-<h2>Policy Evaluation</h2>
-<p>Policy evaluation은 벨만 기대 방정식을 이용하여 iterative한 방법으로 현 정책 아래의 가치함수를 구하는 과정입니다. 아래 벨만 기대 방정식을</p>
-
-<script type="math/tex; mode=display">v_\pi(s)=\sum_a\pi(a|s)\sum_{s',r}p(s',r|s,a)[r+\gamma v_\pi(s')]</script>
-
-<p>update rule의 관계를 가진 방정식으로 취급한 뒤,</p>
-
-<script type="math/tex; mode=display">v_{k+1}(s)=\sum_a\pi(a|s)\sum_{s',r}p(s',r|s,a)[r+\gamma v_{k}(s')]</script>
-
-<p>k=0부터 수렴할 때까지 반복적으로 계산하는 것입니다. 즉 가치 함수를 초기화한 후, $v_0 \to v_1 \to v_2 \to \cdots \to v_\pi$ 으로 수렴할 때까지 <span style="color:red"><b>모든 상태에 대해서 동시에 업데이트</b></span>하는 것입니다.</p>
-<p align="center"> 
-<img width="500" src="https://i.imgur.com/WzCwUj1.jpg" />
-<figcaption align="center">그림 3. Iterative Policy Evaluation</figcaption></p>
-<p>이를 back-up diagram으로 다시 표현해 봅시다.</p>
-<p align="center"> 
-<img width="500" src="https://imgur.com/OKUnBIF.jpg" />
-<figcaption align="center">그림 4. Back-up diagram for iterative policy evaluation</figcaption></p>
-<p>그림 4.를 보시면, k 스텝에서 다음 상태를 이용하여 k+1 스텝의 현재 상태를 업데이트합니다. 또한 업데이트되는 방식은 다음 상태에서 나올 수 있는 누적보상의 가중 평균으로 계산됩니다(벨만 기대 방정식이기 때문입니다).</p>
-
-<blockquote>To produce each successive approximation, $v_{k+1}$ from $v_{k}$, iterative policy evaluation applies the same operation to each state s: it replaces the old value of s with a new value obtained form the old values of the successor states of s and the expected immediate rewards, along all the one-step transitions possible under the policy being evaluated. - Sutton and Barto, Reinforcement Learning : An Introduction</blockquote>
-
-<p>아래 그리드월드 예제로, policy evaluation을 살펴봅시다.</p>
-<p align="center">
-<img width="500" src="https://imgur.com/XQHYowT.jpg" />
-<figcaption align="center">그림 5. 그리드월드 예제</figcaption></p>
-<p>처음 시작 상태에서 여러 경로를 다니다가 회색색깔에 도착하면 끝나는 게임이 있다고 합시다. 각 상태마다 받는 보상은 -1이고, 행동 좌,우,위,아래 방향에 대해 갈 확률은 0.25라 한다면, k=0, k=1, k= $\infty$ 을 수렴할 때까지 반복하면 각 $v_k$ 에 대해 각 상태의 가치함수 값은 아래 그림과 같습니다.</p>
-<p align="center">
-<img width="400" src="https://i.imgur.com/usVVNHF.jpg" />
-<img width="400" src="https://imgur.com/44Y2N5r.jpg" /> 
-<figcaption align="center">그림 6. 그리드월드 예제 - policy evaluation</figcaption></p>
-<p>왼쪽 행은 가치함수 결과이고, 오른쪽 행은 각 가치함수에서 greedy한 전략을 보여줍니다. 그러나 위 예제같은 경우는 간단한 케이스이어서 빨리 수렴에 도달합니다. 일반적으로 상태 집합의 크기 $|S|$ 가 큰 경우, 수렴할 때까지의 속도가 매우 느릴 수도 있기 때문에, 아래 알고리즘과 같이 어느 정도 수렴조건을 만족하면 다음 스텝으로 넘어가는 방법을 주로 택합니다.</p>
-<p align="center">
-<img width="500" src="https://imgur.com/l5QDFUd.jpg" />
-<figcaption align="center">그림 6. Policy evaluation 알고리즘</figcaption></p>
-
-<h2>Policy Improvement</h2>
-<p>결국 현재 정책을 평가하는 이유는 더 나은 정책을 찾기 위한 것입니다. 그렇다면 현재 정책 평가한 것을 기반으로 어떻게 더 나은 정책을 찾는지 알아보도록 하겠습니다.</p>
-
-<p>임의의 정책 $\pi$ 아래 policy evaluation을 통해 $v_\pi$ 를 구했다고 하겠습니다. 그림 6.에서 처럼 수렴된 $v_\pi$ 에 대한 greedy policy가 있을 것입니다. 하지만 그 greedy policy 이외의 다른 행동 $a$ 을 선택하고, 즉, $a \neg \pi(s)$ 하고, 기존 정책 $\pi$ 를 따른다고 했을 때,</p>
-
-<script type="math/tex; mode=display">q_\pi(s,a) = \sum_{s',r}p(s',r|s,a)[r+\gamma v_\pi(s')]</script>
-
-<p>기존 정책에 따른 $v_\pi(s)$ 보다 크다면 새로 선택된 행동 a가 발전된 전략일 것입니다(policy improvement).</p>
-
-<script type="math/tex; mode=display">q_\pi(s, \pi'(s)) \geq v_\pi(s)</script>
-
-<p><span style="color:gray">처음에, 이 부분을 혼자 공부할 때, 이해하기 어려웠던 부분이 ‘greedy policy 이외의 다른 행동 $a$ 를 선택하고 기존 정책을 따른다는 부분’이었습니다. 저는 이 부분은 아래와 같이 이해하였습니다.</span></p>
-<p align="center">
-<img src="https://imgur.com/n7Z1Gy4.jpg" />
-<figcaption align="center">그림 7. </figcaption></p>
-<p>그러나, 지난 <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/12/mdp/">MDP 포스팅</a>에서 더 나은 정책이 되려면 $q_\pi(s, \pi’(s)) \geq v_\pi(s)$ 가 아닌 $v_{\pi}(s) \geq v_{\pi’}(s)$ 를 만족해야 합니다. 이를 유도하는 수학적 증명은 아래와 같습니다.</p>
-<p align="center">
-<img src="https://imgur.com/OLBeIIc.jpg" />
-<figcaption align="center">그림 8.</figcaption></p>
-<p>따라서, greedy하게 policy improvement하는 방식을 수식으로 깔끔하게 정리하면</p>
-
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*} \pi'{\left(s\right)} =&{arg \underset a max}{q_\pi(s,a)}\\=&{arg \underset amax}{\mathbb E[R_{t+1}+\gamma v_\pi(S_{t+1})|S_t=s,A_t=a]}\\=&{arg \underset amax}{\sum_{s',r}p(s',r|s,a)[r + \gamma v_\pi(s')]}\end{align*} %]]></script>
-
-<p>입니다. 즉 기존 정책에서 발전된 새로운 정책 $\pi’$ 가 되었습니다.</p>
-
-<p>만약에, 새로운 정책 $\pi’$ 가 기존 정책 $\pi$ 에서 더이상의 발전이 없다면, $v_\pi=v_\pi’$ 이를 만족하기 때문에, 아래 식이 성립됩니다.</p>
-
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*} v_\pi'(s) =&{m \underset aax}{\mathbb E[R_{t+1}+\gamma v_\pi'(S_{t+1})|S_t=s, A_t=a]}\\=&{m \underset aax}\sum_{s',r}p(s',r|s,a)[r+\gamma v_\pi'(s')] \end{align*} %]]></script>
-
-<p>위의 식을 가만보면, 어디서 많이 봤습니다. 바로 <b>벨만 최적 방정식</b>입니다. 즉, 더이상 발전이 없을 때, $v_\pi’$ 는 최적정책임을 의미합니다.</p>
-
-<h2>Policy Iteration</h2>
-<p>최적 정책을 찾기 위해서 결국 evaluation과 imporvement과정을 번갈아 가면서 정책이 더 이상 발전이 없을 때까지 진행해야 합니다. 이를 policy iteration이라 합니다.</p>
-
-<script type="math/tex; mode=display">\pi_0 \overset E\to v_{\pi_0} \overset I\to \pi_1 \overset E\to v_{\pi_1} \overset I\to \pi_2 \overset E\to \cdots \overset I\to \pi_\ast \overset E\to v_\ast</script>
-
-<p>E는 evalution이고, I는 improvement를 뜻합니다. Finite MDP인 경우 정책 후보의 갯수도 유한하기 때문에 반드시 언젠간 수렴합니다. Policy iteration 알고리즘은 아래 그림과 같습니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/87383157-9f52da80-c5d3-11ea-84c9-28fa2ec398cf.jpeg" />
-<figcaption align="center">그림 9. Policy iteration</figcaption></p>
-<p>그림 9.를 보면, policy improvement를 한 후, 다시 policy evalutation을 할 때, 이전 정책 $/pi$ 에 관한 $v_\pi$ 로 초기값으로 하여 진행합니다.</p>
-
-<h2>Value Iteration</h2>
-<p>최적 정책을 찾는 방법엔 policy iteration 말고 value iteration도 있습니다. Value iteration에 대해 설명하기 전에 먼저 벨만 최적 방정식에서의 optimality의 개념을 다시 한번 생각해 봅시다.</p>
-
-<h3>Principle of Optimality</h3>
-<p>벨만 최적 방정식을 다시 한번 살펴보면,</p>
-
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*} v_\pi'(s) =&{m \underset aax}{\mathbb E[R_{t+1}+\gamma v_\pi'(S_{t+1})|S_t=s, A_t=a]}\\=&{m \underset aax}\sum_{s',r}p(s',r|s,a)[r+\gamma v_\pi'(s')] \end{align*} %]]></script>
-
-<p>상태 s에서 optimal value를 가지려면, 다음 상태 s’까지 진행해봐야 상태 s의 가치가 최적인지 아닌지 판단할 수 있습니다. 아래와 같이 $s_t$ 가 terminal state인 시퀀스가 있다고 한다면,</p>
-
-<script type="math/tex; mode=display">s_0 \to s_1 \to s_2 \to \cdots \to s_t</script>
-
-<p>상태 $s_0$ 의 가치는 $s_1$ 에 도착해야 알고, $s_1$ 의 가치는 $s_2$ 에 도착해야 알고, …, $s_{t-1}$ 의 가치는 $s_t$ 에 도착해야 압니다. 즉 $s_t$ 의 최적가치를 알고 있어야 처음 상태 $s_0$ 의 최적가치값을 알 수 있단 얘기입니다. 아래 예를 살펴보겠습니다.</p>
-<p align="center">
-<img width="500" src="https://user-images.githubusercontent.com/37501153/87384499-e1c9e680-c5d6-11ea-946e-bb180a6ef863.jpeg" />
-<figcaption align="center">그림 10. value iteration 예시</figcaption></p>
-<p>회색인 부분이 도달해야 하는 골이라 하면, 골까지 가는 가장 짧은 경로를 찾는 문제입니다. 흰색 칸을 밟을 때마다 받는 보상은 -1, 회색 칸을 밟으면 보상 0을 받는다고 할 때, 처음 상태가 정해진 것이 아니라면 당연히 회색 부분 근처 칸에서 시작하는게 최적일 것입니다. 그리고 회색 칸은 종결지점이기 때문에 회색 칸 이후로 더이상의 시퀀스가 존재하지 않아, 회색 칸의 최적가치는 즉각적인 보상인 0일 것입니다. 그렇다면 골에서 가장 멀리 있는 맨 오른쪽 칸의 최적 가치는 어떻게 구할까요? <b>골의 최적가치가 골에서 가까운 위치부터 퍼져나가 맨 오른쪽 칸의 최적 가치를 계산할 수 있도록 도달해야 합니다.</b></p>
-
-<p>그러나, DP에서 모든 상태에 대한 업데이트를 동시에 진행하기 때문에, 골의 최적가치가 퍼져나가 다른 상태의 최적가치를 구할 수 있을 때까지 <b>여러 번 반복 진행</b>해야 합니다. 이것이 바로 “Value Iteration”입니다.<br />
-<br />
-Value iteration을 수식으로 표현하면 아래와 같습니다.</p>
-
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*} v_{k+1}&=m \underset a ax{\mathbb E[R_{t+1} = \gamma v_k(S_{t+1})|S_t=s, A_t=a]}\\&=m \underset a ax{\sum_{s',r}p(s',r|s,a)[r+\gamma v_k(s')]} \end{align*} %]]></script>
-
-<p>위 수식을 보시면, 벨만 최적 방정식과 유사합니다. 즉, value iteration은 벨만 최적 방정식을 업데이트 형식으로 바뀐 것입니다.</p>
-
-<blockquote>policy evalutation은 벨만 기대 방정식을 업데이트 형식으로 바꾼 것이고, value iteration은 벨만 최적 방정식을 업데이트 형식으로 바뀐 것입니다.</blockquote>
-
-<p>value iteration은 policy iteration 처럼 명시적인 정책 발전 과정을 중간에 생략하고, 최적 가치 함수를 바로 계산하여 마지막에 정책 발전을 한번만 수행하여 최적 정책을 얻는 과정이라 생각할 수 있습니다.</p>
-
-<hr />
-
-<p>이상으로 이번 포스팅을 마치겠습니다. 읽어주셔서 감사합니다.</p>
-
-<hr />
-
-<ol>
-  <li><a href="http://web.stanford.edu/class/cs234/slides/lecture2.pdf">CS234 Winter 2019 course Lecture 2</a></li>
-  <li><a href="http://incompleteideas.net/book/bookdraft2017nov5.pdf">Richard S. Sutton and Andre G. Barto : Reinforcement Learning : An Introduction</a></li>
-  <li><a href="https://www.davidsilver.uk/wp-content/uploads/2020/03/DP.pdf">David Silver Lecture 3</a></li>
-  <li><a href="https://ko.wikipedia.org/wiki/동적_계획법">위키백과, 동적계획법</a></li>
-</ol>
-
-    <article>
-    <div class="post-more">
-      
-      <a href="/reinforcement%20learning/2020/07/13/dp/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
-      
-      <a href="/reinforcement%20learning/2020/07/13/dp/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
     </div>
   </div>
   
