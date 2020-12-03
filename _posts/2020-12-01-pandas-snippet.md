@@ -1,14 +1,14 @@
 ---
 layout : jupyter
 title : pandas.DataFrame.any() 
-category : Pandas Code Snippet
-tags : pandas python code
+category : Code Snippet
+tags : pandas python
 ---
-***
+---
 
 평소에 헷갈리는 pandas 사용 관련 코드 모음입니다.
 
-
+---
 
 ```python
 import pandas as pd
