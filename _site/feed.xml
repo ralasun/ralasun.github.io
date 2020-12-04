@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-12-03T14:56:08+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ralasun Resarch Blog</title><subtitle></subtitle><author><name>Seonhwa Lee</name></author><entry><title type="html">dataframe, numpy 등 array에서 double-colon(::) slicing</title><link href="http://localhost:4000/code%20snippet/2020/12/03/double-colon-slicing/" rel="alternate" type="text/html" title="dataframe, numpy 등 array에서 double-colon(::) slicing" /><published>2020-12-03T00:00:00+09:00</published><updated>2020-12-03T00:00:00+09:00</updated><id>http://localhost:4000/code%20snippet/2020/12/03/double-colon-slicing</id><content type="html" xml:base="http://localhost:4000/code%20snippet/2020/12/03/double-colon-slicing/">&lt;hr /&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-12-04T10:20:17+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ralasun Resarch Blog</title><subtitle></subtitle><author><name>Seonhwa Lee</name></author><entry><title type="html">dataframe, numpy 등 array에서 double-colon(::) slicing</title><link href="http://localhost:4000/code%20snippet/2020/12/03/double-colon-slicing/" rel="alternate" type="text/html" title="dataframe, numpy 등 array에서 double-colon(::) slicing" /><published>2020-12-03T00:00:00+09:00</published><updated>2020-12-03T00:00:00+09:00</updated><id>http://localhost:4000/code%20snippet/2020/12/03/double-colon-slicing</id><content type="html" xml:base="http://localhost:4000/code%20snippet/2020/12/03/double-colon-slicing/">&lt;hr /&gt;
 
 &lt;p&gt;pandas, numpy 등 자주 헷갈리는 코드 사용을 모아두었습니다.&lt;/p&gt;
 
@@ -283,11 +283,10 @@
   &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;100 rows × 2 columns&lt;/p&gt;
-&lt;/div&gt;</content><author><name>Seonhwa Lee</name></author><category term="Code Snippet" /><category term="pandas," /><category term="numpy," /><category term="python" /><summary type="html">pandas, numpy 등 자주 헷갈리는 코드 사용을 모아두었습니다. df[::c] 시작부터 c 간격마다 있는 row를 슬라이싱해줍니다. 자세히 설명하면, 1번째, (1+c)번째, (1+2c)번째, …, (1+nc)번째 row가 선택됩니다. 아래는 예제입니다. import pandas as pd import numpy as np a = np.random.normal(size=200) b = np.random.uniform(size=200) sampledf = pd.DataFrame({'A':a,'B':b}) sampledf[::2] A B 0 0.312234 0.788584 2 -0.123720 0.445176 4 0.411344 0.617469 6 -0.434367 0.674210 8 -0.563221 0.009331 ... ... ... 190 1.797756 0.963394 192 -0.679177 0.033222 194 0.975527 0.041236 196 -1.354463 0.450887 198 -2.341788 0.009804 100 rows × 2 columns 위에 sampledf[::2]를 보시면 첫번째(index=0), 세번째(index=2), …., 199번째(index=198)이 선택되는 것을 확인하실 수 있습니다. 2의 간격 크기로 행이 선택되는 것입니다. df[::-1] df[::-1] 인 경우는 열의 배치를 뒤집어줍니다. 아래는 예시입니다. sampledf[::-1] A B 199 2.600890 0.775489 198 -2.341788 0.009804 197 -0.365103 0.413758 196 -1.354463 0.450887 195 0.685687 0.933069 ... ... ... 4 0.411344 0.617469 3 1.703587 0.718288 2 -0.123720 0.445176 1 0.208545 0.459722 0 0.312234 0.788584 200 rows × 2 columns df[::-c] 마찬가지로, df[::-c] 이면 뒤에 row부터 2간격마다 row가 선택됩니다. 아래는 예시입니다. sampledf[::-2] A B 199 2.600890 0.775489 197 -0.365103 0.413758 195 0.685687 0.933069 193 0.267967 0.020342 191 -0.918194 0.917082 ... ... ... 9 0.924938 0.837344 7 0.890616 0.096270 5 -0.603043 0.697143 3 1.703587 0.718288 1 0.208545 0.459722 100 rows × 2 columns</summary></entry><entry><title type="html">pandas.DataFrame.any()</title><link href="http://localhost:4000/code%20snippet/2020/12/01/pandas-snippet/" rel="alternate" type="text/html" title="pandas.DataFrame.any()" /><published>2020-12-01T00:00:00+09:00</published><updated>2020-12-01T00:00:00+09:00</updated><id>http://localhost:4000/code%20snippet/2020/12/01/pandas-snippet</id><content type="html" xml:base="http://localhost:4000/code%20snippet/2020/12/01/pandas-snippet/">&lt;hr /&gt;
+&lt;/div&gt;</content><author><name>Seonhwa Lee</name></author><category term="Code Snippet" /><category term="pandas," /><category term="numpy," /><category term="python" /><summary type="html">pandas, numpy 등 자주 헷갈리는 코드 사용을 모아두었습니다. df[::c] 시작부터 c 간격마다 있는 row를 슬라이싱해줍니다. 자세히 설명하면, 1번째, (1+c)번째, (1+2c)번째, …, (1+nc)번째 row가 선택됩니다. 아래는 예제입니다. import pandas as pd import numpy as np a = np.random.normal(size=200) b = np.random.uniform(size=200) sampledf = pd.DataFrame({'A':a,'B':b}) sampledf[::2] A B 0 0.312234 0.788584 2 -0.123720 0.445176 4 0.411344 0.617469 6 -0.434367 0.674210 8 -0.563221 0.009331 ... ... ... 190 1.797756 0.963394 192 -0.679177 0.033222 194 0.975527 0.041236 196 -1.354463 0.450887 198 -2.341788 0.009804 100 rows × 2 columns 위에 sampledf[::2]를 보시면 첫번째(index=0), 세번째(index=2), …., 199번째(index=198)이 선택되는 것을 확인하실 수 있습니다. 2의 간격 크기로 행이 선택되는 것입니다. df[::-1] df[::-1] 인 경우는 열의 배치를 뒤집어줍니다. 아래는 예시입니다. sampledf[::-1] A B 199 2.600890 0.775489 198 -2.341788 0.009804 197 -0.365103 0.413758 196 -1.354463 0.450887 195 0.685687 0.933069 ... ... ... 4 0.411344 0.617469 3 1.703587 0.718288 2 -0.123720 0.445176 1 0.208545 0.459722 0 0.312234 0.788584 200 rows × 2 columns df[::-c] 마찬가지로, df[::-c] 이면 뒤에 row부터 2간격마다 row가 선택됩니다. 아래는 예시입니다. sampledf[::-2] A B 199 2.600890 0.775489 197 -0.365103 0.413758 195 0.685687 0.933069 193 0.267967 0.020342 191 -0.918194 0.917082 ... ... ... 9 0.924938 0.837344 7 0.890616 0.096270 5 -0.603043 0.697143 3 1.703587 0.718288 1 0.208545 0.459722 100 rows × 2 columns</summary></entry><entry><title type="html">pandas.DataFrame.any(), numpy.any()</title><link href="http://localhost:4000/code%20snippet/2020/12/01/any-all-usage/" rel="alternate" type="text/html" title="pandas.DataFrame.any(), numpy.any()" /><published>2020-12-01T00:00:00+09:00</published><updated>2020-12-01T00:00:00+09:00</updated><id>http://localhost:4000/code%20snippet/2020/12/01/any-all-usage</id><content type="html" xml:base="http://localhost:4000/code%20snippet/2020/12/01/any-all-usage/">&lt;hr /&gt;
 
-&lt;p&gt;평소에 헷갈리는 pandas 사용 관련 코드 모음입니다.&lt;/p&gt;
-
-&lt;hr /&gt;
+&lt;p&gt;평소에 헷갈리는 any(), all()에 대해 정리하였습니다. 
+***&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pandas&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -449,13 +448,122 @@ dtype: bool
 2019-07-30    False
 2019-07-31    False
 Freq: D, Length: 546, dtype: bool
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Seonhwa Lee</name></author><category term="Code Snippet" /><category term="pandas" /><category term="python" /><summary type="html">평소에 헷갈리는 pandas 사용 관련 코드 모음입니다. import pandas as pd df = pd.read_csv('./data/top1_1880109251922.csv', index_col=[0]) df['date'] = pd.to_datetime(df['date']) df['Date'] = pd.to_datetime(df['date']) df = df.set_index('Date') df = df.asfreq('D') df.isna()는 데이터프레임에서 NaN 요소에 해당되는 부분을 True로 리턴해준다. df.isna() date store product_c sales Date 2018-02-01 False False False False 2018-02-02 False False False False 2018-02-03 False False False False 2018-02-04 False False False False 2018-02-05 False False False False ... ... ... ... ... 2019-07-27 True True True True 2019-07-28 True True True True 2019-07-29 False False False False 2019-07-30 False False False False 2019-07-31 False False False False 546 rows × 4 columns 여기서, dataframe.any(axis=0)인 경우엔 각 column의 row를 다 훑어서, row요소들 중 적어도 하나의 row애 True가 있으면, True를 반환합니다. df.isna().any(axis=0) date True store True product_c True sales True dtype: bool 반면에, dataframe.any(axis=1)인 경우엔 각 index별로 column요소를 다 훑어서 적어도 하나의 column에 True가 있으면 True를 반환합니다. 아래 코드를 보면, 해당 index에 data, store, product_c, sales가 모두 True이면 해당 index row는 True를 반환합니다. df.isna().any(axis=1) Date 2018-02-01 False 2018-02-02 False 2018-02-03 False 2018-02-04 False 2018-02-05 False ... 2019-07-27 True 2019-07-28 True 2019-07-29 False 2019-07-30 False 2019-07-31 False Freq: D, Length: 546, dtype: bool</summary></entry><entry><title type="html">jupyter-notebook</title><link href="http://localhost:4000/jupyter-notebook/2020/12/01/example-jupyter-notebook/" rel="alternate" type="text/html" title="jupyter-notebook" /><published>2020-12-01T00:00:00+09:00</published><updated>2020-12-01T00:00:00+09:00</updated><id>http://localhost:4000/jupyter-notebook/2020/12/01/example-jupyter-notebook</id><content type="html" xml:base="http://localhost:4000/jupyter-notebook/2020/12/01/example-jupyter-notebook/">&lt;p&gt;pandas 코드 설명하기&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pandas&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Seonhwa Lee</name></author><category term="jupyter-notebook" /><category term="jupyter-notebook" /><summary type="html">pandas 코드 설명하기 import pandas as pd</summary></entry><entry><title type="html">Introduction to Time Series and forecasting 리뷰) 1. Introduction to Time Series</title><link href="http://localhost:4000/time%20series%20analysis/2020/11/23/time-series-intro(1)/" rel="alternate" type="text/html" title="Introduction to Time Series and forecasting 리뷰) 1. Introduction to Time Series" /><published>2020-11-23T00:00:00+09:00</published><updated>2020-11-23T00:00:00+09:00</updated><id>http://localhost:4000/time%20series%20analysis/2020/11/23/time-series-intro(1)</id><content type="html" xml:base="http://localhost:4000/time%20series%20analysis/2020/11/23/time-series-intro(1)/">&lt;p&gt;이번 포스팅을 시작으로, 시계열 분석에 대해서 다루도록 하겠습니다. 메인 교재는 Brockwell와 Richard A. Davis의 &amp;lt; Introduction to Time Series and Forecasting &amp;gt; 와 패스트캠퍼스의 &amp;lt;파이썬을 활용한 시계열 분석 A-Z&amp;gt; 를 듣고 정리하였습니다.&lt;/p&gt;
+&lt;h1&gt;np.any()&lt;/h1&gt;
+
+&lt;p&gt;np.any() 는 dataframe.any()와 유사합니다. 주어진 축(axis) 정보에 따라 해당 요소에서 True가 하나 이상이라도 있으면 True를 반환합니다. 아래는 np.any()의 예제입니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;먼저, 예제 array를 생성합니다. True, False로 구성된 random한 array를 만들었습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;samplearr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;choice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;samplearr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;47&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;choice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;samplearr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;47&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;choice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;samplearr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;47&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[False  True False False False  True False  True False False False False
+  True False False False  True  True  True False  True False False False
+  True False  True False False False False  True False  True  True False
+  True  True False  True  True  True  True  True False  True  True]
+[False False False  True  True  True False False  True  True False  True
+  True False  True  True  True  True False  True False  True  True  True
+  True  True  True False  True  True  True  True  True  True  True False
+  True False False  True False False  True False False  True  True]
+[False False False False  True  True False False False  True False  True
+  True False False  True False  True  True  True False False False  True
+ False False False False  True  True False False  True  True False  True
+ False  True False  True  True False  True False False False  True]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;np.any(a,b,c)는 에러를 발생합니다. 반드시, 하나의 array나 아니면 array와 유사한 list형식으로 묶어서 넣어줘야합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;---------------------------------------------------------------------------
+
+TypeError                                 Traceback (most recent call last)
+
+&amp;lt;ipython-input-18-7a7facd3228c&amp;gt; in &amp;lt;module&amp;gt;
+----&amp;gt; 1 np.any(a,b,c)
+
+
+&amp;lt;__array_function__ internals&amp;gt; in any(*args, **kwargs)
+
+
+/opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in any(a, axis, out, keepdims)
+   2328 
+   2329     &quot;&quot;&quot;
+-&amp;gt; 2330     return _wrapreduction(a, np.logical_or, 'any', axis, None, out, keepdims=keepdims)
+   2331 
+   2332 
+
+
+/opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in _wrapreduction(obj, ufunc, method, axis, dtype, out, **kwargs)
+     85                 return reduction(axis=axis, out=out, **passkwargs)
+     86 
+---&amp;gt; 87     return ufunc.reduce(obj, axis, dtype, out, **passkwargs)
+     88 
+     89 
+
+
+TypeError: only integer scalar arrays can be converted to a scalar index
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2&gt;axis=0 vs. axis=1&lt;/h2&gt;
+
+&lt;p&gt;그전에 axis=0과 1에 따라 차이를 살펴봅시다. axis=0인 경우엔 각 column의 모든 row를 훑고, axis=1인 경우엔 각 row의 모든 column을 훑습니다. 아래는 관련 그림입니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;./2020-12-01-any-all-usage_files/axis.jpg&quot; alt=&quot;axis&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;axis=0인 경우, 각각의 column요소에서 모든 row를 훑어서 하나 이상이 True요소라면 True를 반환합니다. 결과는 [a,b,c]의 column의 갯수만큼 출력됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;array([False,  True, False,  True,  True,  True, False,  True,  True,
+        True, False,  True,  True, False,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+       False,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True, False,  True,  True,  True,  True,  True, False,
+        True,  True])
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;axis=1인 경우, 각각의 row요소에서 모든 column을 훑어서 하나 이상이 True요소라면 True를 반환합니다. 결과는 [a,b,c]의 row 갯수만큼 출력됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;array([ True,  True,  True])
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1&gt;np.all()&lt;/h1&gt;
+
+&lt;p&gt;np.all()은 np.any()와 반대로, 검사할 축에 모든 요소가 True여야지만 True를 반환합니다. 아래는 예제입니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;array([False, False, False, False, False,  True, False, False, False,
+       False, False, False,  True, False, False, False, False,  True,
+       False, False, False, False, False, False, False, False, False,
+       False, False, False, False, False, False,  True, False, False,
+       False, False, False,  True, False, False,  True, False, False,
+       False,  True])
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;array([False, False, False])
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Seonhwa Lee</name></author><category term="Code Snippet" /><category term="pandas" /><category term="python" /><category term="code," /><category term="numpy" /><summary type="html">평소에 헷갈리는 any(), all()에 대해 정리하였습니다. *** import pandas as pd df = pd.read_csv('./data/top1_1880109251922.csv', index_col=[0]) df['date'] = pd.to_datetime(df['date']) df['Date'] = pd.to_datetime(df['date']) df = df.set_index('Date') df = df.asfreq('D') df.isna()는 데이터프레임에서 NaN 요소에 해당되는 부분을 True로 리턴해준다. df.isna() date store product_c sales Date 2018-02-01 False False False False 2018-02-02 False False False False 2018-02-03 False False False False 2018-02-04 False False False False 2018-02-05 False False False False ... ... ... ... ... 2019-07-27 True True True True 2019-07-28 True True True True 2019-07-29 False False False False 2019-07-30 False False False False 2019-07-31 False False False False 546 rows × 4 columns 여기서, dataframe.any(axis=0)인 경우엔 각 column의 row를 다 훑어서, row요소들 중 적어도 하나의 row애 True가 있으면, True를 반환합니다. df.isna().any(axis=0) date True store True product_c True sales True dtype: bool 반면에, dataframe.any(axis=1)인 경우엔 각 index별로 column요소를 다 훑어서 적어도 하나의 column에 True가 있으면 True를 반환합니다. 아래 코드를 보면, 해당 index에 data, store, product_c, sales가 모두 True이면 해당 index row는 True를 반환합니다. df.isna().any(axis=1) Date 2018-02-01 False 2018-02-02 False 2018-02-03 False 2018-02-04 False 2018-02-05 False ... 2019-07-27 True 2019-07-28 True 2019-07-29 False 2019-07-30 False 2019-07-31 False Freq: D, Length: 546, dtype: bool np.any() np.any() 는 dataframe.any()와 유사합니다. 주어진 축(axis) 정보에 따라 해당 요소에서 True가 하나 이상이라도 있으면 True를 반환합니다. 아래는 np.any()의 예제입니다. import numpy as np 먼저, 예제 array를 생성합니다. True, False로 구성된 random한 array를 만들었습니다. samplearr = [True, False] a = np.random.choice(samplearr, size=(47)) b = np.random.choice(samplearr, size=(47)) c = np.random.choice(samplearr, size=(47)) print(a) print(b) print(c) [False True False False False True False True False False False False True False False False True True True False True False False False True False True False False False False True False True True False True True False True True True True True False True True] [False False False True True True False False True True False True True False True True True True False True False True True True True True True False True True True True True True True False True False False True False False True False False True True] [False False False False True True False False False True False True True False False True False True True True False False False True False False False False True True False False True True False True False True False True True False True False False False True] np.any(a,b,c)는 에러를 발생합니다. 반드시, 하나의 array나 아니면 array와 유사한 list형식으로 묶어서 넣어줘야합니다. np.any(a,b,c) --------------------------------------------------------------------------- TypeError Traceback (most recent call last) &amp;lt;ipython-input-18-7a7facd3228c&amp;gt; in &amp;lt;module&amp;gt; ----&amp;gt; 1 np.any(a,b,c) &amp;lt;__array_function__ internals&amp;gt; in any(*args, **kwargs) /opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in any(a, axis, out, keepdims) 2328 2329 &quot;&quot;&quot; -&amp;gt; 2330 return _wrapreduction(a, np.logical_or, 'any', axis, None, out, keepdims=keepdims) 2331 2332 /opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in _wrapreduction(obj, ufunc, method, axis, dtype, out, **kwargs) 85 return reduction(axis=axis, out=out, **passkwargs) 86 ---&amp;gt; 87 return ufunc.reduce(obj, axis, dtype, out, **passkwargs) 88 89 TypeError: only integer scalar arrays can be converted to a scalar index axis=0 vs. axis=1 그전에 axis=0과 1에 따라 차이를 살펴봅시다. axis=0인 경우엔 각 column의 모든 row를 훑고, axis=1인 경우엔 각 row의 모든 column을 훑습니다. 아래는 관련 그림입니다. axis=0인 경우, 각각의 column요소에서 모든 row를 훑어서 하나 이상이 True요소라면 True를 반환합니다. 결과는 [a,b,c]의 column의 갯수만큼 출력됩니다. np.any([a,b,c], axis=0) array([False, True, False, True, True, True, False, True, True, True, False, True, True, False, True, True, True, True, True, True, True, True, True, True, True, True, True, False, True, True, True, True, True, True, True, True, True, True, False, True, True, True, True, True, False, True, True]) axis=1인 경우, 각각의 row요소에서 모든 column을 훑어서 하나 이상이 True요소라면 True를 반환합니다. 결과는 [a,b,c]의 row 갯수만큼 출력됩니다. np.any([a,b,c], axis=1) array([ True, True, True]) np.all() np.all()은 np.any()와 반대로, 검사할 축에 모든 요소가 True여야지만 True를 반환합니다. 아래는 예제입니다. np.all([a,b,c], axis=0) array([False, False, False, False, False, True, False, False, False, False, False, False, True, False, False, False, False, True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, True, False, False, False, False, False, True, False, False, True, False, False, False, True]) np.all([a,b,c], axis=1) array([False, False, False])</summary></entry><entry><title type="html">Introduction to Time Series and forecasting 리뷰) 1. Introduction to Time Series</title><link href="http://localhost:4000/time%20series%20analysis/2020/11/23/time-series-intro(1)/" rel="alternate" type="text/html" title="Introduction to Time Series and forecasting 리뷰) 1. Introduction to Time Series" /><published>2020-11-23T00:00:00+09:00</published><updated>2020-11-23T00:00:00+09:00</updated><id>http://localhost:4000/time%20series%20analysis/2020/11/23/time-series-intro(1)</id><content type="html" xml:base="http://localhost:4000/time%20series%20analysis/2020/11/23/time-series-intro(1)/">&lt;p&gt;이번 포스팅을 시작으로, 시계열 분석에 대해서 다루도록 하겠습니다. 메인 교재는 Brockwell와 Richard A. Davis의 &amp;lt; Introduction to Time Series and Forecasting &amp;gt; 와 패스트캠퍼스의 &amp;lt;파이썬을 활용한 시계열 분석 A-Z&amp;gt; 를 듣고 정리하였습니다.&lt;/p&gt;
 
 &lt;hr /&gt;
 
@@ -1789,4 +1897,206 @@ Value iteration을 수식으로 표현하면 아래와 같습니다.&lt;/p&gt;
   &lt;li&gt;&lt;a href=&quot;http://web.stanford.edu/class/cs234/slides/lecture1.pdf&quot;&gt;CS234 Winter 2019 course Lecture 1&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://incompleteideas.net/book/bookdraft2017nov5.pdf&quot;&gt;Richard S. Sutton and Andre G. Barto : Reinforcement Learning : An Introduction&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://www.davidsilver.uk/wp-content/uploads/2020/03/intro_RL.pdf&quot;&gt;David Silver Lecture 1&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</content><author><name>Seonhwa Lee</name></author><category term="Reinforcement Learning" /><category term="cs234" /><category term="reinforcement-learning" /><category term="david-silver" /><category term="sutton" /><summary type="html">이번 포스팅은 강화학습 소개[1]에 이어서 진행합니다. CS234 1강, Deep Mind의 David Silver 강화학습 강의 1강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 1 기반으로 작성하였습니다. 지난 포스팅에서, 강화학습의 특성과 강화학습 문제를 정의하기 위해 필요한 요소, 강화학습 문제의 종류에 대해서 알아봤습니다. 에이전트는 에이전트의 상태를 가지고 어떻게 좋은 행동을 선택할 수 있을까요 ? 이 문제에 대한 답을 하기 전에, 에이전트가 상태 이외에 어떠한 요소를 가지고 있어야 하는지 알아봅시다. Major Components of an RL Agent 강화학습 에이전트를 구성하는 요소는 크게 정책(policy), 가치 함수(value function), 모델(Model)입니다. Policy 정책은 에이전트의 행동전략(agent’s behavior)입니다. 정책은 일종의 함수로, 주체의 상태를 행동으로 맵핑합니다. 정책의 종류는 deterministic policy $a = \pi(s)$ 와 stochastic policy와 $\pi(a|s) = P [A_t=a|S_t=s]$ 가 있습니다. A policy is a map from state to action 아래와 같이 화성탐사기 예를 들어봅시다. 그림 1. 화성탐사기 예제 위의 그림과 같이, 화성탐사기가 도달할 수 있는 상태는 총 7가지 상태이고, 각 상태에서 취할 수 있는 행동은 왼쪽/오른쪽 두가지입니다. s1 상태에서 +1 보상을, s7 상태에서 +10 보상을, 나머지 상태에서 0의 보상을 받습니다. 그림 2. 화성 탐사기 정책 예시 위 예는 화성 탐사가 가질 수 있는 정책 중 하나입니다(사실 이 예제는 너무 단순해서 이 정책이 최적 정책이긴 합니다). s7상태에서 가장 큰 보상을 받기 때문에 어떤 상태에서 시작하던 간에 오른쪽으로 가는 것이 최고의 정책이죠. 또한 이 정책의 특성은 deterministic입니다. 그 이유는 각 상태에서 나올 수 있는 모든 행동들의 가능성을 보여주는 것이 아니라, 한가지 행동만을 출력하기 때문입니다. Value Function 다음은 가치 함수입니다. 가치 함수는 특정 정책 아래, 현재 에이전트 상태에서 앞으로 받을 미래 보상까지 고려한 누적보상 예측값입니다. 에이전트는 이 가치값을 기반으로 현 상태의 좋고 나쁨을 판단합니다. 또한 정책 간 가치함수를 비교를 통한 행동 선택의 기반이 되기도 합니다. $\gamma$ 는 discount factor로, 현재 보상과 미래 보상간의 중요도 차이를 보여줍니다. 추후에 더 자세히 설명하도록 하겠습니다. 아래는 가치함수의 예입니다. 그림 3. 화성 탐사기 가치함수 예시 화성 탐사 문제를 그림 1. 처럼 정의했을 때, 각 상태에서 가질 수 있는 화성 탐사 에이전트의 가치함수입니다. Model 모델이란 환경(정확히, 주체가 영향을 받고 있는 환경)이 주체의 행동에 따라 어떻게 변하는지에 관한 모델입니다. 즉 환경의 동적모델(dynamic models of the environment)이죠. A model predicts what the environment will do next $P$ predicts the next state $R$ predicts the next immediate reward 환경의 모델은 크게 두 가지가 있습니다. 변이모델(transition/dynamics model)과 보상입니다. 변이모델은 에이전트의 행동에 따라 다음 상태에 대한 정보를 알려줍니다. 보상모델은 에이전트가 선택한 행동에 대해 변이모델에 따라 다음 상태에 갔을 때 받는 즉각적인 보상입니다. 아래는 모델에 관한 화성탐사 예시입니다. 그림 4. 화성 탐사기 모델 예시 Categorizing RL Agents 에이전트를 구성하는 요소로는 모델, 가치함수, 정책임을 알았습니다. 그러나 사실 구성요소를 어떻게 조합하느냐에 따라 강화학습 에이전트의 종류를 몇가지로 나눌 수 있습니다. 그림 5. RL Agent Taxonomy Value Based 에이전트가 행동을 선택할 때, 가치함수의 결과값이 가장 높은 쪽으로 선택하는 것입니다. 이때, 정책이 명시적으로 표현되지 않고 내재적으로 표현됩니다. Policy Based 명시적인 정책을 가진 에이전트입니다. 즉, 특성 상태에서 어떤 행동이 확률적으로 높은지를 보고 행동하는 것입니다. Actor-Critic 위 Value-based와 policy based가 합쳐진 상태입니다. Model Free 변이확률과 보상함수에 대한 정보가 없는 경우입니다. 에이전트는 환경모델을 알 수 없으나 경험을 해나가면서 환경을 이해해 나가면서 문제를 해결하는 케이스입니다. Model Based 환경 모델을 구축하여 문제를 푸는 케이스입니다. Key Challenges in Learning to Make Sequences of Good Decisions 연속적인 의사 결정 문제는 문제의 상태에 따라 다르게 접근해야 합니다. 어떤 문제 같은 경우, 환경의 모델을 완벽하게 아는 경우가 있을 수 있습니다. 예를 들어, 무인 헬리콥터에서, 헬리콥터가 있는 환경에서 바람의 속도, 바람의 방향, 장애물의 위치, 날씨, 온도등 헬리콥터에 영향을 줄 수 있는 모든 요소들을 다 파악할 수 있으면 환경 모델을 완벽하게 아는 경우입니다. 이런 경우, 우리는 헬리콥터를 움직일 때마다 어떠한 결과를 초래하고 헬리콥터 움직임에 좋은지 나쁜지를 일일이 “계산”할 수 있습니다. 이런 경우를 Planning이라 합니다. 그림 6. Planning 하지만, 대부분의 경우, 환경 모델을 완벽하게 아는 것은 불가능합니다. 따라서 환경에 직접 부딪혀 가면서(환경과 상호작용하면서) 경험을 통해 환경모델을 간접적으로 익히는 것입니다. 따라서 에이전트는 환경과의 상호작용을 통해 얻은 경험을 바탕으로 자신만의 전략을 구축해 나가는 것입니다. 포커 게임에서, 상대방이 가지고 있는 패나 전략을 알 순 없지만 상대방과 여러 번 게임을 통해 상대방 전략을 간접적으로 익힐 수 있습니다. 이렇게 푸는 방법이 “Reinforcement Learning”입니다. 그림 7. Reinforcement Learning Exploration and Exploitation 강화학습은 환경과의 상호작용을 통해 경험을 쌓아가면서 에이전트의 전략을 스스로 구축해나가는 것이라 하였습니다. 좋은 전략을 구축하기 위해, 실패도 해보고 성공도 해보면서 배워나가야 합니다. 그러나 어느 정도 경험을 했다면, 이 경험을 바탕으로 대략적인 전략을 구축해 나가야합니다. 이와 관련 강화학습 문제가 exploration과 exploitation입니다. exploration이란 추후에 에이전트가 더 좋은 결정을 내릴수도 있기 때문에 새로운 결정을 시도해보는 과정입니다. 반면에, exploitation은 이제까지의 경험을 바탕으로 결정을 내리는 과정입니다. 이 둘 사이는 trade-off관계에 있습니다. exploration을 많이 하면 새로운 시도로 좋은 의사 결정 전략을 구축할 수 있지만 반면에 지금 당장 받을 보상을 희생해야 합니다. 이 둘 사이의 trade-off관계에 관한 예를 들어봅시다. 외식을 하기 위해 식당을 선택하는 경우, 이제까지 경험을 바탕으로 좋아하는 식당을 가는 건 exploitation이고, 새로운 식당을 시도해 보는 건 exploration입니다. 이 외에 다른 예는 아래와 같습니다. 그림 8. exploration and exploitation Evalutation(Prediction) and Control 에이전트는 좋은 경험을 쌓기 위해서, exploration과 exploitation을 균형있게 활용해야합니다. 하지만 어떻게 활용하면서 경험을 쌓고, 전략을 구축하는 걸까요? 이제 관한 문제가 evalution과 control입니다. evaluation은 일정 정책 아래, 기대보상을 추정하여 현재 따르는 정책이 좋고/나쁨을 평가하는 것입니다. 기대보상 추정은 결국 가치함수를 구하는 것입니다. 가치함수 $V_{\pi}(s)$ 는 현 정책을 따랐을 때, 상태 $s$ 의 가치입니다. 직접적으로는 현 상태의 가치지만 현 정책 아래에서 계산한 것이기 때문에 현 정책의 가치로도 생각할 수 있습니다. control은 최적정책을 찾는 것입니다. evalutation과정을 통해 정책의 가치를 평가했다면, 이 평가를 기반으로 더 나은 정책이 있는지를 찾는 과정입니다. evaluation과 control은 독립적인 과정이 아닙니다. evaluation을 해야 control을 하고, control을 해야 evalutation을 할 수 있습니다. 즉 서로 맞물려서 최적의 정책을 찾아 나가는 것입니다. 아래 그리드월드 예제를 들어봅시다. 그림 9. evalutation(prediction) 그림 10. control 그림 9에서 주어진 정책은 모든 행동(좌, 우, 위, 아래)으로 갈 확률이 0.25로 동일합니다. 이 정책 아래 각 상태(그리드월드 한 칸)의 가치를 평가하면 오른쪽 숫자로 채워진 테이블이 됩니다. 최적 정책을 최적 가치함수 기반으로 찾을 수 있습니다. 그림 10처럼 최적 가치함수가 가운데 표처럼 구해졌다고 합시다. 이 기반으로 구한 최적 정책은 오른쪽 표와 같습니다. A’상태에서의 최적 정책은 위로 올라가는 것입니다. 왜냐하면 A’ 주변 가치함수 값들은 14.4, 17.8, 14.4입니다. A’에서 가장 높은 17.8의 가치를 가진 상태로 가는 것이 최적이기 때문입니다. 이상으로, Reinforcement Learning 소개[2] 포스팅을 마치겠습니다. 다음 포스팅은 Markov Decision Process을 알아보도록 하겠습니다. CS234 Winter 2019 course Lecture 1 Richard S. Sutton and Andre G. Barto : Reinforcement Learning : An Introduction David Silver Lecture 1</summary></entry></feed>
+&lt;/ol&gt;</content><author><name>Seonhwa Lee</name></author><category term="Reinforcement Learning" /><category term="cs234" /><category term="reinforcement-learning" /><category term="david-silver" /><category term="sutton" /><summary type="html">이번 포스팅은 강화학습 소개[1]에 이어서 진행합니다. CS234 1강, Deep Mind의 David Silver 강화학습 강의 1강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 1 기반으로 작성하였습니다. 지난 포스팅에서, 강화학습의 특성과 강화학습 문제를 정의하기 위해 필요한 요소, 강화학습 문제의 종류에 대해서 알아봤습니다. 에이전트는 에이전트의 상태를 가지고 어떻게 좋은 행동을 선택할 수 있을까요 ? 이 문제에 대한 답을 하기 전에, 에이전트가 상태 이외에 어떠한 요소를 가지고 있어야 하는지 알아봅시다. Major Components of an RL Agent 강화학습 에이전트를 구성하는 요소는 크게 정책(policy), 가치 함수(value function), 모델(Model)입니다. Policy 정책은 에이전트의 행동전략(agent’s behavior)입니다. 정책은 일종의 함수로, 주체의 상태를 행동으로 맵핑합니다. 정책의 종류는 deterministic policy $a = \pi(s)$ 와 stochastic policy와 $\pi(a|s) = P [A_t=a|S_t=s]$ 가 있습니다. A policy is a map from state to action 아래와 같이 화성탐사기 예를 들어봅시다. 그림 1. 화성탐사기 예제 위의 그림과 같이, 화성탐사기가 도달할 수 있는 상태는 총 7가지 상태이고, 각 상태에서 취할 수 있는 행동은 왼쪽/오른쪽 두가지입니다. s1 상태에서 +1 보상을, s7 상태에서 +10 보상을, 나머지 상태에서 0의 보상을 받습니다. 그림 2. 화성 탐사기 정책 예시 위 예는 화성 탐사가 가질 수 있는 정책 중 하나입니다(사실 이 예제는 너무 단순해서 이 정책이 최적 정책이긴 합니다). s7상태에서 가장 큰 보상을 받기 때문에 어떤 상태에서 시작하던 간에 오른쪽으로 가는 것이 최고의 정책이죠. 또한 이 정책의 특성은 deterministic입니다. 그 이유는 각 상태에서 나올 수 있는 모든 행동들의 가능성을 보여주는 것이 아니라, 한가지 행동만을 출력하기 때문입니다. Value Function 다음은 가치 함수입니다. 가치 함수는 특정 정책 아래, 현재 에이전트 상태에서 앞으로 받을 미래 보상까지 고려한 누적보상 예측값입니다. 에이전트는 이 가치값을 기반으로 현 상태의 좋고 나쁨을 판단합니다. 또한 정책 간 가치함수를 비교를 통한 행동 선택의 기반이 되기도 합니다. $\gamma$ 는 discount factor로, 현재 보상과 미래 보상간의 중요도 차이를 보여줍니다. 추후에 더 자세히 설명하도록 하겠습니다. 아래는 가치함수의 예입니다. 그림 3. 화성 탐사기 가치함수 예시 화성 탐사 문제를 그림 1. 처럼 정의했을 때, 각 상태에서 가질 수 있는 화성 탐사 에이전트의 가치함수입니다. Model 모델이란 환경(정확히, 주체가 영향을 받고 있는 환경)이 주체의 행동에 따라 어떻게 변하는지에 관한 모델입니다. 즉 환경의 동적모델(dynamic models of the environment)이죠. A model predicts what the environment will do next $P$ predicts the next state $R$ predicts the next immediate reward 환경의 모델은 크게 두 가지가 있습니다. 변이모델(transition/dynamics model)과 보상입니다. 변이모델은 에이전트의 행동에 따라 다음 상태에 대한 정보를 알려줍니다. 보상모델은 에이전트가 선택한 행동에 대해 변이모델에 따라 다음 상태에 갔을 때 받는 즉각적인 보상입니다. 아래는 모델에 관한 화성탐사 예시입니다. 그림 4. 화성 탐사기 모델 예시 Categorizing RL Agents 에이전트를 구성하는 요소로는 모델, 가치함수, 정책임을 알았습니다. 그러나 사실 구성요소를 어떻게 조합하느냐에 따라 강화학습 에이전트의 종류를 몇가지로 나눌 수 있습니다. 그림 5. RL Agent Taxonomy Value Based 에이전트가 행동을 선택할 때, 가치함수의 결과값이 가장 높은 쪽으로 선택하는 것입니다. 이때, 정책이 명시적으로 표현되지 않고 내재적으로 표현됩니다. Policy Based 명시적인 정책을 가진 에이전트입니다. 즉, 특성 상태에서 어떤 행동이 확률적으로 높은지를 보고 행동하는 것입니다. Actor-Critic 위 Value-based와 policy based가 합쳐진 상태입니다. Model Free 변이확률과 보상함수에 대한 정보가 없는 경우입니다. 에이전트는 환경모델을 알 수 없으나 경험을 해나가면서 환경을 이해해 나가면서 문제를 해결하는 케이스입니다. Model Based 환경 모델을 구축하여 문제를 푸는 케이스입니다. Key Challenges in Learning to Make Sequences of Good Decisions 연속적인 의사 결정 문제는 문제의 상태에 따라 다르게 접근해야 합니다. 어떤 문제 같은 경우, 환경의 모델을 완벽하게 아는 경우가 있을 수 있습니다. 예를 들어, 무인 헬리콥터에서, 헬리콥터가 있는 환경에서 바람의 속도, 바람의 방향, 장애물의 위치, 날씨, 온도등 헬리콥터에 영향을 줄 수 있는 모든 요소들을 다 파악할 수 있으면 환경 모델을 완벽하게 아는 경우입니다. 이런 경우, 우리는 헬리콥터를 움직일 때마다 어떠한 결과를 초래하고 헬리콥터 움직임에 좋은지 나쁜지를 일일이 “계산”할 수 있습니다. 이런 경우를 Planning이라 합니다. 그림 6. Planning 하지만, 대부분의 경우, 환경 모델을 완벽하게 아는 것은 불가능합니다. 따라서 환경에 직접 부딪혀 가면서(환경과 상호작용하면서) 경험을 통해 환경모델을 간접적으로 익히는 것입니다. 따라서 에이전트는 환경과의 상호작용을 통해 얻은 경험을 바탕으로 자신만의 전략을 구축해 나가는 것입니다. 포커 게임에서, 상대방이 가지고 있는 패나 전략을 알 순 없지만 상대방과 여러 번 게임을 통해 상대방 전략을 간접적으로 익힐 수 있습니다. 이렇게 푸는 방법이 “Reinforcement Learning”입니다. 그림 7. Reinforcement Learning Exploration and Exploitation 강화학습은 환경과의 상호작용을 통해 경험을 쌓아가면서 에이전트의 전략을 스스로 구축해나가는 것이라 하였습니다. 좋은 전략을 구축하기 위해, 실패도 해보고 성공도 해보면서 배워나가야 합니다. 그러나 어느 정도 경험을 했다면, 이 경험을 바탕으로 대략적인 전략을 구축해 나가야합니다. 이와 관련 강화학습 문제가 exploration과 exploitation입니다. exploration이란 추후에 에이전트가 더 좋은 결정을 내릴수도 있기 때문에 새로운 결정을 시도해보는 과정입니다. 반면에, exploitation은 이제까지의 경험을 바탕으로 결정을 내리는 과정입니다. 이 둘 사이는 trade-off관계에 있습니다. exploration을 많이 하면 새로운 시도로 좋은 의사 결정 전략을 구축할 수 있지만 반면에 지금 당장 받을 보상을 희생해야 합니다. 이 둘 사이의 trade-off관계에 관한 예를 들어봅시다. 외식을 하기 위해 식당을 선택하는 경우, 이제까지 경험을 바탕으로 좋아하는 식당을 가는 건 exploitation이고, 새로운 식당을 시도해 보는 건 exploration입니다. 이 외에 다른 예는 아래와 같습니다. 그림 8. exploration and exploitation Evalutation(Prediction) and Control 에이전트는 좋은 경험을 쌓기 위해서, exploration과 exploitation을 균형있게 활용해야합니다. 하지만 어떻게 활용하면서 경험을 쌓고, 전략을 구축하는 걸까요? 이제 관한 문제가 evalution과 control입니다. evaluation은 일정 정책 아래, 기대보상을 추정하여 현재 따르는 정책이 좋고/나쁨을 평가하는 것입니다. 기대보상 추정은 결국 가치함수를 구하는 것입니다. 가치함수 $V_{\pi}(s)$ 는 현 정책을 따랐을 때, 상태 $s$ 의 가치입니다. 직접적으로는 현 상태의 가치지만 현 정책 아래에서 계산한 것이기 때문에 현 정책의 가치로도 생각할 수 있습니다. control은 최적정책을 찾는 것입니다. evalutation과정을 통해 정책의 가치를 평가했다면, 이 평가를 기반으로 더 나은 정책이 있는지를 찾는 과정입니다. evaluation과 control은 독립적인 과정이 아닙니다. evaluation을 해야 control을 하고, control을 해야 evalutation을 할 수 있습니다. 즉 서로 맞물려서 최적의 정책을 찾아 나가는 것입니다. 아래 그리드월드 예제를 들어봅시다. 그림 9. evalutation(prediction) 그림 10. control 그림 9에서 주어진 정책은 모든 행동(좌, 우, 위, 아래)으로 갈 확률이 0.25로 동일합니다. 이 정책 아래 각 상태(그리드월드 한 칸)의 가치를 평가하면 오른쪽 숫자로 채워진 테이블이 됩니다. 최적 정책을 최적 가치함수 기반으로 찾을 수 있습니다. 그림 10처럼 최적 가치함수가 가운데 표처럼 구해졌다고 합시다. 이 기반으로 구한 최적 정책은 오른쪽 표와 같습니다. A’상태에서의 최적 정책은 위로 올라가는 것입니다. 왜냐하면 A’ 주변 가치함수 값들은 14.4, 17.8, 14.4입니다. A’에서 가장 높은 17.8의 가치를 가진 상태로 가는 것이 최적이기 때문입니다. 이상으로, Reinforcement Learning 소개[2] 포스팅을 마치겠습니다. 다음 포스팅은 Markov Decision Process을 알아보도록 하겠습니다. CS234 Winter 2019 course Lecture 1 Richard S. Sutton and Andre G. Barto : Reinforcement Learning : An Introduction David Silver Lecture 1</summary></entry><entry><title type="html">Reinforcement Learning 소개[1]</title><link href="http://localhost:4000/reinforcement%20learning/2020/07/11/introRL(1)/" rel="alternate" type="text/html" title="Reinforcement Learning 소개[1]" /><published>2020-07-11T00:00:00+09:00</published><updated>2020-07-11T00:00:00+09:00</updated><id>http://localhost:4000/reinforcement%20learning/2020/07/11/introRL(1)</id><content type="html" xml:base="http://localhost:4000/reinforcement%20learning/2020/07/11/introRL(1)/">&lt;p&gt;이번 포스팅은 강화학습이 기존에 알려진 여러 방법론들과의 비교를 통한 강화학습 특성과 구성요소를 다룹니다. CS234 1강, Deep Mind의 David Silver 강화학습 강의 1강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 1 기반으로 작성하였습니다.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img width=&quot;450&quot; alt=&quot;introRL&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87217901-2f511400-c389-11ea-96de-492485cf0b9d.png&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 1.&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;아래 그림과 같이, Computer Science, Engineering, Mathematics 등 다양한 분야에서 여러 문제들을 풀기 위한 방법론들이 있습니다. 예를 들어, Pyschology 분야의 Classical/Operant Conditioning은 동물들의 의사결정에 대해 연구하고, Enginnering 분야의 Optimal Control와 Mathematics 분야의 Operation Research는 자연 현상을 일련의 시퀀스로 파악하여 공학적 또는 수학적 관점에서 ‘어떻게 하면 최상의 결과를 얻을까?’ 를 연구합니다. 즉, 이러한 연구들의 공통점은 각 분야에서 정의한 문제 해결을 위해 &lt;b&gt;과학적 의사결정(scientific decision making)&lt;/b&gt;을 연구한다는 것입니다.&lt;/p&gt;
+
+&lt;p&gt;이와 마찬가지로, 강화학습도 &lt;b&gt;“좋은 의사결정을 내리기 위한 방법”&lt;/b&gt;에 관한 연구입니다. 특히, &lt;b&gt;“순차적인 의사결정이 필요한 문제”&lt;/b&gt;를 풀기 위한 방법론입니다(Learn to make good sequences of decisions). 여기서, “good decisions”은 결국 최적의 해결책(optimal soltuion)을 찾는 것을 의미하고, “learn”은 학습하는 대상이 처한 상황이 어떤지 모른 채, 직접 부딪혀 나가면서 경험을 통해 배워나가는 것을 의미합니다. 이는 마치, 사람이 학습해 나가는 방법과도 유사하죠.&lt;/p&gt;
+
+&lt;blockquote&gt;Sutton 교재에서, 강화학습이 사람의 학습 방법과 유사하다고 기술되어 있습니다. 유아기 때, 걷기까지 걷는 방법을 알려주는 선생님이 존재하지 않고, 아기가 스스로 여러번 시도와 실패 끝에 걷는 방법을 터득합니다. 강화학습도 이러한 측면에서의 특성을 가지고 있습니다.&lt;/blockquote&gt;
+
+&lt;h1&gt;Characteristics of Reinforcement Learning&lt;/h1&gt;
+&lt;p&gt;강화학습의 특징을 다른 방법론과 비교를 통해 알아봅시다. 강화학습의 특징을 우선 정리하고, 그 후 비교를 통해 구체적으로 알아볼 것입니다. 강화학습은 아래와 같이 4가지 특징을 가지고 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Optimization&lt;/li&gt;
+&lt;li&gt;Delayed consequences&lt;/li&gt;
+&lt;li&gt;Exploration&lt;/li&gt;
+&lt;li&gt;Generalization&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;
+&lt;b&gt;1. Optimization&lt;/b&gt;&lt;br /&gt;
+good decision이란 최적의 해결책(optimal solution)에 해당된다고 하였습니다. 즉, Optimization은 강화학습의 목적에 해당되며, 그 목적은 좋은 결정을 내리기 위한 최적의 방법을 찾는 것입니다.
+&lt;blockquote&gt;Goal is to find an optimal way to make decisions&lt;/blockquote&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;b&gt;2. Delayed Consequences&lt;/b&gt;&lt;br /&gt;
+순차적인 의사결정 문제에서, 현재 내린 결정은 후에 일어날 상황에 영향을 줄 수 있습니다. 예를 들어, 돈을 저축하는 건 현재 시점에선 마이너스 행위일 수도 있지만, 만기 이후를 생각하면 플러스 행위입니다. 즉, 현재 내린 결정에 대한 영향력을 확실히 알 수가 없고(delayed consequences), 이로 인해 결정의 좋고 나쁨을 평가하는 것이 어렵습니다.  
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;b&gt;3. Exploration&lt;/b&gt;&lt;br /&gt;
+위에서, 강화'학습'은 에이전트(학습하는 사람, 기계 등을 지칭)가 학습하는 상황/대상에 대한 어떠한 정보가 없기 때문에 스스로 배워나가는 것이라 하였습니다. 따라서, 에이전트는 무수히 많은 의사결정을 통해 탐험을 해야합니다. 자전거를 타는 기술을 익히기 위해 수많은 실패를 하는 것처럼 말입니다. 그러나, 이 '탐험'도 '잘'해야 합니다. 어떠한 탐험을 하느냐에 따라 경험하는 것이 다르기 때문입니다. 이렇게 얻어진 경험이 좋은 경험일 수도 나쁜 경험일 수도 있습니다.&lt;/p&gt;
+
+&lt;p&gt;
+&lt;b&gt;4. Generalization&lt;/b&gt;&lt;br /&gt;
+여러 머신러닝 방법론과 마찬가지로, 강화학습은 특정 문제만 풀수 있는 에이전트가 아니라 일반화된 문제를 풀 수 있는 에이전트를 학습하고 싶습니다. 바둑을 예로 들어봅시다. 강화학습을 통해 바둑게임 에이전트를 만들고자 할 때, 대전을 하는 상대방이 어떠한 전략을 가지고 있던 간에 항상 이길 수 있는 에이전트를 만드는 것이 목표지 특정 전략에만 강한 에이전트를 만들고 싶은 것이 아닙니다. &lt;br /&gt;&lt;br /&gt;
+위와 같은 이유로, rule-based 방식으로 순차적 의사결정문제를 풀기가 어렵습니다. rule-based 기반 해결책은 generalization 특성을 갖지 못하기 때문입니다. 
+&lt;blockquote&gt;pre-programmed policy is hard to get generalization on the problem we want to tackle.&lt;/blockquote&gt;
+&lt;/p&gt;
+&lt;p&gt;‌
+강화학습은 위와 같이 4가지 특성을 가지고 있습니다. 이제 여러 방법론(Planning, supervised learning, unsupervised learning, imitation learning)과 비교를 통해 위 4가지 특성에 대해 강화학습이 다른 방법론과 어떻게 다른지 알아 봅시다.&lt;/p&gt;
+
+&lt;h2&gt;AI Planning vs Reinforcement Learning&lt;/h2&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img alt=&quot;planning&quot; width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87219220-56f9a980-c394-11ea-933d-1e59431206ac.jpeg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 2. planning&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;Planning이란 에이전트가 학습하는 환경에 대한 정보를 완벽히 알고 있는 경우입니다. 그림 2.는 유명한 아타리 게임입니다. 만약에 아타리 게임의 에이전트가 게임 콘솔 안의 모든 게임 알고리즘과 하드웨어 작동 방식등 완벽하게 알고 있다고 해봅시다.(&lt;del&gt;거의 불가능한 상황이긴 합니다.&lt;/del&gt;)&lt;/p&gt;
+&lt;blockquote&gt;
+Agent just computes good sequence of decisions but given model of how decisions impact world
+&lt;/blockquote&gt;
+
+&lt;p&gt;이 말은 에이전트가 현재 게임 상황에서 왼쪽/오른쪽 움직임에 대해 나올 결과를 완벽히 알 수 있다는 뜻입니다. 즉, 에이전트는 더이상 ‘학습’이 아니라 어떻게 의사 결정을 내릴지 ‘계획’하면 되는 것이지요. 따라서, planning은 4가지 특성 중, exploration은 해당되지 않습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Optimization&lt;/li&gt;
+&lt;li&gt;Delayed consequences&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;Exploration&lt;/del&gt;&lt;/li&gt;
+&lt;li&gt;Generalization&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Supervised/Unsupervised Learning vs Reinforcement Learning&lt;/h2&gt;
+&lt;p&gt;지도학습은 라벨이 있는 데이터 셋 ${{(x_1,y_1), \dots ,(x_i,y_i))}}$ 을 학습 한 후, 입력 $x_i$ 가 들어오면 입력에 대한 라벨 $\hat y_i$ 를 예측하는 문제입니다. 반면에 비지도 학습은 라벨이 없는 데이터 셋에 대하여 ${{x_1, \dots ,x_i}}$ 에 대하여 학습을 통해 데이터 셋의 구조를 파악하는 것입니다. 강화학습과의 차이점은 데이터 셋의 유무에 있습니다. 강화학습은 어떻게 보면, 탐험을 통해 데이터 셋을 스스로 구축해 나가는 것이라 볼 수 있지만, 지도/비지도 학습은 이 경험에 해당되는 데이터 셋이 주어진 것이기 때문에, 탐험을 할 필요가 없습니다. 또다른 차이점은 의사결정에 해당되는 라벨 예측 행위가 추후 또다른 예측 행위에 영향을 주지 않습니다. 따라서, exploration과 delayed consequences가 없습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Optimization&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;Delayed consequences&lt;/del&gt;&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;Exploration&lt;/del&gt;&lt;/li&gt;
+&lt;li&gt;Generalization&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Imitation Learning vs. Reinforcement Learning&lt;/h2&gt;
+&lt;p&gt;둘의 차이점을 비교하기 전에, &lt;a href=&quot;https://medium.com/@SmartLabAI/a-brief-overview-of-imitation-learning-8a8a75c44a9c&quot;&gt;imitation learning&lt;/a&gt;이 뭔지 간략하게 알아봅시다. 좋은 의사결정을 내리기 위한 에이전트를 강화학습을 통해 만들기 위해선 에이전트가 탐험 시 내린 의사결정에 대한 좋고 나쁨을 알려줘야 합니다. 우리는 이를 ‘보상’이라 합니다. 그러나 현실 문제에서 정확한 보상함수를 정의내리기가 어렵습니다. 따라서 이를 해결하기 위해 나온 방법이 imitation learning입니다. 에이전트가 직접 탐험하는 것이 아니라 모방하고 싶은 에이전트의 행동을 지도학습 방식으로 해결하는 것입니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img alt=&quot;imitation learning&quot; width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87220082-f9695b00-c39b-11ea-8488-2e9906448f0e.jpg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 3. Imitation Learning&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;따라서, imitation learning은 모방하고 싶은 에이전트의 경험을 데이터 셋으로서 활용하기 때문에 exploration 요소가 없습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Optimization&lt;/li&gt;
+&lt;li&gt;Delayed consequences&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;Exploration&lt;/del&gt;&lt;/li&gt;
+&lt;li&gt;Generalization&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1&gt;The Reinforcement Learning Problem&lt;/h1&gt;
+&lt;p&gt;이번 섹션에서는 강화학습 문제를 정의하기 위해 필요한 요소들을 알아봅시다.&lt;/p&gt;
+
+&lt;h2&gt;Rewards &amp;amp; Sequential Decision Making&lt;/h2&gt;
+&lt;p&gt;좋은 행동을 하는 에이전트를 강화학습을 통해 만들기 위해선 에이전트가 탐험할 때 결정한 행동에 대한 좋고 나쁨을 알려줘야 합니다. 우리는 이를 ‘보상’이라 합니다.&lt;/p&gt;
+&lt;blockquote&gt;강화학습에서 '의사 결정'을 '행동'이라 부릅니다.&lt;/blockquote&gt;
+&lt;p&gt;보상 $R_t$ 는 $t$ 스텝에서 에이전트가 의사결정을 잘 내리고 있는지에 대해 환경이 주는 즉각적인 피드백 지표(imediate reward)입니다. 즉, 에이전트의 목표는 매 스텝마다 받는 보상을 누적했을 때, 이 누적값이 최대화가 되도록 의사결정을 하는 것입니다. 이 말은 에이전트는 당장 받는 보상이 아니라 앞으로 받을 보상을 고려해서 행동한다는 것입니다. 이러한 아이디어는 가설로 구축할 수 있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;blockquote&gt;&lt;b&gt;reward hypothesis&lt;/b&gt;&lt;br /&gt;
+That all of what we mean by goals and purposes can be well thought of as the maximization of the expected value of the cumulative sum of a received scalar signal.&lt;/blockquote&gt;
+&lt;/p&gt;
+&lt;p&gt;예를 들어, 게임같은 경우 이기면 (+)보상을, 질 경우 (-)보상으로 보상을 정의내릴 수 있습니다. 또한 발전소를 컨트롤 하는 경우, 전력을 생산하는 경우엔 (+)보상을 줄 수 있지만 만약에 안전 임계치를 초과한 경우 (-)보상으로 정의내릴 수 있습니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img alt=&quot;sequential-decision-making&quot; width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87220849-6e3f9380-c3a2-11ea-8f9b-cf5320abca64.jpg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 4. Sequential Decision Making&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;따라서, 강화학습의 목표는 순차적인 의사결정을 통해 누적 보상의 기댓값을 최대화하는 것입니다. 현재 행동은 앞으로 할 행동들에 영향을 줄 수 있으며 더 많은 보상을 나중에 받기 위해 현재 당장 받을 즉각적인 보상은 포기할 수도 있습니다.&lt;/p&gt;
+
+&lt;p&gt;그러면 보상은 누가 주는 걸까요 ? 바로 에이전트가 놓여있는 환경입니다. 에이전트 이외 그 밖의 요소가 환경이 될 수 있습니다. 예를 들어, 주식시장을 살펴봅시다. 주식의 매매 여부를 결정하는 주체는 에이전트이고, 팔기, 사기, 그대로 두기는 행동(의사결정)입니다. 만약에 에이전트가 주식을 파는 행동을 하였다면, 이 행동의 좋고 나쁨은 어떻게 결정될까요? 우리는 흔히, 내가 판 주식이 올랐다면 이 행동은 나쁜거라고 생각할 수 있습니다&lt;del&gt;(왜냐면, 더 있다가 팔면 좋았을 테니깐요.)&lt;/del&gt;. 그럼 내가 판 주식이 오르게 하는 건 어떤걸까요? 바로 주체 이외의 여러 요소들에 의해 결정됩니다. 그 주식과 관련된 여러 기업일 수도 있고, 정치도 해당될 수 있고, 여러 가지 요소가 주식에 영향을 줍니다. 바로 이러한 부분이 강화학습에서의 ‘환경’입니다.&lt;/p&gt;
+&lt;blockquote&gt;예상할 수 있듯이, 환경을 정의내리기엔 매우 어렵습니다.&lt;/blockquote&gt;
+&lt;p&gt;따라서, 강화학습의 목표를 다시 정의내리자면, &lt;b&gt;주체는 &lt;em&gt;“환경과의 상호작용”&lt;/em&gt;을 통해서 누적 보상을 최대화&lt;/b&gt;하는 것입니다. 그림 4와 그림5는 주체가 환경과의 상호작용하는 일련의 과정을 보여줍니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img width=&quot;500&quot; alt=&quot;agent-env-interaction&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87221282-c4620600-c3a5-11ea-8a6e-adcce86b754e.png&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 5. 주체와 환경간의 상호작용&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;매 스텝에서, 에이전트가 누적보상이 최대가 되도록 행동 $A_t$ (action) 을 결정하면, 환경은 선택한 행동에 대한 결과 $O_{t+1}$ (observation) 와 행동에 대한 실제 보상 $R_{t+1}$ (imediate reward) 을 알려줍니다. 주식시장을 다시 예로 들어보면, 주체가 주식을 파는 것이 행동 결정이고, 추후에 그 기업의 주식이 오르는 것이 행동에 대한 결과이며, 이에 대해 돈을 잃는 것이 실제 보상입니다.&lt;/p&gt;
+
+&lt;h2&gt;History and State&lt;/h2&gt;
+&lt;p&gt;연속적인 의사 결정(sequential decision making)이기 때문에, 매스텝마다 행동 $A$, 관찰 $O$, 보상 $R$이 발생합니다. 따라서 발생한 모든 행동, 관찰, 보상에 대한 시퀀스를 히스토리(history)라고 합니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;H_t = O_1, R_1, A_1, \dots, A_{t-1}, O_t, R_t&lt;/script&gt;
+
+&lt;blockquote&gt;The history is the sequence of observations, actions, rewards. In other words, It is all observable variables up to time t&lt;/blockquote&gt;
+&lt;p&gt;따라서, 에이전트는 히스토리 기반으로 다음에 취할 행동을 선택합니다. 왜냐하면, 히스토리는 이전에 발생한 모든 일들을 다 기록하기 때문에 꽤나 행동 선택에 꽤나 괜찮은 근거가 될 수 있기 때문입니다.&lt;/p&gt;
+
+&lt;p&gt;그러나, 행동을 선택할 때마다, 매번 이전 과거 정보를 파악하는 건 힘든 일입니다. 따라서 에이전트는 다음 행동을 선택하는데 &lt;b&gt;상태(state)정보&lt;/b&gt;를 이용합니다.
+상태정보가 행동 선택의 근거가 되기 위해선 상태는 과거 히스토리 정보를 담고 있어야 합니다. 따라서, 수학적으로 표현하면 상태는 히스토리의 함수입니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;S_t = f(H_t)&lt;/script&gt;
+
+&lt;blockquote&gt;State is information assumed to determine what happens next&lt;/blockquote&gt;
+
+&lt;p&gt;상태에는 크게 Environment State(World State), Agent State, Information State가 있습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Environment State(World State)&lt;/b&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img alt=&quot;environment state&quot; width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87238822-aa2a3580-c442-11ea-8b87-a098c7288a58.jpeg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 6. Environment State&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;환경 상태 $S^e_t$ 는 주체 이외의 환경에 대한 상태로, 예를 들어 게임에서는 게임의 콘솔 내부일수도 있고, 주식시장에서는 주식에 영향을 주는 모든 요소일수 있습니다. 에이전트는 사실 환경을 볼 수 없으며 볼 수 있다 하더라도 불필요한 정보들이 많을 것입니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Agent State&lt;/b&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img alt=&quot;agent state&quot; width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87238872-49e7c380-c443-11ea-880a-40d6a5738804.jpeg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 7. Agent State&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;에이전트 상태 $S^a_t$ 는 행동하는 주체의 상태를 표현한 것입니다(the agent’s internal representation). 에이전트는 이 상태를 기반으로 다음 행동을 선택하고, 강화학습 시 사용되는 상태 정보입니다. 또한, 히스토리의 함수 $S_t^a=f(H_t)$ 로 표현될 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Information State&lt;/b&gt;&lt;br /&gt;
+정보 상태(information state)는 마코브 성질을 가지는 마코브 상태입니다.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img src=&quot;https://user-images.githubusercontent.com/37501153/87239025-2d4c8b00-c445-11ea-9c11-473ca87cd331.jpg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 8. Markov State&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;$S_t$ 가 주어졌을 때 $S_{t+1}$ 의 확률은 $t$ 시점까지의 모든 상태가 주어졌을 때 $S_{t+1}$ 의 확률과 같으면 마코브 상태입니다. 즉, 현재상태 이전의 과거정보들은 미래정보에 대해 아무런 영향을 주지 않는다는 것입니다. 그 이유는 이미 현재 상태는 과거 정보를 충분히 포함하고 있기 때문에, 이 정보만으로 미래를 파악하기에 충분하다는 것입니다.&lt;/p&gt;
+
+&lt;blockquote&gt;The state is sufficient statistic of the future.&lt;br /&gt;
+The future is independent of the past given the present
+$H_{1:t} \to S_t \to H_{t+1:\infty}$&lt;/blockquote&gt;
+&lt;p&gt;마코브 상태로는 환경상태 $S^e_t$ 와 히스토리 $H_t$ 입니다. $S^e_t$ 는 주체한테 미치는 영향을 모두 포함하고 있기 때문에 마코브 상태이고 마찬가지로 $H_t$도 관찰가능한 일련의 모든 시퀀스를 포함하고 있기 때문에 역시 마코브 상태입니다.&lt;/p&gt;
+
+&lt;h2&gt;MDP and POMDP&lt;/h2&gt;
+&lt;p&gt;강화학습 문제를 정의하기 위해서, 상태, 행동, 보상에 대한 정의가 필요합니다. 하지만 상태는 마코브 상태일수도 있고 아닐 수도 있습니다. 그럼 각각에 따라 강화학습 문제를 접근하는 방법도 달라집니다. 아래에서 더 살펴봅시다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Fully Observable Environments&lt;/b&gt;&lt;br /&gt;
+에이전트가 환경 상태를 직접적으로 관찰할 수 있을 때, 에이전트는 Fully Observability를 가집니다. 이는 결국 에이전트 상태가 환경상태와 동일한 경우입니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;O_t = S^a_t = S^e_t&lt;/script&gt;
+
+&lt;p&gt;일반적으로, 에이전트가 Fully Observability를 가질 때, Markov Decision Process(MDP)를 따른다고 합니다.&lt;/p&gt;
+
+&lt;p&gt;아래와 같이 MDP의 예로 화성탐사 문제를 정의해봅시다.&amp;lt;p align='center'&amp;gt;
+&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87240302-5c69f900-c453-11ea-87ba-7b34cd3fbdb1.jpg&quot; /&gt;&lt;/p&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 9. 화성탐사기 예제&lt;/figcaption&gt;
+&lt;p&gt;&amp;lt;/p&amp;gt;
+위의 그림과 같이, 화성탐사기가 도달할 수 있는 상태는 총 7가지 상태이고, 각 상태에서 취할 수 있는 행동은 왼쪽/오른쪽 두가지입니다. s1 상태에 있으면, +1보상을, s7상태에 있으면 +10보상을 받고, 나머지 상태에서는 0의 보상을 받습니다. 이처럼, 화성탐사기가 어느 상태에 있을 때 어떤 보상을 받을지 다 알고 있는 상황이 화성탐사기 에이전트가 환경상태임을 의미합니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Partially Observable Environments&lt;/b&gt;&lt;br /&gt;
+에이전트가 환경을 간접적으로 관찰할 수 밖에 없을 때, 에이전트는 Partial observability를 가집니다. 예를 들어, 로봇은 카메라 센서로만 인식할 수 있는 장애물만 파악할 수 있습니다. 카드게임에서는 상대방의 카드패는 알 수 없고, 본인이 가진 카드만 알 수 있습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;O_t = S^a_t \neq S^e_t&lt;/script&gt;
+
+&lt;p&gt;이 경우 에이전트 상태는 환경 상태와 동일하지 않으며, 에이전트가 partially observable Markov Decision process(POMDP)를 따릅니다.&lt;/p&gt;
+
+&lt;p&gt;에이전트는 본인의 상태를 반드시 정의내려야 합니다. 전체 히스토리를 에이전트 상태로 둘 수도 있고, ‘환경에 대한 정보가 ~할 것이다’라는 믿음으로 구축할 수도 있습니다. 아니면, RNN을 이용하여 인코딩된 벡터로 에이전트 상태를 나타낼 수도 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;use history : $S_t^a = H_t$ &lt;/li&gt;
+&lt;li&gt;&lt;span style=&quot;color:red&quot;&gt;Beliefs&lt;/span&gt; of environment state : $S_t^a = (P[S^e_t = s^1], \dots, P[s^e_t = s^n])$ &lt;/li&gt;
+&lt;li&gt;Recurrent neural network : $S^a_t = \sigma(S^a_{t-1}W_s+O_tW_o)$ &lt;/li&gt;&lt;/ul&gt;
+
+&lt;p&gt;&lt;b&gt;Deterministic ? Stochastic?&lt;/b&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;
+&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87239676-bf0bc680-c44c-11ea-821e-7f85a6a00d21.jpg&quot; /&gt;
+&lt;figcaption align=&quot;center&quot;&gt;그림 10. Deterministic vs. Stochastic&lt;/figcaption&gt;
+&lt;/p&gt;
+&lt;p&gt;강화학습 문제를 MDP인지 POMDP로 보는 관점말고도 deterministic한지 stochastic한지 보는 관점도 있습니다. deterministic한 강화학습 문제는 환경이 에이전트의 행동에 따라 변할 때 그 결과 오로지 하나의 결과만 보여줍니다(single observation and reward). 그러나, stochastic한 강화학습 문제는 에이전트의 행동에 따라 환경이 변할 때, 가능성 있는 여러 결과를 보여줍니다. 물론 그 결과가 나올 확률과 함께 말이죠.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;이번 포스팅은 여기까지 마치겠습니다. &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/11/introRL(2)&quot;&gt;Reinforcement Learning 소개(2)&lt;/a&gt;에 이어서 포스팅하도록 하겠습니다.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;http://web.stanford.edu/class/cs234/slides/lecture1.pdf&quot;&gt;CS234 Winter 2019 course Lecture 1&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://incompleteideas.net/book/bookdraft2017nov5.pdf&quot;&gt;Richard S. Sutton and Andre G. Barto : Reinforcement Learning : An Introduction&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.davidsilver.uk/wp-content/uploads/2020/03/intro_RL.pdf&quot;&gt;David Silver Lecture 1&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://medium.com/@SmartLabAI/a-brief-overview-of-imitation-learning-8a8a75c44a9c&quot;&gt;Imitation learning : a brief over view of imitation learning, https://medium.com/@SmartLabAI/a-brief-overview-of-imitation-learning-8a8a75c44a9c&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;</content><author><name>Seonhwa Lee</name></author><category term="Reinforcement Learning" /><category term="cs234" /><category term="reinforcement-learning" /><category term="david-silver" /><category term="sutton" /><summary type="html">이번 포스팅은 강화학습이 기존에 알려진 여러 방법론들과의 비교를 통한 강화학습 특성과 구성요소를 다룹니다. CS234 1강, Deep Mind의 David Silver 강화학습 강의 1강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 1 기반으로 작성하였습니다. 그림 1. 아래 그림과 같이, Computer Science, Engineering, Mathematics 등 다양한 분야에서 여러 문제들을 풀기 위한 방법론들이 있습니다. 예를 들어, Pyschology 분야의 Classical/Operant Conditioning은 동물들의 의사결정에 대해 연구하고, Enginnering 분야의 Optimal Control와 Mathematics 분야의 Operation Research는 자연 현상을 일련의 시퀀스로 파악하여 공학적 또는 수학적 관점에서 ‘어떻게 하면 최상의 결과를 얻을까?’ 를 연구합니다. 즉, 이러한 연구들의 공통점은 각 분야에서 정의한 문제 해결을 위해 과학적 의사결정(scientific decision making)을 연구한다는 것입니다. 이와 마찬가지로, 강화학습도 “좋은 의사결정을 내리기 위한 방법”에 관한 연구입니다. 특히, “순차적인 의사결정이 필요한 문제”를 풀기 위한 방법론입니다(Learn to make good sequences of decisions). 여기서, “good decisions”은 결국 최적의 해결책(optimal soltuion)을 찾는 것을 의미하고, “learn”은 학습하는 대상이 처한 상황이 어떤지 모른 채, 직접 부딪혀 나가면서 경험을 통해 배워나가는 것을 의미합니다. 이는 마치, 사람이 학습해 나가는 방법과도 유사하죠. Sutton 교재에서, 강화학습이 사람의 학습 방법과 유사하다고 기술되어 있습니다. 유아기 때, 걷기까지 걷는 방법을 알려주는 선생님이 존재하지 않고, 아기가 스스로 여러번 시도와 실패 끝에 걷는 방법을 터득합니다. 강화학습도 이러한 측면에서의 특성을 가지고 있습니다. Characteristics of Reinforcement Learning 강화학습의 특징을 다른 방법론과 비교를 통해 알아봅시다. 강화학습의 특징을 우선 정리하고, 그 후 비교를 통해 구체적으로 알아볼 것입니다. 강화학습은 아래와 같이 4가지 특징을 가지고 있습니다. Optimization Delayed consequences Exploration Generalization 1. Optimization good decision이란 최적의 해결책(optimal solution)에 해당된다고 하였습니다. 즉, Optimization은 강화학습의 목적에 해당되며, 그 목적은 좋은 결정을 내리기 위한 최적의 방법을 찾는 것입니다. Goal is to find an optimal way to make decisions 2. Delayed Consequences 순차적인 의사결정 문제에서, 현재 내린 결정은 후에 일어날 상황에 영향을 줄 수 있습니다. 예를 들어, 돈을 저축하는 건 현재 시점에선 마이너스 행위일 수도 있지만, 만기 이후를 생각하면 플러스 행위입니다. 즉, 현재 내린 결정에 대한 영향력을 확실히 알 수가 없고(delayed consequences), 이로 인해 결정의 좋고 나쁨을 평가하는 것이 어렵습니다. 3. Exploration 위에서, 강화'학습'은 에이전트(학습하는 사람, 기계 등을 지칭)가 학습하는 상황/대상에 대한 어떠한 정보가 없기 때문에 스스로 배워나가는 것이라 하였습니다. 따라서, 에이전트는 무수히 많은 의사결정을 통해 탐험을 해야합니다. 자전거를 타는 기술을 익히기 위해 수많은 실패를 하는 것처럼 말입니다. 그러나, 이 '탐험'도 '잘'해야 합니다. 어떠한 탐험을 하느냐에 따라 경험하는 것이 다르기 때문입니다. 이렇게 얻어진 경험이 좋은 경험일 수도 나쁜 경험일 수도 있습니다. 4. Generalization 여러 머신러닝 방법론과 마찬가지로, 강화학습은 특정 문제만 풀수 있는 에이전트가 아니라 일반화된 문제를 풀 수 있는 에이전트를 학습하고 싶습니다. 바둑을 예로 들어봅시다. 강화학습을 통해 바둑게임 에이전트를 만들고자 할 때, 대전을 하는 상대방이 어떠한 전략을 가지고 있던 간에 항상 이길 수 있는 에이전트를 만드는 것이 목표지 특정 전략에만 강한 에이전트를 만들고 싶은 것이 아닙니다. 위와 같은 이유로, rule-based 방식으로 순차적 의사결정문제를 풀기가 어렵습니다. rule-based 기반 해결책은 generalization 특성을 갖지 못하기 때문입니다. pre-programmed policy is hard to get generalization on the problem we want to tackle. ‌ 강화학습은 위와 같이 4가지 특성을 가지고 있습니다. 이제 여러 방법론(Planning, supervised learning, unsupervised learning, imitation learning)과 비교를 통해 위 4가지 특성에 대해 강화학습이 다른 방법론과 어떻게 다른지 알아 봅시다. AI Planning vs Reinforcement Learning 그림 2. planning Planning이란 에이전트가 학습하는 환경에 대한 정보를 완벽히 알고 있는 경우입니다. 그림 2.는 유명한 아타리 게임입니다. 만약에 아타리 게임의 에이전트가 게임 콘솔 안의 모든 게임 알고리즘과 하드웨어 작동 방식등 완벽하게 알고 있다고 해봅시다.(거의 불가능한 상황이긴 합니다.) Agent just computes good sequence of decisions but given model of how decisions impact world 이 말은 에이전트가 현재 게임 상황에서 왼쪽/오른쪽 움직임에 대해 나올 결과를 완벽히 알 수 있다는 뜻입니다. 즉, 에이전트는 더이상 ‘학습’이 아니라 어떻게 의사 결정을 내릴지 ‘계획’하면 되는 것이지요. 따라서, planning은 4가지 특성 중, exploration은 해당되지 않습니다. Optimization Delayed consequences Exploration Generalization Supervised/Unsupervised Learning vs Reinforcement Learning 지도학습은 라벨이 있는 데이터 셋 ${{(x_1,y_1), \dots ,(x_i,y_i))}}$ 을 학습 한 후, 입력 $x_i$ 가 들어오면 입력에 대한 라벨 $\hat y_i$ 를 예측하는 문제입니다. 반면에 비지도 학습은 라벨이 없는 데이터 셋에 대하여 ${{x_1, \dots ,x_i}}$ 에 대하여 학습을 통해 데이터 셋의 구조를 파악하는 것입니다. 강화학습과의 차이점은 데이터 셋의 유무에 있습니다. 강화학습은 어떻게 보면, 탐험을 통해 데이터 셋을 스스로 구축해 나가는 것이라 볼 수 있지만, 지도/비지도 학습은 이 경험에 해당되는 데이터 셋이 주어진 것이기 때문에, 탐험을 할 필요가 없습니다. 또다른 차이점은 의사결정에 해당되는 라벨 예측 행위가 추후 또다른 예측 행위에 영향을 주지 않습니다. 따라서, exploration과 delayed consequences가 없습니다. Optimization Delayed consequences Exploration Generalization Imitation Learning vs. Reinforcement Learning 둘의 차이점을 비교하기 전에, imitation learning이 뭔지 간략하게 알아봅시다. 좋은 의사결정을 내리기 위한 에이전트를 강화학습을 통해 만들기 위해선 에이전트가 탐험 시 내린 의사결정에 대한 좋고 나쁨을 알려줘야 합니다. 우리는 이를 ‘보상’이라 합니다. 그러나 현실 문제에서 정확한 보상함수를 정의내리기가 어렵습니다. 따라서 이를 해결하기 위해 나온 방법이 imitation learning입니다. 에이전트가 직접 탐험하는 것이 아니라 모방하고 싶은 에이전트의 행동을 지도학습 방식으로 해결하는 것입니다. 그림 3. Imitation Learning 따라서, imitation learning은 모방하고 싶은 에이전트의 경험을 데이터 셋으로서 활용하기 때문에 exploration 요소가 없습니다. Optimization Delayed consequences Exploration Generalization The Reinforcement Learning Problem 이번 섹션에서는 강화학습 문제를 정의하기 위해 필요한 요소들을 알아봅시다. Rewards &amp;amp; Sequential Decision Making 좋은 행동을 하는 에이전트를 강화학습을 통해 만들기 위해선 에이전트가 탐험할 때 결정한 행동에 대한 좋고 나쁨을 알려줘야 합니다. 우리는 이를 ‘보상’이라 합니다. 강화학습에서 '의사 결정'을 '행동'이라 부릅니다. 보상 $R_t$ 는 $t$ 스텝에서 에이전트가 의사결정을 잘 내리고 있는지에 대해 환경이 주는 즉각적인 피드백 지표(imediate reward)입니다. 즉, 에이전트의 목표는 매 스텝마다 받는 보상을 누적했을 때, 이 누적값이 최대화가 되도록 의사결정을 하는 것입니다. 이 말은 에이전트는 당장 받는 보상이 아니라 앞으로 받을 보상을 고려해서 행동한다는 것입니다. 이러한 아이디어는 가설로 구축할 수 있습니다. reward hypothesis That all of what we mean by goals and purposes can be well thought of as the maximization of the expected value of the cumulative sum of a received scalar signal. 예를 들어, 게임같은 경우 이기면 (+)보상을, 질 경우 (-)보상으로 보상을 정의내릴 수 있습니다. 또한 발전소를 컨트롤 하는 경우, 전력을 생산하는 경우엔 (+)보상을 줄 수 있지만 만약에 안전 임계치를 초과한 경우 (-)보상으로 정의내릴 수 있습니다. 그림 4. Sequential Decision Making 따라서, 강화학습의 목표는 순차적인 의사결정을 통해 누적 보상의 기댓값을 최대화하는 것입니다. 현재 행동은 앞으로 할 행동들에 영향을 줄 수 있으며 더 많은 보상을 나중에 받기 위해 현재 당장 받을 즉각적인 보상은 포기할 수도 있습니다. 그러면 보상은 누가 주는 걸까요 ? 바로 에이전트가 놓여있는 환경입니다. 에이전트 이외 그 밖의 요소가 환경이 될 수 있습니다. 예를 들어, 주식시장을 살펴봅시다. 주식의 매매 여부를 결정하는 주체는 에이전트이고, 팔기, 사기, 그대로 두기는 행동(의사결정)입니다. 만약에 에이전트가 주식을 파는 행동을 하였다면, 이 행동의 좋고 나쁨은 어떻게 결정될까요? 우리는 흔히, 내가 판 주식이 올랐다면 이 행동은 나쁜거라고 생각할 수 있습니다(왜냐면, 더 있다가 팔면 좋았을 테니깐요.). 그럼 내가 판 주식이 오르게 하는 건 어떤걸까요? 바로 주체 이외의 여러 요소들에 의해 결정됩니다. 그 주식과 관련된 여러 기업일 수도 있고, 정치도 해당될 수 있고, 여러 가지 요소가 주식에 영향을 줍니다. 바로 이러한 부분이 강화학습에서의 ‘환경’입니다. 예상할 수 있듯이, 환경을 정의내리기엔 매우 어렵습니다. 따라서, 강화학습의 목표를 다시 정의내리자면, 주체는 “환경과의 상호작용”을 통해서 누적 보상을 최대화하는 것입니다. 그림 4와 그림5는 주체가 환경과의 상호작용하는 일련의 과정을 보여줍니다. 그림 5. 주체와 환경간의 상호작용 매 스텝에서, 에이전트가 누적보상이 최대가 되도록 행동 $A_t$ (action) 을 결정하면, 환경은 선택한 행동에 대한 결과 $O_{t+1}$ (observation) 와 행동에 대한 실제 보상 $R_{t+1}$ (imediate reward) 을 알려줍니다. 주식시장을 다시 예로 들어보면, 주체가 주식을 파는 것이 행동 결정이고, 추후에 그 기업의 주식이 오르는 것이 행동에 대한 결과이며, 이에 대해 돈을 잃는 것이 실제 보상입니다. History and State 연속적인 의사 결정(sequential decision making)이기 때문에, 매스텝마다 행동 $A$, 관찰 $O$, 보상 $R$이 발생합니다. 따라서 발생한 모든 행동, 관찰, 보상에 대한 시퀀스를 히스토리(history)라고 합니다. The history is the sequence of observations, actions, rewards. In other words, It is all observable variables up to time t 따라서, 에이전트는 히스토리 기반으로 다음에 취할 행동을 선택합니다. 왜냐하면, 히스토리는 이전에 발생한 모든 일들을 다 기록하기 때문에 꽤나 행동 선택에 꽤나 괜찮은 근거가 될 수 있기 때문입니다. 그러나, 행동을 선택할 때마다, 매번 이전 과거 정보를 파악하는 건 힘든 일입니다. 따라서 에이전트는 다음 행동을 선택하는데 상태(state)정보를 이용합니다. 상태정보가 행동 선택의 근거가 되기 위해선 상태는 과거 히스토리 정보를 담고 있어야 합니다. 따라서, 수학적으로 표현하면 상태는 히스토리의 함수입니다. State is information assumed to determine what happens next 상태에는 크게 Environment State(World State), Agent State, Information State가 있습니다. Environment State(World State) 그림 6. Environment State 환경 상태 $S^e_t$ 는 주체 이외의 환경에 대한 상태로, 예를 들어 게임에서는 게임의 콘솔 내부일수도 있고, 주식시장에서는 주식에 영향을 주는 모든 요소일수 있습니다. 에이전트는 사실 환경을 볼 수 없으며 볼 수 있다 하더라도 불필요한 정보들이 많을 것입니다. Agent State 그림 7. Agent State 에이전트 상태 $S^a_t$ 는 행동하는 주체의 상태를 표현한 것입니다(the agent’s internal representation). 에이전트는 이 상태를 기반으로 다음 행동을 선택하고, 강화학습 시 사용되는 상태 정보입니다. 또한, 히스토리의 함수 $S_t^a=f(H_t)$ 로 표현될 수 있습니다. Information State 정보 상태(information state)는 마코브 성질을 가지는 마코브 상태입니다. 그림 8. Markov State $S_t$ 가 주어졌을 때 $S_{t+1}$ 의 확률은 $t$ 시점까지의 모든 상태가 주어졌을 때 $S_{t+1}$ 의 확률과 같으면 마코브 상태입니다. 즉, 현재상태 이전의 과거정보들은 미래정보에 대해 아무런 영향을 주지 않는다는 것입니다. 그 이유는 이미 현재 상태는 과거 정보를 충분히 포함하고 있기 때문에, 이 정보만으로 미래를 파악하기에 충분하다는 것입니다. The state is sufficient statistic of the future. The future is independent of the past given the present $H_{1:t} \to S_t \to H_{t+1:\infty}$ 마코브 상태로는 환경상태 $S^e_t$ 와 히스토리 $H_t$ 입니다. $S^e_t$ 는 주체한테 미치는 영향을 모두 포함하고 있기 때문에 마코브 상태이고 마찬가지로 $H_t$도 관찰가능한 일련의 모든 시퀀스를 포함하고 있기 때문에 역시 마코브 상태입니다. MDP and POMDP 강화학습 문제를 정의하기 위해서, 상태, 행동, 보상에 대한 정의가 필요합니다. 하지만 상태는 마코브 상태일수도 있고 아닐 수도 있습니다. 그럼 각각에 따라 강화학습 문제를 접근하는 방법도 달라집니다. 아래에서 더 살펴봅시다. Fully Observable Environments 에이전트가 환경 상태를 직접적으로 관찰할 수 있을 때, 에이전트는 Fully Observability를 가집니다. 이는 결국 에이전트 상태가 환경상태와 동일한 경우입니다. 일반적으로, 에이전트가 Fully Observability를 가질 때, Markov Decision Process(MDP)를 따른다고 합니다. 아래와 같이 MDP의 예로 화성탐사 문제를 정의해봅시다.&amp;lt;p align='center'&amp;gt; 그림 9. 화성탐사기 예제 &amp;lt;/p&amp;gt; 위의 그림과 같이, 화성탐사기가 도달할 수 있는 상태는 총 7가지 상태이고, 각 상태에서 취할 수 있는 행동은 왼쪽/오른쪽 두가지입니다. s1 상태에 있으면, +1보상을, s7상태에 있으면 +10보상을 받고, 나머지 상태에서는 0의 보상을 받습니다. 이처럼, 화성탐사기가 어느 상태에 있을 때 어떤 보상을 받을지 다 알고 있는 상황이 화성탐사기 에이전트가 환경상태임을 의미합니다. Partially Observable Environments 에이전트가 환경을 간접적으로 관찰할 수 밖에 없을 때, 에이전트는 Partial observability를 가집니다. 예를 들어, 로봇은 카메라 센서로만 인식할 수 있는 장애물만 파악할 수 있습니다. 카드게임에서는 상대방의 카드패는 알 수 없고, 본인이 가진 카드만 알 수 있습니다. 이 경우 에이전트 상태는 환경 상태와 동일하지 않으며, 에이전트가 partially observable Markov Decision process(POMDP)를 따릅니다. 에이전트는 본인의 상태를 반드시 정의내려야 합니다. 전체 히스토리를 에이전트 상태로 둘 수도 있고, ‘환경에 대한 정보가 ~할 것이다’라는 믿음으로 구축할 수도 있습니다. 아니면, RNN을 이용하여 인코딩된 벡터로 에이전트 상태를 나타낼 수도 있습니다. use history : $S_t^a = H_t$ Beliefs of environment state : $S_t^a = (P[S^e_t = s^1], \dots, P[s^e_t = s^n])$ Recurrent neural network : $S^a_t = \sigma(S^a_{t-1}W_s+O_tW_o)$ Deterministic ? Stochastic? 그림 10. Deterministic vs. Stochastic 강화학습 문제를 MDP인지 POMDP로 보는 관점말고도 deterministic한지 stochastic한지 보는 관점도 있습니다. deterministic한 강화학습 문제는 환경이 에이전트의 행동에 따라 변할 때 그 결과 오로지 하나의 결과만 보여줍니다(single observation and reward). 그러나, stochastic한 강화학습 문제는 에이전트의 행동에 따라 환경이 변할 때, 가능성 있는 여러 결과를 보여줍니다. 물론 그 결과가 나올 확률과 함께 말이죠. 이번 포스팅은 여기까지 마치겠습니다. Reinforcement Learning 소개(2)에 이어서 포스팅하도록 하겠습니다. CS234 Winter 2019 course Lecture 1 Richard S. Sutton and Andre G. Barto : Reinforcement Learning : An Introduction David Silver Lecture 1 Imitation learning : a brief over view of imitation learning, https://medium.com/@SmartLabAI/a-brief-overview-of-imitation-learning-8a8a75c44a9c</summary></entry></feed>
