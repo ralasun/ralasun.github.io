@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-12-04T17:07:09+09:00</updated>
+ <updated>2020-12-04T17:39:28+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -501,18 +501,18 @@ Freq: D, Length: 546, dtype: bool
 &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[False  True False False False  True False  True False False False False
-  True False False False  True  True  True False  True False False False
-  True False  True False False False False  True False  True  True False
-  True  True False  True  True  True  True  True False  True  True]
-[False False False  True  True  True False False  True  True False  True
-  True False  True  True  True  True False  True False  True  True  True
-  True  True  True False  True  True  True  True  True  True  True False
-  True False False  True False False  True False False  True  True]
-[False False False False  True  True False False False  True False  True
-  True False False  True False  True  True  True False False False  True
- False False False False  True  True False False  True  True False  True
- False  True False  True  True False  True False False False  True]
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[False  True  True False  True  True False  True  True False  True False
+  True  True False False  True False False  True  True  True  True False
+ False  True  True False  True False  True False False  True False False
+  True  True  True  True  True  True  True  True False  True  True]
+[ True False False  True  True False False  True  True  True False  True
+  True False False  True False False False False False  True False  True
+  True False False False  True  True False  True False False  True  True
+  True False False  True False  True  True False False False  True]
+[ True False  True  True False False  True False  True  True  True False
+ False  True  True  True  True  True False False  True  True False  True
+  True  True  True False  True  True False False  True False False False
+  True  True  True  True False False  True False  True  True False]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;np.any(a,b,c)는 에러를 발생합니다. 반드시, 하나의 array나 아니면 array와 유사한 list형식으로 묶어서 넣어줘야합니다.&lt;/p&gt;
@@ -524,7 +524,7 @@ Freq: D, Length: 546, dtype: bool
 
 TypeError                                 Traceback (most recent call last)
 
-&amp;lt;ipython-input-18-7a7facd3228c&amp;gt; in &amp;lt;module&amp;gt;
+&amp;lt;ipython-input-8-7a7facd3228c&amp;gt; in &amp;lt;module&amp;gt;
 ----&amp;gt; 1 np.any(a,b,c)
 
 
@@ -561,11 +561,11 @@ TypeError: only integer scalar arrays can be converted to a scalar index
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;array([False,  True, False,  True,  True,  True, False,  True,  True,
-        True, False,  True,  True, False,  True,  True,  True,  True,
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;array([ True,  True,  True,  True,  True,  True,  True,  True,  True,
         True,  True,  True,  True,  True,  True,  True,  True,  True,
        False,  True,  True,  True,  True,  True,  True,  True,  True,
-        True,  True, False,  True,  True,  True,  True,  True, False,
+       False,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
         True,  True])
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
@@ -584,12 +584,12 @@ TypeError: only integer scalar arrays can be converted to a scalar index
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;array([False, False, False, False, False,  True, False, False, False,
-       False, False, False,  True, False, False, False, False,  True,
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;array([False, False, False, False, False, False, False, False,  True,
        False, False, False, False, False, False, False, False, False,
-       False, False, False, False, False, False,  True, False, False,
-       False, False, False,  True, False, False,  True, False, False,
-       False,  True])
+       False, False, False,  True, False, False, False, False, False,
+       False,  True, False, False, False, False, False, False, False,
+        True, False, False,  True, False, False,  True, False, False,
+       False, False])
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;

@@ -220,18 +220,18 @@ print(b)
 print(c)
 ```
 
-    [False  True False False False  True False  True False False False False
-      True False False False  True  True  True False  True False False False
-      True False  True False False False False  True False  True  True False
-      True  True False  True  True  True  True  True False  True  True]
-    [False False False  True  True  True False False  True  True False  True
-      True False  True  True  True  True False  True False  True  True  True
-      True  True  True False  True  True  True  True  True  True  True False
-      True False False  True False False  True False False  True  True]
-    [False False False False  True  True False False False  True False  True
-      True False False  True False  True  True  True False False False  True
-     False False False False  True  True False False  True  True False  True
-     False  True False  True  True False  True False False False  True]
+    [False  True  True False  True  True False  True  True False  True False
+      True  True False False  True False False  True  True  True  True False
+     False  True  True False  True False  True False False  True False False
+      True  True  True  True  True  True  True  True False  True  True]
+    [ True False False  True  True False False  True  True  True False  True
+      True False False  True False False False False False  True False  True
+      True False False False  True  True False  True False False  True  True
+      True False False  True False  True  True False False False  True]
+    [ True False  True  True False False  True False  True  True  True False
+     False  True  True  True  True  True False False  True  True False  True
+      True  True  True False  True  True False False  True False False False
+      True  True  True  True False False  True False  True  True False]
 
 
 np.any(a,b,c)는 에러를 발생합니다. 반드시, 하나의 array나 아니면 array와 유사한 list형식으로 묶어서 넣어줘야합니다.
@@ -246,7 +246,7 @@ np.any(a,b,c)
 
     TypeError                                 Traceback (most recent call last)
 
-    <ipython-input-18-7a7facd3228c> in <module>
+    <ipython-input-8-7a7facd3228c> in <module>
     ----> 1 np.any(a,b,c)
     
 
@@ -288,11 +288,11 @@ np.any([a,b,c], axis=0)
 
 
 
-    array([False,  True, False,  True,  True,  True, False,  True,  True,
-            True, False,  True,  True, False,  True,  True,  True,  True,
+    array([ True,  True,  True,  True,  True,  True,  True,  True,  True,
             True,  True,  True,  True,  True,  True,  True,  True,  True,
            False,  True,  True,  True,  True,  True,  True,  True,  True,
-            True,  True, False,  True,  True,  True,  True,  True, False,
+           False,  True,  True,  True,  True,  True,  True,  True,  True,
+            True,  True,  True,  True,  True,  True,  True,  True,  True,
             True,  True])
 
 
@@ -323,12 +323,12 @@ np.all([a,b,c], axis=0)
 
 
 
-    array([False, False, False, False, False,  True, False, False, False,
-           False, False, False,  True, False, False, False, False,  True,
+    array([False, False, False, False, False, False, False, False,  True,
            False, False, False, False, False, False, False, False, False,
-           False, False, False, False, False, False,  True, False, False,
-           False, False, False,  True, False, False,  True, False, False,
-           False,  True])
+           False, False, False,  True, False, False, False, False, False,
+           False,  True, False, False, False, False, False, False, False,
+            True, False, False,  True, False, False,  True, False, False,
+           False, False])
 
 
 

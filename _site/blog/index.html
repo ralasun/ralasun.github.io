@@ -706,18 +706,18 @@ Freq: D, Length: 546, dtype: bool
 <span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[False  True False False False  True False  True False False False False
-  True False False False  True  True  True False  True False False False
-  True False  True False False False False  True False  True  True False
-  True  True False  True  True  True  True  True False  True  True]
-[False False False  True  True  True False False  True  True False  True
-  True False  True  True  True  True False  True False  True  True  True
-  True  True  True False  True  True  True  True  True  True  True False
-  True False False  True False False  True False False  True  True]
-[False False False False  True  True False False False  True False  True
-  True False False  True False  True  True  True False False False  True
- False False False False  True  True False False  True  True False  True
- False  True False  True  True False  True False False False  True]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[False  True  True False  True  True False  True  True False  True False
+  True  True False False  True False False  True  True  True  True False
+ False  True  True False  True False  True False False  True False False
+  True  True  True  True  True  True  True  True False  True  True]
+[ True False False  True  True False False  True  True  True False  True
+  True False False  True False False False False False  True False  True
+  True False False False  True  True False  True False False  True  True
+  True False False  True False  True  True False False False  True]
+[ True False  True  True False False  True False  True  True  True False
+ False  True  True  True  True  True False False  True  True False  True
+  True  True  True False  True  True False False  True False False False
+  True  True  True  True False False  True False  True  True False]
 </code></pre></div></div>
 
 <p>np.any(a,b,c)는 에러를 발생합니다. 반드시, 하나의 array나 아니면 array와 유사한 list형식으로 묶어서 넣어줘야합니다.</p>
@@ -729,7 +729,7 @@ Freq: D, Length: 546, dtype: bool
 
 TypeError                                 Traceback (most recent call last)
 
-&lt;ipython-input-18-7a7facd3228c&gt; in &lt;module&gt;
+&lt;ipython-input-8-7a7facd3228c&gt; in &lt;module&gt;
 ----&gt; 1 np.any(a,b,c)
 
 
@@ -766,11 +766,11 @@ TypeError: only integer scalar arrays can be converted to a scalar index
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">any</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([False,  True, False,  True,  True,  True, False,  True,  True,
-        True, False,  True,  True, False,  True,  True,  True,  True,
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([ True,  True,  True,  True,  True,  True,  True,  True,  True,
         True,  True,  True,  True,  True,  True,  True,  True,  True,
        False,  True,  True,  True,  True,  True,  True,  True,  True,
-        True,  True, False,  True,  True,  True,  True,  True, False,
+       False,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
         True,  True])
 </code></pre></div></div>
 
@@ -789,12 +789,12 @@ TypeError: only integer scalar arrays can be converted to a scalar index
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">all</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([False, False, False, False, False,  True, False, False, False,
-       False, False, False,  True, False, False, False, False,  True,
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([False, False, False, False, False, False, False, False,  True,
        False, False, False, False, False, False, False, False, False,
-       False, False, False, False, False, False,  True, False, False,
-       False, False, False,  True, False, False,  True, False, False,
-       False,  True])
+       False, False, False,  True, False, False, False, False, False,
+       False,  True, False, False, False, False, False, False, False,
+        True, False, False,  True, False, False,  True, False, False,
+       False, False])
 </code></pre></div></div>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">all</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
