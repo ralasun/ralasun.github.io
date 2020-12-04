@@ -9,6 +9,8 @@ tags : pandas python code, numpy
 평소에 헷갈리는 any(), all()에 대해 정리하였습니다. 
 ***
 
+<h1>df.isna()</h1>
+
 
 ```python
 import pandas as pd
@@ -148,6 +150,8 @@ df.isna()
 </div>
 
 
+
+<h1>df.any()</h1>
 
 여기서, dataframe.any(axis=0)인 경우엔 각 column의 row를 다 훑어서, row요소들 중 적어도 하나의 row애 True가 있으면, True를 반환합니다.
 

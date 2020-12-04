@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-12-04T10:20:17+09:00</updated>
+ <updated>2020-12-04T13:17:11+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -317,6 +317,8 @@
 &lt;p&gt;평소에 헷갈리는 any(), all()에 대해 정리하였습니다. 
 ***&lt;/p&gt;
 
+&lt;h1&gt;df.isna()&lt;/h1&gt;
+
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pandas&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
@@ -445,6 +447,8 @@
 &lt;/table&gt;
 &lt;p&gt;546 rows × 4 columns&lt;/p&gt;
 &lt;/div&gt;
+
+&lt;h1&gt;df.any()&lt;/h1&gt;
 
 &lt;p&gt;여기서, dataframe.any(axis=0)인 경우엔 각 column의 row를 다 훑어서, row요소들 중 적어도 하나의 row애 True가 있으면, True를 반환합니다.&lt;/p&gt;
 
