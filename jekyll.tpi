@@ -2,10 +2,10 @@
 
 {%- block header -%}
 ---
-layout : post
+layout : jupyter
 title: "{{resources['metadata']['name']}}"
-category: post
-tags: 
+category : Code Snippet
+tags:
 ---
 {%- endblock header -%}
 
@@ -24,17 +24,17 @@ In&nbsp;[{{ cell.execution_count }}]:
 {% block stream %}
 {:.output_stream}
 
-```
+`
 {{ output.text }}
-```
+`
 {% endblock stream %}
 
 {% block data_text %}
 {:.output_data_text}
 
-```
+`
 {{ output.data['text/plain'] }}
-```
+`
 {% endblock data_text %}
 
 {% block traceback_line  %}
