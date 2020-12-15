@@ -519,13 +519,22 @@ MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], proces
     <article>
       <hr />
 
-<p>평소에 헷갈리는 any(), all()에 대해 정리하였습니다. 
-***</p>
+<p>평소에 헷갈리는 any(), all()에 대해 정리하였습니다.</p>
+
+<hr />
 
 <h1>df.isna()</h1>
 
+<div class="prompt input_prompt">
+In&nbsp;[1]:
+</div>
+
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
 </code></pre></div></div>
+
+<div class="prompt input_prompt">
+In&nbsp;[2]:
+</div>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'./data/top1_1880109251922.csv'</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">df</span><span class="p">[</span><span class="s">'date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'date'</span><span class="p">])</span>
@@ -535,6 +544,10 @@ MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], proces
 </code></pre></div></div>
 
 <p>df.isna()는 데이터프레임에서 NaN 요소에 해당되는 부분을 True로 리턴해준다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[3]:
+</div>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="n">isna</span><span class="p">()</span>
 </code></pre></div></div>
@@ -657,6 +670,10 @@ MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], proces
 
 <p>여기서, dataframe.any(axis=0)인 경우엔 각 column의 row를 다 훑어서, row요소들 중 적어도 하나의 row애 True가 있으면, True를 반환합니다.</p>
 
+<div class="prompt input_prompt">
+In&nbsp;[4]:
+</div>
+
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="n">isna</span><span class="p">().</span><span class="nb">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div></div>
 
@@ -669,6 +686,10 @@ dtype: bool
 
 <p>반면에, dataframe.any(axis=1)인 경우엔 각 index별로 column요소를 다 훑어서 적어도 하나의 column에 True가 있으면 True를 반환합니다.
 아래 코드를 보면, 해당 index에 data, store, product_c, sales가 모두 True이면 해당 index row는 True를 반환합니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[5]:
+</div>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="n">isna</span><span class="p">().</span><span class="nb">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></div>
@@ -692,10 +713,18 @@ Freq: D, Length: 546, dtype: bool
 
 <p>np.any() 는 dataframe.any()와 유사합니다. 주어진 축(axis) 정보에 따라 해당 요소에서 True가 하나 이상이라도 있으면 True를 반환합니다. 아래는 np.any()의 예제입니다.</p>
 
+<div class="prompt input_prompt">
+In&nbsp;[6]:
+</div>
+
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
 </code></pre></div></div>
 
 <p>먼저, 예제 array를 생성합니다. True, False로 구성된 random한 array를 만들었습니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[7]:
+</div>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">samplearr</span> <span class="o">=</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">]</span>
 <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">choice</span><span class="p">(</span><span class="n">samplearr</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">47</span><span class="p">))</span>
@@ -706,21 +735,25 @@ Freq: D, Length: 546, dtype: bool
 <span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[False  True  True False  True  True False  True  True False  True False
-  True  True False False  True False False  True  True  True  True False
- False  True  True False  True False  True False False  True False False
-  True  True  True  True  True  True  True  True False  True  True]
-[ True False False  True  True False False  True  True  True False  True
-  True False False  True False False False False False  True False  True
-  True False False False  True  True False  True False False  True  True
-  True False False  True False  True  True False False False  True]
-[ True False  True  True False False  True False  True  True  True False
- False  True  True  True  True  True False False  True  True False  True
-  True  True  True False  True  True False False  True False False False
-  True  True  True  True False False  True False  True  True False]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ True  True  True  True  True  True False  True  True  True False False
+ False  True False  True False False False False  True False  True  True
+ False  True False False False  True False  True False  True  True False
+ False  True False False  True False False  True  True  True False]
+[False False  True False  True False  True  True False  True  True False
+  True False  True False False False False False  True  True False False
+ False False  True False False  True False False False  True False  True
+  True  True False False  True  True  True  True False  True  True]
+[False False  True False False False False  True False False  True  True
+  True False False  True  True  True  True False False False False  True
+ False  True  True  True  True  True  True  True False False False  True
+ False False False False False False  True  True  True  True  True]
 </code></pre></div></div>
 
 <p>np.any(a,b,c)는 에러를 발생합니다. 반드시, 하나의 array나 아니면 array와 유사한 list형식으로 묶어서 넣어줘야합니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[8]:
+</div>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">any</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
 </code></pre></div></div>
@@ -759,22 +792,30 @@ TypeError: only integer scalar arrays can be converted to a scalar index
 
 <p>그전에 axis=0과 1에 따라 차이를 살펴봅시다. axis=0인 경우엔 각 column의 모든 row를 훑고, axis=1인 경우엔 각 row의 모든 column을 훑습니다. 아래는 관련 그림입니다.</p>
 
-<p><img src="./2020-12-01-any-all-usage_files/axis.jpg" alt="axis" /></p>
+<p><img src="2020-12-01-any-all-usage_files/axis.jpg" alt="jpg" /></p>
 
 <p>axis=0인 경우, 각각의 column요소에서 모든 row를 훑어서 하나 이상이 True요소라면 True를 반환합니다. 결과는 [a,b,c]의 column의 갯수만큼 출력됩니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[9]:
+</div>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">any</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div></div>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([ True,  True,  True,  True,  True,  True,  True,  True,  True,
         True,  True,  True,  True,  True,  True,  True,  True,  True,
-       False,  True,  True,  True,  True,  True,  True,  True,  True,
-       False,  True,  True,  True,  True,  True,  True,  True,  True,
-        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True, False,  True,  True,  True,  True, False,  True,  True,
+        True,  True,  True,  True,  True, False,  True,  True,  True,
+        True,  True, False, False,  True,  True,  True,  True,  True,
         True,  True])
 </code></pre></div></div>
 
 <p>axis=1인 경우, 각각의 row요소에서 모든 column을 훑어서 하나 이상이 True요소라면 True를 반환합니다. 결과는 [a,b,c]의 row 갯수만큼 출력됩니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[10]:
+</div>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">any</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></div>
@@ -786,16 +827,24 @@ TypeError: only integer scalar arrays can be converted to a scalar index
 
 <p>np.all()은 np.any()와 반대로, 검사할 축에 모든 요소가 True여야지만 True를 반환합니다. 아래는 예제입니다.</p>
 
+<div class="prompt input_prompt">
+In&nbsp;[11]:
+</div>
+
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">all</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([False, False, False, False, False, False, False, False,  True,
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([False, False,  True, False, False, False, False,  True, False,
        False, False, False, False, False, False, False, False, False,
-       False, False, False,  True, False, False, False, False, False,
-       False,  True, False, False, False, False, False, False, False,
-        True, False, False,  True, False, False,  True, False, False,
-       False, False])
+       False, False, False, False, False, False, False, False, False,
+       False, False,  True, False, False, False, False, False, False,
+       False, False, False, False, False, False, False,  True, False,
+        True, False])
 </code></pre></div></div>
+
+<div class="prompt input_prompt">
+In&nbsp;[12]:
+</div>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">all</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></div>
