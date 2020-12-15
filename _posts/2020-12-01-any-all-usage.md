@@ -179,6 +179,7 @@ df.isna().any(axis=0)
 
 
 
+{:.output_data_text}
     date         True
     store        True
     product_c    True
@@ -203,6 +204,7 @@ df.isna().any(axis=1)
 
 
 
+{:.output_data_text}
     Date
     2018-02-01    False
     2018-02-02    False
@@ -248,6 +250,7 @@ print(b)
 print(c)
 ```
 
+{:.output_stream}
     [ True  True  True  True  True  True False  True  True  True False False
      False  True False  True False False False False  True False  True  True
      False  True False False False  True False  True False  True  True False
@@ -274,17 +277,22 @@ np.any(a,b,c)
 
 
 
+{:.output_traceback_line}
     ---------------------------------------------------------------------------
 
+{:.output_traceback_line}
     TypeError                                 Traceback (most recent call last)
 
+{:.output_traceback_line}
     <ipython-input-8-7a7facd3228c> in <module>
     ----> 1 np.any(a,b,c)
     
 
+{:.output_traceback_line}
     <__array_function__ internals> in any(*args, **kwargs)
 
 
+{:.output_traceback_line}
     /opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in any(a, axis, out, keepdims)
        2328 
        2329     """
@@ -293,6 +301,7 @@ np.any(a,b,c)
        2332 
 
 
+{:.output_traceback_line}
     /opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in _wrapreduction(obj, ufunc, method, axis, dtype, out, **kwargs)
          85                 return reduction(axis=axis, out=out, **passkwargs)
          86 
@@ -301,6 +310,7 @@ np.any(a,b,c)
          89 
 
 
+{:.output_traceback_line}
     TypeError: only integer scalar arrays can be converted to a scalar index
 
 
@@ -309,7 +319,7 @@ np.any(a,b,c)
 
 그전에 axis=0과 1에 따라 차이를 살펴봅시다. axis=0인 경우엔 각 column의 모든 row를 훑고, axis=1인 경우엔 각 row의 모든 column을 훑습니다. 아래는 관련 그림입니다.
 
-![jpg](2020-12-01-any-all-usage_files/axis.jpg)
+![jpg](/images/2020-12-01-any-all-usage_files/axis.jpg)
 
 axis=0인 경우, 각각의 column요소에서 모든 row를 훑어서 하나 이상이 True요소라면 True를 반환합니다. 결과는 [a,b,c]의 column의 갯수만큼 출력됩니다.
 
@@ -325,6 +335,7 @@ np.any([a,b,c], axis=0)
 
 
 
+{:.output_data_text}
     array([ True,  True,  True,  True,  True,  True,  True,  True,  True,
             True,  True,  True,  True,  True,  True,  True,  True,  True,
             True, False,  True,  True,  True,  True, False,  True,  True,
@@ -349,6 +360,7 @@ np.any([a,b,c], axis=1)
 
 
 
+{:.output_data_text}
     array([ True,  True,  True])
 
 
@@ -370,6 +382,7 @@ np.all([a,b,c], axis=0)
 
 
 
+{:.output_data_text}
     array([False, False,  True, False, False, False, False,  True, False,
            False, False, False, False, False, False, False, False, False,
            False, False, False, False, False, False, False, False, False,
@@ -392,6 +405,7 @@ np.all([a,b,c], axis=1)
 
 
 
+{:.output_data_text}
     array([False, False, False])
 
 

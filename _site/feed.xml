@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-12-15T22:24:55+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ralasun Resarch Blog</title><subtitle></subtitle><author><name>Seonhwa Lee</name></author><entry><title type="html">dataframe, numpy 등 array에서 double-colon(::) slicing</title><link href="http://localhost:4000/code%20snippet/2020/12/03/double-colon-slicing/" rel="alternate" type="text/html" title="dataframe, numpy 등 array에서 double-colon(::) slicing" /><published>2020-12-03T00:00:00+09:00</published><updated>2020-12-03T00:00:00+09:00</updated><id>http://localhost:4000/code%20snippet/2020/12/03/double-colon-slicing</id><content type="html" xml:base="http://localhost:4000/code%20snippet/2020/12/03/double-colon-slicing/">&lt;hr /&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-12-15T23:34:23+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ralasun Resarch Blog</title><subtitle></subtitle><author><name>Seonhwa Lee</name></author><entry><title type="html">dataframe, numpy 등 array에서 double-colon(::) slicing</title><link href="http://localhost:4000/code%20snippet/2020/12/03/double-colon-slicing/" rel="alternate" type="text/html" title="dataframe, numpy 등 array에서 double-colon(::) slicing" /><published>2020-12-03T00:00:00+09:00</published><updated>2020-12-03T00:00:00+09:00</updated><id>http://localhost:4000/code%20snippet/2020/12/03/double-colon-slicing</id><content type="html" xml:base="http://localhost:4000/code%20snippet/2020/12/03/double-colon-slicing/">&lt;hr /&gt;
 
 &lt;p&gt;pandas, numpy 등 자주 헷갈리는 코드 사용을 모아두었습니다.&lt;/p&gt;
 
@@ -443,7 +443,7 @@ In&amp;nbsp;[4]:
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;isna&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;date         True
+&lt;div class=&quot;language-plaintext output_data_text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;date         True
 store        True
 product_c    True
 sales        True
@@ -460,7 +460,7 @@ In&amp;nbsp;[5]:
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;isna&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Date
+&lt;div class=&quot;language-plaintext output_data_text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Date
 2018-02-01    False
 2018-02-02    False
 2018-02-03    False
@@ -501,7 +501,7 @@ In&amp;nbsp;[7]:
 &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[ True  True  True  True  True  True False  True  True  True False False
+&lt;div class=&quot;language-plaintext output_stream highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[ True  True  True  True  True  True False  True  True  True False False
  False  True False  True False False False False  True False  True  True
  False  True False False False  True False  True False  True  True False
  False  True False False  True False False  True  True  True False]
@@ -524,41 +524,43 @@ In&amp;nbsp;[8]:
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;---------------------------------------------------------------------------
+&lt;div class=&quot;language-plaintext output_traceback_line highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;---------------------------------------------------------------------------
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-TypeError                                 Traceback (most recent call last)
+&lt;div class=&quot;language-plaintext output_traceback_line highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;TypeError                                 Traceback (most recent call last)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&amp;lt;ipython-input-8-7a7facd3228c&amp;gt; in &amp;lt;module&amp;gt;
+&lt;div class=&quot;language-plaintext output_traceback_line highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;ipython-input-8-7a7facd3228c&amp;gt; in &amp;lt;module&amp;gt;
 ----&amp;gt; 1 np.any(a,b,c)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
+&lt;div class=&quot;language-plaintext output_traceback_line highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;__array_function__ internals&amp;gt; in any(*args, **kwargs)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&amp;lt;__array_function__ internals&amp;gt; in any(*args, **kwargs)
-
-
-/opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in any(a, axis, out, keepdims)
+&lt;div class=&quot;language-plaintext output_traceback_line highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in any(a, axis, out, keepdims)
    2328 
    2329     &quot;&quot;&quot;
 -&amp;gt; 2330     return _wrapreduction(a, np.logical_or, 'any', axis, None, out, keepdims=keepdims)
    2331 
    2332 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-
-/opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in _wrapreduction(obj, ufunc, method, axis, dtype, out, **kwargs)
+&lt;div class=&quot;language-plaintext output_traceback_line highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in _wrapreduction(obj, ufunc, method, axis, dtype, out, **kwargs)
      85                 return reduction(axis=axis, out=out, **passkwargs)
      86 
 ---&amp;gt; 87     return ufunc.reduce(obj, axis, dtype, out, **passkwargs)
      88 
      89 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-
-TypeError: only integer scalar arrays can be converted to a scalar index
+&lt;div class=&quot;language-plaintext output_traceback_line highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;TypeError: only integer scalar arrays can be converted to a scalar index
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h2&gt;axis=0 vs. axis=1&lt;/h2&gt;
 
 &lt;p&gt;그전에 axis=0과 1에 따라 차이를 살펴봅시다. axis=0인 경우엔 각 column의 모든 row를 훑고, axis=1인 경우엔 각 row의 모든 column을 훑습니다. 아래는 관련 그림입니다.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;2020-12-01-any-all-usage_files/axis.jpg&quot; alt=&quot;jpg&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/2020-12-01-any-all-usage_files/axis.jpg&quot; alt=&quot;jpg&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;axis=0인 경우, 각각의 column요소에서 모든 row를 훑어서 하나 이상이 True요소라면 True를 반환합니다. 결과는 [a,b,c]의 column의 갯수만큼 출력됩니다.&lt;/p&gt;
 
@@ -569,7 +571,7 @@ In&amp;nbsp;[9]:
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;array([ True,  True,  True,  True,  True,  True,  True,  True,  True,
+&lt;div class=&quot;language-plaintext output_data_text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;array([ True,  True,  True,  True,  True,  True,  True,  True,  True,
         True,  True,  True,  True,  True,  True,  True,  True,  True,
         True, False,  True,  True,  True,  True, False,  True,  True,
         True,  True,  True,  True,  True, False,  True,  True,  True,
@@ -586,7 +588,7 @@ In&amp;nbsp;[10]:
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;array([ True,  True,  True])
+&lt;div class=&quot;language-plaintext output_data_text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;array([ True,  True,  True])
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h1&gt;np.all()&lt;/h1&gt;
@@ -600,7 +602,7 @@ In&amp;nbsp;[11]:
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;array([False, False,  True, False, False, False, False,  True, False,
+&lt;div class=&quot;language-plaintext output_data_text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;array([False, False,  True, False, False, False, False,  True, False,
        False, False, False, False, False, False, False, False, False,
        False, False, False, False, False, False, False, False, False,
        False, False,  True, False, False, False, False, False, False,
@@ -615,7 +617,7 @@ In&amp;nbsp;[12]:
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;array([False, False, False])
+&lt;div class=&quot;language-plaintext output_data_text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;array([False, False, False])
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Seonhwa Lee</name></author><category term="Code Snippet" /><category term="pandas" /><category term="python" /><category term="code," /><category term="numpy" /><summary type="html">평소에 헷갈리는 any(), all()에 대해 정리하였습니다. df.isna() In&amp;nbsp;[1]: import pandas as pd In&amp;nbsp;[2]: df = pd.read_csv('./data/top1_1880109251922.csv', index_col=[0]) df['date'] = pd.to_datetime(df['date']) df['Date'] = pd.to_datetime(df['date']) df = df.set_index('Date') df = df.asfreq('D') df.isna()는 데이터프레임에서 NaN 요소에 해당되는 부분을 True로 리턴해준다. In&amp;nbsp;[3]: df.isna() date store product_c sales Date 2018-02-01 False False False False 2018-02-02 False False False False 2018-02-03 False False False False 2018-02-04 False False False False 2018-02-05 False False False False ... ... ... ... ... 2019-07-27 True True True True 2019-07-28 True True True True 2019-07-29 False False False False 2019-07-30 False False False False 2019-07-31 False False False False 546 rows × 4 columns df.any() 여기서, dataframe.any(axis=0)인 경우엔 각 column의 row를 다 훑어서, row요소들 중 적어도 하나의 row애 True가 있으면, True를 반환합니다. In&amp;nbsp;[4]: df.isna().any(axis=0) date True store True product_c True sales True dtype: bool 반면에, dataframe.any(axis=1)인 경우엔 각 index별로 column요소를 다 훑어서 적어도 하나의 column에 True가 있으면 True를 반환합니다. 아래 코드를 보면, 해당 index에 data, store, product_c, sales가 모두 True이면 해당 index row는 True를 반환합니다. In&amp;nbsp;[5]: df.isna().any(axis=1) Date 2018-02-01 False 2018-02-02 False 2018-02-03 False 2018-02-04 False 2018-02-05 False ... 2019-07-27 True 2019-07-28 True 2019-07-29 False 2019-07-30 False 2019-07-31 False Freq: D, Length: 546, dtype: bool np.any() np.any() 는 dataframe.any()와 유사합니다. 주어진 축(axis) 정보에 따라 해당 요소에서 True가 하나 이상이라도 있으면 True를 반환합니다. 아래는 np.any()의 예제입니다. In&amp;nbsp;[6]: import numpy as np 먼저, 예제 array를 생성합니다. True, False로 구성된 random한 array를 만들었습니다. In&amp;nbsp;[7]: samplearr = [True, False] a = np.random.choice(samplearr, size=(47)) b = np.random.choice(samplearr, size=(47)) c = np.random.choice(samplearr, size=(47)) print(a) print(b) print(c) [ True True True True True True False True True True False False False True False True False False False False True False True True False True False False False True False True False True True False False True False False True False False True True True False] [False False True False True False True True False True True False True False True False False False False False True True False False False False True False False True False False False True False True True True False False True True True True False True True] [False False True False False False False True False False True True True False False True True True True False False False False True False True True True True True True True False False False True False False False False False False True True True True True] np.any(a,b,c)는 에러를 발생합니다. 반드시, 하나의 array나 아니면 array와 유사한 list형식으로 묶어서 넣어줘야합니다. In&amp;nbsp;[8]: np.any(a,b,c) --------------------------------------------------------------------------- TypeError Traceback (most recent call last) &amp;lt;ipython-input-8-7a7facd3228c&amp;gt; in &amp;lt;module&amp;gt; ----&amp;gt; 1 np.any(a,b,c) &amp;lt;__array_function__ internals&amp;gt; in any(*args, **kwargs) /opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in any(a, axis, out, keepdims) 2328 2329 &quot;&quot;&quot; -&amp;gt; 2330 return _wrapreduction(a, np.logical_or, 'any', axis, None, out, keepdims=keepdims) 2331 2332 /opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in _wrapreduction(obj, ufunc, method, axis, dtype, out, **kwargs) 85 return reduction(axis=axis, out=out, **passkwargs) 86 ---&amp;gt; 87 return ufunc.reduce(obj, axis, dtype, out, **passkwargs) 88 89 TypeError: only integer scalar arrays can be converted to a scalar index axis=0 vs. axis=1 그전에 axis=0과 1에 따라 차이를 살펴봅시다. axis=0인 경우엔 각 column의 모든 row를 훑고, axis=1인 경우엔 각 row의 모든 column을 훑습니다. 아래는 관련 그림입니다. axis=0인 경우, 각각의 column요소에서 모든 row를 훑어서 하나 이상이 True요소라면 True를 반환합니다. 결과는 [a,b,c]의 column의 갯수만큼 출력됩니다. In&amp;nbsp;[9]: np.any([a,b,c], axis=0) array([ True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, False, True, True, True, True, False, True, True, True, True, True, True, True, False, True, True, True, True, True, False, False, True, True, True, True, True, True, True]) axis=1인 경우, 각각의 row요소에서 모든 column을 훑어서 하나 이상이 True요소라면 True를 반환합니다. 결과는 [a,b,c]의 row 갯수만큼 출력됩니다. In&amp;nbsp;[10]: np.any([a,b,c], axis=1) array([ True, True, True]) np.all() np.all()은 np.any()와 반대로, 검사할 축에 모든 요소가 True여야지만 True를 반환합니다. 아래는 예제입니다. In&amp;nbsp;[11]: np.all([a,b,c], axis=0) array([False, False, True, False, False, False, False, True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, True, False, False, False, False, False, False, False, False, False, False, False, False, False, True, False, True, False]) In&amp;nbsp;[12]: np.all([a,b,c], axis=1) array([False, False, False])</summary></entry><entry><title type="html">Introduction to Time Series and forecasting 리뷰) 1. Introduction to Time Series</title><link href="http://localhost:4000/time%20series%20analysis/2020/11/23/time-series-intro(1)/" rel="alternate" type="text/html" title="Introduction to Time Series and forecasting 리뷰) 1. Introduction to Time Series" /><published>2020-11-23T00:00:00+09:00</published><updated>2020-11-23T00:00:00+09:00</updated><id>http://localhost:4000/time%20series%20analysis/2020/11/23/time-series-intro(1)</id><content type="html" xml:base="http://localhost:4000/time%20series%20analysis/2020/11/23/time-series-intro(1)/">&lt;p&gt;이번 포스팅을 시작으로, 시계열 분석에 대해서 다루도록 하겠습니다. 메인 교재는 Brockwell와 Richard A. Davis의 &amp;lt; Introduction to Time Series and Forecasting &amp;gt; 와 패스트캠퍼스의 &amp;lt;파이썬을 활용한 시계열 분석 A-Z&amp;gt; 를 듣고 정리하였습니다.&lt;/p&gt;
 
 &lt;hr /&gt;

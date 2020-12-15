@@ -677,7 +677,7 @@ In&nbsp;[4]:
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="n">isna</span><span class="p">().</span><span class="nb">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>date         True
+<div class="language-plaintext output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>date         True
 store        True
 product_c    True
 sales        True
@@ -694,7 +694,7 @@ In&nbsp;[5]:
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="n">isna</span><span class="p">().</span><span class="nb">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Date
+<div class="language-plaintext output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Date
 2018-02-01    False
 2018-02-02    False
 2018-02-03    False
@@ -735,7 +735,7 @@ In&nbsp;[7]:
 <span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ True  True  True  True  True  True False  True  True  True False False
+<div class="language-plaintext output_stream highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ True  True  True  True  True  True False  True  True  True False False
  False  True False  True False False False False  True False  True  True
  False  True False False False  True False  True False  True  True False
  False  True False False  True False False  True  True  True False]
@@ -758,41 +758,43 @@ In&nbsp;[8]:
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">any</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---------------------------------------------------------------------------
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---------------------------------------------------------------------------
+</code></pre></div></div>
 
-TypeError                                 Traceback (most recent call last)
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TypeError                                 Traceback (most recent call last)
+</code></pre></div></div>
 
-&lt;ipython-input-8-7a7facd3228c&gt; in &lt;module&gt;
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;ipython-input-8-7a7facd3228c&gt; in &lt;module&gt;
 ----&gt; 1 np.any(a,b,c)
+</code></pre></div></div>
 
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;__array_function__ internals&gt; in any(*args, **kwargs)
+</code></pre></div></div>
 
-&lt;__array_function__ internals&gt; in any(*args, **kwargs)
-
-
-/opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in any(a, axis, out, keepdims)
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in any(a, axis, out, keepdims)
    2328 
    2329     """
 -&gt; 2330     return _wrapreduction(a, np.logical_or, 'any', axis, None, out, keepdims=keepdims)
    2331 
    2332 
+</code></pre></div></div>
 
-
-/opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in _wrapreduction(obj, ufunc, method, axis, dtype, out, **kwargs)
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in _wrapreduction(obj, ufunc, method, axis, dtype, out, **kwargs)
      85                 return reduction(axis=axis, out=out, **passkwargs)
      86 
 ---&gt; 87     return ufunc.reduce(obj, axis, dtype, out, **passkwargs)
      88 
      89 
+</code></pre></div></div>
 
-
-TypeError: only integer scalar arrays can be converted to a scalar index
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TypeError: only integer scalar arrays can be converted to a scalar index
 </code></pre></div></div>
 
 <h2>axis=0 vs. axis=1</h2>
 
 <p>그전에 axis=0과 1에 따라 차이를 살펴봅시다. axis=0인 경우엔 각 column의 모든 row를 훑고, axis=1인 경우엔 각 row의 모든 column을 훑습니다. 아래는 관련 그림입니다.</p>
 
-<p><img src="2020-12-01-any-all-usage_files/axis.jpg" alt="jpg" /></p>
+<p><img src="/images/2020-12-01-any-all-usage_files/axis.jpg" alt="jpg" /></p>
 
 <p>axis=0인 경우, 각각의 column요소에서 모든 row를 훑어서 하나 이상이 True요소라면 True를 반환합니다. 결과는 [a,b,c]의 column의 갯수만큼 출력됩니다.</p>
 
@@ -803,7 +805,7 @@ In&nbsp;[9]:
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">any</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([ True,  True,  True,  True,  True,  True,  True,  True,  True,
+<div class="language-plaintext output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([ True,  True,  True,  True,  True,  True,  True,  True,  True,
         True,  True,  True,  True,  True,  True,  True,  True,  True,
         True, False,  True,  True,  True,  True, False,  True,  True,
         True,  True,  True,  True,  True, False,  True,  True,  True,
@@ -820,7 +822,7 @@ In&nbsp;[10]:
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">any</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([ True,  True,  True])
+<div class="language-plaintext output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([ True,  True,  True])
 </code></pre></div></div>
 
 <h1>np.all()</h1>
@@ -834,7 +836,7 @@ In&nbsp;[11]:
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">all</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([False, False,  True, False, False, False, False,  True, False,
+<div class="language-plaintext output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([False, False,  True, False, False, False, False,  True, False,
        False, False, False, False, False, False, False, False, False,
        False, False, False, False, False, False, False, False, False,
        False, False,  True, False, False, False, False, False, False,
@@ -849,7 +851,7 @@ In&nbsp;[12]:
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">all</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([False, False, False])
+<div class="language-plaintext output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([False, False, False])
 </code></pre></div></div>
 
 
