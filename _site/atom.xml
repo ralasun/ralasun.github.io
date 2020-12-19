@@ -4,13 +4,459 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2020-12-15T23:34:23+09:00</updated>
+ <updated>2020-12-19T14:05:08+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>RDD, Resilient Distributed Dataset에 대하여[2]</title>
+   <link href="http://localhost:4000/spark%20programming/2020/12/07/rdd(2)/"/>
+   <updated>2020-12-07T00:00:00+09:00</updated>
+   <id>http://localhost:4000/spark%20programming/2020/12/07/rdd(2)</id>
+   <content type="html">&lt;p&gt;이번 포스팅은 지난 포스팅 &amp;lt;2-1. RDD, Resilient Distributed Dataset&amp;gt; 에 이어서 진행하도록 하겠습니다. 교재는 빅데이터 분석을 위한 스파크2 프로그래밍을 참고하였습니다.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h1&gt;2. RDD&lt;/h1&gt;
+
+&lt;h2&gt;2.1.1 들어가기에 앞서&lt;/h2&gt;
+&lt;p&gt;지난 포스팅 &lt;a href=&quot;https://ralasun.github.io/spark%20programming/2020/11/20/rdd/&quot;&gt;2-1. RDD Resilient Distributed Dataset에 대하여&lt;/a&gt; 에서 다뤘습니다.&lt;/p&gt;
+
+&lt;h2&gt;2.1.2. 스파크컨텍스트 생성&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;스파크 컨텍스트는 스파크 애플리케이션과 클러스터의 연결을 관리하는 객체임&lt;/li&gt;
+  &lt;li&gt;따라서, 스파크 애플리케이션을 사용하려면 무조건 스파크 컨텍스트를 생성하고 이용해야 함&lt;/li&gt;
+  &lt;li&gt;RDD 생성도 스파크컨텍스트를 이용해 생성 가능함&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Scala&quot;&gt;val conf = new SparkConf().setMaster(“local[*]”).setAppName(“RDDCreateSample”)
+val sc = new SparkContext(conf)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;figcaption align=&quot;center&quot;&gt;[예] scala - sparkcontext 생성&lt;/figcaption&gt;
+&lt;p&gt; &lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt; sc = SparkContext(master=“local[*], appName=“RDDCreateTest”, conf=conf)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;figcaption align=&quot;center&quot;&gt;[예] python - spark context 생성&lt;/figcaption&gt;
+&lt;p&gt; &lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;스파크 동작에 필요한 여러 설정 정보 지정 가능함&lt;/li&gt;
+  &lt;li&gt;SparkConf(), conf=conf 부분에서 config을 통과시켜서 지정 가능함&lt;/li&gt;
+  &lt;li&gt;지정해야 하는 정보 중에, master 정보와 appName 정보는 필수 지정 정보임
+    &lt;ul&gt;
+      &lt;li&gt;master 정보란 ? 스파크가 동작할 클러스터의 마스터 서버를 의미하는 것. 로컬모드에서 local, local[3], local[*]와 같이 사용. [*]는 쓰레드 개수를 의미하며, *는 사용 가능한 모든 쓰레드를 이용하겠다는 이야기임&lt;/li&gt;
+      &lt;li&gt;appName은 애플리케이션 이름으로, 구분하기 위한 목적임. 스파크 UI화면에 사용됨&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;2.1.3. RDD생성&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;RDD를 생성하는 방법은 크게 2가지임&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;&lt;li&gt; 드라이버 프로그램의 컬렉션 객체 이용&lt;/li&gt;
+&lt;ul&gt;&lt;li&gt;
+자바 or 파이썬 ? 리스트 이용, 스칼라 ? 시퀀스타입 이용&lt;/li&gt;
+&lt;li&gt;드라이버 프로그램?&lt;br /&gt;
+	- 최초로 메인 함수를 실행해 RDD등을 생성하고 각종 연산을 호출하는 프로그램&lt;br /&gt;
+	- 드라이버 내의 메인 함수는 스파크 애플리케이션과 스파크 컨텍스트 객체를 생성함&lt;br /&gt;
+	- 스파크 컨텍스트를 통해 RDD의 연산 정보를 DAG스케쥴러에 전달하면 스케쥴러는 이 정보를 가지고 실행 계획을 수립한 후 이를 클러스터 매니저에게 전달함&lt;br /&gt;&lt;/li&gt;
+
+&lt;pre lang=&quot;Scala&quot;&gt;&lt;code&gt;
+val rdd1 = sc.parallelize(List(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;figcaption align=&quot;center&quot;&gt;[예] scala - rdd 생성&lt;/figcaption&gt; 
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/MxtJV7I.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;[예] python - 드라이버의 컬렉션 객체를 이용한 RDD 생성&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;li&gt;
+문자열을 포함한 컬렉션 객체 생성 example) python : ['a','b','c','d']&lt;/li&gt;
+&lt;li&gt;parallelize() 메서드를 이용해 RDD 생성&lt;br /&gt; - RDD의 파티션 수를 지정하고 싶을 때,  parallelize() 메서드의 두 번째 매개변수로 파티션 개수 지정 가능&lt;/li&gt;
+
+&lt;pre lang=&quot;scala&quot;&gt;&lt;code&gt;
+val rdd1 = sc.parallelize(1 to 1000, 10)
+&lt;/code&gt;&lt;/pre&gt;&lt;/ul&gt;
+
+&lt;li&gt;외부 데이터를 읽어서 새로운 RDD를 생성&lt;/li&gt; 
+&lt;ul&gt;
+&lt;li&gt;기본적으로 하둡의 다루는 모든 입출력 유형 가능&lt;/li&gt;
+&lt;li&gt;내부적으로 하둡의 입출력을 사용하기 때문임&lt;/li&gt;&lt;/ul&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/eByLARc.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;[예] python - 외부데이터를 이용한 RDD 생성&lt;/figcaption&gt;&lt;/p&gt;&lt;/ol&gt;
+
+&lt;h2&gt;2.1.4 RDD 기본 액션&lt;/h2&gt;
+&lt;p&gt;기본 액션 연산의 종류에 대해 알아보도록 하겠습니다.&lt;/p&gt;
+
+&lt;h3&gt;1. collect&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;collect은 RDD의 모든 원소를 모아서 배열로 리턴&lt;/li&gt;
+  &lt;li&gt;&lt;b&gt;반환 타입이 RDD가 아닌 배열&lt;/b&gt;이므로 액션 연산&lt;/li&gt;
+  &lt;li&gt;RDD에 있는 모든 요소들이 서버의 메모리에 수집됨. 즉, 대용량 데이터를 다룰 땐 조심하고, 주로 작은 용량의 데이터 디버깅용으로 사용함&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/a1uu1V0.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;[예] python - collect 연산&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;h3&gt;2. count&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;RDD 구성하는 전체 요소 개수 반환&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;2.1.5 RDD 트랜스포메이션&lt;/h2&gt;
+&lt;p&gt;기존 RDD를 이용해 새로운 RDD를 생성하는 연산입니다.&lt;/p&gt;
+
+&lt;h3&gt;1. Map 연산&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;RDD에 속하는 &lt;b&gt;모든 요소에 적용&lt;/b&gt;하여 새로운 RDD 생성하는 연산&lt;/li&gt;
+  &lt;li&gt;RDD의 몇몇 연산은 특정 데이터 타입에만 적용 가능함&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;1.1. map&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;b&gt;하나의 인자를 받는 함수 자체&lt;/b&gt;가 map의 인자로 들어감&lt;/li&gt;
+  &lt;li&gt;이 함수를 이용해 rdd의 모든 요소에 적용한 뒤 새로운 RDD 리턴&lt;/li&gt;
+  &lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/1nFR0IH.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;[예] python - map 연산&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;map()에 전달되는 함수의 입력 데이터 타입과 출력 데이터 타입이 일치할 필요 없음. 문자열을 입력받아 정수로 반환하는 함수 사용 가능&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/lHGsvGD.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;[예] python - map 연산, 입력/출력 일치하지 않는 경우&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;h4&gt;1.2. flatMap&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;map()과 마찬가지로, 하나의 인자를 받는 함수가 flatMap의 인자로 들어감&lt;/li&gt;
+  &lt;li&gt;map()과 차이점은 각 함수의 인자가 반환하는 값의 타입이 다름&lt;/li&gt;
+  &lt;li&gt;flatMap()에 사용하는 함수 f는 반환값으로 리스트나 시퀀스 같은 여러 개의 값을 담은 (이터레이션이 가능한) 일종의 컬렉션과 유사한 타입의 값을 반환해야 함
+    &lt;ul&gt;
+      &lt;li&gt;map[U](f:(T) -&amp;gt; U):RDD[U]&lt;/li&gt;
+      &lt;li&gt;flatMap&lt;a href=&quot;f:(T) -&amp;gt; TraversableOnce\[U\]\&quot;&gt;U&lt;/a&gt;:RDD[U])\
+        &lt;ul&gt;
+          &lt;li&gt;TraversableOnce는 이터레이터 타입을 의미&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5&gt;map()과 flatMap() 차이점 예시&lt;/h5&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/hQ7sfCG.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;[예] python - map 연산 vs. flatMap 연산&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;map연산은 문자열의 배열로 구성된 RDD를 생성함&lt;/li&gt;
+  &lt;li&gt;각 요소의 문자열(T)이 단어가 포함된 배열(U)이기 때문임&lt;/li&gt;
+  &lt;li&gt;반면, flatMap 연산은 문자열로 구성된 RDD를 생성함&lt;/li&gt;
+  &lt;li&gt;TraversableOnce(U)이기 때문에 문자열의 배열 내의 요소가 모두 끄집어져 나오는 작업을 하게 됨&lt;/li&gt;
+  &lt;li&gt;flatMap()은 하나의 입력값(“apple, orange”)에 대해 출력 값이 여러개인 경우([“apple”, “orange”]) 유용하게 사용할 수 있음&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;1.3. mapPartitions&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;map과 flatMap은 하나의 인자만을 받는 함수가 인자로 들어가지만, mapPartitions은 여러 인자를 받는 함수가 인자로 들어갈 수 있음 ex) 이터레이터를 인자로 받는 함수&lt;/li&gt;
+  &lt;li&gt;mapartitions은 인자로 받은 함수가 파티션 단위로 적용하여 새로운 RDD를 생성함. 반면에, map과 flatMap은 인자로 받은 함수가 요소 한개 단위로 적용됨&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/bAIoEqG.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;[예] python - mapPartitions&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;sc.parallelize(range(1,11),3)으로 파티션 3개로 나뉨&lt;/li&gt;
+  &lt;li&gt;DB 연결!!! 가 세번 출력된 걸 보니 파티션 단위로 처리한 것을 확인할 수 있음&lt;/li&gt;
+  &lt;li&gt;increase함수는 각 파티션 내의 요소에 대한 이터레이터를 전달받아 함수 내부에서 파티션의 개별 요소에 대한 작업을 처리하고 그 결과를 다시 이터레이터 타입으로 반환&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;1.4. mapPartitionsWithIndex&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;mapPartions와 동일하고 다른 점은 인자로 전달되는 함수를 호출할 때 파티션에 속한 요소의 정보뿐만 아니라 해당 파티션의 인덱스 정보도 함께 전달해 준다는 것임&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;def IncreaseWithIndex(idx, numbers):
+	for i in numbers:
+		if(idx == 1):
+			yield i+1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;mapPartitionswithIndex에 인자로 들어갈 함수는 위와 같이 인덱스 정보도 같이 들어감&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/wO8pOFo.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;[예] python - mapPartitionsWithIndex&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;h4&gt;1.5. mapValues&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;RDD의 모든 요소들이 키와 값의 쌍을 이루고 있는 경우에만 사용 가능한 메서드이며, 인자로 전달받은 함수를 “값”에 해당하는 요소에만 적용하고 그 결과로 구성된 새로운 RDD를 생성&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;rdd1 = sc.parallelize([&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]).map(lambda v:(v,1)) //(키,값)으로 구성된 rdd생성
+rdd2 = rdd1.mapValues(lambda i:i+1)
+print(rdd2.collect())
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/aFNZfuf.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;[예] python - mapValues&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;h4&gt;1.6. flatMapValues&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;MapValues 처럼 키에 해당되는 값에 함수를 적용하나 flatMap() 연산을 적용할 수 있음&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;rdd1 = sc.parallelize([(1, &quot;a,b&quot;),(2, &quot;a,c&quot;),(3, &quot;d,e&quot;)])
+rdd2 = rdd1.flatMapValues(lambda v:v.split(','))
+rdd2.collect()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/5J8kSE1.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;[예] python - flatMapValues&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;h3&gt;2. 그룹화 연산&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;특정 조건에 따라 요소를 그룹화하거나 특정 함수 적용&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;2.1. zip&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;두 개의 서로 다른 RDD를 각 요소의 인덱스에 따라 첫번째 RDD의 ‘인덱스’번째를 키로, 두번째 RDD의 ‘인덱스’번째를 값으로 하는 순서쌍을 생성&lt;/li&gt;
+  &lt;li&gt;두 개 RDD는 같은 개수의 파티션과 각 파티션 당 요소개수가 동일해야 함&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;rdd1 = sc.parallelize([&quot;a&quot;,&quot;b&quot;,&quot;c&quot;])
+rdd2 = sc.parallelize([1,2,3])
+rdd3 = rdd1.zip(rdd2)
+rdd3.collect()
+&amp;gt;&amp;gt;&amp;gt; [('a', 1), ('b', 2), ('c', 3)]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;rdd1 = sc.parallelize(range(1,10),3)
+rdd2 = sc.parallelize(range(11,20),3)
+rdd3 = rdd1.zip(rdd2)
+rdd3.collect()
+&amp;gt;&amp;gt;&amp;gt; [(1, 11), (2, 12), (3, 13), (4, 14), (5, 15), (6, 16), (7, 17), (8, 18), (9, 19)]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;2.2. zipPartitions&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;zip()과 다르게 파티션의 개수만 동일하면 됨&lt;/li&gt;
+  &lt;li&gt;zipPartitions()은 최대 4개 RDD까지 인자로 넣을 수 있음&lt;/li&gt;
+  &lt;li&gt;파이썬 사용불가!!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;2.3. groupBy&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;RDD의 요소를 &lt;b&gt;일정한 기준&lt;/b&gt;에 따라 그룹을 나누고, 각 그룹으로 구성된 새로운 RDD를 생성함&lt;/li&gt;
+  &lt;li&gt;각 그룹은 키와 각 키에 속한 요소의 시퀀스(iterator)로 구성됨&lt;/li&gt;
+  &lt;li&gt;인자로 전달하는 함수가 각 그룹의 키를 결정하는 역할을 담당함&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd1 = sc.parallelize(range(1,11))
+&amp;gt;&amp;gt;&amp;gt; rdd2 = rdd1.groupBy(lambda v: &quot;even&quot; if v%2==0 else &quot;odd&quot;) 
+/// groupBy에 인자로 전달된 함수에 의해 키(even/odd) 결정
+
+print(rdd2.collect())
+&amp;gt;&amp;gt;&amp;gt; [('even', &amp;lt;pyspark.resultiterable.ResultIterable object at 0x7fbc3f090e80&amp;gt;), ('odd', &amp;lt;pyspark.resultiterable.ResultIterable object at 0x7fbc3f090470&amp;gt;)]
+/// 각 키에 해당하는 값은 iterator임을 확인할 수 있음
+
+&amp;gt;&amp;gt;&amp;gt; for x in rdd2.collect():
+...     print(x[0], list(x[1]))
+... 
+even [2, 4, 6, 8, 10]
+odd [1, 3, 5, 7, 9]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;2.3. groupByKey&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;이미 키와 값의 쌍으로 구성된 RDD에만 적용 가능함&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd1 = sc.parallelize([&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;b&quot;,&quot;c&quot;]).map(lambda v:(v,1))
+&amp;gt;&amp;gt;&amp;gt; rdd1.collect()
+[('a', 1), ('b', 1), ('c', 1), ('b', 1), ('c', 1)]
+/// (키,값) 쌍으로 구성된 RDD 생성
+
+&amp;gt;&amp;gt;&amp;gt; rdd2 = rdd1.groupByKey()
+&amp;gt;&amp;gt;&amp;gt; rdd2.collect()
+[('b', &amp;lt;pyspark.resultiterable.ResultIterable object at 0x7fbc3f0ab6a0&amp;gt;), ('c', &amp;lt;pyspark.resultiterable.ResultIterable object at 0x7fbc3f0ab6d8&amp;gt;), ('a', &amp;lt;pyspark.resultiterable.ResultIterable object at 0x7fbc3f0ab0b8&amp;gt;)]
+/// 키에 따라 그룹화함. 그 결과 키에 해당하는 시퀀스 생성
+
+&amp;gt;&amp;gt;&amp;gt; for x in rdd2.collect():
+...     print(x[0], list(x[1]))
+... 
+b [1, 1]
+c [1, 1]
+a [1]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;2.4. cogroup&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;이미 키와 값의 쌍으로 구성된 RDD에만 적용 가능함&lt;/li&gt;
+  &lt;li&gt;여러 개의 RDD를 인자로 받음(최대 3개)&lt;/li&gt;
+  &lt;li&gt;여러 RDD에서 동일한 키에 해당하는 요소들로 구성된 시퀀스를 만든 후, (키, 시퀀스)의 튜플을 구성. 그 튜플들로 구성된 새로운 RDD를 생성함&lt;/li&gt;
+  &lt;li&gt;Tuple(키, Tuple(rdd1요소들의 집합, rdd2요소들의 집합, …))&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd1 = sc.parallelize([(&quot;k1&quot;,&quot;v1&quot;),(&quot;k2&quot;,&quot;v2&quot;),(&quot;k1&quot;,&quot;v3&quot;)])
+&amp;gt;&amp;gt;&amp;gt; rdd2 = sc.parallelize([(&quot;k1&quot;,&quot;v4&quot;)])
+&amp;gt;&amp;gt;&amp;gt; rdd1.collect()
+[('k1', 'v1'), ('k2', 'v2'), ('k1', 'v3')]
+&amp;gt;&amp;gt;&amp;gt; rdd2.collect()
+[('k1', 'v4')]
+/// (키, 값)쌍으로 구성된 RDD 2개 생성
+
+&amp;gt;&amp;gt;&amp;gt; rdd3 = rdd1.cogroup(rdd2)
+&amp;gt;&amp;gt;&amp;gt; rdd3.collect()
+[('k1', (&amp;lt;pyspark.resultiterable.ResultIterable object at 0x7fbc3f0b2fd0&amp;gt;, &amp;lt;pyspark.resultiterable.ResultIterable object at 0x7fbc3f00a828&amp;gt;)), ('k2', (&amp;lt;pyspark.resultiterable.ResultIterable object at 0x7fbc3f00ac18&amp;gt;, &amp;lt;pyspark.resultiterable.ResultIterable object at 0x7fbc3f00a5f8&amp;gt;))]
+///k1 키에 대해 rdd1의 v1과 v3요소를 묶고, rdd2의 v4요소를 묶어서 튜플로 구성
+
+&amp;gt;&amp;gt;&amp;gt; for x in rdd3.collect():
+...     print(x[0], list(x[1][0]), list(x[1][1]))
+... 
+k1 ['v1', 'v3'] ['v4']
+k2 ['v2'] []
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3&gt;3. 집합 연산&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;RDD에 포함된 요소를 하나의 집합으로 간주하여 집합 연산을 수행(합/교집합)&lt;/li&gt;
+  &lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;3.1. distinct&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;RDD의 원소에서 중복을 제외한 요소로만 새로운 RDD 구성&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize([1,2,3,1,2,3,1,2,3])
+&amp;gt;&amp;gt;&amp;gt; rdd2 = rdd.distinct()
+&amp;gt;&amp;gt;&amp;gt; rdd2.collect()
+[1, 2, 3]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;3.1. cartesian&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;두 RDD요소의 카테시안곱을 구하고 그 결과를 요소로 하는 새로운 RDD구성&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd1 = sc.parallelize([1,2,3])
+&amp;gt;&amp;gt;&amp;gt; rdd2 = sc.parallelize(['a','b','c'])
+&amp;gt;&amp;gt;&amp;gt; rdd3 = rdd1.cartesian(rdd2)
+&amp;gt;&amp;gt;&amp;gt; rdd3.collect()
+[(1, 'a'), (1, 'b'), (1, 'c'), (2, 'a'), (2, 'b'), (2, 'c'), (3, 'a'), (3, 'b'), (3, 'c')]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;3.2. subtract&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;rdd1.subtract(rdd2) : (rdd1의 요소집합 - rdd2의 요소집합)의 차집합&lt;/li&gt;
+  &lt;li&gt;rdd2.subtract(rdd1) : (rdd2의 요소집합 - rdd1의 요소집합)의 차집합&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd1 = sc.parallelize([&quot;a&quot;, &quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;])
+&amp;gt;&amp;gt;&amp;gt; rdd2 = sc.parallelize([&quot;d&quot;,&quot;e&quot;])
+&amp;gt;&amp;gt;&amp;gt; rdd3 = rdd1.subtract(rdd2)
+&amp;gt;&amp;gt;&amp;gt; rdd3.collect()
+['a', 'b', 'c']  
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;3.2. union&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;두 RDD요소의 합집합&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd1 = sc.parallelize([&quot;a&quot;, &quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;])
+&amp;gt;&amp;gt;&amp;gt; rdd2 = sc.parallelize([&quot;d&quot;,&quot;e&quot;])
+&amp;gt;&amp;gt;&amp;gt; rdd3 = rdd1.union(rdd2)
+&amp;gt;&amp;gt;&amp;gt; rdd3.collect()
+['a', 'b', 'c', 'd', 'e', 'd', 'e']
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;3.3. intersection&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;두 RDD요소의 교집합으로 중복되지 않은 요소로 구성&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd1 = sc.parallelize([&quot;a&quot;,&quot;a&quot;,&quot;b&quot;,&quot;c&quot;])
+&amp;gt;&amp;gt;&amp;gt; rdd2 = sc.parallelize([&quot;a&quot;,&quot;a&quot;,&quot;c&quot;,&quot;c&quot;])
+&amp;gt;&amp;gt;&amp;gt; rdd3 = rdd1.intersection(rdd2)
+&amp;gt;&amp;gt;&amp;gt; rdd3.collect()
+['a', 'c']
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;3.4. join&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;RDD의 구성요소가 키와 값의 쌍으로 구성된 경우에 사용할 수 있는 메서드&lt;/li&gt;
+  &lt;li&gt;공통된 키에 대해서만 join수행&lt;/li&gt;
+  &lt;li&gt;join 수행 결과 Tuple(키, Tuple(첫번째 RDD요소, 두번쨰 RDD요소))&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd1 = sc.parallelize([&quot;a&quot;, &quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;]).map(lambda v : (v,1))
+&amp;gt;&amp;gt;&amp;gt; rdd1.collect()
+[('a', 1), ('b', 1), ('c', 1), ('d', 1), ('e', 1)]
+&amp;gt;&amp;gt;&amp;gt; rdd2 = sc.parallelize([&quot;b&quot;,&quot;c&quot;]).map(lambda v:(v,2))
+&amp;gt;&amp;gt;&amp;gt; rdd2.collect()
+[('b', 2), ('c', 2)]
+&amp;gt;&amp;gt;&amp;gt; rdd3 = rdd1.join(rdd2)
+&amp;gt;&amp;gt;&amp;gt; rdd3.collect()
+[('b', (1, 2)), ('c', (1, 2))]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;3.5. leftOuterJoin, rightOuterJoin&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;키와 값의 쌍으로 구성된 RDD에 사용가능&lt;/li&gt;
+  &lt;li&gt;leftjoin, rightjoin을 수행&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd1 = sc.parallelize([&quot;a&quot;, &quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;]).map(lambda v : (v,1))
+&amp;gt;&amp;gt;&amp;gt; rdd2 = sc.parallelize([&quot;b&quot;,&quot;c&quot;]).map(lambda v:(v,2))
+&amp;gt;&amp;gt;&amp;gt; rdd3 = rdd1.leftOuterJoin(rdd2)
+&amp;gt;&amp;gt;&amp;gt; rdd3.collect()
+[('a', (1, None)), ('e', (1, None)), ('b', (1, 2)), ('c', (1, 2)), ('d', (1, None))]
+///rdd2에는 a,d,e 키가 없기 때문에 해당 키에 대한 튜플 요소는 (rdd1의 요소, None)으로 구성됨
+
+&amp;gt;&amp;gt;&amp;gt; rdd4 = rdd1.rightOuterJoin(rdd2)
+&amp;gt;&amp;gt;&amp;gt; rdd4.collect()
+[('b', (1, 2)), ('c', (1, 2))]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;3.6. subtractByKey&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;키와 값의 쌍으로 구성된 RDD에 사용가능&lt;/li&gt;
+  &lt;li&gt;rdd1의 요소 중에서 rdd2와 겹치지 않는 키로 구성된 새로운 RDD 생성&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd1 = sc.parallelize([&quot;a&quot;,&quot;b&quot;]).map(lambda v:(v,1))
+&amp;gt;&amp;gt;&amp;gt; rdd2 = sc.parallelize([&quot;b&quot;]).map(lambda v:(v,1))
+&amp;gt;&amp;gt;&amp;gt; rdd3 = rdd1.subtractByKey(rdd2)
+&amp;gt;&amp;gt;&amp;gt; rdd3.collect()
+[('a', 1)]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3&gt;4. 집계와 관련된 연산들&lt;/h3&gt;
+
+&lt;h4&gt;4.1 reduceByKey&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;키와 값의 쌍으로 구성된 RDD에서 사용 가능&lt;/li&gt;
+  &lt;li&gt;RDD 내의 동일한 키를 하나로 병합해 (키,값) 쌍으로 구성된 새로운 RDD 생성&lt;/li&gt;
+  &lt;li&gt;함수를 인자로 받음.&lt;/li&gt;
+  &lt;li&gt;왜냐하면, 파티션 별로 연산을 수행했을 때, 항상 같은 순서로 연산이 수행되는 것을 보장 못하므로, 함수가 수행하는 연산은 교환법칙과 결합법칙이 성립해야 함&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(['a','b','b']).map(lambda v:(v,1))
+&amp;gt;&amp;gt;&amp;gt; rdd.collect()
+[('a', 1), ('b', 1), ('b', 1)]
+&amp;gt;&amp;gt;&amp;gt; rdd2 = rdd.reduceByKey(lambda v1, v2:(v1+v2))
+&amp;gt;&amp;gt;&amp;gt; rdd2.collect()
+[('b', 2), ('a', 1)]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;&lt;b&gt;(키,값)쌍으로 하는 RDD를 인자로 받는 트랜스포메이션 메서드&lt;/b&gt;&lt;br /&gt;
+- 데이터 처리 과정에서 사용할 파티셔너와 파티션 개수를 지정할 수 있는 옵션이 있음
+- 자체적으로 작성한 파티셔너나 파티션 개수를 통해 병렬 처리 수준 변경 가능
+&lt;/blockquote&gt;
+
+&lt;h4&gt;&lt;/h4&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>dataframe, numpy 등 array에서 double-colon(::) slicing</title>
@@ -970,7 +1416,7 @@ $$Q = n(n+2)\sum_{k=1}^{h}\hat{\rho(k)}/(n-k)$$
  </entry>
  
  <entry>
-   <title>2-1. RDD, Resilient Distributed DataSet에 대하여</title>
+   <title>RDD, Resilient Distributed DataSet에 대하여[1]</title>
    <link href="http://localhost:4000/spark%20programming/2020/11/20/rdd/"/>
    <updated>2020-11-20T00:00:00+09:00</updated>
    <id>http://localhost:4000/spark%20programming/2020/11/20/rdd</id>
@@ -1142,6 +1588,171 @@ if __name__ == &quot;__main__&quot;:
 &lt;ol&gt;
   &lt;li&gt;함수형 언어, &lt;a href=&quot;https://sungjk.github.io/2017/07/17/fp.html&quot;&gt;https://sungjk.github.io/2017/07/17/fp.html&lt;/a&gt;, &lt;a href=&quot;https://docs.python.org/ko/3/howto/functional.html&quot;&gt;https://docs.python.org/ko/3/howto/functional.html&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>스파크(Spark) 소개</title>
+   <link href="http://localhost:4000/spark%20programming/2020/11/17/introspark/"/>
+   <updated>2020-11-17T00:00:00+09:00</updated>
+   <id>http://localhost:4000/spark%20programming/2020/11/17/introspark</id>
+   <content type="html">&lt;p&gt;데이터 분석가의 역할이 점차 데이터 분석 영역에서 벗어나 조금씩 엔지니어의 영역까지 요구되고 있는 것 같아, 데이터 엔지니어링 관련 공부에 대한 필요성을 느꼈습니다. 데이터 분석을 직업으로 함에도 불구하고, 하둡이나 스파크 등과 같은 빅데이터 분석 쪽은 많이 접해보지 못했습니다. 따라서 이번 포스팅을 시작해서 해당 관련 포스팅을 틈틈히 올리도록 하겠습니다.&lt;/p&gt;
+
+&lt;p&gt;먼저, 교재 &amp;lt;빅데이터 분석을 위한 스파크2 프로그래밍, 대용량 데이터 처리부터 머신러닝까지 - 백성민 저자&amp;gt;를 읽고 포스팅을 진행하도록 하겠습니다. 본 포스팅은 &amp;lt;ch1. 스파크 소개&amp;gt; 에 대해 다뤘습니다.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h1&gt;빅데이터의 등장 및 정의&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;4차 산업 혁명과 더불어 데이터 처리 기술이 발달함&lt;/li&gt;
+  &lt;li&gt;빅데이터를 크기(volume), 다양성(variety), 속도(velocity)를 이용해서 초기에 정의 내림
+    &lt;ul&gt;
+      &lt;li&gt;다양한 형태를 지닌 대량의 데이터가 빠른 속도로 쌓이고 있다면 이를 빅데이터라 부름&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;그러나 추후에 가변성(variability), 정확성(veracity), 복잡성(complexity), 시인성(visibility)가 추가됨&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1&gt;스파크&lt;/h1&gt;
+&lt;p&gt;스파크는 하둡의 단점이 개선되어 나온 것으로, 하둡은 아래와 같음&lt;/p&gt;
+
+&lt;h3&gt;하둡이란?&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;구글이 대용량 처리와 관련된 두 개의 논문을 더그 커팅이 실제 구현하면서 시작된 아파치 프로젝트임&lt;/li&gt;
+  &lt;li&gt;분산 환경의 병렬처리 프레임워크로, 분산 파일 시스템인 HDFS와 데이터 처리를 위한 맵리듀스 프레임워크로 구성됨
+    &lt;ul&gt;
+      &lt;li&gt;이후에 CPU, 메모리 등 컴퓨팅 자원 관리를 전담하는 리소스 관림 시스템인 Yarn을 포함해, 기존 맵리듀스 프로그래밍 모델을 Yarn 기반으로 구축 관리할 수 있게 함&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;여러대의 서버를 하나의 클러스터로 구성하여, 클러스터 컴퓨팅 환경 제공&lt;/li&gt;
+  &lt;li&gt;기본적인 동작 방법은, 데이터는  HDFS에 저장하고 데이터 처리를 맵리듀스 프로그래밍을 이용하여 HDFS 위에서 수행&lt;/li&gt;
+  &lt;li&gt;&lt;b&gt;HDFS?&lt;/b&gt;
+    &lt;ul&gt;
+      &lt;li&gt;하나의 네임노드와 여러  데이터노드로 구성됨&lt;/li&gt;
+      &lt;li&gt;하나의 네임노드가 다른 데이터노드를 관리하는 형태로 시스템이 돌아감.&lt;/li&gt;
+      &lt;li&gt;전체 데이터는 일정한 크기(블록)로 나눠서 여러 데이터 노드에 분산되어 저장하고, 각 블록이 어디에 저장되어 있는지에 대한 메타 정보가 네임노드에 저장됨&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+&lt;img width=&quot;500&quot; src=&quot;https://imgur.com/6WwaRY4.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 1. HDFS&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;b&gt;맵리듀스 프레임워크?&lt;/b&gt;
+    &lt;ul&gt;
+      &lt;li&gt;데이터 처리 프레임워크로 데이터를 여러 개의 맵 프로세스와 리듀서 프로세스로 나눠서 처리하는 방식&lt;/li&gt;
+      &lt;li&gt;위 그림에서 맵리듀스 잡이 실행되면 네임노드로부터 메타정보를 읽어서 데이터 위치를 확인하고, 데이터를 처리함&lt;/li&gt;
+      &lt;li&gt;맵 프로세스는 여러 데이터 노드에 분산 저장된 데이터를 각 서버에서 병렬로 나누어 처리하며, 리듀서는 그러한 맵 프로세스들의 결과를 조합해 최종 결과를 만들어냄&lt;/li&gt;
+      &lt;li&gt;그러나, 하둡의 맵리듀스 잡은 대부분의 연산 작업을 파일시스템 기반으로 처리하기 때문에 데이터 처리 성능이 떨어짐&lt;/li&gt;
+      &lt;li&gt;반면에, 스파크는 메모리를 이용한 데이터 처리 방식을 제공함으로써 높은 성능을 보여줌&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;스파크란?&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;스파크는 하둡 기반의 맵리듀스 작업의 단점을 보완한 것으로, 데이터를 메모리 기반으로 처리하기 때문에 처리 성능이 향상됨&lt;/li&gt;
+  &lt;li&gt;또한 작업을 실행하기 전에 최적의 처리 흐름을 찾는 과정을 포함함&lt;/li&gt;
+  &lt;li&gt;맵리듀스에 비해 훨씬 다양한 데이터 처리 함수 제공&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;RDD, 데이터프레임, 데이터셋 소개와 연산&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;스파크 프로그램 내에서 ‘데이터’를 표현하고 처리하기 위한 프로그래밍 모델로, RDD, 데이터프레임(Dataframe), 데이터셋(Dataset)이 있음
+    &lt;ul&gt;
+      &lt;li&gt;데이터프레임과 데이터셋은 RDD가 보완되서 나온 것이므로, RDD가 기본임&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;RDD&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;RDD란, resilient distributed dataset으로, 병렬 처리가 가능한 요소로 구성되며 데이터를 처리하는 과정에서 일시적인 문제가 발생하더라도 스스로 에러를 복구할 수 있는 능력을 지닌 데이터 모델임&lt;/li&gt;
+  &lt;li&gt;RDD에 속한 요소들은 파티션이라는 단위로 나눠질 수 있는데, 스파크는 데이터 처리 작업을 수행할 때, 파티션 단위로 나뉘어서 병렬 처리함. &lt;del&gt;하둡에서 맵 프로세스가 여러 데이터 노드에 분산 저장된 데이터를 각 서버에서 병렬 처리하는 것과 유사하다고 생각함&lt;/del&gt;&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;기존 RDD는 덧셈 연산, 그룹화 연산등을 적용 시, 파티션에 속한 데이터들이 네트워크를 통해 다른 서버로 이동하는 셔플링이 발생될 수 있음&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;그런데, 작업 도중에 장애가 발생하여 결과가 유실될 수 있으나, 스파크 같은 경우는 RDD의 생성 과정을 기록해 뒀다가 다시 복구해 주는 기능을 가지고 있음. 이를 수행 하기 위해선 한번 생성된 RDD는 바뀌지 않아야 하는 조건이 있음
+    &lt;ul&gt;
+      &lt;li&gt;이렇게 스파크에서 RDD 생성 과정을 기록해 둔 것을 리니지(lineage)라고 함&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;DAG&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;맵 리듀스 작업으로 데이터 처리 시, 데이터 처리 방법의 너무 복잡한 경우나 데이터의 크기가 너무 큰 경우 서버의 가용량을 넘겨서 문제가 발생하는 경우가 발생&lt;/li&gt;
+  &lt;li&gt;따라서, 한번의 작업으로 모든 것을 끝낸다기 보다는 하나의 작업을 여러 개의 작은 작업으로 나눠 놓고 각 작업을 최적화해서 일련의 순서대로 나누어 실행하는 경우가 종종 있음&lt;/li&gt;
+  &lt;li&gt;일련의 작업 흐름을 나타내는 워크플로우는 DAG(Directed acyclic graph)를 ㄱ두성하고, 이를 이용해 일련의 작업을 수행하면 다양한 라이브러리를 연동해서 데이터 처리를 수행 가능
+    &lt;ul&gt;
+      &lt;li&gt;DAG? 란 꼭짓점과 방향성을 가진 엣지로 구성된 그래프 모델임&lt;/li&gt;
+      &lt;li&gt;빅데이터는 DAG를 이용해 복잡한 일련의 작업 흐름을 나타냄&lt;/li&gt;
+      &lt;li&gt;예) 우지 워크플로우 오픈소스&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;스파크 내에서의 DAG&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;스파크에서 DAG 처리를 담당하는 부분 : DAG스케쥴러&lt;/li&gt;
+  &lt;li&gt;스파크는 전체 작업을 스테이지로 나누고, 다시 여러개의 태스크로 나눠서 수행&lt;/li&gt;
+  &lt;li&gt;드라이버의 메인 함수에서는 스파크 애플리케이션과 스파크 클러스터 연동을 담당하는 스파크 컨텍스트가 있음. 스파크 컨텍스트를 이용해 잡을 실행하고 종료하는 역할을 함
+    &lt;ul&gt;
+      &lt;li&gt;드라이버란 ? RDD를 생성하고 각종 연산을 호출하는 프로그램&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;드라이버가 스파크 컨텍스트를 통해 RDD의 연산 정보를 DAG스케쥴러에 전달하면 스케쥴러는 이 정보를 가지고 실행계획을 수립. 그 후, 클러스터 매니저에게 전달함&lt;/li&gt;
+  &lt;li&gt;DAG스케쥴러는 데이터에 대한 지역성을 높이는 전략과 관련된 것. 즉, 전체 데이터 처리 흐름을 분석해서 네트워크를 통한 데이터 이동이 최소화되도록 스테이지를 구성하는 것이 스케쥴링의 역할임
+    &lt;ul&gt;
+      &lt;li&gt;&lt;b&gt;데이터의 지역성&lt;/b&gt;이란 ? 데이터를 처리하는 장소로 따로 보내 처리하는 것이 아니라, 데이터가 저장되어 있는 서버(블록별로 저장되어 있음)에서 처리하는 것.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;데이터 이동이 최소화되도록 한다는 것은 네트워크를 통한 데이터 이동 즉 &lt;b&gt;“셔플링”&lt;/b&gt;을 최소화하는 것임&lt;/li&gt;
+  &lt;li&gt;셔플링 관련 예시&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;&lt;li&gt;방법 1)&lt;/li&gt; 
+&lt;ol&gt;&lt;li&gt;10대 서버에 저장된 모든 로그를 상품에 따라 재분류 한다.&lt;/li&gt;
+&lt;li&gt;상품별 총 판매건수를 계산한 후 원하는 상품의 정보만을 출력한다.&lt;/li&gt;&lt;/ol&gt;
+&lt;li&gt;방법 2)&lt;/li&gt;
+&lt;ol&gt;&lt;li&gt;전체 로그를 분류하기 전에 각 서버별로 원하는 상품 정보만 걸러낸 후 상품별 총 판매건수를 계산한다.&lt;/li&gt;&lt;li&gt;각 서버별로 따로 계산된 상품별 판매건수를 한 곳으로 모아서 더한 후 출력한다.&lt;/li&gt;&lt;/ol&gt;&lt;/ul&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;방법 1의 경우, 10대 서버의 모든 로그 파일을 상품별로 재분류하는 것으로 작업을 시작하나, 동일한 상품번호를 가진 로그파일이 10대의 서버의 무작위로 흩어져 있음. 따라서, 재분류를 위한 “셔플링”이 대량으로 발생함&lt;/li&gt;
+  &lt;li&gt;방법 2의 경우, 셔플을 수행하기 전에 각 서버에 먼저 상품별 부분 집계를 수행한 후 집계된 결과 파일만을 대상으로 네트워크를 통한 2차 합계 연산을 수행하기 때문에, 방법 1에 비해 셔플이 적음&lt;/li&gt;
+  &lt;li&gt;&lt;b&gt;$\rightarrow$ 셔플이 최소화되는 방향으로 연산 수행해야 함&lt;/b&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;람다 아키텍쳐&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;빅데이터 처리를 위한 시스템을 구성하는 방법 중 하나로, 네이선 마츠가 제안한 아키텍쳐 모델&lt;/li&gt;
+  &lt;li&gt;기존과 같은 대용량 데이터 처리 뿐만 아니라 실시간 로그 분석과 같은 실시간 처리도 중요해짐에 따라 두가지 요구를 충족시키는 아키텍쳐가 필요해졌음&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;500&quot; src=&quot;https://t1.daumcdn.net/cfile/tistory/9995AE4F5BFCC50B20&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 2. 람다 아키텍쳐&lt;sup&gt;[1]&lt;/sup&gt;&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;람다 아키텍쳐 운영 방법&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;&lt;li&gt;새로운 데이터는 일괄 처리 계층(Batch layer)과 속도 계층(speed layer) 모두에게 전달됨&lt;/li&gt;
+&lt;li&gt;일괄 처리 계층(Batch layer)은 원본 데이터를 저장하고 일정 주기마다 한번 씩 일괄적으로 가공해서 배치뷰를 생성함. 이때 배치란, 특정시간마다 주기적으로 계산을 수행하는 것을 말함. 뷰라고 한 부분은 외부에 보여지는 데이터, 결과 데이터임&lt;/li&gt;
+&lt;li&gt;속도 계층은 들어오는 데이터를 즉시 또는 매우 짧은 주기로 철리해 실시간 뷰(Real-time view)를 생성함&lt;/li&gt;
+&lt;li&gt;서빙 계층(serving layer)은 실시간 뷰와 배치 뷰의 결과를 적절히 조합하여 사용자에게 데이터를 전달함. 물론 서빙 계층을 거치지 않고 배치뷰 또는 실시간뷰를 직접 조회(query)할 수 있음&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;즉, 일괄 처리 작업을 통해 데이터를 처리하지만 아직 배치 처리가 수행되지 않은 부분은 실시간 처리를 통해 보완함&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;이상으로, 본 포스팅을 마치겠습니다. 다음 포스팅은 &lt;a href=&quot;https://ralasun.github.io/spark%20programming/2020/11/20/rdd/&quot;&gt;&amp;lt;2-1. RDD, Resilient Distributed Dataset에 대하여&amp;gt;&lt;/a&gt; 에 대해 진행하도록 하겠습니다.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a name=&quot;lambda-archi&quot;&gt;1. &lt;a href=&quot;https://jhleed.tistory.com/122&quot;&gt;람다 아키텍쳐, https://jhleed.tistory.com/122&lt;/a&gt;&lt;/a&gt;&lt;/p&gt;
+
 </content>
  </entry>
  
