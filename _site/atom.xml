@@ -4,13 +4,275 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2021-01-07T14:14:47+09:00</updated>
+ <updated>2021-01-07T17:35:39+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>RDD, Resilient Distributed Dataset에 대하여[3] - RDD액션, RDD 데이터 불러오기와 저장하기</title>
+   <link href="http://localhost:4000/spark%20programming/2021/01/07/rdd(3)/"/>
+   <updated>2021-01-07T00:00:00+09:00</updated>
+   <id>http://localhost:4000/spark%20programming/2021/01/07/rdd(3)</id>
+   <content type="html">&lt;p&gt;이번 포스팅은 지난 포스팅 &amp;lt;RDD, Resilient Distributed DataSet에 대하여[2] - RDD기본액션, RDD트랜스포메이션&amp;gt; 에 이어서 진행하도록 하겠습니다. 교재는 빅데이터 분석을 위한 스파크2 프로그래밍을 참고하였습니다.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2&gt;2.1.6 RDD 액션&lt;/h2&gt;
+&lt;p&gt;RDD트랜스포메이션 연산은 느긋한 평가(lazy evaluation) 또는 지연 계산 방식을 따릅니다. 이는 계산에 필요한 정보를 누적하다가 계산이 필요한 시점이 돼서야 계산을 수행하는 방식을 뜻합니다. 여기서 계산이 필요한 시점은 RDD 액션 메서드가 호출된 시점입니다. RDD 액션 메서드가 호출이 되어야 비로소 RDD 트랜스포메이션 연산이 수행되게 됩니다.&lt;/p&gt;
+
+&lt;h3&gt;1. 출력 연산&lt;/h3&gt;
+&lt;h4&gt;1.1. first&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;RDD 요소 중 ,첫번째 요소를 돌려줌&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(50))
+&amp;gt;&amp;gt;&amp;gt; result = rdd.first()
+&amp;gt;&amp;gt;&amp;gt; print(result)
+0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;1.2. take&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;RDD 요소중, n번째까지 요소를 돌려줌&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(50))
+&amp;gt;&amp;gt;&amp;gt; result = rdd.take(5)
+&amp;gt;&amp;gt;&amp;gt; print(result)
+[0, 1, 2, 3, 4]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;1.3. takeSample&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;지정된 크기의 sample을 추출해서 리스트, 배열 타입등으로 반환함&lt;/li&gt;
+  &lt;li&gt;sample 메서드와의 차이점
+    &lt;ul&gt;
+      &lt;li&gt;sample 메서드는 RDD 트랜스포메이션 메서드이고, 크기를 지정할 수 없음.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;takeSample(withReplacement, num, seed=None)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(100))
+&amp;gt;&amp;gt;&amp;gt; result = rdd.takeSample(False, 3)
+&amp;gt;&amp;gt;&amp;gt; result
+[55, 23, 45]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;1.5. countByValue&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;RDD의 요소들이 나타낸 횟수를 맵 형태로 돌려주는 메서드&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize([1,1,3,2,1,2,2,1,1,4,5,3,2,3])
+&amp;gt;&amp;gt;&amp;gt; result = rdd.countByValue()
+&amp;gt;&amp;gt;&amp;gt; print(result)
+defaultdict(&amp;lt;class 'int'&amp;gt;, {1: 5, 3: 3, 2: 4, 4: 1, 5: 1})
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;1.6. reduce&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;reduce 메서드 인자는 함수가 들어감.&lt;/li&gt;
+  &lt;li&gt;그 함수는 교환법칙과 결합법칙이 성립하는 함수여야 함.&lt;/li&gt;
+  &lt;li&gt;따라서, 메서드 인자로 받은 함수를 이용해서 하나의 요소로 합치는 메서드임.&lt;/li&gt;
+  &lt;li&gt;def reduce(f: (T,T)=&amp;gt;T):T
+    &lt;ul&gt;
+      &lt;li&gt;동일한 타입 2개를 입력으로 받아, 같은 타입으로 반환해주는 메서드임&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;실제 구현은 파티션단위로 나눠져서 처리됨. 분산 프로그램이기 때문임.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; from operator import add
+&amp;gt;&amp;gt;&amp;gt; add(1,2)
+3
+&amp;gt;&amp;gt;&amp;gt; sc.parallelize([1,2,3,4,5]).reduce(add)
+15
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;1.7. fold&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;reduce와 동일하나, 초기값을 설정할 수 있음&lt;/li&gt;
+  &lt;li&gt;def fold(zeroValue: T)(op: (T,T)=&amp;gt;T):T&lt;/li&gt;
+  &lt;li&gt;그런데 유의할 점은 파티션단위로 나뉘어서 처리하기 때문에, 파티션단위로 처리할 때마다 초깃값을 이용하여 연산이 수행됨. 따라서, 더하기 연산을 할 땐 항등원인 0을, 곱셈 연산을 할 땐 항등원인 1을 초깃값으로 설정하는 것이 좋음&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(1,11), 3)
+&amp;gt;&amp;gt;&amp;gt; rdd.fold(1, add)
+59 #값이 55가 아니라 59가 나오는 것을 확인할 수 있음. 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h5&gt;reduce와 fold차이&lt;/h5&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;#product.py
+class Product:
+    def __init__(self, price):
+        self.price = price
+        self.count = 1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;def addPriceandCount(p1, p2):
+    p1.price += p2.price
+    p1.count += 1
+    return p1 #return을 p1인 이유 --&amp;gt; 입력값과 출력값의 타입이 동일해야 함.
+
+if __name__ =='__main__':
+    conf = SparkConf()
+    conf.set(&quot;spark.driver.host&quot;, &quot;127.0.0.1&quot;)
+    sc = SparkContext(master=&quot;local[*]&quot;, appName=&quot;RDDOpSample&quot;, conf=conf)
+
+    rdd = sc.parallelize([Product(300), Product(200), Product(100)], 10)
+
+    #reduce
+    result = rdd.reduce(addPriceandCount)
+    print(result.price, result.count)
+
+    #fold
+    result = rdd.fold(Product(0), addPriceandCount)
+    print(result.price, result.count)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;fold의 count합을 보면 11인 것을 알 수 있음. 그 이유는 위에서 파티션 개수를 10으로 지정하였고, 파티션 단위로 연산을 초기값을 이용하여 연산을 수행하기 때문임&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;1.8. aggregate&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;입력와 출력의 타입이 다른 경우 사용 가능&lt;/li&gt;
+  &lt;li&gt;def aggregate&lt;a href=&quot;zeroValue: U&quot;&gt;U&lt;/a&gt;(seqOp:(U,T)=&amp;gt;U, combOp:(U,U)=&amp;gt;U):U
+    &lt;ul&gt;
+      &lt;li&gt;크게 세가지 인자를 받음. 첫번째는 초깃값으로 fold와 동일&lt;/li&gt;
+      &lt;li&gt;aggregate은 병합을 크게 2단계로 구성되는데, 1단계는 seqOp에 의해, 2단계는 combOp에 의해 진행됨&lt;/li&gt;
+      &lt;li&gt;seqOp는 초깃값과 동일한 타입(U)과 RDD요소 타입(T)가 입력되어 병합 결과 초깃값과 동일한 타입인 U가 반환됨&lt;/li&gt;
+      &lt;li&gt;combOp는 최종병합에서 사용됨&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;#rdd에 속한 요소들의 평균을 aggregate을 이용하여 구하는 예제
+#record.py
+class Record:
+
+    def __init__(self, amount, number=1):
+        self.amount = amount
+        self.number = number
+
+    def addAmt(self, amount):
+        return Record(self.amount + amount, self.number + 1)
+
+    def __add__(self, other):
+        amount = self.amount + other.amount
+        number = self.number + other.number
+        return Record(amount, number)
+
+    def __str__(self):
+        return &quot;avg:&quot; + str(self.amount / self.number)
+
+    def __repr__(self):
+        return 'Record(%r, %r)' % (self.amount, self.number)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;def seqop(r,v):
+    return r.addAmt(v)
+
+if __name__ =='__main__':
+    conf = SparkConf()
+    conf.set(&quot;spark.driver.host&quot;, &quot;127.0.0.1&quot;)
+    sc = SparkContext(master=&quot;local[*]&quot;, appName=&quot;RDDOpSample&quot;, conf=conf)
+
+    rdd = sc.parallelize([100,80,75,90,95], 3)
+
+    #aggregate
+    result = rdd.aggregate(Record(0,0), seqop, lambda r1, r2:r1+r2)
+    print(result) # avg:88.0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;1.9. sum&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;모든 요소의 합을 구해주며, Double, Long등 숫자타입인 경우에만 사용가능&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(1,11))
+&amp;gt;&amp;gt;&amp;gt; rdd.sum()
+55
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;1.10. foreach, foreachPartition&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;foreach는 RDD의 개별요소에 전달받은 함수를 적용하는 메서드이고, foreachPartition은 파티션 단위로 적용됨&lt;/li&gt;
+  &lt;li&gt;이때 인자로 받는 함수는 한개의 입력값을 가지는 함수임&lt;/li&gt;
+  &lt;li&gt;이 메서드를 사용할 때 유의할 점은 &lt;strong&gt;드라이버 프로그램(메인 함수를 포함하고 있는 프로그램)이 작동하고 있는 서버위가 아니라 클러스터의 각 개별 서버에서 실행된다는 것&lt;/strong&gt;임&lt;/li&gt;
+  &lt;li&gt;따라서 foreach() 인자로 print함수를 전달한다는 것은 각 서버의 콘솔에 출력하라는 의미가 됨.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;def sideEffect(values):
+    print(&quot;partition side effect&quot;)
+    for v in values:
+        print(&quot;value side effect : %s&quot; %v)
+
+if __name__ =='__main__':
+    conf = SparkConf()
+    conf.set(&quot;spark.driver.host&quot;, &quot;127.0.0.1&quot;)
+    sc = SparkContext(master=&quot;local[*]&quot;, appName=&quot;RDDOpSample&quot;, conf=conf)
+
+    rdd = sc.parallelize(range(1,11),3)
+    result = rdd.foreach(lambda v:print(&quot;value side effect: %s&quot; %v))
+    result2 = rdd.foreachPartition(sideEffect)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;###
+value side effect: 2
+value side effect: 3
+value side effect: 4
+value side effect: 5
+value side effect: 6
+value side effect: 7
+value side effect: 8
+value side effect: 9
+value side effect: 10
+partition side effect
+value side effect : 7
+value side effect : 8
+value side effect : 9
+value side effect : 10
+partition side effect
+value side effect : 4
+value side effect : 5
+value side effect : 6
+partition side effect
+value side effect : 1
+value side effect : 2
+value side effect : 3
+###
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;1.11. toDebugString&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;디버깅을 위한 메서드. RDD파티션 개수나 의존성 정보 등 세부 정보 알고 싶을 때 사용&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(1,100), 10).persist().map(lambda v:(v,1)).coalesce(2)
+&amp;gt;&amp;gt;&amp;gt; rdd.toDebugString()
+b'(2) CoalescedRDD[65] at coalesce at NativeMethodAccessorImpl.java:0 []\n |  PythonRDD[64] at RDD at PythonRDD.scala:53 []\n |  PythonRDD[63] at RDD at PythonRDD.scala:53 []\n |  ParallelCollectionRDD[62] at parallelize at PythonRDD.scala:195 []'
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;1.12. cache, persist, unpersist&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;rdd액션 연산이 수행될때마다 RDD 생성 히스토리를 이용해 복구하는 단계를 수행하지만 너무나 번거로움&lt;/li&gt;
+  &lt;li&gt;따라서 반복적으로 사용되는 RDD인 경우 메모리에 저장해서 사용함&lt;/li&gt;
+  &lt;li&gt;cache와 persist는 rdd정보를 메모리 또는 디스크에 저장해서 다음 액션을 수행 시 다시 rdd를 생성하는 단계를 거치지 않음&lt;/li&gt;
+  &lt;li&gt;unpersist는 저장된 메모리가 더이상 필요없을 시 취소할 때 사용&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;RDD 데이터 불러오기와 저장하기&lt;/h2&gt;
+</content>
+ </entry>
  
  <entry>
    <title>RDD, Resilient Distributed Dataset에 대하여[2] - RDD기본액션, RDD트랜스포메이션</title>
