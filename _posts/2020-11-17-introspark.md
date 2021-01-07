@@ -62,7 +62,7 @@ tags: data-engineering, spark
 <h2>DAG</h2>
 - 맵 리듀스 작업으로 데이터 처리 시, 데이터 처리 방법의 너무 복잡한 경우나 데이터의 크기가 너무 큰 경우 서버의 가용량을 넘겨서 문제가 발생하는 경우가 발생
 - 따라서, 한번의 작업으로 모든 것을 끝낸다기 보다는 하나의 작업을 여러 개의 작은 작업으로 나눠 놓고 각 작업을 최적화해서 일련의 순서대로 나누어 실행하는 경우가 종종 있음
-- 일련의 작업 흐름을 나타내는 워크플로우는 DAG(Directed acyclic graph)를 ㄱ두성하고, 이를 이용해 일련의 작업을 수행하면 다양한 라이브러리를 연동해서 데이터 처리를 수행 가능
+- 일련의 작업 흐름을 나타내는 워크플로우는 DAG(Directed acyclic graph)를 구성하고, 이를 이용해 일련의 작업을 수행하면 다양한 라이브러리를 연동해서 데이터 처리를 수행 가능
 	- DAG? 란 꼭짓점과 방향성을 가진 엣지로 구성된 그래프 모델임
 	- 빅데이터는 DAG를 이용해 복잡한 일련의 작업 흐름을 나타냄
 	- 예) 우지 워크플로우 오픈소스
@@ -107,7 +107,7 @@ tags: data-engineering, spark
 
 <hr>
 
-이상으로, 본 포스팅을 마치겠습니다. 다음 포스팅은 [\<2-1. RDD, Resilient Distributed Dataset에 대하여\>](https://ralasun.github.io/spark%20programming/2020/11/20/rdd/) 에 대해 진행하도록 하겠습니다.
+이상으로, 본 포스팅을 마치겠습니다. 다음 포스팅은 [\<RDD, Resilient Distributed DataSet에 대하여[1]\>](https://ralasun.github.io/spark%20programming/2020/11/20/rdd/) 에 대해 진행하도록 하겠습니다.
 
 <hr>
 
