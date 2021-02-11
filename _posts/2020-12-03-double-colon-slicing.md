@@ -2,7 +2,7 @@
 layout : jupyter
 title : dataframe, numpy 등 array에서 double-colon(::) slicing 
 category : Code Snippet
-tags : pandas, numpy, python
+tags : pandas
 ---
 ---
 

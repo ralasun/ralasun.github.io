@@ -2,7 +2,7 @@
 layout : jupyter
 title : pandas.DataFrame.any(), numpy.any()
 category : Code Snippet
-tags : pandas python code, numpy
+tags : pandas numpy
 ---
 ***
 
