@@ -1,4 +1,151 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-01-07T17:35:39+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ralasun Resarch Blog</title><subtitle></subtitle><author><name>Seonhwa Lee</name></author><entry><title type="html">RDD, Resilient Distributed Dataset에 대하여[3] - RDD액션, RDD 데이터 불러오기와 저장하기</title><link href="http://localhost:4000/spark%20programming/2021/01/07/rdd(3)/" rel="alternate" type="text/html" title="RDD, Resilient Distributed Dataset에 대하여[3] - RDD액션, RDD 데이터 불러오기와 저장하기" /><published>2021-01-07T00:00:00+09:00</published><updated>2021-01-07T00:00:00+09:00</updated><id>http://localhost:4000/spark%20programming/2021/01/07/rdd(3)</id><content type="html" xml:base="http://localhost:4000/spark%20programming/2021/01/07/rdd(3)/">&lt;p&gt;이번 포스팅은 지난 포스팅 &amp;lt;RDD, Resilient Distributed DataSet에 대하여[2] - RDD기본액션, RDD트랜스포메이션&amp;gt; 에 이어서 진행하도록 하겠습니다. 교재는 빅데이터 분석을 위한 스파크2 프로그래밍을 참고하였습니다.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-01-18T22:11:18+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ralasun Resarch Blog</title><subtitle></subtitle><author><name>Seonhwa Lee</name></author><entry><title type="html">TADA, Trend Alignment with Dual-Attention Multi-Task Recurrent Neural Networks for Sales Prediction 논문 리뷰</title><link href="http://localhost:4000/time%20series%20analysis/2021/01/18/tada/" rel="alternate" type="text/html" title="TADA, Trend Alignment with Dual-Attention Multi-Task Recurrent Neural Networks for Sales Prediction 논문 리뷰" /><published>2021-01-18T00:00:00+09:00</published><updated>2021-01-18T00:00:00+09:00</updated><id>http://localhost:4000/time%20series%20analysis/2021/01/18/tada</id><content type="html" xml:base="http://localhost:4000/time%20series%20analysis/2021/01/18/tada/">&lt;hr /&gt;
+
+&lt;p&gt;다변량 시계열 예측 모델에 관한 논문으로, 다변량 시계열 데이터를 가지고 encoder-decoder RNN 모델 기반으로 dual-attention과 multi-task RNN으로 구성된 모델입니다.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2&gt;Problem&lt;/h2&gt;
+&lt;p&gt;다변량 시계열 예측을 위한 여러 통계 기반 모델링이 있으나, 판매량에 영향을 주는 변수들 간의 관계를 파악하기 어렵고, 이 변수들로 부터 의미있는 정보(contextual information)을 추출하는 건 더욱 어렵습니다. 예를 들어, 겨울의복은 날씨에 영향에 두드러지게 받지만, 일반적인 셔츠는 사계절내내 잘 입는 옷이기 때문에 겨울의복보단 계절의 영향을 덜 받습니다. 또한 소비자의 주관적인 선호도(브랜드 선호도, 상품 선호도 등)에 따라 상품 판매는 크게 또한 달라지게 됩니다. 따라서, 본 논문에서 주목하는 다변량 시계열 예측에서의 문제는 아래와 같이 크게 세가지입니다.&lt;/p&gt;
+
+&lt;ol&gt;&lt;li&gt;how to fully capture the dynamic dependencies among multiple influential factors?&lt;br /&gt;
+판매에 영향을 주는 여러 변수들 간의 관계는 시간에 따라 변할 가능성이 높습니다. 그렇다면 매 스텝마다 변수들 간의 관계를 어떻게 포착할 수 있을까요 ?&lt;/li&gt;&lt;li&gt;how can we possibly glean wisdoms form the past to compensate for the unpredictability of influential factors?&lt;br /&gt;이 변수들이 미래에 어떻게 변할지는 아무도 모릅니다. 그렇다면 과거 이 변수들의 정보만을 가지고 어떻게 미래를 눈여겨 볼 수 있는 정보를 추출할지는 생각해 봐야 합니다.&lt;/li&gt;
+&lt;li&gt;how to align the upcoming trend with historical sales trends?&lt;br /&gt;현실 시계에서의 판매 트랜드는 전혀 규칙적이지 않습니다. 그렇다면 과거 판매 트렌드를 어떻게 하면 현실 트렌드와 연관지을 수 있을까요 ?&lt;/li&gt;&lt;/ol&gt;
+
+&lt;h2&gt;TADA : Trend Alignment with Dual-Attention Multi-Task RNN&lt;/h2&gt;
+
+&lt;h3&gt;Problem Formulation&lt;/h3&gt;
+
+&lt;p&gt;본 논문에서 풀고자 하는 다변량 시계열 예측 문제는 아래와 같이 수학적으로 정의됩니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\{\hat{y_t\}}^{T+\triangle}_{t=T+1} = F({\{\mathbf x_t\}}^{T}_{t=1}, {\{y_t\}}^{T}_{t=1})&lt;/script&gt;
+
+&lt;p&gt;$\mathbf x_t$ 는 influential factors로 판매량 이외의 변수(ex. 날씨, 브랜드, 상품인덱스 등)이고, $y_t$ 는 판매량 입니다.&lt;/p&gt;
+
+&lt;h3&gt;TADA 모델 개요&lt;/h3&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/w09ZSHF.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 1. 모델 개요&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;위의 그림은 본 논문의 모델 개요입니다. 크게 아래와 같이 구성되어 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Multi-task based Encoder Structures&lt;/li&gt;
+  &lt;li&gt;Dual-Attention based Decoder Structures
+    &lt;ul&gt;
+      &lt;li&gt;Attention got weighted decoder input mapping&lt;/li&gt;
+      &lt;li&gt;attention for trend alignment&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;Multi-task based Encoder Structures&lt;/h4&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/leH0yfV.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 2. Multi-task based Encoder&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;influential factor의 semantic한 특징을 잘 추출한다면 분명 예측에 도움이 될 것입니다. 그러나 매 타임 스텝마다 어떻게 하면 판매량 예측에 도움될 semantic한 특징을 추출할 수 있을까요 ? 본 논문에서는 influential factor를 크게 intrinsic한 속성과 objective한 속성으로 나누어 LSTM을 이용한 인코딩을 각각 따로하였습니다. 이를 통해 각각 두 개의 LSTM(intrinsic LSTM, external LSTM)을 통해 각기 다른 semantic한 특징을 추출할 수 있습니다. 따라서, 위의 문제 정의는 아래와 같이 다시 정의될 수 있습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\{\hat{y_t\}}^{T+\triangle}_{t=T+1} = F({\{\mathbf x_t^{int}\}}^{T}_{t=1}, {\{\mathbf x_t^{ext}\}}^{T}_{t=1}, {\{y_t\}}^{T}_{t=1})&lt;/script&gt;
+
+&lt;p&gt;intrinsic한 속성이란 브랜드, 카테고리, 가격등 상품과 관련된 것이고, objective한 속성은 날씨, 휴일유무, 할인등과 관련된 속성입니다. 아래 표는 논문에서 실험한 데이터의 intrinsic/objective 속성입니다.&lt;/p&gt;
+
+&lt;p&gt;하지만 우리가 구하고 싶은 건 두 가지의 다른 semantic한 feature를 적절하게 결합하여 의미있는 &lt;strong&gt;contextual vector&lt;/strong&gt;를 만드는 것입니다. 따라서 또다른 LSTM 네트워크인 Synergic LSTM을 구축하여 joint representation을 학습합니다. 이때, Synergic LSTM에 입력으로 들어가는 건 각 타임스텝에 해당되는 $h_t^{int}$ 와 $h_t^{ext}$ 뿐만 아니라 판매량 $y_t$ 도 같이 joint space가 구축되도록 학습됩니다.&lt;/p&gt;
+
+&lt;p&gt;먼저, 두 타입스텝 t에서의 두 개의 hidden state을 $h_t^{int}$ 와 $h_t^{ext}$ 이용하여 Synergic LSTM의 인풋인 $\mathbf X_t^{syn}$ 을 아래와 같이 계산합니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbf X_t^{syn} = \mathbf W_{syn}[\mathbf h_t^{int};\mathbf h_t^{ext};y_t]&lt;/script&gt;
+
+&lt;p&gt;그런 다음, intrinsic LSTM/external LSTM과 동일하게 각 타임스텝마다 두 정보가 결합되어 인코딩된 hidden stated인 $\mathbf h^{con}_t$ 를 계산합니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/ijwajF4.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 3. Multi-task based Encoder(2)&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;h4&gt;Dual-Attention based Decoder Structures&lt;/h4&gt;
+&lt;p&gt;Multi-task Encoder를 통해 과거 판매량 시계열 데이터를 인코딩하면 contextual vectors인 ${\mathbf h_t^{con}}^T_{t=1}$ 이 계산되어 나옵니다. $h_t^{con}$ 은 타임스텝 t까지의 시계열 데이터에 대한 contextual 정보를 품고 있습니다.&lt;/p&gt;
+
+&lt;p&gt;LSTM decoder도 encoder와 유사하게 예측에 필요한 contextual vector $\mathbf d_t^{con}$ 을 생성합니다. 따라서, $T &amp;lt; t \leq T + \Delta$ 에 대해 decoder 수학식은 아래와 같습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbf d_t^{con} = LSTM^{dec}(\mathbf x_t^{dec}, \mathbf d^{con}_{t-1})&lt;/script&gt;
+
+&lt;p&gt;위 식에서 $\mathbf x_t^{dec}$ 는 attention weighted input입니다. 그러면 contextual vector가 어떻게 만들어지는지 보기 전에 attention weighted input 계산 과정을 살펴봅시다.&lt;/p&gt;
+
+&lt;h5&gt;Attention for Weighted Decoder Input Mapping&lt;/h5&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/NvCkYMs.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 4. Attention for Weighted Decoder Input&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;Decoder에 입력될 Input은 encoder contextual vector들에서 각 디코터 타임 스텝에 필요한 정보를 적절하게 취하도록 하기 위해 attention 메카니즘을 통해 생성합니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbf x_t^{dec} = \mathbf W_{dec}\left[\sum_{t'=1}^T \alpha_{tt'}^{int}\mathbf h_{t'}^{int};\sum_{t'=1}^T \alpha_{tt'}^{ext}\mathbf h_{t'}^{ext}\right] + \mathbf b_{dec}&lt;/script&gt;
+
+&lt;p&gt;$\alpha_{tt’}^{int}$ 와 $\alpha_{tt’}^{ext}$ 는 어텐션 가중치를 의미합니다. 어텐션 가중치는 아래 과정을 통해 계산됩니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;e^{int}_{tt'} = \mathbf v^{\mathrm T}_{int}tanh(\mathbf M_{int}\mathbf d_{t-1}^{con} + \mathbf H_{int}\mathbf h_{t'}^{int})&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;e^{ext}_{tt'} = \mathbf v^{\mathrm T}_{ext}tanh(\mathbf M_{int}\mathbf d_{t-1}^{con} + \mathbf H_{ext}\mathbf h_{t'}^{ext})&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\alpha_{tt'}^{int} = \frac{exp(e_{tt'}^{int})}{\sum_{s=1}^{T}exp(e_{ts}^{int})}&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\alpha_{tt'}^{ext} = \frac{exp(e_{tt'}^{ext})}{\sum_{s=1}^{T}exp(e_{ts}^{ext})}&lt;/script&gt;
+
+&lt;p&gt;이때, $\sum_{t’=1}^{T}\alpha_{tt’}^{int} = \sum_{t’=1}^{T}\alpha_{tt’}^{ext} = 1$ 이 여야 합니다.&lt;/p&gt;
+
+&lt;h5&gt;Attention for Trend Alignment&lt;/h5&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/riUczJ9.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 5. Attention for Trend Alignment&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;미래를 예측하기 위해선 과거의 trend 패턴을 안다면 좀 더 수월할 수 있습니다. 따라서, 미래에 예상되는 패턴과 유사한 패턴을 과거에서 찾는 작업을 attention을 통해 진행하는 과정을 본 논문에서 제안하였습니다. 그러나, 
+일반적으로 attention 메카니즘은 현 타임스텝에서 아웃풋을 출력하기 위해 이전 hidden state들중에서 가장 align되는 정보를 선택합니다. 과거 정보들 중에서 &lt;strong&gt;미래의 트렌드와 유사한 트렌드 정보&lt;/strong&gt;를 선택적으로 이용하고 싶다면 전통적인 attention 메카니즘을 그대로 사용하기는 어렵습니다. 왜냐하면, 일반적인 데이터에선 trend외에 노이즈도 많이 포함하고 있기 때문입니다. 즉, 전체 데이터에 trend + noise라서 이전 모든 과거들에서 유사한 trend 패턴만을 집중하는 건 힘듭니다. 따라서 논문 저자는 아래와 같은 방법을 고안하였습니다.&lt;/p&gt;
+
+&lt;p&gt;먼저, ${\mathbf h_t^{con}}_{t=1}^T$ 를 $\triangle$ 타임 스텝 크기에 해당되는  contextual vector를 이어붙여서 $\triangle$ -step trend vector를 생성합니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/yUmHRP0.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;$\mathbf p_i$ 는 과거 시계열 데이터에서 $\triangle$ 간격에 해당되는 구간의 트렌드를 나타냅니다. $i$ 가 1씩 증가하므로, 마치 슬라이딩 윈도우 1씩 움직이면서 트렌드를 포착하는 것과 유사합니다.&lt;/p&gt;
+
+&lt;p&gt;마찬가지 방식으로 decoder hidden state들을 이어 붙여 미래에 예상될 트렌드 정보를 생성합니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/I9C1wnQ.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;따라서, 그림5 처럼 과거에 생성된 트렌드 벡터과 미래 트렌드 벡터를 각각 내적하여 가장 큰 값에 해당되는 인덱스 i를 반환합니다. 내적값이 가장 크다는 것은 가장 유사함을 의미합니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;e_i^{trd} = \mathbf p_i^{\mathrm T} \tilde{\mathbf p}&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;i' = argmax(e_i^{trd} , e_{i+1}^{trd},\dots, e_{T+\triangle -1}^{trd})&lt;/script&gt;
+
+&lt;p&gt;그 다음 $\mathbf p_{i’}$ 내의 각 ${\mathbf d_t^{con}}$ 와 $\mathbf h_t^{con}$ 을 아래와 같은 계산과정을 거쳐서 $\tilde {\mathbf d}^{con}$ 을 생성합니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/haL8Udd.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;$\tilde {\mathbf d}^{con}$ 은 타임스텝 t에서의 과거 유사한 트렌드 정보에 집중하여 생성된 aligned contextual vector 입니다.&lt;/p&gt;
+
+&lt;h4&gt;Sales Prediction and Model Learning&lt;/h4&gt;
+
+&lt;p&gt;위에서 생성된 aligned contextual vector ${\widetilde {\mathbf d_t}^{con}}$ 를 가지고 판매량을 예측합니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\hat y_t = \mathbf v_y^{\mathrm T} \mathbf {\widetilde d}^{con} + b_y&lt;/script&gt;
+
+&lt;p&gt;$\hat y_t , \,\,(T+1 \leq t \leq T+\Delta)$ 는 타임스텝 T에서의 예측된 판매량입니다.&lt;/p&gt;
+
+&lt;p&gt;본 논문에서 학습은 L2 regularization과 함께 Mean Squared Error를 minimize하였습니다.&lt;/p&gt;
+
+&lt;h2&gt;Experiment and result.&lt;/h2&gt;
+
+&lt;p&gt;전체적인 결과에 관한 건 논문을 참고 바랍니다. trend alignment 부분에 대한 결과를 살펴보면 과거 유사하다고 찾은 trend와 예측된 trend는 아래 그래프와 같이 나왔습니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/F5w1W2o.png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;보면 어느정도 과거 매치된 트렌드와 유사한 트렌드를 따르는 것을 확인할 수 있었습니다.&lt;/p&gt;
+
+&lt;h2&gt;Lessons Learned&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;결과를 보면 어느정도 lag가 발생하는 것으로 보입니다.&lt;/li&gt;
+  &lt;li&gt;trend에 대한 파악을 먼저하고 판매량 데이터 입력을 나중에 하면 어떨까?&lt;/li&gt;
+  &lt;li&gt;dual-stage attention에서의 input attention 모듈과 multi-tasked encoder를 결합하는 건 어떨까 ??&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;이상으로 본 논문 리뷰를 마치겠습니다.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;ol&gt;
+  &lt;li&gt;Chen, Tong, et al. “Tada: trend alignment with dual-attention multi-task recurrent neural networks for sales prediction.” 2018 IEEE International Conference on Data Mining (ICDM). IEEE, 2018.&lt;/li&gt;
+&lt;/ol&gt;</content><author><name>Seonhwa Lee</name></author><category term="Time Series Analysis" /><category term="time-series" /><category term="prediction" /><category term="sales-prediction" /><summary type="html">다변량 시계열 예측 모델에 관한 논문으로, 다변량 시계열 데이터를 가지고 encoder-decoder RNN 모델 기반으로 dual-attention과 multi-task RNN으로 구성된 모델입니다. Problem 다변량 시계열 예측을 위한 여러 통계 기반 모델링이 있으나, 판매량에 영향을 주는 변수들 간의 관계를 파악하기 어렵고, 이 변수들로 부터 의미있는 정보(contextual information)을 추출하는 건 더욱 어렵습니다. 예를 들어, 겨울의복은 날씨에 영향에 두드러지게 받지만, 일반적인 셔츠는 사계절내내 잘 입는 옷이기 때문에 겨울의복보단 계절의 영향을 덜 받습니다. 또한 소비자의 주관적인 선호도(브랜드 선호도, 상품 선호도 등)에 따라 상품 판매는 크게 또한 달라지게 됩니다. 따라서, 본 논문에서 주목하는 다변량 시계열 예측에서의 문제는 아래와 같이 크게 세가지입니다. how to fully capture the dynamic dependencies among multiple influential factors? 판매에 영향을 주는 여러 변수들 간의 관계는 시간에 따라 변할 가능성이 높습니다. 그렇다면 매 스텝마다 변수들 간의 관계를 어떻게 포착할 수 있을까요 ?how can we possibly glean wisdoms form the past to compensate for the unpredictability of influential factors?이 변수들이 미래에 어떻게 변할지는 아무도 모릅니다. 그렇다면 과거 이 변수들의 정보만을 가지고 어떻게 미래를 눈여겨 볼 수 있는 정보를 추출할지는 생각해 봐야 합니다. how to align the upcoming trend with historical sales trends?현실 시계에서의 판매 트랜드는 전혀 규칙적이지 않습니다. 그렇다면 과거 판매 트렌드를 어떻게 하면 현실 트렌드와 연관지을 수 있을까요 ? TADA : Trend Alignment with Dual-Attention Multi-Task RNN Problem Formulation 본 논문에서 풀고자 하는 다변량 시계열 예측 문제는 아래와 같이 수학적으로 정의됩니다. $\mathbf x_t$ 는 influential factors로 판매량 이외의 변수(ex. 날씨, 브랜드, 상품인덱스 등)이고, $y_t$ 는 판매량 입니다. TADA 모델 개요 그림 1. 모델 개요 위의 그림은 본 논문의 모델 개요입니다. 크게 아래와 같이 구성되어 있습니다. Multi-task based Encoder Structures Dual-Attention based Decoder Structures Attention got weighted decoder input mapping attention for trend alignment Multi-task based Encoder Structures 그림 2. Multi-task based Encoder influential factor의 semantic한 특징을 잘 추출한다면 분명 예측에 도움이 될 것입니다. 그러나 매 타임 스텝마다 어떻게 하면 판매량 예측에 도움될 semantic한 특징을 추출할 수 있을까요 ? 본 논문에서는 influential factor를 크게 intrinsic한 속성과 objective한 속성으로 나누어 LSTM을 이용한 인코딩을 각각 따로하였습니다. 이를 통해 각각 두 개의 LSTM(intrinsic LSTM, external LSTM)을 통해 각기 다른 semantic한 특징을 추출할 수 있습니다. 따라서, 위의 문제 정의는 아래와 같이 다시 정의될 수 있습니다. intrinsic한 속성이란 브랜드, 카테고리, 가격등 상품과 관련된 것이고, objective한 속성은 날씨, 휴일유무, 할인등과 관련된 속성입니다. 아래 표는 논문에서 실험한 데이터의 intrinsic/objective 속성입니다. 하지만 우리가 구하고 싶은 건 두 가지의 다른 semantic한 feature를 적절하게 결합하여 의미있는 contextual vector를 만드는 것입니다. 따라서 또다른 LSTM 네트워크인 Synergic LSTM을 구축하여 joint representation을 학습합니다. 이때, Synergic LSTM에 입력으로 들어가는 건 각 타임스텝에 해당되는 $h_t^{int}$ 와 $h_t^{ext}$ 뿐만 아니라 판매량 $y_t$ 도 같이 joint space가 구축되도록 학습됩니다. 먼저, 두 타입스텝 t에서의 두 개의 hidden state을 $h_t^{int}$ 와 $h_t^{ext}$ 이용하여 Synergic LSTM의 인풋인 $\mathbf X_t^{syn}$ 을 아래와 같이 계산합니다. 그런 다음, intrinsic LSTM/external LSTM과 동일하게 각 타임스텝마다 두 정보가 결합되어 인코딩된 hidden stated인 $\mathbf h^{con}_t$ 를 계산합니다. 그림 3. Multi-task based Encoder(2) Dual-Attention based Decoder Structures Multi-task Encoder를 통해 과거 판매량 시계열 데이터를 인코딩하면 contextual vectors인 ${\mathbf h_t^{con}}^T_{t=1}$ 이 계산되어 나옵니다. $h_t^{con}$ 은 타임스텝 t까지의 시계열 데이터에 대한 contextual 정보를 품고 있습니다. LSTM decoder도 encoder와 유사하게 예측에 필요한 contextual vector $\mathbf d_t^{con}$ 을 생성합니다. 따라서, $T &amp;lt; t \leq T + \Delta$ 에 대해 decoder 수학식은 아래와 같습니다. 위 식에서 $\mathbf x_t^{dec}$ 는 attention weighted input입니다. 그러면 contextual vector가 어떻게 만들어지는지 보기 전에 attention weighted input 계산 과정을 살펴봅시다. Attention for Weighted Decoder Input Mapping 그림 4. Attention for Weighted Decoder Input Decoder에 입력될 Input은 encoder contextual vector들에서 각 디코터 타임 스텝에 필요한 정보를 적절하게 취하도록 하기 위해 attention 메카니즘을 통해 생성합니다. $\alpha_{tt’}^{int}$ 와 $\alpha_{tt’}^{ext}$ 는 어텐션 가중치를 의미합니다. 어텐션 가중치는 아래 과정을 통해 계산됩니다. 이때, $\sum_{t’=1}^{T}\alpha_{tt’}^{int} = \sum_{t’=1}^{T}\alpha_{tt’}^{ext} = 1$ 이 여야 합니다. Attention for Trend Alignment 그림 5. Attention for Trend Alignment 미래를 예측하기 위해선 과거의 trend 패턴을 안다면 좀 더 수월할 수 있습니다. 따라서, 미래에 예상되는 패턴과 유사한 패턴을 과거에서 찾는 작업을 attention을 통해 진행하는 과정을 본 논문에서 제안하였습니다. 그러나, 일반적으로 attention 메카니즘은 현 타임스텝에서 아웃풋을 출력하기 위해 이전 hidden state들중에서 가장 align되는 정보를 선택합니다. 과거 정보들 중에서 미래의 트렌드와 유사한 트렌드 정보를 선택적으로 이용하고 싶다면 전통적인 attention 메카니즘을 그대로 사용하기는 어렵습니다. 왜냐하면, 일반적인 데이터에선 trend외에 노이즈도 많이 포함하고 있기 때문입니다. 즉, 전체 데이터에 trend + noise라서 이전 모든 과거들에서 유사한 trend 패턴만을 집중하는 건 힘듭니다. 따라서 논문 저자는 아래와 같은 방법을 고안하였습니다. 먼저, ${\mathbf h_t^{con}}_{t=1}^T$ 를 $\triangle$ 타임 스텝 크기에 해당되는 contextual vector를 이어붙여서 $\triangle$ -step trend vector를 생성합니다. $\mathbf p_i$ 는 과거 시계열 데이터에서 $\triangle$ 간격에 해당되는 구간의 트렌드를 나타냅니다. $i$ 가 1씩 증가하므로, 마치 슬라이딩 윈도우 1씩 움직이면서 트렌드를 포착하는 것과 유사합니다. 마찬가지 방식으로 decoder hidden state들을 이어 붙여 미래에 예상될 트렌드 정보를 생성합니다. 따라서, 그림5 처럼 과거에 생성된 트렌드 벡터과 미래 트렌드 벡터를 각각 내적하여 가장 큰 값에 해당되는 인덱스 i를 반환합니다. 내적값이 가장 크다는 것은 가장 유사함을 의미합니다. 그 다음 $\mathbf p_{i’}$ 내의 각 ${\mathbf d_t^{con}}$ 와 $\mathbf h_t^{con}$ 을 아래와 같은 계산과정을 거쳐서 $\tilde {\mathbf d}^{con}$ 을 생성합니다. $\tilde {\mathbf d}^{con}$ 은 타임스텝 t에서의 과거 유사한 트렌드 정보에 집중하여 생성된 aligned contextual vector 입니다. Sales Prediction and Model Learning 위에서 생성된 aligned contextual vector ${\widetilde {\mathbf d_t}^{con}}$ 를 가지고 판매량을 예측합니다. $\hat y_t , \,\,(T+1 \leq t \leq T+\Delta)$ 는 타임스텝 T에서의 예측된 판매량입니다. 본 논문에서 학습은 L2 regularization과 함께 Mean Squared Error를 minimize하였습니다. Experiment and result. 전체적인 결과에 관한 건 논문을 참고 바랍니다. trend alignment 부분에 대한 결과를 살펴보면 과거 유사하다고 찾은 trend와 예측된 trend는 아래 그래프와 같이 나왔습니다. 보면 어느정도 과거 매치된 트렌드와 유사한 트렌드를 따르는 것을 확인할 수 있었습니다. Lessons Learned 결과를 보면 어느정도 lag가 발생하는 것으로 보입니다. trend에 대한 파악을 먼저하고 판매량 데이터 입력을 나중에 하면 어떨까? dual-stage attention에서의 input attention 모듈과 multi-tasked encoder를 결합하는 건 어떨까 ?? 이상으로 본 논문 리뷰를 마치겠습니다. Chen, Tong, et al. “Tada: trend alignment with dual-attention multi-task recurrent neural networks for sales prediction.” 2018 IEEE International Conference on Data Mining (ICDM). IEEE, 2018.</summary></entry><entry><title type="html">A Dual-Stage Attention-Based Recurrent Neural Network for Time-Series Prediction 논문 리뷰</title><link href="http://localhost:4000/time%20series%20analysis/2021/01/18/dual-stage-attention/" rel="alternate" type="text/html" title="A Dual-Stage Attention-Based Recurrent Neural Network for Time-Series Prediction 논문 리뷰" /><published>2021-01-18T00:00:00+09:00</published><updated>2021-01-18T00:00:00+09:00</updated><id>http://localhost:4000/time%20series%20analysis/2021/01/18/dual-stage-attention</id><content type="html" xml:base="http://localhost:4000/time%20series%20analysis/2021/01/18/dual-stage-attention/">&lt;p&gt;A Dual-Stage Attention-Based Recurrent Neural Network는 다변량 시계열 예측 모델입니다(Multi-Variate Time Series Prediction). Bahdanau et al.의 &lt;a href=&quot;https://arxiv.org/abs/1409.0473&quot;&gt;Attention network 기반 시퀀스 모델&lt;/a&gt; 을 베이스로, 인코더 뿐만 아니라 디코더에도 Attention netowork를 이용해 예측을 위한 다변량 시계열 변수 간 상대적인 중요도와 타임 스텝 간 상대적인 중요도를 모두 고려한 모델입니다.&lt;/p&gt;
+
+&lt;h2&gt;Problem&lt;/h2&gt;</content><author><name>Seonhwa Lee</name></author><category term="Time Series Analysis" /><category term="time-series" /><category term="time-series-analysis" /><category term="prediction" /><category term="stock-prediction" /><summary type="html">A Dual-Stage Attention-Based Recurrent Neural Network는 다변량 시계열 예측 모델입니다(Multi-Variate Time Series Prediction). Bahdanau et al.의 Attention network 기반 시퀀스 모델 을 베이스로, 인코더 뿐만 아니라 디코더에도 Attention netowork를 이용해 예측을 위한 다변량 시계열 변수 간 상대적인 중요도와 타임 스텝 간 상대적인 중요도를 모두 고려한 모델입니다. Problem</summary></entry><entry><title type="html">RDD, Resilient Distributed Dataset에 대하여[3] - RDD액션, RDD 데이터 불러오기와 저장하기, 공유변수</title><link href="http://localhost:4000/spark%20programming/2021/01/07/rdd(3)/" rel="alternate" type="text/html" title="RDD, Resilient Distributed Dataset에 대하여[3] - RDD액션, RDD 데이터 불러오기와 저장하기, 공유변수" /><published>2021-01-07T00:00:00+09:00</published><updated>2021-01-07T00:00:00+09:00</updated><id>http://localhost:4000/spark%20programming/2021/01/07/rdd(3)</id><content type="html" xml:base="http://localhost:4000/spark%20programming/2021/01/07/rdd(3)/">&lt;p&gt;이번 포스팅은 지난 포스팅 &amp;lt;RDD, Resilient Distributed DataSet에 대하여[2] - RDD기본액션, RDD트랜스포메이션&amp;gt; 에 이어서 진행하도록 하겠습니다. 교재는 빅데이터 분석을 위한 스파크2 프로그래밍을 참고하였습니다.&lt;/p&gt;
 
 &lt;hr /&gt;
 
@@ -251,7 +398,205 @@ b'(2) CoalescedRDD[65] at coalesce at NativeMethodAccessorImpl.java:0 []\n |  Py
   &lt;li&gt;unpersist는 저장된 메모리가 더이상 필요없을 시 취소할 때 사용&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2&gt;RDD 데이터 불러오기와 저장하기&lt;/h2&gt;</content><author><name>Seonhwa Lee</name></author><category term="Spark Programming" /><category term="data-engineering," /><category term="spark" /><summary type="html">이번 포스팅은 지난 포스팅 &amp;lt;RDD, Resilient Distributed DataSet에 대하여[2] - RDD기본액션, RDD트랜스포메이션&amp;gt; 에 이어서 진행하도록 하겠습니다. 교재는 빅데이터 분석을 위한 스파크2 프로그래밍을 참고하였습니다. 2.1.6 RDD 액션 RDD트랜스포메이션 연산은 느긋한 평가(lazy evaluation) 또는 지연 계산 방식을 따릅니다. 이는 계산에 필요한 정보를 누적하다가 계산이 필요한 시점이 돼서야 계산을 수행하는 방식을 뜻합니다. 여기서 계산이 필요한 시점은 RDD 액션 메서드가 호출된 시점입니다. RDD 액션 메서드가 호출이 되어야 비로소 RDD 트랜스포메이션 연산이 수행되게 됩니다. 1. 출력 연산 1.1. first RDD 요소 중 ,첫번째 요소를 돌려줌 &amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(50)) &amp;gt;&amp;gt;&amp;gt; result = rdd.first() &amp;gt;&amp;gt;&amp;gt; print(result) 0 1.2. take RDD 요소중, n번째까지 요소를 돌려줌 &amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(50)) &amp;gt;&amp;gt;&amp;gt; result = rdd.take(5) &amp;gt;&amp;gt;&amp;gt; print(result) [0, 1, 2, 3, 4] 1.3. takeSample 지정된 크기의 sample을 추출해서 리스트, 배열 타입등으로 반환함 sample 메서드와의 차이점 sample 메서드는 RDD 트랜스포메이션 메서드이고, 크기를 지정할 수 없음. takeSample(withReplacement, num, seed=None) &amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(100)) &amp;gt;&amp;gt;&amp;gt; result = rdd.takeSample(False, 3) &amp;gt;&amp;gt;&amp;gt; result [55, 23, 45] 1.5. countByValue RDD의 요소들이 나타낸 횟수를 맵 형태로 돌려주는 메서드 &amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize([1,1,3,2,1,2,2,1,1,4,5,3,2,3]) &amp;gt;&amp;gt;&amp;gt; result = rdd.countByValue() &amp;gt;&amp;gt;&amp;gt; print(result) defaultdict(&amp;lt;class 'int'&amp;gt;, {1: 5, 3: 3, 2: 4, 4: 1, 5: 1}) 1.6. reduce reduce 메서드 인자는 함수가 들어감. 그 함수는 교환법칙과 결합법칙이 성립하는 함수여야 함. 따라서, 메서드 인자로 받은 함수를 이용해서 하나의 요소로 합치는 메서드임. def reduce(f: (T,T)=&amp;gt;T):T 동일한 타입 2개를 입력으로 받아, 같은 타입으로 반환해주는 메서드임 실제 구현은 파티션단위로 나눠져서 처리됨. 분산 프로그램이기 때문임. &amp;gt;&amp;gt;&amp;gt; from operator import add &amp;gt;&amp;gt;&amp;gt; add(1,2) 3 &amp;gt;&amp;gt;&amp;gt; sc.parallelize([1,2,3,4,5]).reduce(add) 15 1.7. fold reduce와 동일하나, 초기값을 설정할 수 있음 def fold(zeroValue: T)(op: (T,T)=&amp;gt;T):T 그런데 유의할 점은 파티션단위로 나뉘어서 처리하기 때문에, 파티션단위로 처리할 때마다 초깃값을 이용하여 연산이 수행됨. 따라서, 더하기 연산을 할 땐 항등원인 0을, 곱셈 연산을 할 땐 항등원인 1을 초깃값으로 설정하는 것이 좋음 &amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(1,11), 3) &amp;gt;&amp;gt;&amp;gt; rdd.fold(1, add) 59 #값이 55가 아니라 59가 나오는 것을 확인할 수 있음. reduce와 fold차이 #product.py class Product: def __init__(self, price): self.price = price self.count = 1 def addPriceandCount(p1, p2): p1.price += p2.price p1.count += 1 return p1 #return을 p1인 이유 --&amp;gt; 입력값과 출력값의 타입이 동일해야 함. if __name__ =='__main__': conf = SparkConf() conf.set(&quot;spark.driver.host&quot;, &quot;127.0.0.1&quot;) sc = SparkContext(master=&quot;local[*]&quot;, appName=&quot;RDDOpSample&quot;, conf=conf) rdd = sc.parallelize([Product(300), Product(200), Product(100)], 10) #reduce result = rdd.reduce(addPriceandCount) print(result.price, result.count) #fold result = rdd.fold(Product(0), addPriceandCount) print(result.price, result.count) fold의 count합을 보면 11인 것을 알 수 있음. 그 이유는 위에서 파티션 개수를 10으로 지정하였고, 파티션 단위로 연산을 초기값을 이용하여 연산을 수행하기 때문임 1.8. aggregate 입력와 출력의 타입이 다른 경우 사용 가능 def aggregateU(seqOp:(U,T)=&amp;gt;U, combOp:(U,U)=&amp;gt;U):U 크게 세가지 인자를 받음. 첫번째는 초깃값으로 fold와 동일 aggregate은 병합을 크게 2단계로 구성되는데, 1단계는 seqOp에 의해, 2단계는 combOp에 의해 진행됨 seqOp는 초깃값과 동일한 타입(U)과 RDD요소 타입(T)가 입력되어 병합 결과 초깃값과 동일한 타입인 U가 반환됨 combOp는 최종병합에서 사용됨 #rdd에 속한 요소들의 평균을 aggregate을 이용하여 구하는 예제 #record.py class Record: def __init__(self, amount, number=1): self.amount = amount self.number = number def addAmt(self, amount): return Record(self.amount + amount, self.number + 1) def __add__(self, other): amount = self.amount + other.amount number = self.number + other.number return Record(amount, number) def __str__(self): return &quot;avg:&quot; + str(self.amount / self.number) def __repr__(self): return 'Record(%r, %r)' % (self.amount, self.number) def seqop(r,v): return r.addAmt(v) if __name__ =='__main__': conf = SparkConf() conf.set(&quot;spark.driver.host&quot;, &quot;127.0.0.1&quot;) sc = SparkContext(master=&quot;local[*]&quot;, appName=&quot;RDDOpSample&quot;, conf=conf) rdd = sc.parallelize([100,80,75,90,95], 3) #aggregate result = rdd.aggregate(Record(0,0), seqop, lambda r1, r2:r1+r2) print(result) # avg:88.0 1.9. sum 모든 요소의 합을 구해주며, Double, Long등 숫자타입인 경우에만 사용가능 &amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(1,11)) &amp;gt;&amp;gt;&amp;gt; rdd.sum() 55 1.10. foreach, foreachPartition foreach는 RDD의 개별요소에 전달받은 함수를 적용하는 메서드이고, foreachPartition은 파티션 단위로 적용됨 이때 인자로 받는 함수는 한개의 입력값을 가지는 함수임 이 메서드를 사용할 때 유의할 점은 드라이버 프로그램(메인 함수를 포함하고 있는 프로그램)이 작동하고 있는 서버위가 아니라 클러스터의 각 개별 서버에서 실행된다는 것임 따라서 foreach() 인자로 print함수를 전달한다는 것은 각 서버의 콘솔에 출력하라는 의미가 됨. def sideEffect(values): print(&quot;partition side effect&quot;) for v in values: print(&quot;value side effect : %s&quot; %v) if __name__ =='__main__': conf = SparkConf() conf.set(&quot;spark.driver.host&quot;, &quot;127.0.0.1&quot;) sc = SparkContext(master=&quot;local[*]&quot;, appName=&quot;RDDOpSample&quot;, conf=conf) rdd = sc.parallelize(range(1,11),3) result = rdd.foreach(lambda v:print(&quot;value side effect: %s&quot; %v)) result2 = rdd.foreachPartition(sideEffect) ### value side effect: 2 value side effect: 3 value side effect: 4 value side effect: 5 value side effect: 6 value side effect: 7 value side effect: 8 value side effect: 9 value side effect: 10 partition side effect value side effect : 7 value side effect : 8 value side effect : 9 value side effect : 10 partition side effect value side effect : 4 value side effect : 5 value side effect : 6 partition side effect value side effect : 1 value side effect : 2 value side effect : 3 ### 1.11. toDebugString 디버깅을 위한 메서드. RDD파티션 개수나 의존성 정보 등 세부 정보 알고 싶을 때 사용 &amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(1,100), 10).persist().map(lambda v:(v,1)).coalesce(2) &amp;gt;&amp;gt;&amp;gt; rdd.toDebugString() b'(2) CoalescedRDD[65] at coalesce at NativeMethodAccessorImpl.java:0 []\n | PythonRDD[64] at RDD at PythonRDD.scala:53 []\n | PythonRDD[63] at RDD at PythonRDD.scala:53 []\n | ParallelCollectionRDD[62] at parallelize at PythonRDD.scala:195 []' 1.12. cache, persist, unpersist rdd액션 연산이 수행될때마다 RDD 생성 히스토리를 이용해 복구하는 단계를 수행하지만 너무나 번거로움 따라서 반복적으로 사용되는 RDD인 경우 메모리에 저장해서 사용함 cache와 persist는 rdd정보를 메모리 또는 디스크에 저장해서 다음 액션을 수행 시 다시 rdd를 생성하는 단계를 거치지 않음 unpersist는 저장된 메모리가 더이상 필요없을 시 취소할 때 사용 RDD 데이터 불러오기와 저장하기</summary></entry><entry><title type="html">RDD, Resilient Distributed Dataset에 대하여[2] - RDD기본액션, RDD트랜스포메이션</title><link href="http://localhost:4000/spark%20programming/2020/12/07/rdd(2)/" rel="alternate" type="text/html" title="RDD, Resilient Distributed Dataset에 대하여[2] - RDD기본액션, RDD트랜스포메이션" /><published>2020-12-07T00:00:00+09:00</published><updated>2020-12-07T00:00:00+09:00</updated><id>http://localhost:4000/spark%20programming/2020/12/07/rdd(2)</id><content type="html" xml:base="http://localhost:4000/spark%20programming/2020/12/07/rdd(2)/">&lt;p&gt;이번 포스팅은 지난 포스팅 &amp;lt;RDD, Resilient Distributed DataSet에 대하여[1]&amp;gt; 에 이어서 진행하도록 하겠습니다. 교재는 빅데이터 분석을 위한 스파크2 프로그래밍을 참고하였습니다.&lt;/p&gt;
+&lt;h2&gt;RDD 데이터 불러오기와 저장하기&lt;/h2&gt;
+&lt;p&gt;스파크는 하둡 API기반이라서 다양한 데이터 포맷과 파일을 지원합니다.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;파일 포맷 : 텍스트파일, JSON, 하둡의 시퀀스파일, csv&lt;/li&gt;
+  &lt;li&gt;파일 시스템 : 로컬 파일 시스템, 하둡파일시스템(HDFS), AWS의 S3, 오픈스택의 Swift등
+    &lt;ul&gt;
+      &lt;li&gt;파일시스템이란 ? 컴퓨터에서 파일이나 자료를 쉽게 발견할 수 있도록 유지 관리하는 방법임. 즉, 저장매체에는 많은 파일이 있으므로, 이러한 파일을 관리하는 방법을 말함. 파일을 빠르게 읽기, 쓰기, 삭제 등 기본적인 기능을 원활히 수행하기 위한 목적임&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;1. 텍스트 파일&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;rdd = sc.textFile(&quot;file:////Users/ralasun/Desktop/ralasun.github.io/_posts/2020-07-11-introRL(1).md&quot;)
+&amp;gt;&amp;gt;&amp;gt; rdd.collect()
+['---', 'layout : post', 'title: Reinforcement Learning 소개[1]', 'category: Reinforcement Learning', 'tags: cs234 reinforcement-learning david-silver sutton', '---', '', '이번 포스팅은 강화학습이 기존에 알려진 여러 방법론들과의 비교를 통한 강화학습 특성과 구성요소를 다룹니다. ...```
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;“file:///”처럼 ///를 세개 작성해야 함. HDFS와 구별하기 위해서임&lt;/li&gt;
+  &lt;li&gt;또한 클러스터내 각 서버에서 동일한 경로를 통해 지정한 파일에 접근이 가능해야 함&lt;/li&gt;
+  &lt;li&gt;sc.textFile(path, n)에서, n을 통해 파티션 개수 정할 수 있음&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;#save
+rdd.saveAsTextFile(&quot;&amp;lt;path_to_save&amp;gt;/sub1&quot;)
+
+#save(gzip)
+rdd.saveAsTextFile(&quot;&amp;lt;path_to_save&amp;gt;/sub1&quot;, codec)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;위와 같이 rdd를 text파일로도 저장이 가능함. 두번째는 압축을 사용하는 방법임&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;2. 오브젝트 파일&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;오브젝트 직렬화 방법으로 RDD를 저장함. python의 경우, pickle형태로 저장함&lt;/li&gt;
+  &lt;li&gt;텍스트파일도 가능함&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(1,1000),3)
+&amp;gt;&amp;gt;&amp;gt; rdd.saveAsPickleFile(&quot;/Users/ralasun/Desktop/pythonpickle.pkl&quot;)
+&amp;gt;&amp;gt;&amp;gt; rdd2 = sc.pickleFile(&quot;/Users/ralasun/Desktop/pythonpickle.pkl&quot;)       
+&amp;gt;&amp;gt;&amp;gt; rdd2.take(2)
+[667, 668]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;3. 시퀀스 파일&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;시퀀스파일이란, 키와 값으로 구성된 데이터를 저장하는 이진 파일 포맷으로, 하둡에서 자주 사용됨&lt;/li&gt;
+  &lt;li&gt;오브젝트 파일과의 차이점은 오브젝트 파일은 RDD에 포함된 각 데이터가 serializable 인터페이스를 구현하고 있어야 하는 것처럼 시퀀스 파일로 만들고 싶은 RDD가 하둡의 writable 인터페이스를 구현하고 있어야 함.&lt;/li&gt;
+  &lt;li&gt;saveAsNewAPIHadoopFile(path, outputFormatClass, keyClass=None, valueClass=None, keyConverter=None, valueConverter=None, conf=None)
+    &lt;ul&gt;
+      &lt;li&gt;sequence파일로 저장하기 위해선 outputFormatClass에 문자열의 형태로 하둡내 시퀀스포맷의 풀네임을 작성해야 함. keyclass와 valueclass도 마찬가지임. 이렇게 하는 이유는 하둡의 writable 인터페이스를 구현해야 할 객체가 필요하기 때문임.&lt;/li&gt;
+      &lt;li&gt;따라서 내부에서는 keyclass와 valueclass 인자에 전달한 포맷으로 rdd를 변환한 뒤 sequencefile포맷으로 저장하는 작업을 거치는 것임&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt; path = &quot;/Users/ralasun/Desktop/ppkl&quot;
+&amp;gt;&amp;gt;&amp;gt; outputFormatClass = &quot;org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat&quot;
+&amp;gt;&amp;gt;&amp;gt; inputformatClass = &quot;org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat&quot;
+&amp;gt;&amp;gt;&amp;gt; keyClass = &quot;org.apache.hadoop.io.Text&quot;
+&amp;gt;&amp;gt;&amp;gt; valueClass = &quot;org.apache.hadoop.io.IntWritable&quot;
+&amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize([&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;b&quot;,&quot;c&quot;])
+&amp;gt;&amp;gt;&amp;gt; rdd2 = rdd.map(lambda x:(x,1))
+&amp;gt;&amp;gt;&amp;gt; rdd2.collect()
+[('a', 1), ('b', 1), ('c', 1), ('b', 1), ('c', 1)]
+&amp;gt;&amp;gt;&amp;gt; rdd2.saveAsNewAPIHadoopFile(path, outputFormatClass, keyClass, valueClass)
+rdd3 = sc.newAPIHadoopFile(path, inputformatClass, keyClass, valueClass)
+&amp;gt;&amp;gt;&amp;gt; for k, v in rdd3.collect():
+...     print(k,v)
+... 
+a 1
+b 1
+b 1
+c 1
+c 1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2&gt;클러스터 환경에서의 공유 변수&lt;/h2&gt;
+
+&lt;p&gt;클러스터 환경에서 하나의 잡을 수행하기 위해 다수의 서버가 여러 개의 프로세스를 실행합니다. 따라서, 여러 프로세스가 공유할 수 있는 자원을 관리(읽기/쓰기 자원)할 수 있도록 스파크는 지원하는데, 브로드캐스트 변수와 어큐뮬레이터라 합니다.&lt;/p&gt;
+
+&lt;h5&gt;브로드캐스트 변수(Broadcast Variables)&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;스파크 잡이 실행되는 동안 클러스터 내의 모든 서버에서 공유할 수 있는 읽기전용 자원을 설정할 수 있는 변수임&lt;/li&gt;
+  &lt;li&gt;예를 들어, 온라인 쇼핑몰에서 사용자 ID와 구매 정보가 담긴 10TB짜리 로그를 분석할 때, 우리가 찾고자 하는 사용자 ID목록이 담긴 세트 컬렉션 타입의 데이터를 공유 변수로 설정해 각 서버에서 로그를 처리하면서 현재 처리하려는 로그가 우리가 찾고자 하는 로그가 맞는지 확인하는 용도로 사용 가능함&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; bu = sc.broadcast([&quot;u1&quot;,&quot;u2&quot;])
+#1. sparkcontext의 broadcast인자를 이용해서 broadcast변수 생성
+
+&amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize([&quot;u1&quot;,&quot;u2&quot;,&quot;u3&quot;,&quot;u4&quot;,&quot;u5&quot;,&quot;u6&quot;],3)
+&amp;gt;&amp;gt;&amp;gt; result = rdd.filter(lambda v: v in bu.value)
+#2. broadcast변수 요소 접근시 value매서드를 이용
+
+&amp;gt;&amp;gt;&amp;gt; result.collect()
+['u1', 'u2']
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h5&gt;어큐뮬레이터(Accumulators)&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;어큐뮬레이터는 쓰기 동작을 위한 것임&lt;/li&gt;
+  &lt;li&gt;예를 들어, 온라인 쇼핑몰에서 사용자 접속 로그파일을 각 서버에서 취합해서 분석하는 경우임&lt;/li&gt;
+  &lt;li&gt;또한 다수의 서버로 구성된 클러스터 환경에서 오류가 발생 했을 시, 어느 프로세스에서 오류가 난건지 확인이 필요함. 그러기 위해선 에러 정보를 한곳에 모아서 볼 수 있는 방법이 필요함.&lt;/li&gt;
+  &lt;li&gt;어큐뮬레이터는 이렇게 클러스터내의 모든 서버가 공유하는 쓰기 공간을 제공해서, 각 서버에서 발생하는 이벤트나 정보를 모아두는 용도로 사용함.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;#accumulator 기본 예제
+def accumulate(v, acc):
+    if(len(v.split(&quot;:&quot;)) !=2):
+        acc.add(1)
+
+if __name__ =='__main__':
+    conf = SparkConf()
+    conf.set(&quot;spark.driver.host&quot;, &quot;127.0.0.1&quot;)
+    sc = SparkContext(master=&quot;local[*]&quot;, appName=&quot;RDDOpSample&quot;, conf=conf)
+
+    acc1 = sc.accumulator(0)
+    data = [&quot;U1:Addr1&quot;, &quot;U2:Addr2&quot;, &quot;U3&quot;, &quot;U4:Addr4&quot;, &quot;U5:Addr5&quot;,&quot;U6:Addr6&quot;, &quot;U7&quot;]
+    rdd = sc.parallelize(data)
+    rdd.foreach(lambda v : accumulate(v, acc1))
+    print(acc1.value)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;파이썬의 경우 어큐뮬레이터의 이름 지정 불가능함&lt;/li&gt;
+  &lt;li&gt;기본 제공하는 어큐뮬레이터는 sparkcontext의 accumulator 메서드를 이용하는데, 초깃값으로 정수, 실수, 복소수 타입중 하나여야 함. 따라서, 사용자 정의 데이터 타입에 대한 어큐뮬레이터는 아래와 같이 사용해야 함.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;from pyspark import AccumulatorParam
+from record import Record
+from builtins import isinstance
+
+class RecordAccumulatorParam(AccumulatorParam):
+
+    def zero(self, initialValue):
+        return Record(0)
+
+    def addInPlace(self, v1, v2):
+        if(isinstance(v2, Record)):
+            return v1+v2
+        else:
+            return v1.addAmt(v2)
+
+def accumulate(v, acc):
+    if(len(v.split(&quot;:&quot;))!=2):
+        acc.add(1)
+
+if __name__ =='__main__':
+    conf = SparkConf()
+    conf.set(&quot;spark.driver.host&quot;, &quot;127.0.0.1&quot;)
+    sc = SparkContext(master=&quot;local[*]&quot;, appName=&quot;RDDOpSample&quot;, conf=conf)
+
+    acc = sc.accumulator(Record(0), RecordAccumulatorParam())
+    data = [&quot;U1:Addr1&quot;, &quot;U2:Addr2&quot;, &quot;U3&quot;, &quot;U4:Addr4&quot;, &quot;U5:Addr5&quot;,&quot;U6:Addr6&quot;, &quot;U7&quot;]
+    rdd = sc.parallelize(data)
+    rdd.foreach(lambda v: accumulate(v, acc))
+    print(acc.value.amount) #&amp;gt;&amp;gt; 2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;#AccumulatorParam에 대한 pyspark Document
+
+class pyspark.AccumulatorParam
+# Helper object that defines how to accumulate values of a given type.
+
+	addInPlace(value1, value2)
+	# Add two values of the accumulator’s data type, returning a new value; for efficiency, can also update value1 in place and return it.
+
+	zero(value)
+	# Provide a “zero value” for the type, compatible in dimensions with the provided value (e.g., a zero vector)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Recordclass타입에 대한 accumulator를 작성한 것임.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;어큐뮬레이터 사용시 주의할 점 두 가지&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;ol&gt;
+          &lt;li&gt;어큐뮬레이터를 증가시키는 동작은 클러스터 내 모든 서버에서 가능하나, 어큐뮬레이터 내 데이터를 읽는 동작은 드라이버 프로그램 내에서만 가능
+            &lt;ul&gt;
+              &lt;li&gt;transformation 또는 action 연산 내부에서는 어큐뮬레이터를 증가시킬 수 있으나, 그 값을 참조해서 사용은 불가능하다는 것을 뜻함.&lt;/li&gt;
+              &lt;li&gt;어큐뮬레이터는 액션 메서드 내에서만 수행하는 것이 좋음. 트렌스포메이션은 여러번 수행될 수 있기 때문에 집계가 잘못될 수 있음&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+        &lt;/ol&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;이상으로 본 포스팅을 마치겠습니다.&lt;/p&gt;</content><author><name>Seonhwa Lee</name></author><category term="Spark Programming" /><category term="data-engineering," /><category term="spark" /><summary type="html">이번 포스팅은 지난 포스팅 &amp;lt;RDD, Resilient Distributed DataSet에 대하여[2] - RDD기본액션, RDD트랜스포메이션&amp;gt; 에 이어서 진행하도록 하겠습니다. 교재는 빅데이터 분석을 위한 스파크2 프로그래밍을 참고하였습니다. 2.1.6 RDD 액션 RDD트랜스포메이션 연산은 느긋한 평가(lazy evaluation) 또는 지연 계산 방식을 따릅니다. 이는 계산에 필요한 정보를 누적하다가 계산이 필요한 시점이 돼서야 계산을 수행하는 방식을 뜻합니다. 여기서 계산이 필요한 시점은 RDD 액션 메서드가 호출된 시점입니다. RDD 액션 메서드가 호출이 되어야 비로소 RDD 트랜스포메이션 연산이 수행되게 됩니다. 1. 출력 연산 1.1. first RDD 요소 중 ,첫번째 요소를 돌려줌 &amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(50)) &amp;gt;&amp;gt;&amp;gt; result = rdd.first() &amp;gt;&amp;gt;&amp;gt; print(result) 0 1.2. take RDD 요소중, n번째까지 요소를 돌려줌 &amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(50)) &amp;gt;&amp;gt;&amp;gt; result = rdd.take(5) &amp;gt;&amp;gt;&amp;gt; print(result) [0, 1, 2, 3, 4] 1.3. takeSample 지정된 크기의 sample을 추출해서 리스트, 배열 타입등으로 반환함 sample 메서드와의 차이점 sample 메서드는 RDD 트랜스포메이션 메서드이고, 크기를 지정할 수 없음. takeSample(withReplacement, num, seed=None) &amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(100)) &amp;gt;&amp;gt;&amp;gt; result = rdd.takeSample(False, 3) &amp;gt;&amp;gt;&amp;gt; result [55, 23, 45] 1.5. countByValue RDD의 요소들이 나타낸 횟수를 맵 형태로 돌려주는 메서드 &amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize([1,1,3,2,1,2,2,1,1,4,5,3,2,3]) &amp;gt;&amp;gt;&amp;gt; result = rdd.countByValue() &amp;gt;&amp;gt;&amp;gt; print(result) defaultdict(&amp;lt;class 'int'&amp;gt;, {1: 5, 3: 3, 2: 4, 4: 1, 5: 1}) 1.6. reduce reduce 메서드 인자는 함수가 들어감. 그 함수는 교환법칙과 결합법칙이 성립하는 함수여야 함. 따라서, 메서드 인자로 받은 함수를 이용해서 하나의 요소로 합치는 메서드임. def reduce(f: (T,T)=&amp;gt;T):T 동일한 타입 2개를 입력으로 받아, 같은 타입으로 반환해주는 메서드임 실제 구현은 파티션단위로 나눠져서 처리됨. 분산 프로그램이기 때문임. &amp;gt;&amp;gt;&amp;gt; from operator import add &amp;gt;&amp;gt;&amp;gt; add(1,2) 3 &amp;gt;&amp;gt;&amp;gt; sc.parallelize([1,2,3,4,5]).reduce(add) 15 1.7. fold reduce와 동일하나, 초기값을 설정할 수 있음 def fold(zeroValue: T)(op: (T,T)=&amp;gt;T):T 그런데 유의할 점은 파티션단위로 나뉘어서 처리하기 때문에, 파티션단위로 처리할 때마다 초깃값을 이용하여 연산이 수행됨. 따라서, 더하기 연산을 할 땐 항등원인 0을, 곱셈 연산을 할 땐 항등원인 1을 초깃값으로 설정하는 것이 좋음 &amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(1,11), 3) &amp;gt;&amp;gt;&amp;gt; rdd.fold(1, add) 59 #값이 55가 아니라 59가 나오는 것을 확인할 수 있음. reduce와 fold차이 #product.py class Product: def __init__(self, price): self.price = price self.count = 1 def addPriceandCount(p1, p2): p1.price += p2.price p1.count += 1 return p1 #return을 p1인 이유 --&amp;gt; 입력값과 출력값의 타입이 동일해야 함. if __name__ =='__main__': conf = SparkConf() conf.set(&quot;spark.driver.host&quot;, &quot;127.0.0.1&quot;) sc = SparkContext(master=&quot;local[*]&quot;, appName=&quot;RDDOpSample&quot;, conf=conf) rdd = sc.parallelize([Product(300), Product(200), Product(100)], 10) #reduce result = rdd.reduce(addPriceandCount) print(result.price, result.count) #fold result = rdd.fold(Product(0), addPriceandCount) print(result.price, result.count) fold의 count합을 보면 11인 것을 알 수 있음. 그 이유는 위에서 파티션 개수를 10으로 지정하였고, 파티션 단위로 연산을 초기값을 이용하여 연산을 수행하기 때문임 1.8. aggregate 입력와 출력의 타입이 다른 경우 사용 가능 def aggregateU(seqOp:(U,T)=&amp;gt;U, combOp:(U,U)=&amp;gt;U):U 크게 세가지 인자를 받음. 첫번째는 초깃값으로 fold와 동일 aggregate은 병합을 크게 2단계로 구성되는데, 1단계는 seqOp에 의해, 2단계는 combOp에 의해 진행됨 seqOp는 초깃값과 동일한 타입(U)과 RDD요소 타입(T)가 입력되어 병합 결과 초깃값과 동일한 타입인 U가 반환됨 combOp는 최종병합에서 사용됨 #rdd에 속한 요소들의 평균을 aggregate을 이용하여 구하는 예제 #record.py class Record: def __init__(self, amount, number=1): self.amount = amount self.number = number def addAmt(self, amount): return Record(self.amount + amount, self.number + 1) def __add__(self, other): amount = self.amount + other.amount number = self.number + other.number return Record(amount, number) def __str__(self): return &quot;avg:&quot; + str(self.amount / self.number) def __repr__(self): return 'Record(%r, %r)' % (self.amount, self.number) def seqop(r,v): return r.addAmt(v) if __name__ =='__main__': conf = SparkConf() conf.set(&quot;spark.driver.host&quot;, &quot;127.0.0.1&quot;) sc = SparkContext(master=&quot;local[*]&quot;, appName=&quot;RDDOpSample&quot;, conf=conf) rdd = sc.parallelize([100,80,75,90,95], 3) #aggregate result = rdd.aggregate(Record(0,0), seqop, lambda r1, r2:r1+r2) print(result) # avg:88.0 1.9. sum 모든 요소의 합을 구해주며, Double, Long등 숫자타입인 경우에만 사용가능 &amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(1,11)) &amp;gt;&amp;gt;&amp;gt; rdd.sum() 55 1.10. foreach, foreachPartition foreach는 RDD의 개별요소에 전달받은 함수를 적용하는 메서드이고, foreachPartition은 파티션 단위로 적용됨 이때 인자로 받는 함수는 한개의 입력값을 가지는 함수임 이 메서드를 사용할 때 유의할 점은 드라이버 프로그램(메인 함수를 포함하고 있는 프로그램)이 작동하고 있는 서버위가 아니라 클러스터의 각 개별 서버에서 실행된다는 것임 따라서 foreach() 인자로 print함수를 전달한다는 것은 각 서버의 콘솔에 출력하라는 의미가 됨. def sideEffect(values): print(&quot;partition side effect&quot;) for v in values: print(&quot;value side effect : %s&quot; %v) if __name__ =='__main__': conf = SparkConf() conf.set(&quot;spark.driver.host&quot;, &quot;127.0.0.1&quot;) sc = SparkContext(master=&quot;local[*]&quot;, appName=&quot;RDDOpSample&quot;, conf=conf) rdd = sc.parallelize(range(1,11),3) result = rdd.foreach(lambda v:print(&quot;value side effect: %s&quot; %v)) result2 = rdd.foreachPartition(sideEffect) ### value side effect: 2 value side effect: 3 value side effect: 4 value side effect: 5 value side effect: 6 value side effect: 7 value side effect: 8 value side effect: 9 value side effect: 10 partition side effect value side effect : 7 value side effect : 8 value side effect : 9 value side effect : 10 partition side effect value side effect : 4 value side effect : 5 value side effect : 6 partition side effect value side effect : 1 value side effect : 2 value side effect : 3 ### 1.11. toDebugString 디버깅을 위한 메서드. RDD파티션 개수나 의존성 정보 등 세부 정보 알고 싶을 때 사용 &amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(1,100), 10).persist().map(lambda v:(v,1)).coalesce(2) &amp;gt;&amp;gt;&amp;gt; rdd.toDebugString() b'(2) CoalescedRDD[65] at coalesce at NativeMethodAccessorImpl.java:0 []\n | PythonRDD[64] at RDD at PythonRDD.scala:53 []\n | PythonRDD[63] at RDD at PythonRDD.scala:53 []\n | ParallelCollectionRDD[62] at parallelize at PythonRDD.scala:195 []' 1.12. cache, persist, unpersist rdd액션 연산이 수행될때마다 RDD 생성 히스토리를 이용해 복구하는 단계를 수행하지만 너무나 번거로움 따라서 반복적으로 사용되는 RDD인 경우 메모리에 저장해서 사용함 cache와 persist는 rdd정보를 메모리 또는 디스크에 저장해서 다음 액션을 수행 시 다시 rdd를 생성하는 단계를 거치지 않음 unpersist는 저장된 메모리가 더이상 필요없을 시 취소할 때 사용 RDD 데이터 불러오기와 저장하기 스파크는 하둡 API기반이라서 다양한 데이터 포맷과 파일을 지원합니다. 파일 포맷 : 텍스트파일, JSON, 하둡의 시퀀스파일, csv 파일 시스템 : 로컬 파일 시스템, 하둡파일시스템(HDFS), AWS의 S3, 오픈스택의 Swift등 파일시스템이란 ? 컴퓨터에서 파일이나 자료를 쉽게 발견할 수 있도록 유지 관리하는 방법임. 즉, 저장매체에는 많은 파일이 있으므로, 이러한 파일을 관리하는 방법을 말함. 파일을 빠르게 읽기, 쓰기, 삭제 등 기본적인 기능을 원활히 수행하기 위한 목적임 1. 텍스트 파일 rdd = sc.textFile(&quot;file:////Users/ralasun/Desktop/ralasun.github.io/_posts/2020-07-11-introRL(1).md&quot;) &amp;gt;&amp;gt;&amp;gt; rdd.collect() ['---', 'layout : post', 'title: Reinforcement Learning 소개[1]', 'category: Reinforcement Learning', 'tags: cs234 reinforcement-learning david-silver sutton', '---', '', '이번 포스팅은 강화학습이 기존에 알려진 여러 방법론들과의 비교를 통한 강화학습 특성과 구성요소를 다룹니다. ...``` “file:///”처럼 ///를 세개 작성해야 함. HDFS와 구별하기 위해서임 또한 클러스터내 각 서버에서 동일한 경로를 통해 지정한 파일에 접근이 가능해야 함 sc.textFile(path, n)에서, n을 통해 파티션 개수 정할 수 있음 #save rdd.saveAsTextFile(&quot;&amp;lt;path_to_save&amp;gt;/sub1&quot;) #save(gzip) rdd.saveAsTextFile(&quot;&amp;lt;path_to_save&amp;gt;/sub1&quot;, codec) 위와 같이 rdd를 text파일로도 저장이 가능함. 두번째는 압축을 사용하는 방법임 2. 오브젝트 파일 오브젝트 직렬화 방법으로 RDD를 저장함. python의 경우, pickle형태로 저장함 텍스트파일도 가능함 &amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(1,1000),3) &amp;gt;&amp;gt;&amp;gt; rdd.saveAsPickleFile(&quot;/Users/ralasun/Desktop/pythonpickle.pkl&quot;) &amp;gt;&amp;gt;&amp;gt; rdd2 = sc.pickleFile(&quot;/Users/ralasun/Desktop/pythonpickle.pkl&quot;) &amp;gt;&amp;gt;&amp;gt; rdd2.take(2) [667, 668] 3. 시퀀스 파일 시퀀스파일이란, 키와 값으로 구성된 데이터를 저장하는 이진 파일 포맷으로, 하둡에서 자주 사용됨 오브젝트 파일과의 차이점은 오브젝트 파일은 RDD에 포함된 각 데이터가 serializable 인터페이스를 구현하고 있어야 하는 것처럼 시퀀스 파일로 만들고 싶은 RDD가 하둡의 writable 인터페이스를 구현하고 있어야 함. saveAsNewAPIHadoopFile(path, outputFormatClass, keyClass=None, valueClass=None, keyConverter=None, valueConverter=None, conf=None) sequence파일로 저장하기 위해선 outputFormatClass에 문자열의 형태로 하둡내 시퀀스포맷의 풀네임을 작성해야 함. keyclass와 valueclass도 마찬가지임. 이렇게 하는 이유는 하둡의 writable 인터페이스를 구현해야 할 객체가 필요하기 때문임. 따라서 내부에서는 keyclass와 valueclass 인자에 전달한 포맷으로 rdd를 변환한 뒤 sequencefile포맷으로 저장하는 작업을 거치는 것임 path = &quot;/Users/ralasun/Desktop/ppkl&quot; &amp;gt;&amp;gt;&amp;gt; outputFormatClass = &quot;org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat&quot; &amp;gt;&amp;gt;&amp;gt; inputformatClass = &quot;org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat&quot; &amp;gt;&amp;gt;&amp;gt; keyClass = &quot;org.apache.hadoop.io.Text&quot; &amp;gt;&amp;gt;&amp;gt; valueClass = &quot;org.apache.hadoop.io.IntWritable&quot; &amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize([&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;b&quot;,&quot;c&quot;]) &amp;gt;&amp;gt;&amp;gt; rdd2 = rdd.map(lambda x:(x,1)) &amp;gt;&amp;gt;&amp;gt; rdd2.collect() [('a', 1), ('b', 1), ('c', 1), ('b', 1), ('c', 1)] &amp;gt;&amp;gt;&amp;gt; rdd2.saveAsNewAPIHadoopFile(path, outputFormatClass, keyClass, valueClass) rdd3 = sc.newAPIHadoopFile(path, inputformatClass, keyClass, valueClass) &amp;gt;&amp;gt;&amp;gt; for k, v in rdd3.collect(): ... print(k,v) ... a 1 b 1 b 1 c 1 c 1 클러스터 환경에서의 공유 변수 클러스터 환경에서 하나의 잡을 수행하기 위해 다수의 서버가 여러 개의 프로세스를 실행합니다. 따라서, 여러 프로세스가 공유할 수 있는 자원을 관리(읽기/쓰기 자원)할 수 있도록 스파크는 지원하는데, 브로드캐스트 변수와 어큐뮬레이터라 합니다. 브로드캐스트 변수(Broadcast Variables) 스파크 잡이 실행되는 동안 클러스터 내의 모든 서버에서 공유할 수 있는 읽기전용 자원을 설정할 수 있는 변수임 예를 들어, 온라인 쇼핑몰에서 사용자 ID와 구매 정보가 담긴 10TB짜리 로그를 분석할 때, 우리가 찾고자 하는 사용자 ID목록이 담긴 세트 컬렉션 타입의 데이터를 공유 변수로 설정해 각 서버에서 로그를 처리하면서 현재 처리하려는 로그가 우리가 찾고자 하는 로그가 맞는지 확인하는 용도로 사용 가능함 &amp;gt;&amp;gt;&amp;gt; bu = sc.broadcast([&quot;u1&quot;,&quot;u2&quot;]) #1. sparkcontext의 broadcast인자를 이용해서 broadcast변수 생성 &amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize([&quot;u1&quot;,&quot;u2&quot;,&quot;u3&quot;,&quot;u4&quot;,&quot;u5&quot;,&quot;u6&quot;],3) &amp;gt;&amp;gt;&amp;gt; result = rdd.filter(lambda v: v in bu.value) #2. broadcast변수 요소 접근시 value매서드를 이용 &amp;gt;&amp;gt;&amp;gt; result.collect() ['u1', 'u2'] 어큐뮬레이터(Accumulators) 어큐뮬레이터는 쓰기 동작을 위한 것임 예를 들어, 온라인 쇼핑몰에서 사용자 접속 로그파일을 각 서버에서 취합해서 분석하는 경우임 또한 다수의 서버로 구성된 클러스터 환경에서 오류가 발생 했을 시, 어느 프로세스에서 오류가 난건지 확인이 필요함. 그러기 위해선 에러 정보를 한곳에 모아서 볼 수 있는 방법이 필요함. 어큐뮬레이터는 이렇게 클러스터내의 모든 서버가 공유하는 쓰기 공간을 제공해서, 각 서버에서 발생하는 이벤트나 정보를 모아두는 용도로 사용함. #accumulator 기본 예제 def accumulate(v, acc): if(len(v.split(&quot;:&quot;)) !=2): acc.add(1) if __name__ =='__main__': conf = SparkConf() conf.set(&quot;spark.driver.host&quot;, &quot;127.0.0.1&quot;) sc = SparkContext(master=&quot;local[*]&quot;, appName=&quot;RDDOpSample&quot;, conf=conf) acc1 = sc.accumulator(0) data = [&quot;U1:Addr1&quot;, &quot;U2:Addr2&quot;, &quot;U3&quot;, &quot;U4:Addr4&quot;, &quot;U5:Addr5&quot;,&quot;U6:Addr6&quot;, &quot;U7&quot;] rdd = sc.parallelize(data) rdd.foreach(lambda v : accumulate(v, acc1)) print(acc1.value) 파이썬의 경우 어큐뮬레이터의 이름 지정 불가능함 기본 제공하는 어큐뮬레이터는 sparkcontext의 accumulator 메서드를 이용하는데, 초깃값으로 정수, 실수, 복소수 타입중 하나여야 함. 따라서, 사용자 정의 데이터 타입에 대한 어큐뮬레이터는 아래와 같이 사용해야 함. from pyspark import AccumulatorParam from record import Record from builtins import isinstance class RecordAccumulatorParam(AccumulatorParam): def zero(self, initialValue): return Record(0) def addInPlace(self, v1, v2): if(isinstance(v2, Record)): return v1+v2 else: return v1.addAmt(v2) def accumulate(v, acc): if(len(v.split(&quot;:&quot;))!=2): acc.add(1) if __name__ =='__main__': conf = SparkConf() conf.set(&quot;spark.driver.host&quot;, &quot;127.0.0.1&quot;) sc = SparkContext(master=&quot;local[*]&quot;, appName=&quot;RDDOpSample&quot;, conf=conf) acc = sc.accumulator(Record(0), RecordAccumulatorParam()) data = [&quot;U1:Addr1&quot;, &quot;U2:Addr2&quot;, &quot;U3&quot;, &quot;U4:Addr4&quot;, &quot;U5:Addr5&quot;,&quot;U6:Addr6&quot;, &quot;U7&quot;] rdd = sc.parallelize(data) rdd.foreach(lambda v: accumulate(v, acc)) print(acc.value.amount) #&amp;gt;&amp;gt; 2 #AccumulatorParam에 대한 pyspark Document class pyspark.AccumulatorParam # Helper object that defines how to accumulate values of a given type. addInPlace(value1, value2) # Add two values of the accumulator’s data type, returning a new value; for efficiency, can also update value1 in place and return it. zero(value) # Provide a “zero value” for the type, compatible in dimensions with the provided value (e.g., a zero vector) Recordclass타입에 대한 accumulator를 작성한 것임. 어큐뮬레이터 사용시 주의할 점 두 가지 어큐뮬레이터를 증가시키는 동작은 클러스터 내 모든 서버에서 가능하나, 어큐뮬레이터 내 데이터를 읽는 동작은 드라이버 프로그램 내에서만 가능 transformation 또는 action 연산 내부에서는 어큐뮬레이터를 증가시킬 수 있으나, 그 값을 참조해서 사용은 불가능하다는 것을 뜻함. 어큐뮬레이터는 액션 메서드 내에서만 수행하는 것이 좋음. 트렌스포메이션은 여러번 수행될 수 있기 때문에 집계가 잘못될 수 있음 이상으로 본 포스팅을 마치겠습니다.</summary></entry><entry><title type="html">RDD, Resilient Distributed Dataset에 대하여[2] - RDD기본액션, RDD트랜스포메이션</title><link href="http://localhost:4000/spark%20programming/2020/12/07/rdd(2)/" rel="alternate" type="text/html" title="RDD, Resilient Distributed Dataset에 대하여[2] - RDD기본액션, RDD트랜스포메이션" /><published>2020-12-07T00:00:00+09:00</published><updated>2020-12-07T00:00:00+09:00</updated><id>http://localhost:4000/spark%20programming/2020/12/07/rdd(2)</id><content type="html" xml:base="http://localhost:4000/spark%20programming/2020/12/07/rdd(2)/">&lt;p&gt;이번 포스팅은 지난 포스팅 &amp;lt;RDD, Resilient Distributed DataSet에 대하여[1]&amp;gt; 에 이어서 진행하도록 하겠습니다. 교재는 빅데이터 분석을 위한 스파크2 프로그래밍을 참고하였습니다.&lt;/p&gt;
 
 &lt;hr /&gt;
 
@@ -2431,334 +2776,4 @@ $\epsilon-greedy$ 방식으로 정책을 발전시키려면 $V_{\pi_{i+1}}(s) \g
 
 &lt;ol&gt;
   &lt;li&gt;&lt;a href=&quot;https://untitledtblog.tistory.com/135&quot;&gt;Importance Sampling, https://untitledtblog.tistory.com/135&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</content><author><name>Seonhwa Lee</name></author><category term="Reinforcement Learning" /><category term="cs234" /><category term="reinforcement-learning" /><category term="david-silver" /><category term="sutton" /><summary type="html">이번 포스팅은 지난 포스팅 Model-Free Policy Evaluation에 이어 Model-Free Policy Control에 대해 다루도록 하겠습니다. CS234 4강, Deep Mind의 David Silver 강화학습 강의 5강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 5, 6 기반으로 작성하였습니다. 지난 포스팅에서는 일정 정책 $\pi$ 아래 환경 모델을 모를 때 가치함수를 추정하는 방법인 Monte-Carlo(MC) policy evaluation과 Temporal Difference(TD) policy evaluation에 대해 다뤘습니다. 그러나 sequential decision prcoess 문제의 최종 목표는 최적화된 정책을 갖는 것(Control)입니다. 환경 모델을 알 때 Dynamic Programming(DP)는 policy iteration과 value iteration을 통해 최적 정책을 구할 수 있습니다. 환경 모델을 모를 때 최적 정책을 찾는 방법 Model-Free Control에 대해 자세히 다루기 전에 먼저, Generalized Policy Iteration에 대해 알아보겠습니다. Generalized Policy Iteration DP에서의 policy iteration을 다시 자세히 살펴봅시다. 정책 발전(policy improvement)를 greedy하게 하였으며, policy evaluation과 policy improvement를 번갈아 반복하는 policy iteration을 통해 최적 가치함수와 최적 정책을 구했습니다. 그림 1. Policy Iteration &amp;lt;그림 1.&amp;gt;은 policy iteration을 그림으로 표현한 것입니다. 두 선은 각각 수렴된 가치함수와 정책들을 의미하고, 화살표는 policy evaluation과 policy improvement를 나타냅니다. 이 과정은 모두 결국 최적 정책과 최적 가치함수를 찾기 위한 것이기 때문에 두 선은 한 점에서 만납니다. 그런데, policy evaluation은 수렴할 때까지 시간이 오래 소요됩니다. 따라서, 위 가치함수 라인에 다다를 때까지 policy evaluation을 수행할 필요가 있을까요 ? 그림 2. Value Iteration policy evaluation은 수렴할 때까지 시간이 오래 소요되기 때문에, 수렴할 때까지 기다리는 것이 아니라, 좀 더 효율적으로 접근하는 방법이 value iteration입니다. 가치함수를 한 스텝에 대해서만 업데이트를 하고, greedy policy improvement를 수행하는 value iteration을 통해 최적 가치함수와 정책을 찾았습니다. 위 두 방법 모두 결국 policy evaluation과정과 policy improvement과정의 상호작용으로 이뤄집니다. 두 과정 모두 안정화될 때, 즉 더 이상의 변화나 발전이 이뤄지지 않을 때, 그 때의 가치함수와 정책은 최적입니다. 따라서, 상호작용되는 과정이 조금씩은 차이가 있을 수 있지만 결국 둘의 상호작용으로 최적점에 다다르게 되는 것입니다. 이것이 바로 Generalized Policy Iteration(GPI)입니다. 그림 3. Generalized Policy Iteration Model-free control도 마찬가지로 GPI를 통해 최적 가치 함수와 최적 정책을 구합니다. Model-free control에 대해 알아보도록 하겠습니다. Model-free policy evaluation하는 방법으로 Monte-Carlo(MC)와 Temporal Difference(TD)가 있습니다. 마찬가지로, model-free control 하는 방법으로도 Monte-Carlo control와 Temporal-Difference control이 있습니다. 먼저, Monte-Carlo control부터 알아보겠습니다. Monte-Carlo Control 지난 포스팅에서 알아본 monte-carlo estimation이 이제 control에 어떻게 사용되는지 생각해봅시다. Monte Carlo Estimation of Action Values Monte-Carlo control도 Monte-Carlo estimation과 함께 GPI를 통해 최적정책을 찾아나갑니다. 그러나, DP에서 다른 점이 있습니다. DP는 현재 상태 $s$ 에서 행동 $a$ 를 취했을 때, 받을 수 있는 보상과 다음 상태가 어떻게 될지 알 수 있습니다. 따라서 다음 상태로 올 수 있는 모든 후보들과 보상을 고려하여 최대 가치를 반환하는 다음 상태를 찾은 후 그 상태로 가게 되는 행동을 취합니다. 즉, 상태 가치 함수 정보만으로 충분합니다. 그러나 model-free 환경의 문제점은 직접 경험하지 않는 이상 다음 상태와 보상이 어떻게 될지 알 수 없습니다. 따라서 상태 가치 함수만으로 행동을 선택할 때 충분한 정보를 제공하지 못합니다. 이러한 이유로 model-free control에서는 상태 가치 함수 $v(s)$ 에 대한 evaluation이 아니라, 상태-행동 가치 함수 $q(s,a)$ 에 대한 evaluation을 수행합니다. 상태 s에 대해 모든 행동 a에 대해 $q(s,a)$ 를 비교하여 가장 가치가 높은 행동을 선택하는 것이 상태 s에 대한 정책이 되는 것입니다. 그림 4. GPI with Q value Importance of Exploration GPI는 ‘좋은’ 정책 $\pi$ 을 계속 찾아나가면 언젠간 최적 정책 $\pi_*$ 에 수렴합니다. 그러면 ‘좋은’ 정책 $\pi$ 는 ‘좋은’ $Q_\pi$ 추정치를 찾아야 합니다. 그래야지만 policy improvement를 통해 최적 정책을 찾아나갈 수 있기 때문입니다. ‘좋은’ $Q_\pi$ 추정치는 어떻게 찾을까요? 가능한 한 나올 수 있는 모든 $(s,a)$ 시퀀스를 경험하면 됩니다. MC policy evaluation에서 true expected value에 수렴하기 위해서 에피소드 샘플링을 많이 해야 하는 것과 같습니다. 그림 5. Greedy policy improvement in MDP and Model-Free 그러나 model-free 환경에서 모든 $(s,a)$ 쌍으로 구성된 모든 시퀀스를 경험하기는 어렵습니다. 경우의 수가 너무 많기 때문이고, 환경을 모르기 때문에 예측도 어렵습니다. &amp;lt;그림 5.&amp;gt;를 보면 DP같은 경우는 환경을 알기 때문에 V(s)를 추정하기 위해 다음에 나올 trasition model $P^{a}_{ss’}$ 와 함께 모든 상태 s를 고려할 수 있습니다. 따라서, ‘좋은’ 추정치를 계산할 수 있습니다. 즉, 이렇게 찾아진 가치 함수 추정치 기반으로 greedy하게 행동을 선택해도 policy improvement가 일어납니다( DP포스팅 policy improvement 참고 ). 반면에, model-free 같은 경우, MC와 TD모두 샘플링을 통해 (s,a)를 경험해 나갑니다. 그렇기 때문에 많은 (s,a)쌍을 방문하지 못하는 문제가 발생합니다. 이로 인해 어떤 (s,a)에 대해서는 좋은 추정치를 얻지 못합니다. 따라서 부정확한 추정치 기반으로 greedy하게 행동을 선택하는 건 심각한 문제를 일으킵니다. Q(s,a)를 추정하는 이유는 상태 s에 있을 때, 여러 행동 a들을 비교하기 위해서입니다. 그러나 어떤 행동 a에 대해서 Q(s,a)가 나쁜 값을 가지게 된다면 공정한 비교가 되지 않습니다. 즉, 학습이 제대로 이뤄지지 않게 되는 것입니다. 이 문제가 바로 ‘exploration’ 문제입니다. 따라서 정책을 평가하기 위한 좋은 Q(s,a)를 구하기 위해선 충분하고 지속적인 탐험(continual exploration)이 보장되어야 합니다. 충분하고 지속적인 탐험을 가장 심플하게 구현한 건 모든 행동들에 대해 선택할 가능성을 열어두는 것입니다. 이러한 방법 중 하나가 $\epsilon-greedy$ 입니다. The simplest idea for ensuring continual exploration is that all actions are tried with non-zero probability. $\epsilon-greedy$ 는 $\epsilon$ 의 확률로 행동을 랜덤하게 선택하고, $1-\epsilon$ 의 확률로 greedy한 행동을 선택합니다. $\frac{\epsilon}{m} + 1-\epsilon + \frac{\epsilon}{m}\times(m-1) = 1$ 이 되므로 $\epsilon-greedy$ 식을 아래와 같이 구축할 수 있습니다. 여전히 $\epsilon$ 의 확률로 탐험할 가능성을 두는 것입니다. on-policy Monte-Carlo Control 이 단락에서 다루는 MC Control은 on-policy 기반입니다. on-policy와 off-policy의 차이는 off-policy MC Control에서 설명하도록 하겠습니다. 그림 6. Monte-Carlo Policy Iteration 진짜로 이제 MC기반의 Control에 대해 알아보겠습니다. 위에서 model-free인 경우도 Generalized Policy Iteration을 통해 최적 가치함수와 최적 정책을 찾는다고 하였습니다. MC기반 policy evaluation은 상태-행동 가치 함수인 $Q_\pi$ 를 찾는 것이고, MC기반 policy improvement는 $\epsilon-greedy$ 를 따릅니다. 그런데, &amp;lt;그림 6.&amp;gt;의 왼쪽 그림처럼, policy evaluation을 $Q_\pi$ 를 수많은 에피소드를 샘플링해서 수렴할 때 반복하는 건 너무 번거롭습니다. 따라서 DP의 value iteration처럼 에피소드 하나가 끝날 때까지만 상태-행동 가치 함수 Q를 업데이트하고, policy improvement를 수행합니다. 이런 방식의 MC 기반 GPI가 과연 최적 정책을 찾게 해주는지에 대해선 아직 해결해야 할 문제가 남았습니다. $\epsilon-greedy$ 방식이 진짜로 정책을 발전 시키는지에 대한 문제와 하나의 최정정책, 가치함수로의 수렴하는지에 대한 문제입니다. 먼저 첫번째 문제부터 살펴보겠습니다. $\epsilon-greedy$ Improvement $\epsilon-greedy$ 방식으로 정책을 발전시키려면 $V_{\pi_{i+1}}(s) \geq V_{\pi_{i}}(s)$ 를 만족해야 합니다. 아래는 이와 관련된 증명입니다. 그림 7. $\epsilon-greedy$ policy improvement $Q^{\pi_i}(s,\pi_{i+1}(s)) \geq V_\pi(s)$ 이므로, $V_{\pi_{i+1}}(s) \geq V_{\pi_{i}}(s)$ 가 성립합니다. 이렇게 되는 자세한 과정은 지난 DP 포스팅 policy improvement쪽을 참고 바랍니다. 따라서, $\epsilon-greedy$ 에 의한 정책 발전이 일어납니다. Greedy in the Limit of Infinite Exploration 정책 발전이 일어나는 것과 동시에, 매 스텝마다 정책을 발전시키려면 결국 greedy한 정책으로 수렴해야 합니다. $\epsilon-greedy$ 방식은 모든 행동이 선택될 확률이 non-zero probability라 가정을 하지만, 결국 iteration을 반복해 나가면서 하나의 행동에 대해 $\pi(a \mid s) = 1$ 의 확률을 가져야 되는 것입니다. 이것에 관한 내용을 Greedy in the Limit of Infinite Exploration(GLIE) 라 합니다. 따라서, GLIE를 만족해야 수렴된 정책을 가질 수 있습니다. 그림 8. Greedy in the Limit with Infinite Exploration(GLIE) $e-greedy$ 가 GLIE를 만족하게 하는 가장 심플한 방법은 $\epsilon = \frac{1}{k}$ 로 하여 매 스텝마다 $\epsilon$ 을 감소시켜 0에 수렴하게 하는 것입니다. 따라서, GLIE Monte-Carlo Control 알고리즘을 정리하면 아래와 같습니다. 그림 9. On Policy Monte-Carlo Control off-policy Monte-Carlo Off-policy MC에 대해 설명하기 전에 on-policy learning과 off-policy learning에 대해 알아보겠습니다. on-policy vs. off-policy 이제까지 설명한 MC control 방법은 on-policy control입니다. On-policy란 탐험할 때 따르는 정책과 찾고자 하는 최적 정책이 같은 경우입니다. $\epsilon-greedy$ MC control이 왜 on-policy인지 살펴보면 다음과 같습니다. 한 에피소드 내에서 매 상태 s마다 행동 a를 샘플링합니다. 이 때, $\epsilon$ 의 확률로 정책에 따른 행동 $a=arg \underset m maxQ(s,a)$ 을 샘플링합니다. 그리고 한 에피소드가 다 끝나고 정책을 업데이트 할 때도 이렇게 정책에 따른 행동들을 기반으로 가치함수를 업데이트하여 $\pi_k = \epsilon-greedy(Q)$ 로 정책을 발전시킵니다. 즉, 기존 행동 샘플링할 때 사용된 정책 기반으로 정책을 발전시키는 것입니다. 이것이 바로 on-policy learning입니다. On-policy learning is- learn on the job- learn about policy $\pi$ from experience sampled from $\pi$ 그러나 이미 정책을 발전시키는 과정이 greedy한 정책을 한번 찾은 후, 그 정책 위에서 $\epsilon-greedy$ 같은 방법으로 탐험을 하는 것입니다. 그렇기 때문에 탐험을 하는 (s,a)공간이 매우 협소합니다. 이미 발전시킨 정책 위에서 탐험을 하기 때문에, (s,a) 공간위에서 보면 이미 발전시킨 정책 $\pi$ 에 해당되는 공간 근처에서만 탐험이 이뤄지는 것입니다. 마치 그림으로 표현하면 아래와 같을 수 있습니다. 그림 10. On-policy exploration 그렇다면 이를 해결할 수 있는 방법은 어떤 것이 있을까요? 바로, 탐험하는 정책과 최적 정책을 찾기 위해 학습하는 정책을 분리하는 것입니다. 이것이 바로 off-policy learning입니다. 마치 분류 모델을 위한 지도학습을 진행 할 때, 모든 라벨에 해당되는 데이터가 존재하고, 분포도 고루 존재하면 학습이 더 잘되는 것과 비슷하다고 생각하면 됩니다. 좀 더 다양한 경험을 한 시퀀스 데이터가 많으면 best 답안에 가까운 정책을 찾을 수 있습니다. 그렇기 위해선 탐험의 범위가 넓어야 합니다. Off-policy learning is- look over someone's shoulder- learn about policy $\pi$ from experience sampled from $\mu$ 일반적으로, 학습하고자 하는 정책을 target policy라 하고, 학습을 위한 데이터를 생성하기 위한 정책을 behavior정책이라 합니다. 학습을 위한 데이터를 학습하고 하는 정책에서 ‘벗어나서’ 수집하기 때문에, ‘off-policy’라 합니다. Importance Sampling 대부분의 off-policy 방식은 importance sampling을 이용합니다. Importance sampling이란 기댓값을 계산하고자 하는 확률 분포 $p(x)$ 의 확률 밀도 함수(probability density function, PDF)를 모르거나 안다고 해도 $p$ 에서 샘플을 생성하기 어려울 때, 비교적 샘플을 생성하기 쉬운 $q(x)$ 에서 샘플을 생성하여 $p$ 의 기댓값을 계산하는 것입니다. Importance Sampling for Off-Policy Monte-Carlo 그렇다면 importance sampling을 off-policy MC에서 어떻게 이용하는지 알아보도록 하겠습니다. 위에서 설명한 importance sampling 개념대로 target policy와 behavior policy를 보면, 기댓값을 계산하고자 하는 확률 분포 $p(x)$ 에 해당하는 건 target policy $\mu$ 이고, 실제 샘플하는 분포 $q(x)$ 는 behavior policy $\pi$ 입니다. 우리가 계산하고자 하는 기댓값은 $V(s) = E[G_t \mid S_t=s]$ 이므로, 즉 두 분포의 비율 $\frac{\pi(A_t \mid S_t)}{\mu(A_t \mid S_t)}$ 을 $G_t$ 에 곱하여 기댓값을 계산해야 합니다. 그러나, 단일 샘플링이 아니라 전체 에피소드에 대한 샘플링이기 때문에 importance sampling한 $G_t^{\pi/\mu}$ 는 아래와 같습니다. 따라서 MC policy evaluation에서 $G_t$ 가 아닌 $G_t^{\pi/\mu}$ 로 가치함수를 업데이트해주면 됩니다. 그러나 importance sampling 같은 경우 infinite variance를 가지는 단점이 있습니다. 이러한 이유로 수렴하기가 매우 어렵습니다. 따라서 현실적으로 importance sampling을 통한 off-policy Monte-Carlo방식은 사용되지 않습니다. Temporal-Difference Control 다음은 Temporal-Difference(TD) Control에 대해 알아보겠습니다. On-policy TD control을 Sarsa이고, off-policy TD control을 Q-Learning이라 합니다. SARSA에 대해서 먼저 알아보겠습니다. Sarsa : On-policy TD Control TD control도 MC control과 마찬가지로, Generalized policy iteration(GPI) 을 따릅니다. Policy evaluation만 TD update을 이용하고 그 외 다른 건 모두 MC control와 같습니다. 위 update 식에서 샘플링 단위가 (S, A, R, S’, A’)이기 때문에 Sarsa 라는 이름이 붙여졌습니다. Srasa 알고리즘 전체는 아래와 같습니다. 그림 11. Sarsa Sarsa도 on-policy MC에서 살펴본 것처럼 정책 발전 문제와 수렴 문제를 살펴보겠습니다. 정책 발전 문제는 on-policy MC와 동일하게 $\epsilon-greedy$ 를 사용하기 때문에 정책 발전은 일어납니다. 반면에 수렴문제는 GLIE를 만족시키는 것 이외에 업데이트 스텝 크기인 $\alpha$ 에 대한 조건이 더 필요합니다. 그 이유는 MC와 다르게 TD는 스텝마다 업데이트가 일어나는 on-line 방식이기 때문에 스텝사이즈 크기에 따라 수렴이 되지 않고 발산이 될 수 있습니다. 스텝크기 $\alpha$ 는 Q 가치함수가 변화가 일어나야 하므로 충분히 크며 동시에 Q 가치함수가 수렴해야 하므로 충분히 작아야 합니다. 그러나 실제 문제를 풀 때 $\alpha$ 를 결정하는 건 위의 이론을 이용하진 않고 domain-specific하게 또는 실험적으로 정한다고 합니다. sarsa 문제 예를 보겠습니다. 아래는 S에서 시작해서 G로 가야하는 문제입니다. 행동은 위, 아래, 좌, 우이며, 화살표가 있는 곳에서 아래에서 위로 바람이 불고 있습니다. 따라서 이 곳을 지날 때 실제 위로 가는 행동을 해도 실제 움직임은 대각선 우상향으로 가게 됩니다. 매 스텝마다 보상은 -1이며 discount factor 1입니다. 그림 12. Sarsa on the Windy Gridworld &amp;lt;그림 12.&amp;gt; 그래프는 Sarsa 학습 결과입니다. 1에피소드가 끝날 때 까지 2000 스텝을 밟지만 그 다음부터 학습속도가 빨라지는 것을 볼 수 있습니다. Q-Learning : Off-policy TD Control 다음은 off-policy TD 방식인 Q-Learning에 대해서 알아봅시다. Off-policy MC와 다르게 importance sampling이 필요 없습니다. Sarsa 에서 $Q(S_t, A_t)$ 를 업데이트 하기 위해, 정책 $\pi$ 에 따라 $(S_t, A_t, R_{t+1}, S_{t+1}, A_{t+1})$ 을 샘플링 한 후, $Q(S_{t+1}, A_{t+1})$ 기반으로 현재 상태 $(S_t, A_t)$ 를 수정했습니다. 즉, 샘플링된 정책과 학습하는 정책이 일치합니다. 그러나 Q-Learning은 off-policy로 샘플링되는 정책(behavior policy)과 학습하는 정책(target policy)이 다릅니다. Next action is chosen using behavior policy $A_{t+1} \sim \mu(\cdot \mid S_t)$ But we consider alternative successor action $A’ \sim \pi(\cdot \mid S_t)$ 다음 상태에 대한 행동을 behavior policy에 따라 선택하지만 실제 $Q(S_t, A_t)$ 를 업데이트하기 위해서 다음 상태에 대한 행동은 behavior policy와 다른 target policy에 의해 선택합니다. 즉, $A’$ 에 대해서 $Q(S_t, A_t)$ 를 업데이트하고 다음 업데이트 할 (s,a) 쌍은 $(S_{t+1}, A’)$ 이 아니라 behavior policy 따른 $(S_{t+1}, A_{t+1})$ 인 것입니다. 이 때, $A’=A$ 일수도 있고, $A’ \ne A$ 일수도 있습니다. Q-learning은 taret policy와 behavior policy를 같이 발전시켜 나갑니다. 이때, target policy $\mu$ 는 $Q(s,a)$ 에 관한 greedy policy이고 behavior policy $\pi$ 는 $Q(s,a)$ 에 관한 $\epsilon-greedy$ 입니다. Target policy : $\pi(S_{t+1}) = arg \underset {a’} maxQ(S_{t+1},a’)$ Behavior policy : 위의 behavior policy와 target policy를 가지고 Q-Learning 식을 다시 쓰면 아래와 같습니다. 따라서, Q-learning 알고리즘은 아래와 같습니다. 그림 13. Q-Learning Sarsa vs. Q-Learning 그렇다면 Sarsa와 Q-Learning은 실제 학습 시 어떤 차이를 보일까요 ? 아래 cliff Waling 예제를 통해 확인해 보겠습니다. 그림 14. Cliff-walking 예 S에서 시작해서 G로 가는 문제입니다. The Cliff에 도달하면 R=-100을 받고 다시 S로 돌아갑니다. 다른 곳에 밟으면 R=-1을 받습니다. 행동은 위, 아래, 좌, 우이며, $\epsilon=0.1$ 입니다. 학습이 완료됐을 때 최적 정책 결과는 &amp;lt;그림 14.&amp;gt;에서 위에 있는 그림입니다. Sarsa는 safe path로 학습되지만 Q-learning은 optimal path로 학습됩니다. Sarsa는 학습되는 방향이 현재 따르는 정책에서 선택된 행동이 고려되기 때문에 path의 길이는 길지만 좀 더 안전한 길을 선택하게 됩니다. 반면에, Q-Learning 같은 경우 학습되는 방향이 현재 따르는 정책과 무관하기 때문에 현재 상태에서 가장 최적의 선택이 될 수 있는 길로 학습이 됩니다. 그렇기 때문에 Sarsa 같은 경우 보상의 합이 Q-Learning보다 크게 나타납니다. 이상으로 이번 포스팅을 마치겠습니다. 읽어주셔서 감사합니다. Importance Sampling, https://untitledtblog.tistory.com/135</summary></entry><entry><title type="html">Model-Free Policy Evaluation, Monte Carlo와 Temporal Difference에 대하여</title><link href="http://localhost:4000/reinforcement%20learning/2020/07/28/mc-td-eval/" rel="alternate" type="text/html" title="Model-Free Policy Evaluation, Monte Carlo와 Temporal Difference에 대하여" /><published>2020-07-28T00:00:00+09:00</published><updated>2020-07-28T00:00:00+09:00</updated><id>http://localhost:4000/reinforcement%20learning/2020/07/28/mc-td-eval</id><content type="html" xml:base="http://localhost:4000/reinforcement%20learning/2020/07/28/mc-td-eval/">&lt;p&gt;이번 포스팅과 다음 포스팅은 유한개의 상태, 유한개의 행동에 대해 환경 모델을 모를 때, sequential decision process를 푸는 방법에 다룹니다. 지난 &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/13/dp/&quot;&gt;DP 포스팅&lt;/a&gt;에서, policy iteration을 이용하여 MDP를 풀었습니다. 마찬가지로 환경 모델을 알지 못한 경우도 유사하게 접근할 수 있습니다. policy iteration은 policy evaluation과 policy control로 나뉘는데 이번 포스팅은 policy evaluation을 푸는 방법에 다룰 것이고 다음 포스팅은 policy control에 대해 다루도록 하겠습니다. CS234 3강, Deep Mind의 David Silver 강화학습 강의 4강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 5, 6 기반으로 작성하였습니다.&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;policy evaluation은 현 정책이 얼마나 좋은지 평가하는 것으로, 현 정책 아래 가치함수를 구하는 것입니다. DP는 환경 모델을 알 때, 벨만 기대 방정식을 이용하여 iterative한 방법으로 현 정책 아래에서 가치함수를 구하는 과정입니다. 현 상태에서 특정 행동을 취할 때, 나올 수 있는 다음 상태와 받을 보상을 알고 있기 때문에 아래 식과 같이 expectation을 직접 “계산”을 할 수 있었습니다.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;v_\pi(s) = \sum_a\pi(a|s)\sum_{s',r}p(s',r|s,a)[r+\gamma v_\pi(s')]&lt;/script&gt;
-
-&lt;p&gt;(이러한 이유로, DP는 learning이 아니라 planning이라 했었습니다.) 그러나 환경 모델을 알지 못할 때, 즉, 상태 변환 모델과 보상 모델을 알지 못할 때 어떻게 정책을 평가할 수 있을까요? 바로 경험(experience)을 직접하는 것입니다. 시퀀스를 직접 밟아 나가면서 가치함수를 학습해 나가는 것입니다. 이 때, 경험을 통해 가치함수를 학습하는 방법을 두가지가 있습니다. Monte Carlo 방식와 Temporal Difference 방식입니다. 먼저, Monte Carlo policy evaluation 부터 알아보겠습니다.&lt;/p&gt;
-
-&lt;h2&gt;Monte-Carlo Policy Evaluation&lt;/h2&gt;
-&lt;p&gt;Monte-Carlo Policy Evaluation을 살펴보기 전에, Monte-Carlo 방식을 우선 알아보겠습니다.&lt;/p&gt;
-
-&lt;h3&gt;Monte-Carlo Methods&lt;/h3&gt;
-&lt;p&gt;Monte-Carlo 방법은 무작위 샘플링을 통해 우리가 알아보고자 하는 시스템의 분포를 추정하는 것입니다. 아래 그림은 Monte-Carlo 방식으로 원의 넓이를 추정하는 것입니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img alt=&quot;mc-pi&quot; width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88665561-c2c06e00-d119-11ea-82cd-672553bac47d.gif&quot; /&gt;
-&lt;figcaption align=&quot;center&quot;&gt;그림 1. Monte-Carlo 예&lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;원의 넓이를 구하는 방법이 너무나 복잡하거나 알 수 없다고 가정해 봅시다. 이런 상황에서 원의 넓이를 가장 쉽게 구하는 방법은 점을 무수히 많이 뿌려본 뒤, 사각형의 넓이 $\times$  (원 안에 들어온 점의 갯수 / 전체 점의 갯수) 로 원의 넓이를 추정할 수 있습니다. 이처럼 Monte-Carlo방식은 점을 무수히 많이 찍는 것처럼 무작위 샘플링으로 데이터를 많이 수집하게 되면 우리가 알고자 하는 시스템의 분포를 추정할 수 있다는 개념입니다.&lt;/p&gt;
-
-&lt;h3&gt;Monte-Carlo Policy Evaluation&lt;/h3&gt;
-&lt;p&gt;따라서, Monte-Carlo Policy Evaluation이란 에이전트가 환경과 직접 상호작용하여 상태, 행동, 보상으로 이뤄진 시퀀스를 무수히 많이 &lt;span style=&quot;color:red&quot;&gt;sampling&lt;/span&gt;하여 경험을 얻고, 그 경험을 바탕으로 가치함수를 구하는 것입니다. 즉, 무작위 샘플링을 통해 환경 모델을 내재적으로 추정하는 것이죠. ‘내재적’이라 표현한 이유는 추정하고자 하는 것이 상태 변이 확률 또는 보상 확률이 아니라 value function이기 때문입니다. 결국 value function를 구하기 위해선 환경 정보를 알고 있어야 구할 수 있는데(DP에서의 Policy Evaluation 참고) 샘플링을 통해 이를 구하는 것이 내재적으로 환경모델을 추정하는 거라고 생각할 수 있는 것이죠.&lt;/p&gt;
-
-&lt;p&gt;다시 정리하면 Monte-Carlo 방식은 환경에 대한 정보없이, 오로지 ‘경험(experience)’를 통해 학습하는 것입니다.&lt;/p&gt;
-&lt;blockquote&gt;사실 학습은 policy evaluation과 policy control의 상호작용으로 이뤄집니다. 본 포스팅은 학습이라 표현하지만, policy evaluation에 초점을 맞춰 작성하였습니다.&lt;/blockquote&gt;
-&lt;p&gt;value function의 정의를 다시 살펴보면,&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;v_\pi(s) = E_\pi[G_t|s_t=s]&lt;/script&gt;
-
-&lt;p&gt;상태 s에서의 return $G_t$ 에 대한 기댓값입니다. Monte-Carlo 방식으로 value function을 구하면 샘플링한 많은 경험들 중에서 상태 s에서부터의 return $G_t$ 를 직접 구한 뒤, 경험의 갯수만큼 나눠주면 됩니다. 즉, return에 대한 기댓값이 아니라 &lt;span style=&quot;color:red&quot;&gt;return에 관한 평균값&lt;/span&gt;입니다.&lt;/p&gt;
-&lt;blockquote&gt;Monte-Carlo policy evaluation uses empirical mean return instead of expected return. In other words, Policy is evaluated based on averaging sample returns.&lt;/blockquote&gt;
-&lt;p&gt;아래 예시를 통해, 어떻게 계산하는지 알아봅시다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88672014-eedfed00-d121-11ea-92ba-d14ed0f22508.jpeg&quot; /&gt;
-&lt;figcaption align=&quot;center&quot;&gt;그림 2. Monte-Carlo Policy Evaluation 예&lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;&amp;lt;그림 2&amp;gt;와 같이, C1에서 시작한 시퀀스들에 대한 return 값들이 있습니다. $s_t = C1$ 의 value function을 Monte-Carlo 방식으로 추정하면 (-2.25-3.125-3.41-3.20)/4 = -3.0 이 됩니다.&lt;/p&gt;
-
-&lt;p&gt;그러나 Monte-Carlo 방식으로 가치함수를 추정하려면 샘플 시퀀스인 episode가 끝나야 합니다. &lt;span style=&quot;color:red&quot;&gt;즉, 모든 에피소드가 끝나야 Monte-Carlo 방식을 적용할 수 있습니다.&lt;/span&gt; 따라서 에피소드가 끝날 때 까지 기다린 후, 평균값을 업데이트하는 방식으로 적용할 수 있습니다.&lt;/p&gt;
-
-&lt;h4&gt;first-visit MC vs. every-visit MC&lt;/h4&gt;
-&lt;p&gt;Monte-Carlo 방식은 두 가지가 있습니다. first-visit MC와 every-visit MC입니다. 한 에피소드에서 같은 상태를 여러번 반복해서 지나갈 수 있습니다. 이 때, 첫번째 상태에 대한 return값만 value function 업데이트에 이용하고, 나머지는 무시하는 방법이 first-visit MC이고 모든 경우를 고려한 것이 every-visit MC입니다. 아래 그림은 first-visit MC policy evaluation과 every-visit MC policy evaluation 순서입니다.&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;400&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88681428-86e2d400-d12c-11ea-92b5-383464f1e817.jpg&quot; /&gt;
-&lt;img width=&quot;400&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88682203-5e0f0e80-d12d-11ea-95f4-983819379c31.jpg&quot; /&gt;
-&lt;figcaption align=&quot;center&quot;&gt;그림 3. first-visit/every-visit MC Policy Evaluation&lt;/figcaption&gt;&lt;/p&gt;
-
-&lt;p&gt;일반적으로 first-visit MC를 많이 씁니다. 그렇다면 first-visit과 every-visit은 어떤 차이가 있을까요? first-visit MC 같은 경우, 각 상태에 대한 return들은 모두 독립입니다. 왜냐하면 샘플링된 episode가 독립이므로 first-visit만 고려하기 때문에, 각 상태에 대한 return $G_t$ 은 서로 관련이 없고 독립입니다. 즉, 상태 s에 대한 return $G_t$ 는 $v_\pi(s)$ 분포에서, i.i.d성질을 지니게 됩니다(independent and identically distributed). 따라서, 대수 법칙(law of large numbers)에 따라, 상태 s에 대한 return 값을 무수히 많이 샘플링 하게 된다면, return에 대한 평균은 우리가 구하고 싶은 상태 s의 value function 기댓값인 $\mathbb{E_\pi}[G_t \mid s_t=s]$ 에 수렴합니다.&lt;/p&gt;
-
-&lt;p&gt;쉽게 다시 설명하겠습니다. 어떤 상태 s에 대한 가치를 구할 때마다 항상 다르게 나올 수 있습니다. 그런데 충분히 많이 상태 s를 밟는다면 대표적으로 많이 나오는 값이나 그 값 주변 값이 자주 등장하겠지요. 즉, 우리는 $v_\pi(s)$ 가 분포를 이룬다고 생각할 수 있습니다. 그런데 우리가 구하고 싶은 건 분포안에서 $v_\pi(s)$ 를 대표하는 값을 찾고 싶은 것입니다. 즉, 자주 등장하는 값을 말입니다. 따라서, 그 분포의 평균인 기댓값 $\mathbb{E_\pi}[G_t \mid s_t=s]$ 을 말입니다. first-visit MC 방식으로 샘플링한 $G_t$ 는 i.i.d성질을 띄기 때문에, 분포를 정확히 모르지만(분포를 안다면 굳이 샘플링 하지 않고 바로 기댓값이 계산이 가능하겠죠?) 결국 $v_\pi(s)$ 분포를 추정할 수 있고, 이는 우리가 구하고 싶은 기댓값에 수렴할 수 있음을 의미합니다.&lt;/p&gt;
-
-&lt;p&gt;따라서, &lt;span style=&quot;color:red&quot;&gt;first-visit MC 방식에 의한 추정은 unbiased한 성질을 지닙니다.&lt;/span&gt; 반면에, &lt;span style=&quot;color:red&quot;&gt;every-visit MC 방식에 의한 추정은 biased한 성질을 띕니다.&lt;/span&gt; 한 에피소드 내에서 같은 상태를 여러 번 반복해서 지나갔다면, 그 상태들 간은 독립적이지 않고, 상관관계를 가지게 됩니다. 따라서, i.i.d하지 않기 때문에 biased합니다. 그렇기 때문에 MC 방식에 의한 policy evaluation은 first-visit MC를 선호하는 편이라 합니다(sutton and barto교재 및 stanford강의 참고).&lt;/p&gt;
-
-&lt;h4&gt;Incremental Monte-Carlo Updates&lt;/h4&gt;
-&lt;p&gt;Value function을 업데이트하는 방식을 에피소드가 끝날 때마다 마치 온라인 방식처럼 순차적으로 업데이트할 수 있습니다. 시퀀스 $x_1, x_2, \dots$ 에 대한 평균 $\mu_1, \mu_2, \dots$ 가 있을 때,&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*} \mu_k&amp;=\frac{1}{k}\sum_{j=1}^{k}x_j\\&amp;=\frac{1}{k}\left(x_k+\sum_{j=1}^{k-1}x_j\right)\\&amp;=\frac{1}{k}\left(x_k + (k-1)\mu_{k-1}\right)\\&amp;=\mu_{k-1}+\frac{1}{k}\left(x_k-\mu_{k-1}\right)\end{align*} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;입니다. 따라서, episode $S_1, A_1, R_2, \dots, S_T$ 가 끝날 때마다 아래와 같이 업데이트 할 수 있습니다.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;N(S_t) \leftarrow N(S_t) + 1&lt;/script&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;V(S_t) \leftarrow V(S_t) + \frac{1}{N(S_t)}\left(G_t-V(S_t)\right)&lt;/script&gt;
-
-&lt;p&gt;두번째 식을 마치 $\left(G_t-V(S_t)\right)$ 를 새로운 데이터와 기존 평균과의 오차 즉 에러항으로 본다면, 기존 평균값을 오차의 방향으로 1/k만큼 수정해 나간다고 해석할 수 있습니다.&lt;/p&gt;
-
-&lt;p&gt;위의 업데이트 방식은 맨 처음에 샘플한 에피소드부터, 가장 최근에 샘플한 에피소드까지 모두 중요하게 생각함을 의미합니다. 왜냐하면 동등하게 에피소드 개수만큼으로 나누고 있기 때문입니다. 하지만 시간에 따라 조금씩 변하는 문제 같은 경우(non-stationary)에 위와 같은 업데이트 방식은 적합하지 않습니다. 따라서, 새 에피소드와 기존 평균사이의 오차를 항상 일정 크기만큼 업데이트하여 시간이 지날수록 오래된 과거는 잊고 가장 최근 사건을 좀 더 기억할 수 있게끔 해줍니다.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;V(S_t) \leftarrow V(S_t) + \alpha\left(G_t-V(S_t)\right)&lt;/script&gt;
-
-&lt;h2&gt;Temporal-Difference Policy Evaluation&lt;/h2&gt;
-&lt;p&gt;다음은 Temporal-Difference Policy Evaluation에 대해 알아보겠습니다. Temporal-Difference(TD) 도 Monte-Carlo(MC) 와 마찬가지로 환경 모델을 알지 못할 때(model-free), 직접 경험하여 Sequential decision process 문제를 푸는 방법입니다. Temporal-Difference 학습은 Monte-Carlo와 Dynamic Programming을 합쳐 놓은 방식입니다.  MC처럼, 환경모델을 알지 못하기 때문에 직접 &lt;span style=&quot;color:red&quot;&gt;sampling&lt;/span&gt;한 데이터를 통해 학습을 해야 합니다. DP처럼, 에피소드가 끝날 때까지 기다리지 않고 다른 가치 추정치를 가지고 현재 상태 가치를 추정합니다. 이를 &lt;span style=&quot;color:red&quot;&gt;bootstrap&lt;/span&gt;이라 합니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88749790-01444000-d18f-11ea-8e52-bc959e3e20ef.jpeg&quot; /&gt;
-&lt;figcaption align=&quot;center&quot;&gt;그림 4. DP에서의 bootstrap&lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;TD는 MC와 다르게 &lt;span style=&quot;color:red&quot;&gt;무한한 에피소드에 대해서도 적용&lt;/span&gt;할 수 있습니다. 그 이유는 MC는 업데이트를 하기 위해서 한 에피소드가 끝날 때까지 기다려야 합니다. 그래야 return $G_t$ 를 구한 뒤, 업데이트를 할 수 있기 때문입니다. &lt;b&gt;따라서, MC는 에피소드 샘플링을 통해 실제 return $G_t$ 을 향해 $V(S_t)$ 를 수정해나갑니다.&lt;/b&gt;&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;V(S_t) \leftarrow V(S_t) + \alpha\left(G_t-V(S_t)\right)&lt;/script&gt;
-
-&lt;p&gt;반면에, TD는 에피소드가 끝날 때까지 기다릴 필요 없이, 다음 상태를 밟을 때까지만 기다렸다가 업데이트합니다. 그렇기 때문에 에피소드가 끝나지 않는 시퀀스에 대해서도 적용할 수 있으며, 시퀀스를 밟아나가면서 그때그때 가치함수를 수정해 나갈 수 있습니다. 이러한 특징으로 인해, TD 방법은 &lt;span style=&quot;color:red&quot;&gt;online learning이 가능&lt;/span&gt;합니다. 이 부분이 TD의 매우 큰 장점입니다.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;V(S_t) \leftarrow + \alpha[R_{t+1}+\gamma V(S_{t+1})-V(S_t)]&lt;/script&gt;
-
-&lt;p&gt;TD policy evaluation을 상세히 살펴보면, DP에서의 벨만 기대 방정식을 이용한 policy evaluation과 유사한 것을 보실 수 있습니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88760395-e7fbbd80-d1a7-11ea-8e22-a202c0814dbc.jpeg&quot; /&gt;
-&lt;figcaption align=&quot;center&quot;&gt;그림 5. DP와 TD&lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;그러나 DP는 환경모델을 알기 때문에, 다음 상태가 될 수 있는 모든 후보들을 고려하여 가중 평균을 한 추정값으로 다음 상태의 가치 추정값만을 가지로 현재 상태의 가치를 업데이트합니다. 반면에, TD는 환경에 대한 정보가 없기 때문에 다음 상태까지 직접 밟아보는 것입니다. 이것을 ‘다음 상태 s’를 직접 샘플링하였다’라고 합니다. 그러나 DP처럼 다른 상태의 추정값을 가지고 현재 상태값을 수정하고자 합니다. 이를 bootstrap이라 합니다. 즉, TD에서의 bootstrap은 아래 그림 처럼 이해할 수 있습니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88756436-9bf84b00-d19e-11ea-9c9f-94791c8b32f6.jpg&quot; /&gt;
-&lt;figcaption align=&quot;center&quot;&gt;그림 6. TD policy evaluation by bootstrapping&lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;따라서, MC는 실제 return $G_t$ 를 향해 $V(S_t)$ 를 수정해 나가지만 &lt;b&gt;TD는 estimate $G_t$ 을 향해 $V(S_t)$ 를 고쳐나가면서 시퀀스를 진행합니다.&lt;/b&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;&lt;ul&gt;
-&lt;li&gt;MC Policy Evaluation :&lt;br /&gt;update value $V(S_t)$ toward actual return $G_t$&lt;/li&gt;
-&lt;li&gt;TD Policy Evaluation :&lt;br /&gt; update value $V(S_t)$ toward estimated return $R_{t+1} + \gamma V(S_{t+1})-V(S_t)$&lt;/li&gt;&lt;/ul&gt;&lt;/blockquote&gt;
-
-&lt;h3&gt;General form of update rule&lt;/h3&gt;
-&lt;p&gt;위의 MC/TD 업데이트 식은 일반적으로 아래와 같은 형태를 띕니다.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;NewEstimate \leftarrow OldEstimate + StepSize \left[Target - OldEstimate\right]&lt;/script&gt;
-
-&lt;p&gt;$\left[Target - OldEstimate\right]$ 는 오차를 나타냅니다. MC와 TD 모두 Target을 향해 기존 Estimate을 업데이트합니다. 그러나, 기존 estimate을 새로운 target으로 교체하는 건 위험합니다. 왜냐하면 초기단계에서는 새로운 target이 우리가 찾는 정답이 아닐 수도 있기 때문에, target과 기존 estimate의 오차의 일부만큼만 조금씩 수정해 나갑니다. MC target은 $G_t$ 이고, TD target은 $R_{t+1}+\gamma V(S_{t+1})$ 입니다. 또한, MC error는 $G_t - V(S_t)$ 이고, TD error는 $R_{t+1}+\gamma V(S_{t+1}) - V(S_t)$ 입니다. 보통  TD error는 $\delta_t$ 로 표현합니다. 왜냐하면, 같은 에피소드 내에서, TD error는 매 t step마다 다르기 때문입니다.&lt;/p&gt;
-
-&lt;h3&gt; Temporal Difference Policy Evaluation Algorithm &lt;/h3&gt;
-&lt;p&gt;TD policy evaluation 알고리즘 순서도는 아래와 같습니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88760737-93a50d80-d1a8-11ea-8094-57124c27e696.png&quot; /&gt;
-&lt;figcaption align=&quot;center&quot;&gt;그림 7. TD(0) policy evaluation algorithm&lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;일정 정책 $\pi$ 아래, (S, A, R, S’)를 샘플링하고, 업데이트합니다. 그런 다음 (S’, A’, R, S’‘)를 샘플링하고 업데이트합니다. 이 과정을 V(S)가 수렴할 때까지 반복합니다. 여기서 한가지 의문점이 있습니다. MC방식은 unbiased estimator이기 때문에 대수의 법칙에 따라, true expected estimate에 수렴한다고 하였습니다. 과연 TD방식은 수렴할까요? 이는 &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/29/mc-td-control/&quot;&gt;다음 포스팅 Model-Free Control&lt;/a&gt;에서 다루도록 하겠습니다.&lt;/p&gt;
-
-&lt;p&gt;TD policy evaluation 예를 살펴보겠습니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88761833-eaabe200-d1aa-11ea-8c41-5b60f2d76259.jpg&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 8. TD policy evaluation 예(1)&lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;먼저 $(s_3, a_1, 0, s_2)$ 에 대해 $v(s_3)$ 를 업데이트하고, 그 다음 $(s_2, a_1, 0, s_2)$ 에 대해 $v(s_2)$ 를, $(s_2, a_1, 0, s_1)$ 에 대해 $v(s_2)$ 를, 마지막으로 $(s_1, a_1, 1, terminal)$ 에 대해 $v(s_1)$ 을 업데이트하면 한 에피소드에 대해 업데이트를 완료하게 됩니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88763595-59d70580-d1ae-11ea-8d31-d892a0e42267.jpeg&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 9. TD policy evaluation 예(2)&lt;/figcaption&gt;&lt;/p&gt;
-
-&lt;h2&gt;Monte-Carlo vs. Temporal-Difference&lt;/h2&gt;
-&lt;p&gt;이제까진 MC와 TD방식으로 policy evaluation하는 것을 보았습니다. 그러면 두 방식의 특성을 비교하겠습니다.&lt;/p&gt;
-
-&lt;h3&gt;Bias/Variance Trade-Off&lt;/h3&gt;
-&lt;p&gt;MC와 TD의 특징을 bias-variance trade-off 관점에서 보겠습니다. MC는 위에서 설명한 것처럼, return $G_t$ 는 $v_\pi(S_t)$ 의 unbiased estimate 입니다. 따라서 &lt;span style=&quot;color:red&quot;&gt;MC는 low bias의 특징&lt;/span&gt;을 띕니다. 반면에, TD는 bootstrap 기반이기 때문에 TD target $R_{t+1} + \gamma V(S_{t+1})$ 은 $v_\pi(S_t)$ 의 biased estimate 입니다. 따라서 &lt;span style=&quot;color:red&quot;&gt;TD는 high bias 특징&lt;/span&gt;을 가집니다.&lt;/p&gt;
-
-&lt;p&gt;그러나, variance관점에서 두 방식은 반대입니다. MC같은 경우, 한 에피소드가 끝날 때까지 계속 샘플링을 해야합니다. 이로인해, random성이 많이 증가하게 되죠. 반면에, TD같은 경우 업데이트를 위해 (s, a, r, s’)을 한번만 샘플링 하기 때문에 MC에 비해 random성이 작습니다. 이러한 특징으로 인해, &lt;span style=&quot;color:red&quot;&gt;MC는 high variance를, TD는 low variance&lt;/span&gt;를 갖습니다.&lt;/p&gt;
-&lt;blockquote&gt;&lt;ul&gt;&lt;li&gt;Return depends on many random actions, transitions, rewards&lt;/li&gt;&lt;li&gt;TD target depends on one random action, transition, reward&lt;/li&gt;&lt;/ul&gt;&lt;/blockquote&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88870731-15507600-d251-11ea-96b6-5d3850150ecf.jpeg&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 10. Graphical Illustration of Bias-Variance trade off&lt;/figcaption&gt;&lt;/p&gt;
-
-&lt;h3&gt;Properties of MC and TD&lt;/h3&gt;
-&lt;p&gt;위의 bias-variance trade-off 성질로 인해 MC와 TD는 아래와 같은 특성을 같습니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;b&gt;MC : high variance and zero bias&lt;/b&gt;&lt;br /&gt;
-MC는 zero bias이기 때문에 초기값에 상관없이 항상 수렴하게 됩니다. 이러한 수렴을 잘하는 특징 덕분에 좋은 근사 가치 함수도 갖게 됩니다(value function approximation, 추후에 포스팅 예정). 그러나, high variance인해 항상 true expected value에 수렴함에 불구하고, 언제 수렴할지는 불분명합니다. 왜냐하면, high variance로 인해 수렴할 때까지 굉장히 많은 에피소드 샘플링이 필요하기 때문입니다. 그리고 한 에피소드가 끝날 때까지 기다려야 하는데, 에피소드의 길이가 긴 경우 더욱 적용하기 어렵습니다. 따라서 실용성 측면에서 떨어지는 단점이 있습니다.&lt;/p&gt;
-
-&lt;p&gt;MC가 zero bias를 가질 수 있는 이유는 $G_t$ 가 i.i.d성질을 가지기 때문이라고 설명하였습니다. 이는 $V(S_t)$ 를 계산하는데 $S_t$ 의 markov property를 이용하지 않음을 뜻합니다. 따라서, Markov domain인 아닌 경우 MC를 적용하여 문제를 해결할 수 있습니다(handling non-markovian domains).&lt;/p&gt;
-
-&lt;p&gt;&lt;b&gt;TD : low variance and high bias&lt;/b&gt;&lt;br /&gt;
-반면에 TD는 low variance로 인해 수렴이 가능하다면, MC에 비해 수렴지점까지 빨리 도달할 수 있습니다(그림 11,12 참고). 하지만 초기값에 따라 수렴여부가 달라지고(sensitive to initial value), 그리고 근사 가치 함수를 찾지 못할 수도 있습니다. 하지만, on-line 학습이 가능하기 때문에, 따라서 쉽게 적용할 수 있습니다.&lt;/p&gt;
-
-&lt;p&gt;TD는 $V(S_t)$ 를 계산하기 위해서 $V(S_{t+1})$ estimate 을 이용합니다(bootstrap). 이는 MC와는 다르게 markov property를 이용합니다. 따라서, TD는 Markovian domain에서 적용가능합니다.&lt;/p&gt;
-
-&lt;p&gt;위에서 설명한 MC와 TD의 특성을 정리하면 아래와 같습니다.&lt;/p&gt;
-
-&lt;table style=&quot;width:100%&quot;&gt;
-  &lt;tr&gt;
-    &lt;th&gt;&lt;b&gt;Monte Carlo&lt;/b&gt;&lt;/th&gt;
-    &lt;th&gt;&lt;b&gt;Temporal Difference&lt;/b&gt;&lt;/th&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td&gt;
-    &lt;ul&gt;&lt;li&gt;high variance and zero bias&lt;/li&gt;&lt;li&gt;good convergence properties, even with function approximation&lt;/li&gt;&lt;li&gt;not very sensitive to initial value&lt;/li&gt;&lt;li&gt;very simple to understand but may not be efficient due to applying only to episodic task&lt;/li&gt;&lt;li&gt;can apply both to markov domain and non-markov domain&lt;/li&gt;&lt;li&gt;sample and no bootstrap&lt;/li&gt;&lt;/ul&gt;&lt;/td&gt;
-    &lt;td&gt;&lt;ul&gt;&lt;li&gt;low variance and high bias&lt;/li&gt;&lt;li&gt;could converge to true estimate, but it could fail with function approximation&lt;/li&gt;&lt;li&gt;more sensitive to initial value&lt;/li&gt;&lt;li&gt;usually more efficient than MC&lt;/li&gt;&lt;li&gt;can apply to markov domain&lt;/li&gt;&lt;li&gt;sample and bootstrap&lt;/li&gt;&lt;/ul&gt;&lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/table&gt;
-
-&lt;p&gt;위 표에서 마지막 특성에 관하여 MC, TD와 DP 사이의 관계를 back-up diagram과 함께 잘 나타낸 그림이 있습니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/89119964-23222780-d4ed-11ea-97b9-335a7d66c5d4.jpg&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 11. TD, MC and DP&lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;DP같은 경우, 환경 모델을 잘 알기 때문에 다음 스텝에 대해 full backup을 그린 관계와 같습니다. 그러나 에피소드가 끝날 때까지 backup을 그릴 필요가 없기 때문에 shallow-backup이고, bootstrap을 이용합니다. 반면에, TD같은 경우, 다음 상태에 대해 한 상태에 대해서만 샘플링을 하기 때문에 sample-backup이며, DP와 마찬가지로 한 스텝만 내다보기 때문에 shallow-backup이며 bootstrap을 이용합니다. 마지막으로 MC같은 경우, 모든 에피소드가 끝날 때까지 기다려야 하기 때문에 deep-backup이고, 샘플링을 하여 경험을 쌓기 때문에 sample-backup입니다. 그러나 bootstrap을 이용하지 않습니다.&lt;/p&gt;
-
-&lt;p&gt;TD가 MC보다 수렴이 더 빠른 것에 대해 수학적으로 증명된 적은 없습니다. 그러나, 실험적으로 확인했을 때 TD가 MC보다 수렴이 빠릅니다. 이에 관해 Sutton과 berto교재에 MC와 TD의 수렴에 관한 예제가 있습니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88873551-d671ee80-d257-11ea-9f09-c62328dee7f3.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 12. Random Walk 예(1)&lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;위의 예는 C에서 시작하여 각 스텝마다 왼쪽 또는 오른쪽으로 0.5의 확률로 동일하게 갈 수 있다고 할 때, 양 끝의 사각형에 도달하면 에피소드가 끝나는 문제입니다. 각 상태 A, B, C, D, E에서 value를 MC와 TD를 이용하여 구한 결과는 아래와 같습니다. 이때, 각 상태에서의 true value는 1/6, 2/3, 3/6, 4/6, 5/6입니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88898226-624f3f00-d287-11ea-97fc-0029133d082c.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 13. Random Walk 예(2)&lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;왼쪽 그림은 TD(0)를 여러 에피소드를 거쳤을 때, 각 상태에서의 value입니다. 100 에피소드 정도 진행했을 때, true value에 수렴하는 것을 확인할 수 있습니다. 오른쪽 그림은 step size $\alpha$ 를 달리했을 때 각각 MC와 TD에서의 RMS error 입니다. 실험적으로 TD가 MC보다 더 빨리 수렴합니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;b&gt;differences between MC and TD trough Batch Update&lt;/b&gt;&lt;br /&gt;
-MC와 TD의 작동원리를 보여주는 사례를 하나 더 소개하겠습니다. 먼저 그전에 batch update에 대해 설명하도록 하겠습니다. k개의 에피소드 또는 k개의 스텝을 미리 샘플링 해 놓은 뒤, k개의 MC 또는 TD 방식의 error를 각각 구해서 다 합한 후, 한 번 update를 하는 방식을 batch update이라 합니다. 아래 예를 각각 MC와 TD 방식의 batch update로 풀어보겠습니다.&lt;/p&gt;
-
-&lt;p&gt;아래와 같이 8개의 에피소드가 있습니다. 첫번째 에피소드는 A에서 시작해서 reward를 0을 받고, 그 다음 B로 가고 reward를 0을 받고 끝납니다. 그 다음 여섯개 에피소드는 B에서 시작해서 reward를 1을 받고 끝납니다. 마지막 하나는 B에서 시작해서 reward를 1을 받고 끝납니다. 이때, MC와 TD방식으로 V(A), V(B)가 각각 어떻게 될까요 ?&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/88902645-75fda400-d28d-11ea-952d-ced88051631e.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 14. Batch update 예시&lt;/figcaption&gt;&lt;/p&gt;
-
-&lt;p&gt;MC방식으로 한다면, $V(A)=0, V(B)=\frac{3}{4}$ 입니다. 그러나 TD방식으로 한다면 $V(B)=0$ 이지만 $V(A)=\frac{3}{4}$ 입니다. $V(A)$ 에서 차이가 나는 이유는 MC는 mean squared error를 최소화하는 방식으로 해답을 구하지만, TD는 markov model의 likelihood를 최대화하는 방식으로 해답을 구하기 때문입니다.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\sum_{k=1}^{K}\sum_{t=1}^{T_k}\left(G_t^k - V(s_t^k)\right)^2&lt;/script&gt;
-
-&lt;ul&gt;&lt;li&gt;MC converges to solution with minimum mean-squared error&lt;/li&gt;&lt;li&gt;Best fit to the observed returns&lt;/li&gt;&lt;/ul&gt;
-
-&lt;p&gt;MC는 관측된 return이 true value estimate과의 차이가 최소화시키는 방향으로 갑니다. 반면에, TD는 markov property 성질을 이용하기 때문에 MDP를 해결하는 방향으로 갑니다. 실제 구현은 아니지만 내재적으로는 마치 환경모델의 transition model과 reward model의 maximum likelihood를 구한 뒤 DP를 푸는 방식과 유사하게 작동하는 것입니다. 실제로 위의 예제를 아래 방식으로 환경 모델을 구한 뒤 DP로 접근하면 똑같은 해답을 구할 수 있습니다.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\hat P^a_{s,s'} = \frac{1}{N(s,a)}\sum_{k=1}{K}\sum_{t=1}{T_k}\mathbf 1(s_t^k, a_t^k, s_{t+1}^k = s, a, s')&lt;/script&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\hat R^a_s = \frac{1}{N(s,a)}\sum_{k=1}{K}\sum_{t=1}{T_k}\mathbf 1(s_t^k, a_t^k=s,a)r^k_t&lt;/script&gt;
-
-&lt;ul&gt;&lt;li&gt;TD(0) converges to solution of max likelihood Markov model&lt;/li&gt;&lt;li&gt;Solution to the MDP $&amp;lt;S, A, \hat P, \hat R, \gamma &amp;gt;$ that best fits the data&lt;/li&gt;&lt;/ul&gt;
-
-&lt;hr /&gt;
-&lt;p&gt;이상으로 이번 포스팅을 마치겠습니다. 다음 포스팅은 &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/29/mc-td-control/&quot;&gt;Model-Free Control&lt;/a&gt;에 대해 진행하겠습니다.&lt;/p&gt;</content><author><name>Seonhwa Lee</name></author><category term="Reinforcement Learning" /><category term="cs234" /><category term="reinforcement-learning" /><category term="david-silver" /><category term="sutton" /><summary type="html">이번 포스팅과 다음 포스팅은 유한개의 상태, 유한개의 행동에 대해 환경 모델을 모를 때, sequential decision process를 푸는 방법에 다룹니다. 지난 DP 포스팅에서, policy iteration을 이용하여 MDP를 풀었습니다. 마찬가지로 환경 모델을 알지 못한 경우도 유사하게 접근할 수 있습니다. policy iteration은 policy evaluation과 policy control로 나뉘는데 이번 포스팅은 policy evaluation을 푸는 방법에 다룰 것이고 다음 포스팅은 policy control에 대해 다루도록 하겠습니다. CS234 3강, Deep Mind의 David Silver 강화학습 강의 4강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 5, 6 기반으로 작성하였습니다. policy evaluation은 현 정책이 얼마나 좋은지 평가하는 것으로, 현 정책 아래 가치함수를 구하는 것입니다. DP는 환경 모델을 알 때, 벨만 기대 방정식을 이용하여 iterative한 방법으로 현 정책 아래에서 가치함수를 구하는 과정입니다. 현 상태에서 특정 행동을 취할 때, 나올 수 있는 다음 상태와 받을 보상을 알고 있기 때문에 아래 식과 같이 expectation을 직접 “계산”을 할 수 있었습니다. (이러한 이유로, DP는 learning이 아니라 planning이라 했었습니다.) 그러나 환경 모델을 알지 못할 때, 즉, 상태 변환 모델과 보상 모델을 알지 못할 때 어떻게 정책을 평가할 수 있을까요? 바로 경험(experience)을 직접하는 것입니다. 시퀀스를 직접 밟아 나가면서 가치함수를 학습해 나가는 것입니다. 이 때, 경험을 통해 가치함수를 학습하는 방법을 두가지가 있습니다. Monte Carlo 방식와 Temporal Difference 방식입니다. 먼저, Monte Carlo policy evaluation 부터 알아보겠습니다. Monte-Carlo Policy Evaluation Monte-Carlo Policy Evaluation을 살펴보기 전에, Monte-Carlo 방식을 우선 알아보겠습니다. Monte-Carlo Methods Monte-Carlo 방법은 무작위 샘플링을 통해 우리가 알아보고자 하는 시스템의 분포를 추정하는 것입니다. 아래 그림은 Monte-Carlo 방식으로 원의 넓이를 추정하는 것입니다. 그림 1. Monte-Carlo 예 원의 넓이를 구하는 방법이 너무나 복잡하거나 알 수 없다고 가정해 봅시다. 이런 상황에서 원의 넓이를 가장 쉽게 구하는 방법은 점을 무수히 많이 뿌려본 뒤, 사각형의 넓이 $\times$ (원 안에 들어온 점의 갯수 / 전체 점의 갯수) 로 원의 넓이를 추정할 수 있습니다. 이처럼 Monte-Carlo방식은 점을 무수히 많이 찍는 것처럼 무작위 샘플링으로 데이터를 많이 수집하게 되면 우리가 알고자 하는 시스템의 분포를 추정할 수 있다는 개념입니다. Monte-Carlo Policy Evaluation 따라서, Monte-Carlo Policy Evaluation이란 에이전트가 환경과 직접 상호작용하여 상태, 행동, 보상으로 이뤄진 시퀀스를 무수히 많이 sampling하여 경험을 얻고, 그 경험을 바탕으로 가치함수를 구하는 것입니다. 즉, 무작위 샘플링을 통해 환경 모델을 내재적으로 추정하는 것이죠. ‘내재적’이라 표현한 이유는 추정하고자 하는 것이 상태 변이 확률 또는 보상 확률이 아니라 value function이기 때문입니다. 결국 value function를 구하기 위해선 환경 정보를 알고 있어야 구할 수 있는데(DP에서의 Policy Evaluation 참고) 샘플링을 통해 이를 구하는 것이 내재적으로 환경모델을 추정하는 거라고 생각할 수 있는 것이죠. 다시 정리하면 Monte-Carlo 방식은 환경에 대한 정보없이, 오로지 ‘경험(experience)’를 통해 학습하는 것입니다. 사실 학습은 policy evaluation과 policy control의 상호작용으로 이뤄집니다. 본 포스팅은 학습이라 표현하지만, policy evaluation에 초점을 맞춰 작성하였습니다. value function의 정의를 다시 살펴보면, 상태 s에서의 return $G_t$ 에 대한 기댓값입니다. Monte-Carlo 방식으로 value function을 구하면 샘플링한 많은 경험들 중에서 상태 s에서부터의 return $G_t$ 를 직접 구한 뒤, 경험의 갯수만큼 나눠주면 됩니다. 즉, return에 대한 기댓값이 아니라 return에 관한 평균값입니다. Monte-Carlo policy evaluation uses empirical mean return instead of expected return. In other words, Policy is evaluated based on averaging sample returns. 아래 예시를 통해, 어떻게 계산하는지 알아봅시다. 그림 2. Monte-Carlo Policy Evaluation 예 &amp;lt;그림 2&amp;gt;와 같이, C1에서 시작한 시퀀스들에 대한 return 값들이 있습니다. $s_t = C1$ 의 value function을 Monte-Carlo 방식으로 추정하면 (-2.25-3.125-3.41-3.20)/4 = -3.0 이 됩니다. 그러나 Monte-Carlo 방식으로 가치함수를 추정하려면 샘플 시퀀스인 episode가 끝나야 합니다. 즉, 모든 에피소드가 끝나야 Monte-Carlo 방식을 적용할 수 있습니다. 따라서 에피소드가 끝날 때 까지 기다린 후, 평균값을 업데이트하는 방식으로 적용할 수 있습니다. first-visit MC vs. every-visit MC Monte-Carlo 방식은 두 가지가 있습니다. first-visit MC와 every-visit MC입니다. 한 에피소드에서 같은 상태를 여러번 반복해서 지나갈 수 있습니다. 이 때, 첫번째 상태에 대한 return값만 value function 업데이트에 이용하고, 나머지는 무시하는 방법이 first-visit MC이고 모든 경우를 고려한 것이 every-visit MC입니다. 아래 그림은 first-visit MC policy evaluation과 every-visit MC policy evaluation 순서입니다. 그림 3. first-visit/every-visit MC Policy Evaluation 일반적으로 first-visit MC를 많이 씁니다. 그렇다면 first-visit과 every-visit은 어떤 차이가 있을까요? first-visit MC 같은 경우, 각 상태에 대한 return들은 모두 독립입니다. 왜냐하면 샘플링된 episode가 독립이므로 first-visit만 고려하기 때문에, 각 상태에 대한 return $G_t$ 은 서로 관련이 없고 독립입니다. 즉, 상태 s에 대한 return $G_t$ 는 $v_\pi(s)$ 분포에서, i.i.d성질을 지니게 됩니다(independent and identically distributed). 따라서, 대수 법칙(law of large numbers)에 따라, 상태 s에 대한 return 값을 무수히 많이 샘플링 하게 된다면, return에 대한 평균은 우리가 구하고 싶은 상태 s의 value function 기댓값인 $\mathbb{E_\pi}[G_t \mid s_t=s]$ 에 수렴합니다. 쉽게 다시 설명하겠습니다. 어떤 상태 s에 대한 가치를 구할 때마다 항상 다르게 나올 수 있습니다. 그런데 충분히 많이 상태 s를 밟는다면 대표적으로 많이 나오는 값이나 그 값 주변 값이 자주 등장하겠지요. 즉, 우리는 $v_\pi(s)$ 가 분포를 이룬다고 생각할 수 있습니다. 그런데 우리가 구하고 싶은 건 분포안에서 $v_\pi(s)$ 를 대표하는 값을 찾고 싶은 것입니다. 즉, 자주 등장하는 값을 말입니다. 따라서, 그 분포의 평균인 기댓값 $\mathbb{E_\pi}[G_t \mid s_t=s]$ 을 말입니다. first-visit MC 방식으로 샘플링한 $G_t$ 는 i.i.d성질을 띄기 때문에, 분포를 정확히 모르지만(분포를 안다면 굳이 샘플링 하지 않고 바로 기댓값이 계산이 가능하겠죠?) 결국 $v_\pi(s)$ 분포를 추정할 수 있고, 이는 우리가 구하고 싶은 기댓값에 수렴할 수 있음을 의미합니다. 따라서, first-visit MC 방식에 의한 추정은 unbiased한 성질을 지닙니다. 반면에, every-visit MC 방식에 의한 추정은 biased한 성질을 띕니다. 한 에피소드 내에서 같은 상태를 여러 번 반복해서 지나갔다면, 그 상태들 간은 독립적이지 않고, 상관관계를 가지게 됩니다. 따라서, i.i.d하지 않기 때문에 biased합니다. 그렇기 때문에 MC 방식에 의한 policy evaluation은 first-visit MC를 선호하는 편이라 합니다(sutton and barto교재 및 stanford강의 참고). Incremental Monte-Carlo Updates Value function을 업데이트하는 방식을 에피소드가 끝날 때마다 마치 온라인 방식처럼 순차적으로 업데이트할 수 있습니다. 시퀀스 $x_1, x_2, \dots$ 에 대한 평균 $\mu_1, \mu_2, \dots$ 가 있을 때, 입니다. 따라서, episode $S_1, A_1, R_2, \dots, S_T$ 가 끝날 때마다 아래와 같이 업데이트 할 수 있습니다. 두번째 식을 마치 $\left(G_t-V(S_t)\right)$ 를 새로운 데이터와 기존 평균과의 오차 즉 에러항으로 본다면, 기존 평균값을 오차의 방향으로 1/k만큼 수정해 나간다고 해석할 수 있습니다. 위의 업데이트 방식은 맨 처음에 샘플한 에피소드부터, 가장 최근에 샘플한 에피소드까지 모두 중요하게 생각함을 의미합니다. 왜냐하면 동등하게 에피소드 개수만큼으로 나누고 있기 때문입니다. 하지만 시간에 따라 조금씩 변하는 문제 같은 경우(non-stationary)에 위와 같은 업데이트 방식은 적합하지 않습니다. 따라서, 새 에피소드와 기존 평균사이의 오차를 항상 일정 크기만큼 업데이트하여 시간이 지날수록 오래된 과거는 잊고 가장 최근 사건을 좀 더 기억할 수 있게끔 해줍니다. Temporal-Difference Policy Evaluation 다음은 Temporal-Difference Policy Evaluation에 대해 알아보겠습니다. Temporal-Difference(TD) 도 Monte-Carlo(MC) 와 마찬가지로 환경 모델을 알지 못할 때(model-free), 직접 경험하여 Sequential decision process 문제를 푸는 방법입니다. Temporal-Difference 학습은 Monte-Carlo와 Dynamic Programming을 합쳐 놓은 방식입니다. MC처럼, 환경모델을 알지 못하기 때문에 직접 sampling한 데이터를 통해 학습을 해야 합니다. DP처럼, 에피소드가 끝날 때까지 기다리지 않고 다른 가치 추정치를 가지고 현재 상태 가치를 추정합니다. 이를 bootstrap이라 합니다. 그림 4. DP에서의 bootstrap TD는 MC와 다르게 무한한 에피소드에 대해서도 적용할 수 있습니다. 그 이유는 MC는 업데이트를 하기 위해서 한 에피소드가 끝날 때까지 기다려야 합니다. 그래야 return $G_t$ 를 구한 뒤, 업데이트를 할 수 있기 때문입니다. 따라서, MC는 에피소드 샘플링을 통해 실제 return $G_t$ 을 향해 $V(S_t)$ 를 수정해나갑니다. 반면에, TD는 에피소드가 끝날 때까지 기다릴 필요 없이, 다음 상태를 밟을 때까지만 기다렸다가 업데이트합니다. 그렇기 때문에 에피소드가 끝나지 않는 시퀀스에 대해서도 적용할 수 있으며, 시퀀스를 밟아나가면서 그때그때 가치함수를 수정해 나갈 수 있습니다. 이러한 특징으로 인해, TD 방법은 online learning이 가능합니다. 이 부분이 TD의 매우 큰 장점입니다. TD policy evaluation을 상세히 살펴보면, DP에서의 벨만 기대 방정식을 이용한 policy evaluation과 유사한 것을 보실 수 있습니다. 그림 5. DP와 TD 그러나 DP는 환경모델을 알기 때문에, 다음 상태가 될 수 있는 모든 후보들을 고려하여 가중 평균을 한 추정값으로 다음 상태의 가치 추정값만을 가지로 현재 상태의 가치를 업데이트합니다. 반면에, TD는 환경에 대한 정보가 없기 때문에 다음 상태까지 직접 밟아보는 것입니다. 이것을 ‘다음 상태 s’를 직접 샘플링하였다’라고 합니다. 그러나 DP처럼 다른 상태의 추정값을 가지고 현재 상태값을 수정하고자 합니다. 이를 bootstrap이라 합니다. 즉, TD에서의 bootstrap은 아래 그림 처럼 이해할 수 있습니다. 그림 6. TD policy evaluation by bootstrapping 따라서, MC는 실제 return $G_t$ 를 향해 $V(S_t)$ 를 수정해 나가지만 TD는 estimate $G_t$ 을 향해 $V(S_t)$ 를 고쳐나가면서 시퀀스를 진행합니다. MC Policy Evaluation :update value $V(S_t)$ toward actual return $G_t$ TD Policy Evaluation : update value $V(S_t)$ toward estimated return $R_{t+1} + \gamma V(S_{t+1})-V(S_t)$ General form of update rule 위의 MC/TD 업데이트 식은 일반적으로 아래와 같은 형태를 띕니다. $\left[Target - OldEstimate\right]$ 는 오차를 나타냅니다. MC와 TD 모두 Target을 향해 기존 Estimate을 업데이트합니다. 그러나, 기존 estimate을 새로운 target으로 교체하는 건 위험합니다. 왜냐하면 초기단계에서는 새로운 target이 우리가 찾는 정답이 아닐 수도 있기 때문에, target과 기존 estimate의 오차의 일부만큼만 조금씩 수정해 나갑니다. MC target은 $G_t$ 이고, TD target은 $R_{t+1}+\gamma V(S_{t+1})$ 입니다. 또한, MC error는 $G_t - V(S_t)$ 이고, TD error는 $R_{t+1}+\gamma V(S_{t+1}) - V(S_t)$ 입니다. 보통 TD error는 $\delta_t$ 로 표현합니다. 왜냐하면, 같은 에피소드 내에서, TD error는 매 t step마다 다르기 때문입니다. Temporal Difference Policy Evaluation Algorithm TD policy evaluation 알고리즘 순서도는 아래와 같습니다. 그림 7. TD(0) policy evaluation algorithm 일정 정책 $\pi$ 아래, (S, A, R, S’)를 샘플링하고, 업데이트합니다. 그런 다음 (S’, A’, R, S’‘)를 샘플링하고 업데이트합니다. 이 과정을 V(S)가 수렴할 때까지 반복합니다. 여기서 한가지 의문점이 있습니다. MC방식은 unbiased estimator이기 때문에 대수의 법칙에 따라, true expected estimate에 수렴한다고 하였습니다. 과연 TD방식은 수렴할까요? 이는 다음 포스팅 Model-Free Control에서 다루도록 하겠습니다. TD policy evaluation 예를 살펴보겠습니다. 그림 8. TD policy evaluation 예(1) 먼저 $(s_3, a_1, 0, s_2)$ 에 대해 $v(s_3)$ 를 업데이트하고, 그 다음 $(s_2, a_1, 0, s_2)$ 에 대해 $v(s_2)$ 를, $(s_2, a_1, 0, s_1)$ 에 대해 $v(s_2)$ 를, 마지막으로 $(s_1, a_1, 1, terminal)$ 에 대해 $v(s_1)$ 을 업데이트하면 한 에피소드에 대해 업데이트를 완료하게 됩니다. 그림 9. TD policy evaluation 예(2) Monte-Carlo vs. Temporal-Difference 이제까진 MC와 TD방식으로 policy evaluation하는 것을 보았습니다. 그러면 두 방식의 특성을 비교하겠습니다. Bias/Variance Trade-Off MC와 TD의 특징을 bias-variance trade-off 관점에서 보겠습니다. MC는 위에서 설명한 것처럼, return $G_t$ 는 $v_\pi(S_t)$ 의 unbiased estimate 입니다. 따라서 MC는 low bias의 특징을 띕니다. 반면에, TD는 bootstrap 기반이기 때문에 TD target $R_{t+1} + \gamma V(S_{t+1})$ 은 $v_\pi(S_t)$ 의 biased estimate 입니다. 따라서 TD는 high bias 특징을 가집니다. 그러나, variance관점에서 두 방식은 반대입니다. MC같은 경우, 한 에피소드가 끝날 때까지 계속 샘플링을 해야합니다. 이로인해, random성이 많이 증가하게 되죠. 반면에, TD같은 경우 업데이트를 위해 (s, a, r, s’)을 한번만 샘플링 하기 때문에 MC에 비해 random성이 작습니다. 이러한 특징으로 인해, MC는 high variance를, TD는 low variance를 갖습니다. Return depends on many random actions, transitions, rewardsTD target depends on one random action, transition, reward 그림 10. Graphical Illustration of Bias-Variance trade off Properties of MC and TD 위의 bias-variance trade-off 성질로 인해 MC와 TD는 아래와 같은 특성을 같습니다. MC : high variance and zero bias MC는 zero bias이기 때문에 초기값에 상관없이 항상 수렴하게 됩니다. 이러한 수렴을 잘하는 특징 덕분에 좋은 근사 가치 함수도 갖게 됩니다(value function approximation, 추후에 포스팅 예정). 그러나, high variance인해 항상 true expected value에 수렴함에 불구하고, 언제 수렴할지는 불분명합니다. 왜냐하면, high variance로 인해 수렴할 때까지 굉장히 많은 에피소드 샘플링이 필요하기 때문입니다. 그리고 한 에피소드가 끝날 때까지 기다려야 하는데, 에피소드의 길이가 긴 경우 더욱 적용하기 어렵습니다. 따라서 실용성 측면에서 떨어지는 단점이 있습니다. MC가 zero bias를 가질 수 있는 이유는 $G_t$ 가 i.i.d성질을 가지기 때문이라고 설명하였습니다. 이는 $V(S_t)$ 를 계산하는데 $S_t$ 의 markov property를 이용하지 않음을 뜻합니다. 따라서, Markov domain인 아닌 경우 MC를 적용하여 문제를 해결할 수 있습니다(handling non-markovian domains). TD : low variance and high bias 반면에 TD는 low variance로 인해 수렴이 가능하다면, MC에 비해 수렴지점까지 빨리 도달할 수 있습니다(그림 11,12 참고). 하지만 초기값에 따라 수렴여부가 달라지고(sensitive to initial value), 그리고 근사 가치 함수를 찾지 못할 수도 있습니다. 하지만, on-line 학습이 가능하기 때문에, 따라서 쉽게 적용할 수 있습니다. TD는 $V(S_t)$ 를 계산하기 위해서 $V(S_{t+1})$ estimate 을 이용합니다(bootstrap). 이는 MC와는 다르게 markov property를 이용합니다. 따라서, TD는 Markovian domain에서 적용가능합니다. 위에서 설명한 MC와 TD의 특성을 정리하면 아래와 같습니다. Monte Carlo Temporal Difference high variance and zero biasgood convergence properties, even with function approximationnot very sensitive to initial valuevery simple to understand but may not be efficient due to applying only to episodic taskcan apply both to markov domain and non-markov domainsample and no bootstrap low variance and high biascould converge to true estimate, but it could fail with function approximationmore sensitive to initial valueusually more efficient than MCcan apply to markov domainsample and bootstrap 위 표에서 마지막 특성에 관하여 MC, TD와 DP 사이의 관계를 back-up diagram과 함께 잘 나타낸 그림이 있습니다. 그림 11. TD, MC and DP DP같은 경우, 환경 모델을 잘 알기 때문에 다음 스텝에 대해 full backup을 그린 관계와 같습니다. 그러나 에피소드가 끝날 때까지 backup을 그릴 필요가 없기 때문에 shallow-backup이고, bootstrap을 이용합니다. 반면에, TD같은 경우, 다음 상태에 대해 한 상태에 대해서만 샘플링을 하기 때문에 sample-backup이며, DP와 마찬가지로 한 스텝만 내다보기 때문에 shallow-backup이며 bootstrap을 이용합니다. 마지막으로 MC같은 경우, 모든 에피소드가 끝날 때까지 기다려야 하기 때문에 deep-backup이고, 샘플링을 하여 경험을 쌓기 때문에 sample-backup입니다. 그러나 bootstrap을 이용하지 않습니다. TD가 MC보다 수렴이 더 빠른 것에 대해 수학적으로 증명된 적은 없습니다. 그러나, 실험적으로 확인했을 때 TD가 MC보다 수렴이 빠릅니다. 이에 관해 Sutton과 berto교재에 MC와 TD의 수렴에 관한 예제가 있습니다. 그림 12. Random Walk 예(1) 위의 예는 C에서 시작하여 각 스텝마다 왼쪽 또는 오른쪽으로 0.5의 확률로 동일하게 갈 수 있다고 할 때, 양 끝의 사각형에 도달하면 에피소드가 끝나는 문제입니다. 각 상태 A, B, C, D, E에서 value를 MC와 TD를 이용하여 구한 결과는 아래와 같습니다. 이때, 각 상태에서의 true value는 1/6, 2/3, 3/6, 4/6, 5/6입니다. 그림 13. Random Walk 예(2) 왼쪽 그림은 TD(0)를 여러 에피소드를 거쳤을 때, 각 상태에서의 value입니다. 100 에피소드 정도 진행했을 때, true value에 수렴하는 것을 확인할 수 있습니다. 오른쪽 그림은 step size $\alpha$ 를 달리했을 때 각각 MC와 TD에서의 RMS error 입니다. 실험적으로 TD가 MC보다 더 빨리 수렴합니다. differences between MC and TD trough Batch Update MC와 TD의 작동원리를 보여주는 사례를 하나 더 소개하겠습니다. 먼저 그전에 batch update에 대해 설명하도록 하겠습니다. k개의 에피소드 또는 k개의 스텝을 미리 샘플링 해 놓은 뒤, k개의 MC 또는 TD 방식의 error를 각각 구해서 다 합한 후, 한 번 update를 하는 방식을 batch update이라 합니다. 아래 예를 각각 MC와 TD 방식의 batch update로 풀어보겠습니다. 아래와 같이 8개의 에피소드가 있습니다. 첫번째 에피소드는 A에서 시작해서 reward를 0을 받고, 그 다음 B로 가고 reward를 0을 받고 끝납니다. 그 다음 여섯개 에피소드는 B에서 시작해서 reward를 1을 받고 끝납니다. 마지막 하나는 B에서 시작해서 reward를 1을 받고 끝납니다. 이때, MC와 TD방식으로 V(A), V(B)가 각각 어떻게 될까요 ? 그림 14. Batch update 예시 MC방식으로 한다면, $V(A)=0, V(B)=\frac{3}{4}$ 입니다. 그러나 TD방식으로 한다면 $V(B)=0$ 이지만 $V(A)=\frac{3}{4}$ 입니다. $V(A)$ 에서 차이가 나는 이유는 MC는 mean squared error를 최소화하는 방식으로 해답을 구하지만, TD는 markov model의 likelihood를 최대화하는 방식으로 해답을 구하기 때문입니다. MC converges to solution with minimum mean-squared errorBest fit to the observed returns MC는 관측된 return이 true value estimate과의 차이가 최소화시키는 방향으로 갑니다. 반면에, TD는 markov property 성질을 이용하기 때문에 MDP를 해결하는 방향으로 갑니다. 실제 구현은 아니지만 내재적으로는 마치 환경모델의 transition model과 reward model의 maximum likelihood를 구한 뒤 DP를 푸는 방식과 유사하게 작동하는 것입니다. 실제로 위의 예제를 아래 방식으로 환경 모델을 구한 뒤 DP로 접근하면 똑같은 해답을 구할 수 있습니다. TD(0) converges to solution of max likelihood Markov modelSolution to the MDP $&amp;lt;S, A, \hat P, \hat R, \gamma &amp;gt;$ that best fits the data 이상으로 이번 포스팅을 마치겠습니다. 다음 포스팅은 Model-Free Control에 대해 진행하겠습니다.</summary></entry><entry><title type="html">Dynamic Programming, Policy Iteration부터 Value Iteration까지</title><link href="http://localhost:4000/reinforcement%20learning/2020/07/13/dp/" rel="alternate" type="text/html" title="Dynamic Programming, Policy Iteration부터 Value Iteration까지" /><published>2020-07-13T00:00:00+09:00</published><updated>2020-07-13T00:00:00+09:00</updated><id>http://localhost:4000/reinforcement%20learning/2020/07/13/dp</id><content type="html" xml:base="http://localhost:4000/reinforcement%20learning/2020/07/13/dp/">&lt;p&gt;지난 &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/12/mdp/&quot;&gt;MDP 포스팅&lt;/a&gt;에 이어서, 이번 포스팅은 MDP를 iterative하게 푸는 방법 중 하나인 Dynamic Programming(DP)에 대해서 다룹니다. CS234 2강, Deep Mind의 David Silver 강화학습 강의 3강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 4 기반으로 작성하였습니다. 또한, 대부분 수식 표기법은 Sutton 교재를 따랐습니다.&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;일반적으로 Dynamic Programming란 복잡한 문제를 간단한 여러 개의 문제로 나누어 푸는 방법을 말합니다. 지난 시간에서 벨만 방정식(벨만 기대 방정식, 벨만 최적 방정식)은 recursive한 관계를 가지고 있기 때문에, 벨만 방정식을 풀기 위한 솔루션으로 DP 사용이 적합하다고 할 수 있습니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87278417-5e998980-c51f-11ea-9be2-b1b55ad4c070.jpeg&quot; /&gt;
-&lt;figcaption align=&quot;center&quot;&gt;그림 1. Dynamic programming 조건&lt;/figcaption&gt;&lt;/p&gt;
-
-&lt;p&gt;따라서, 상태 $s \in S$, 행동 $a \in A$, 보상 $r \in R$ 인 환경 모델 $p(s’,s|r,a)$ 을 아는 상황에서, 벨만 기대 방정식과 벨만 최적 방정식의 recursive한 성질을 이용하여 최적 가치 함수 $v_\ast, q_\ast$ 를 구하는 것이 Dynamic Programming을 이용한 MDP 를 푸는 것입니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;700&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87279033-08c5e100-c521-11ea-8ccc-de84ed44d45f.jpeg&quot; /&gt;
-&lt;figcaption align=&quot;center&quot;&gt;그림 2. 벨만 방정식 : Recursive 관계&lt;/figcaption&gt;&lt;/p&gt;
-&lt;blockquote&gt;MDP문제는 환경모델을 완벽하게 아는 상황이기 때문에, dynamic programming은 'reinforcement learning'이 아니라 'planning' 방법입니다.&lt;/blockquote&gt;
-&lt;p&gt;DP설명은 finite MDP에 유한하여 설명하도록 하겠습니다. 일반적으로 continuous MDP문제는 DP방법이 아닌 다른 방법을 이용하여 풀기 때문입니다.&lt;/p&gt;
-
-&lt;p&gt;지난 &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/11/introRL(2)&quot;&gt;강화학습 소개[2] 포스팅&lt;/a&gt;에서, sequential decision making 문제 종류로 evaluation(prediction)과 control을 소개하였습니다. evaluation은 일정 정책 아래, 기대보상을 추정하여 현재 따르는 정책의 좋고/나쁨을 평가하는 것입니다. 즉, 현재 정책의 평가가 되는 것입니다. control은 정책들의 평가를 기반으로 최적의 정책을 찾는 것입니다. evaluation과 control은 독립적인 과정이 아니라 서로 연계되어 있는 과정이라 하였습니다. 마찬가지로 Dynamic Programing도 evaluation에 해당하는 Policy Evaluation과 control에 해당하는 Policy Improvement로 구성됩니다. 각각에 대해 알아봅시다.&lt;/p&gt;
-&lt;blockquote&gt;DP설명은 finite MDP에 유한하여 설명하도록 하겠습니다. 일반적으로 continuous MDP문제는 DP방법이 아닌 다른 방법을 이용하여 풀기 때문입니다.&lt;/blockquote&gt;
-
-&lt;h2&gt;Policy Evaluation&lt;/h2&gt;
-&lt;p&gt;Policy evaluation은 벨만 기대 방정식을 이용하여 iterative한 방법으로 현 정책 아래의 가치함수를 구하는 과정입니다. 아래 벨만 기대 방정식을&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;v_\pi(s)=\sum_a\pi(a|s)\sum_{s',r}p(s',r|s,a)[r+\gamma v_\pi(s')]&lt;/script&gt;
-
-&lt;p&gt;update rule의 관계를 가진 방정식으로 취급한 뒤,&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;v_{k+1}(s)=\sum_a\pi(a|s)\sum_{s',r}p(s',r|s,a)[r+\gamma v_{k}(s')]&lt;/script&gt;
-
-&lt;p&gt;k=0부터 수렴할 때까지 반복적으로 계산하는 것입니다. 즉 가치 함수를 초기화한 후, $v_0 \to v_1 \to v_2 \to \cdots \to v_\pi$ 으로 수렴할 때까지 &lt;span style=&quot;color:red&quot;&gt;&lt;b&gt;모든 상태에 대해서 동시에 업데이트&lt;/b&gt;&lt;/span&gt;하는 것입니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt; 
-&lt;img width=&quot;500&quot; src=&quot;https://i.imgur.com/WzCwUj1.jpg&quot; /&gt;
-&lt;figcaption align=&quot;center&quot;&gt;그림 3. Iterative Policy Evaluation&lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;이를 back-up diagram으로 다시 표현해 봅시다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt; 
-&lt;img width=&quot;500&quot; src=&quot;https://imgur.com/OKUnBIF.jpg&quot; /&gt;
-&lt;figcaption align=&quot;center&quot;&gt;그림 4. Back-up diagram for iterative policy evaluation&lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;그림 4.를 보시면, k 스텝에서 다음 상태를 이용하여 k+1 스텝의 현재 상태를 업데이트합니다. 또한 업데이트되는 방식은 다음 상태에서 나올 수 있는 누적보상의 가중 평균으로 계산됩니다(벨만 기대 방정식이기 때문입니다).&lt;/p&gt;
-
-&lt;blockquote&gt;To produce each successive approximation, $v_{k+1}$ from $v_{k}$, iterative policy evaluation applies the same operation to each state s: it replaces the old value of s with a new value obtained form the old values of the successor states of s and the expected immediate rewards, along all the one-step transitions possible under the policy being evaluated. - Sutton and Barto, Reinforcement Learning : An Introduction&lt;/blockquote&gt;
-
-&lt;p&gt;아래 그리드월드 예제로, policy evaluation을 살펴봅시다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://imgur.com/XQHYowT.jpg&quot; /&gt;
-&lt;figcaption align=&quot;center&quot;&gt;그림 5. 그리드월드 예제&lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;처음 시작 상태에서 여러 경로를 다니다가 회색색깔에 도착하면 끝나는 게임이 있다고 합시다. 각 상태마다 받는 보상은 -1이고, 행동 좌,우,위,아래 방향에 대해 갈 확률은 0.25라 한다면, k=0, k=1, k= $\infty$ 을 수렴할 때까지 반복하면 각 $v_k$ 에 대해 각 상태의 가치함수 값은 아래 그림과 같습니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;400&quot; src=&quot;https://i.imgur.com/usVVNHF.jpg&quot; /&gt;
-&lt;img width=&quot;400&quot; src=&quot;https://imgur.com/44Y2N5r.jpg&quot; /&gt; 
-&lt;figcaption align=&quot;center&quot;&gt;그림 6. 그리드월드 예제 - policy evaluation&lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;왼쪽 행은 가치함수 결과이고, 오른쪽 행은 각 가치함수에서 greedy한 전략을 보여줍니다. 그러나 위 예제같은 경우는 간단한 케이스이어서 빨리 수렴에 도달합니다. 일반적으로 상태 집합의 크기 $|S|$ 가 큰 경우, 수렴할 때까지의 속도가 매우 느릴 수도 있기 때문에, 아래 알고리즘과 같이 어느 정도 수렴조건을 만족하면 다음 스텝으로 넘어가는 방법을 주로 택합니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://imgur.com/l5QDFUd.jpg&quot; /&gt;
-&lt;figcaption align=&quot;center&quot;&gt;그림 6. Policy evaluation 알고리즘&lt;/figcaption&gt;&lt;/p&gt;
-
-&lt;h2&gt;Policy Improvement&lt;/h2&gt;
-&lt;p&gt;결국 현재 정책을 평가하는 이유는 더 나은 정책을 찾기 위한 것입니다. 그렇다면 현재 정책 평가한 것을 기반으로 어떻게 더 나은 정책을 찾는지 알아보도록 하겠습니다.&lt;/p&gt;
-
-&lt;p&gt;임의의 정책 $\pi$ 아래 policy evaluation을 통해 $v_\pi$ 를 구했다고 하겠습니다. 그림 6.에서 처럼 수렴된 $v_\pi$ 에 대한 greedy policy가 있을 것입니다. 하지만 그 greedy policy 이외의 다른 행동 $a$ 을 선택하고, 즉, $a \neg \pi(s)$ 하고, 기존 정책 $\pi$ 를 따른다고 했을 때,&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;q_\pi(s,a) = \sum_{s',r}p(s',r|s,a)[r+\gamma v_\pi(s')]&lt;/script&gt;
-
-&lt;p&gt;기존 정책에 따른 $v_\pi(s)$ 보다 크다면 새로 선택된 행동 a가 발전된 전략일 것입니다(policy improvement).&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;q_\pi(s, \pi'(s)) \geq v_\pi(s)&lt;/script&gt;
-
-&lt;p&gt;&lt;span style=&quot;color:gray&quot;&gt;처음에, 이 부분을 혼자 공부할 때, 이해하기 어려웠던 부분이 ‘greedy policy 이외의 다른 행동 $a$ 를 선택하고 기존 정책을 따른다는 부분’이었습니다. 저는 이 부분은 아래와 같이 이해하였습니다.&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img src=&quot;https://imgur.com/n7Z1Gy4.jpg&quot; /&gt;
-&lt;figcaption align=&quot;center&quot;&gt;그림 7. &lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;그러나, 지난 &lt;a href=&quot;https://ralasun.github.io/reinforcement%20learning/2020/07/12/mdp/&quot;&gt;MDP 포스팅&lt;/a&gt;에서 더 나은 정책이 되려면 $q_\pi(s, \pi’(s)) \geq v_\pi(s)$ 가 아닌 $v_{\pi}(s) \geq v_{\pi’}(s)$ 를 만족해야 합니다. 이를 유도하는 수학적 증명은 아래와 같습니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img src=&quot;https://imgur.com/OLBeIIc.jpg&quot; /&gt;
-&lt;figcaption align=&quot;center&quot;&gt;그림 8.&lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;따라서, greedy하게 policy improvement하는 방식을 수식으로 깔끔하게 정리하면&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*} \pi'{\left(s\right)} =&amp;{arg \underset a max}{q_\pi(s,a)}\\=&amp;{arg \underset amax}{\mathbb E[R_{t+1}+\gamma v_\pi(S_{t+1})|S_t=s,A_t=a]}\\=&amp;{arg \underset amax}{\sum_{s',r}p(s',r|s,a)[r + \gamma v_\pi(s')]}\end{align*} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;입니다. 즉 기존 정책에서 발전된 새로운 정책 $\pi’$ 가 되었습니다.&lt;/p&gt;
-
-&lt;p&gt;만약에, 새로운 정책 $\pi’$ 가 기존 정책 $\pi$ 에서 더이상의 발전이 없다면, $v_\pi=v_\pi’$ 이를 만족하기 때문에, 아래 식이 성립됩니다.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*} v_\pi'(s) =&amp;{m \underset aax}{\mathbb E[R_{t+1}+\gamma v_\pi'(S_{t+1})|S_t=s, A_t=a]}\\=&amp;{m \underset aax}\sum_{s',r}p(s',r|s,a)[r+\gamma v_\pi'(s')] \end{align*} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;위의 식을 가만보면, 어디서 많이 봤습니다. 바로 &lt;b&gt;벨만 최적 방정식&lt;/b&gt;입니다. 즉, 더이상 발전이 없을 때, $v_\pi’$ 는 최적정책임을 의미합니다.&lt;/p&gt;
-
-&lt;h2&gt;Policy Iteration&lt;/h2&gt;
-&lt;p&gt;최적 정책을 찾기 위해서 결국 evaluation과 imporvement과정을 번갈아 가면서 정책이 더 이상 발전이 없을 때까지 진행해야 합니다. 이를 policy iteration이라 합니다.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\pi_0 \overset E\to v_{\pi_0} \overset I\to \pi_1 \overset E\to v_{\pi_1} \overset I\to \pi_2 \overset E\to \cdots \overset I\to \pi_\ast \overset E\to v_\ast&lt;/script&gt;
-
-&lt;p&gt;E는 evalution이고, I는 improvement를 뜻합니다. Finite MDP인 경우 정책 후보의 갯수도 유한하기 때문에 반드시 언젠간 수렴합니다. Policy iteration 알고리즘은 아래 그림과 같습니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87383157-9f52da80-c5d3-11ea-84c9-28fa2ec398cf.jpeg&quot; /&gt;
-&lt;figcaption align=&quot;center&quot;&gt;그림 9. Policy iteration&lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;그림 9.를 보면, policy improvement를 한 후, 다시 policy evalutation을 할 때, 이전 정책 $/pi$ 에 관한 $v_\pi$ 로 초기값으로 하여 진행합니다.&lt;/p&gt;
-
-&lt;h2&gt;Value Iteration&lt;/h2&gt;
-&lt;p&gt;최적 정책을 찾는 방법엔 policy iteration 말고 value iteration도 있습니다. Value iteration에 대해 설명하기 전에 먼저 벨만 최적 방정식에서의 optimality의 개념을 다시 한번 생각해 봅시다.&lt;/p&gt;
-
-&lt;h3&gt;Principle of Optimality&lt;/h3&gt;
-&lt;p&gt;벨만 최적 방정식을 다시 한번 살펴보면,&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*} v_\pi'(s) =&amp;{m \underset aax}{\mathbb E[R_{t+1}+\gamma v_\pi'(S_{t+1})|S_t=s, A_t=a]}\\=&amp;{m \underset aax}\sum_{s',r}p(s',r|s,a)[r+\gamma v_\pi'(s')] \end{align*} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;상태 s에서 optimal value를 가지려면, 다음 상태 s’까지 진행해봐야 상태 s의 가치가 최적인지 아닌지 판단할 수 있습니다. 아래와 같이 $s_t$ 가 terminal state인 시퀀스가 있다고 한다면,&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;s_0 \to s_1 \to s_2 \to \cdots \to s_t&lt;/script&gt;
-
-&lt;p&gt;상태 $s_0$ 의 가치는 $s_1$ 에 도착해야 알고, $s_1$ 의 가치는 $s_2$ 에 도착해야 알고, …, $s_{t-1}$ 의 가치는 $s_t$ 에 도착해야 압니다. 즉 $s_t$ 의 최적가치를 알고 있어야 처음 상태 $s_0$ 의 최적가치값을 알 수 있단 얘기입니다. 아래 예를 살펴보겠습니다.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://user-images.githubusercontent.com/37501153/87384499-e1c9e680-c5d6-11ea-946e-bb180a6ef863.jpeg&quot; /&gt;
-&lt;figcaption align=&quot;center&quot;&gt;그림 10. value iteration 예시&lt;/figcaption&gt;&lt;/p&gt;
-&lt;p&gt;회색인 부분이 도달해야 하는 골이라 하면, 골까지 가는 가장 짧은 경로를 찾는 문제입니다. 흰색 칸을 밟을 때마다 받는 보상은 -1, 회색 칸을 밟으면 보상 0을 받는다고 할 때, 처음 상태가 정해진 것이 아니라면 당연히 회색 부분 근처 칸에서 시작하는게 최적일 것입니다. 그리고 회색 칸은 종결지점이기 때문에 회색 칸 이후로 더이상의 시퀀스가 존재하지 않아, 회색 칸의 최적가치는 즉각적인 보상인 0일 것입니다. 그렇다면 골에서 가장 멀리 있는 맨 오른쪽 칸의 최적 가치는 어떻게 구할까요? &lt;b&gt;골의 최적가치가 골에서 가까운 위치부터 퍼져나가 맨 오른쪽 칸의 최적 가치를 계산할 수 있도록 도달해야 합니다.&lt;/b&gt;&lt;/p&gt;
-
-&lt;p&gt;그러나, DP에서 모든 상태에 대한 업데이트를 동시에 진행하기 때문에, 골의 최적가치가 퍼져나가 다른 상태의 최적가치를 구할 수 있을 때까지 &lt;b&gt;여러 번 반복 진행&lt;/b&gt;해야 합니다. 이것이 바로 “Value Iteration”입니다.&lt;br /&gt;
-&lt;br /&gt;
-Value iteration을 수식으로 표현하면 아래와 같습니다.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*} v_{k+1}&amp;=m \underset a ax{\mathbb E[R_{t+1} = \gamma v_k(S_{t+1})|S_t=s, A_t=a]}\\&amp;=m \underset a ax{\sum_{s',r}p(s',r|s,a)[r+\gamma v_k(s')]} \end{align*} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;위 수식을 보시면, 벨만 최적 방정식과 유사합니다. 즉, value iteration은 벨만 최적 방정식을 업데이트 형식으로 바뀐 것입니다.&lt;/p&gt;
-
-&lt;blockquote&gt;policy evalutation은 벨만 기대 방정식을 업데이트 형식으로 바꾼 것이고, value iteration은 벨만 최적 방정식을 업데이트 형식으로 바뀐 것입니다.&lt;/blockquote&gt;
-
-&lt;p&gt;value iteration은 policy iteration 처럼 명시적인 정책 발전 과정을 중간에 생략하고, 최적 가치 함수를 바로 계산하여 마지막에 정책 발전을 한번만 수행하여 최적 정책을 얻는 과정이라 생각할 수 있습니다.&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;이상으로 이번 포스팅을 마치겠습니다. 읽어주셔서 감사합니다.&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href=&quot;http://web.stanford.edu/class/cs234/slides/lecture2.pdf&quot;&gt;CS234 Winter 2019 course Lecture 2&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://incompleteideas.net/book/bookdraft2017nov5.pdf&quot;&gt;Richard S. Sutton and Andre G. Barto : Reinforcement Learning : An Introduction&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.davidsilver.uk/wp-content/uploads/2020/03/DP.pdf&quot;&gt;David Silver Lecture 3&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://ko.wikipedia.org/wiki/동적_계획법&quot;&gt;위키백과, 동적계획법&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</content><author><name>Seonhwa Lee</name></author><category term="Reinforcement Learning" /><category term="cs234" /><category term="reinforcement-learning" /><category term="david-silver" /><category term="sutton" /><summary type="html">지난 MDP 포스팅에 이어서, 이번 포스팅은 MDP를 iterative하게 푸는 방법 중 하나인 Dynamic Programming(DP)에 대해서 다룹니다. CS234 2강, Deep Mind의 David Silver 강화학습 강의 3강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 4 기반으로 작성하였습니다. 또한, 대부분 수식 표기법은 Sutton 교재를 따랐습니다. 일반적으로 Dynamic Programming란 복잡한 문제를 간단한 여러 개의 문제로 나누어 푸는 방법을 말합니다. 지난 시간에서 벨만 방정식(벨만 기대 방정식, 벨만 최적 방정식)은 recursive한 관계를 가지고 있기 때문에, 벨만 방정식을 풀기 위한 솔루션으로 DP 사용이 적합하다고 할 수 있습니다. 그림 1. Dynamic programming 조건 따라서, 상태 $s \in S$, 행동 $a \in A$, 보상 $r \in R$ 인 환경 모델 $p(s’,s|r,a)$ 을 아는 상황에서, 벨만 기대 방정식과 벨만 최적 방정식의 recursive한 성질을 이용하여 최적 가치 함수 $v_\ast, q_\ast$ 를 구하는 것이 Dynamic Programming을 이용한 MDP 를 푸는 것입니다. 그림 2. 벨만 방정식 : Recursive 관계 MDP문제는 환경모델을 완벽하게 아는 상황이기 때문에, dynamic programming은 'reinforcement learning'이 아니라 'planning' 방법입니다. DP설명은 finite MDP에 유한하여 설명하도록 하겠습니다. 일반적으로 continuous MDP문제는 DP방법이 아닌 다른 방법을 이용하여 풀기 때문입니다. 지난 강화학습 소개[2] 포스팅에서, sequential decision making 문제 종류로 evaluation(prediction)과 control을 소개하였습니다. evaluation은 일정 정책 아래, 기대보상을 추정하여 현재 따르는 정책의 좋고/나쁨을 평가하는 것입니다. 즉, 현재 정책의 평가가 되는 것입니다. control은 정책들의 평가를 기반으로 최적의 정책을 찾는 것입니다. evaluation과 control은 독립적인 과정이 아니라 서로 연계되어 있는 과정이라 하였습니다. 마찬가지로 Dynamic Programing도 evaluation에 해당하는 Policy Evaluation과 control에 해당하는 Policy Improvement로 구성됩니다. 각각에 대해 알아봅시다. DP설명은 finite MDP에 유한하여 설명하도록 하겠습니다. 일반적으로 continuous MDP문제는 DP방법이 아닌 다른 방법을 이용하여 풀기 때문입니다. Policy Evaluation Policy evaluation은 벨만 기대 방정식을 이용하여 iterative한 방법으로 현 정책 아래의 가치함수를 구하는 과정입니다. 아래 벨만 기대 방정식을 update rule의 관계를 가진 방정식으로 취급한 뒤, k=0부터 수렴할 때까지 반복적으로 계산하는 것입니다. 즉 가치 함수를 초기화한 후, $v_0 \to v_1 \to v_2 \to \cdots \to v_\pi$ 으로 수렴할 때까지 모든 상태에 대해서 동시에 업데이트하는 것입니다. 그림 3. Iterative Policy Evaluation 이를 back-up diagram으로 다시 표현해 봅시다. 그림 4. Back-up diagram for iterative policy evaluation 그림 4.를 보시면, k 스텝에서 다음 상태를 이용하여 k+1 스텝의 현재 상태를 업데이트합니다. 또한 업데이트되는 방식은 다음 상태에서 나올 수 있는 누적보상의 가중 평균으로 계산됩니다(벨만 기대 방정식이기 때문입니다). To produce each successive approximation, $v_{k+1}$ from $v_{k}$, iterative policy evaluation applies the same operation to each state s: it replaces the old value of s with a new value obtained form the old values of the successor states of s and the expected immediate rewards, along all the one-step transitions possible under the policy being evaluated. - Sutton and Barto, Reinforcement Learning : An Introduction 아래 그리드월드 예제로, policy evaluation을 살펴봅시다. 그림 5. 그리드월드 예제 처음 시작 상태에서 여러 경로를 다니다가 회색색깔에 도착하면 끝나는 게임이 있다고 합시다. 각 상태마다 받는 보상은 -1이고, 행동 좌,우,위,아래 방향에 대해 갈 확률은 0.25라 한다면, k=0, k=1, k= $\infty$ 을 수렴할 때까지 반복하면 각 $v_k$ 에 대해 각 상태의 가치함수 값은 아래 그림과 같습니다. 그림 6. 그리드월드 예제 - policy evaluation 왼쪽 행은 가치함수 결과이고, 오른쪽 행은 각 가치함수에서 greedy한 전략을 보여줍니다. 그러나 위 예제같은 경우는 간단한 케이스이어서 빨리 수렴에 도달합니다. 일반적으로 상태 집합의 크기 $|S|$ 가 큰 경우, 수렴할 때까지의 속도가 매우 느릴 수도 있기 때문에, 아래 알고리즘과 같이 어느 정도 수렴조건을 만족하면 다음 스텝으로 넘어가는 방법을 주로 택합니다. 그림 6. Policy evaluation 알고리즘 Policy Improvement 결국 현재 정책을 평가하는 이유는 더 나은 정책을 찾기 위한 것입니다. 그렇다면 현재 정책 평가한 것을 기반으로 어떻게 더 나은 정책을 찾는지 알아보도록 하겠습니다. 임의의 정책 $\pi$ 아래 policy evaluation을 통해 $v_\pi$ 를 구했다고 하겠습니다. 그림 6.에서 처럼 수렴된 $v_\pi$ 에 대한 greedy policy가 있을 것입니다. 하지만 그 greedy policy 이외의 다른 행동 $a$ 을 선택하고, 즉, $a \neg \pi(s)$ 하고, 기존 정책 $\pi$ 를 따른다고 했을 때, 기존 정책에 따른 $v_\pi(s)$ 보다 크다면 새로 선택된 행동 a가 발전된 전략일 것입니다(policy improvement). 처음에, 이 부분을 혼자 공부할 때, 이해하기 어려웠던 부분이 ‘greedy policy 이외의 다른 행동 $a$ 를 선택하고 기존 정책을 따른다는 부분’이었습니다. 저는 이 부분은 아래와 같이 이해하였습니다. 그림 7. 그러나, 지난 MDP 포스팅에서 더 나은 정책이 되려면 $q_\pi(s, \pi’(s)) \geq v_\pi(s)$ 가 아닌 $v_{\pi}(s) \geq v_{\pi’}(s)$ 를 만족해야 합니다. 이를 유도하는 수학적 증명은 아래와 같습니다. 그림 8. 따라서, greedy하게 policy improvement하는 방식을 수식으로 깔끔하게 정리하면 입니다. 즉 기존 정책에서 발전된 새로운 정책 $\pi’$ 가 되었습니다. 만약에, 새로운 정책 $\pi’$ 가 기존 정책 $\pi$ 에서 더이상의 발전이 없다면, $v_\pi=v_\pi’$ 이를 만족하기 때문에, 아래 식이 성립됩니다. 위의 식을 가만보면, 어디서 많이 봤습니다. 바로 벨만 최적 방정식입니다. 즉, 더이상 발전이 없을 때, $v_\pi’$ 는 최적정책임을 의미합니다. Policy Iteration 최적 정책을 찾기 위해서 결국 evaluation과 imporvement과정을 번갈아 가면서 정책이 더 이상 발전이 없을 때까지 진행해야 합니다. 이를 policy iteration이라 합니다. E는 evalution이고, I는 improvement를 뜻합니다. Finite MDP인 경우 정책 후보의 갯수도 유한하기 때문에 반드시 언젠간 수렴합니다. Policy iteration 알고리즘은 아래 그림과 같습니다. 그림 9. Policy iteration 그림 9.를 보면, policy improvement를 한 후, 다시 policy evalutation을 할 때, 이전 정책 $/pi$ 에 관한 $v_\pi$ 로 초기값으로 하여 진행합니다. Value Iteration 최적 정책을 찾는 방법엔 policy iteration 말고 value iteration도 있습니다. Value iteration에 대해 설명하기 전에 먼저 벨만 최적 방정식에서의 optimality의 개념을 다시 한번 생각해 봅시다. Principle of Optimality 벨만 최적 방정식을 다시 한번 살펴보면, 상태 s에서 optimal value를 가지려면, 다음 상태 s’까지 진행해봐야 상태 s의 가치가 최적인지 아닌지 판단할 수 있습니다. 아래와 같이 $s_t$ 가 terminal state인 시퀀스가 있다고 한다면, 상태 $s_0$ 의 가치는 $s_1$ 에 도착해야 알고, $s_1$ 의 가치는 $s_2$ 에 도착해야 알고, …, $s_{t-1}$ 의 가치는 $s_t$ 에 도착해야 압니다. 즉 $s_t$ 의 최적가치를 알고 있어야 처음 상태 $s_0$ 의 최적가치값을 알 수 있단 얘기입니다. 아래 예를 살펴보겠습니다. 그림 10. value iteration 예시 회색인 부분이 도달해야 하는 골이라 하면, 골까지 가는 가장 짧은 경로를 찾는 문제입니다. 흰색 칸을 밟을 때마다 받는 보상은 -1, 회색 칸을 밟으면 보상 0을 받는다고 할 때, 처음 상태가 정해진 것이 아니라면 당연히 회색 부분 근처 칸에서 시작하는게 최적일 것입니다. 그리고 회색 칸은 종결지점이기 때문에 회색 칸 이후로 더이상의 시퀀스가 존재하지 않아, 회색 칸의 최적가치는 즉각적인 보상인 0일 것입니다. 그렇다면 골에서 가장 멀리 있는 맨 오른쪽 칸의 최적 가치는 어떻게 구할까요? 골의 최적가치가 골에서 가까운 위치부터 퍼져나가 맨 오른쪽 칸의 최적 가치를 계산할 수 있도록 도달해야 합니다. 그러나, DP에서 모든 상태에 대한 업데이트를 동시에 진행하기 때문에, 골의 최적가치가 퍼져나가 다른 상태의 최적가치를 구할 수 있을 때까지 여러 번 반복 진행해야 합니다. 이것이 바로 “Value Iteration”입니다. Value iteration을 수식으로 표현하면 아래와 같습니다. 위 수식을 보시면, 벨만 최적 방정식과 유사합니다. 즉, value iteration은 벨만 최적 방정식을 업데이트 형식으로 바뀐 것입니다. policy evalutation은 벨만 기대 방정식을 업데이트 형식으로 바꾼 것이고, value iteration은 벨만 최적 방정식을 업데이트 형식으로 바뀐 것입니다. value iteration은 policy iteration 처럼 명시적인 정책 발전 과정을 중간에 생략하고, 최적 가치 함수를 바로 계산하여 마지막에 정책 발전을 한번만 수행하여 최적 정책을 얻는 과정이라 생각할 수 있습니다. 이상으로 이번 포스팅을 마치겠습니다. 읽어주셔서 감사합니다. CS234 Winter 2019 course Lecture 2 Richard S. Sutton and Andre G. Barto : Reinforcement Learning : An Introduction David Silver Lecture 3 위키백과, 동적계획법</summary></entry></feed>
+&lt;/ol&gt;</content><author><name>Seonhwa Lee</name></author><category term="Reinforcement Learning" /><category term="cs234" /><category term="reinforcement-learning" /><category term="david-silver" /><category term="sutton" /><summary type="html">이번 포스팅은 지난 포스팅 Model-Free Policy Evaluation에 이어 Model-Free Policy Control에 대해 다루도록 하겠습니다. CS234 4강, Deep Mind의 David Silver 강화학습 강의 5강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 5, 6 기반으로 작성하였습니다. 지난 포스팅에서는 일정 정책 $\pi$ 아래 환경 모델을 모를 때 가치함수를 추정하는 방법인 Monte-Carlo(MC) policy evaluation과 Temporal Difference(TD) policy evaluation에 대해 다뤘습니다. 그러나 sequential decision prcoess 문제의 최종 목표는 최적화된 정책을 갖는 것(Control)입니다. 환경 모델을 알 때 Dynamic Programming(DP)는 policy iteration과 value iteration을 통해 최적 정책을 구할 수 있습니다. 환경 모델을 모를 때 최적 정책을 찾는 방법 Model-Free Control에 대해 자세히 다루기 전에 먼저, Generalized Policy Iteration에 대해 알아보겠습니다. Generalized Policy Iteration DP에서의 policy iteration을 다시 자세히 살펴봅시다. 정책 발전(policy improvement)를 greedy하게 하였으며, policy evaluation과 policy improvement를 번갈아 반복하는 policy iteration을 통해 최적 가치함수와 최적 정책을 구했습니다. 그림 1. Policy Iteration &amp;lt;그림 1.&amp;gt;은 policy iteration을 그림으로 표현한 것입니다. 두 선은 각각 수렴된 가치함수와 정책들을 의미하고, 화살표는 policy evaluation과 policy improvement를 나타냅니다. 이 과정은 모두 결국 최적 정책과 최적 가치함수를 찾기 위한 것이기 때문에 두 선은 한 점에서 만납니다. 그런데, policy evaluation은 수렴할 때까지 시간이 오래 소요됩니다. 따라서, 위 가치함수 라인에 다다를 때까지 policy evaluation을 수행할 필요가 있을까요 ? 그림 2. Value Iteration policy evaluation은 수렴할 때까지 시간이 오래 소요되기 때문에, 수렴할 때까지 기다리는 것이 아니라, 좀 더 효율적으로 접근하는 방법이 value iteration입니다. 가치함수를 한 스텝에 대해서만 업데이트를 하고, greedy policy improvement를 수행하는 value iteration을 통해 최적 가치함수와 정책을 찾았습니다. 위 두 방법 모두 결국 policy evaluation과정과 policy improvement과정의 상호작용으로 이뤄집니다. 두 과정 모두 안정화될 때, 즉 더 이상의 변화나 발전이 이뤄지지 않을 때, 그 때의 가치함수와 정책은 최적입니다. 따라서, 상호작용되는 과정이 조금씩은 차이가 있을 수 있지만 결국 둘의 상호작용으로 최적점에 다다르게 되는 것입니다. 이것이 바로 Generalized Policy Iteration(GPI)입니다. 그림 3. Generalized Policy Iteration Model-free control도 마찬가지로 GPI를 통해 최적 가치 함수와 최적 정책을 구합니다. Model-free control에 대해 알아보도록 하겠습니다. Model-free policy evaluation하는 방법으로 Monte-Carlo(MC)와 Temporal Difference(TD)가 있습니다. 마찬가지로, model-free control 하는 방법으로도 Monte-Carlo control와 Temporal-Difference control이 있습니다. 먼저, Monte-Carlo control부터 알아보겠습니다. Monte-Carlo Control 지난 포스팅에서 알아본 monte-carlo estimation이 이제 control에 어떻게 사용되는지 생각해봅시다. Monte Carlo Estimation of Action Values Monte-Carlo control도 Monte-Carlo estimation과 함께 GPI를 통해 최적정책을 찾아나갑니다. 그러나, DP에서 다른 점이 있습니다. DP는 현재 상태 $s$ 에서 행동 $a$ 를 취했을 때, 받을 수 있는 보상과 다음 상태가 어떻게 될지 알 수 있습니다. 따라서 다음 상태로 올 수 있는 모든 후보들과 보상을 고려하여 최대 가치를 반환하는 다음 상태를 찾은 후 그 상태로 가게 되는 행동을 취합니다. 즉, 상태 가치 함수 정보만으로 충분합니다. 그러나 model-free 환경의 문제점은 직접 경험하지 않는 이상 다음 상태와 보상이 어떻게 될지 알 수 없습니다. 따라서 상태 가치 함수만으로 행동을 선택할 때 충분한 정보를 제공하지 못합니다. 이러한 이유로 model-free control에서는 상태 가치 함수 $v(s)$ 에 대한 evaluation이 아니라, 상태-행동 가치 함수 $q(s,a)$ 에 대한 evaluation을 수행합니다. 상태 s에 대해 모든 행동 a에 대해 $q(s,a)$ 를 비교하여 가장 가치가 높은 행동을 선택하는 것이 상태 s에 대한 정책이 되는 것입니다. 그림 4. GPI with Q value Importance of Exploration GPI는 ‘좋은’ 정책 $\pi$ 을 계속 찾아나가면 언젠간 최적 정책 $\pi_*$ 에 수렴합니다. 그러면 ‘좋은’ 정책 $\pi$ 는 ‘좋은’ $Q_\pi$ 추정치를 찾아야 합니다. 그래야지만 policy improvement를 통해 최적 정책을 찾아나갈 수 있기 때문입니다. ‘좋은’ $Q_\pi$ 추정치는 어떻게 찾을까요? 가능한 한 나올 수 있는 모든 $(s,a)$ 시퀀스를 경험하면 됩니다. MC policy evaluation에서 true expected value에 수렴하기 위해서 에피소드 샘플링을 많이 해야 하는 것과 같습니다. 그림 5. Greedy policy improvement in MDP and Model-Free 그러나 model-free 환경에서 모든 $(s,a)$ 쌍으로 구성된 모든 시퀀스를 경험하기는 어렵습니다. 경우의 수가 너무 많기 때문이고, 환경을 모르기 때문에 예측도 어렵습니다. &amp;lt;그림 5.&amp;gt;를 보면 DP같은 경우는 환경을 알기 때문에 V(s)를 추정하기 위해 다음에 나올 trasition model $P^{a}_{ss’}$ 와 함께 모든 상태 s를 고려할 수 있습니다. 따라서, ‘좋은’ 추정치를 계산할 수 있습니다. 즉, 이렇게 찾아진 가치 함수 추정치 기반으로 greedy하게 행동을 선택해도 policy improvement가 일어납니다( DP포스팅 policy improvement 참고 ). 반면에, model-free 같은 경우, MC와 TD모두 샘플링을 통해 (s,a)를 경험해 나갑니다. 그렇기 때문에 많은 (s,a)쌍을 방문하지 못하는 문제가 발생합니다. 이로 인해 어떤 (s,a)에 대해서는 좋은 추정치를 얻지 못합니다. 따라서 부정확한 추정치 기반으로 greedy하게 행동을 선택하는 건 심각한 문제를 일으킵니다. Q(s,a)를 추정하는 이유는 상태 s에 있을 때, 여러 행동 a들을 비교하기 위해서입니다. 그러나 어떤 행동 a에 대해서 Q(s,a)가 나쁜 값을 가지게 된다면 공정한 비교가 되지 않습니다. 즉, 학습이 제대로 이뤄지지 않게 되는 것입니다. 이 문제가 바로 ‘exploration’ 문제입니다. 따라서 정책을 평가하기 위한 좋은 Q(s,a)를 구하기 위해선 충분하고 지속적인 탐험(continual exploration)이 보장되어야 합니다. 충분하고 지속적인 탐험을 가장 심플하게 구현한 건 모든 행동들에 대해 선택할 가능성을 열어두는 것입니다. 이러한 방법 중 하나가 $\epsilon-greedy$ 입니다. The simplest idea for ensuring continual exploration is that all actions are tried with non-zero probability. $\epsilon-greedy$ 는 $\epsilon$ 의 확률로 행동을 랜덤하게 선택하고, $1-\epsilon$ 의 확률로 greedy한 행동을 선택합니다. $\frac{\epsilon}{m} + 1-\epsilon + \frac{\epsilon}{m}\times(m-1) = 1$ 이 되므로 $\epsilon-greedy$ 식을 아래와 같이 구축할 수 있습니다. 여전히 $\epsilon$ 의 확률로 탐험할 가능성을 두는 것입니다. on-policy Monte-Carlo Control 이 단락에서 다루는 MC Control은 on-policy 기반입니다. on-policy와 off-policy의 차이는 off-policy MC Control에서 설명하도록 하겠습니다. 그림 6. Monte-Carlo Policy Iteration 진짜로 이제 MC기반의 Control에 대해 알아보겠습니다. 위에서 model-free인 경우도 Generalized Policy Iteration을 통해 최적 가치함수와 최적 정책을 찾는다고 하였습니다. MC기반 policy evaluation은 상태-행동 가치 함수인 $Q_\pi$ 를 찾는 것이고, MC기반 policy improvement는 $\epsilon-greedy$ 를 따릅니다. 그런데, &amp;lt;그림 6.&amp;gt;의 왼쪽 그림처럼, policy evaluation을 $Q_\pi$ 를 수많은 에피소드를 샘플링해서 수렴할 때 반복하는 건 너무 번거롭습니다. 따라서 DP의 value iteration처럼 에피소드 하나가 끝날 때까지만 상태-행동 가치 함수 Q를 업데이트하고, policy improvement를 수행합니다. 이런 방식의 MC 기반 GPI가 과연 최적 정책을 찾게 해주는지에 대해선 아직 해결해야 할 문제가 남았습니다. $\epsilon-greedy$ 방식이 진짜로 정책을 발전 시키는지에 대한 문제와 하나의 최정정책, 가치함수로의 수렴하는지에 대한 문제입니다. 먼저 첫번째 문제부터 살펴보겠습니다. $\epsilon-greedy$ Improvement $\epsilon-greedy$ 방식으로 정책을 발전시키려면 $V_{\pi_{i+1}}(s) \geq V_{\pi_{i}}(s)$ 를 만족해야 합니다. 아래는 이와 관련된 증명입니다. 그림 7. $\epsilon-greedy$ policy improvement $Q^{\pi_i}(s,\pi_{i+1}(s)) \geq V_\pi(s)$ 이므로, $V_{\pi_{i+1}}(s) \geq V_{\pi_{i}}(s)$ 가 성립합니다. 이렇게 되는 자세한 과정은 지난 DP 포스팅 policy improvement쪽을 참고 바랍니다. 따라서, $\epsilon-greedy$ 에 의한 정책 발전이 일어납니다. Greedy in the Limit of Infinite Exploration 정책 발전이 일어나는 것과 동시에, 매 스텝마다 정책을 발전시키려면 결국 greedy한 정책으로 수렴해야 합니다. $\epsilon-greedy$ 방식은 모든 행동이 선택될 확률이 non-zero probability라 가정을 하지만, 결국 iteration을 반복해 나가면서 하나의 행동에 대해 $\pi(a \mid s) = 1$ 의 확률을 가져야 되는 것입니다. 이것에 관한 내용을 Greedy in the Limit of Infinite Exploration(GLIE) 라 합니다. 따라서, GLIE를 만족해야 수렴된 정책을 가질 수 있습니다. 그림 8. Greedy in the Limit with Infinite Exploration(GLIE) $e-greedy$ 가 GLIE를 만족하게 하는 가장 심플한 방법은 $\epsilon = \frac{1}{k}$ 로 하여 매 스텝마다 $\epsilon$ 을 감소시켜 0에 수렴하게 하는 것입니다. 따라서, GLIE Monte-Carlo Control 알고리즘을 정리하면 아래와 같습니다. 그림 9. On Policy Monte-Carlo Control off-policy Monte-Carlo Off-policy MC에 대해 설명하기 전에 on-policy learning과 off-policy learning에 대해 알아보겠습니다. on-policy vs. off-policy 이제까지 설명한 MC control 방법은 on-policy control입니다. On-policy란 탐험할 때 따르는 정책과 찾고자 하는 최적 정책이 같은 경우입니다. $\epsilon-greedy$ MC control이 왜 on-policy인지 살펴보면 다음과 같습니다. 한 에피소드 내에서 매 상태 s마다 행동 a를 샘플링합니다. 이 때, $\epsilon$ 의 확률로 정책에 따른 행동 $a=arg \underset m maxQ(s,a)$ 을 샘플링합니다. 그리고 한 에피소드가 다 끝나고 정책을 업데이트 할 때도 이렇게 정책에 따른 행동들을 기반으로 가치함수를 업데이트하여 $\pi_k = \epsilon-greedy(Q)$ 로 정책을 발전시킵니다. 즉, 기존 행동 샘플링할 때 사용된 정책 기반으로 정책을 발전시키는 것입니다. 이것이 바로 on-policy learning입니다. On-policy learning is- learn on the job- learn about policy $\pi$ from experience sampled from $\pi$ 그러나 이미 정책을 발전시키는 과정이 greedy한 정책을 한번 찾은 후, 그 정책 위에서 $\epsilon-greedy$ 같은 방법으로 탐험을 하는 것입니다. 그렇기 때문에 탐험을 하는 (s,a)공간이 매우 협소합니다. 이미 발전시킨 정책 위에서 탐험을 하기 때문에, (s,a) 공간위에서 보면 이미 발전시킨 정책 $\pi$ 에 해당되는 공간 근처에서만 탐험이 이뤄지는 것입니다. 마치 그림으로 표현하면 아래와 같을 수 있습니다. 그림 10. On-policy exploration 그렇다면 이를 해결할 수 있는 방법은 어떤 것이 있을까요? 바로, 탐험하는 정책과 최적 정책을 찾기 위해 학습하는 정책을 분리하는 것입니다. 이것이 바로 off-policy learning입니다. 마치 분류 모델을 위한 지도학습을 진행 할 때, 모든 라벨에 해당되는 데이터가 존재하고, 분포도 고루 존재하면 학습이 더 잘되는 것과 비슷하다고 생각하면 됩니다. 좀 더 다양한 경험을 한 시퀀스 데이터가 많으면 best 답안에 가까운 정책을 찾을 수 있습니다. 그렇기 위해선 탐험의 범위가 넓어야 합니다. Off-policy learning is- look over someone's shoulder- learn about policy $\pi$ from experience sampled from $\mu$ 일반적으로, 학습하고자 하는 정책을 target policy라 하고, 학습을 위한 데이터를 생성하기 위한 정책을 behavior정책이라 합니다. 학습을 위한 데이터를 학습하고 하는 정책에서 ‘벗어나서’ 수집하기 때문에, ‘off-policy’라 합니다. Importance Sampling 대부분의 off-policy 방식은 importance sampling을 이용합니다. Importance sampling이란 기댓값을 계산하고자 하는 확률 분포 $p(x)$ 의 확률 밀도 함수(probability density function, PDF)를 모르거나 안다고 해도 $p$ 에서 샘플을 생성하기 어려울 때, 비교적 샘플을 생성하기 쉬운 $q(x)$ 에서 샘플을 생성하여 $p$ 의 기댓값을 계산하는 것입니다. Importance Sampling for Off-Policy Monte-Carlo 그렇다면 importance sampling을 off-policy MC에서 어떻게 이용하는지 알아보도록 하겠습니다. 위에서 설명한 importance sampling 개념대로 target policy와 behavior policy를 보면, 기댓값을 계산하고자 하는 확률 분포 $p(x)$ 에 해당하는 건 target policy $\mu$ 이고, 실제 샘플하는 분포 $q(x)$ 는 behavior policy $\pi$ 입니다. 우리가 계산하고자 하는 기댓값은 $V(s) = E[G_t \mid S_t=s]$ 이므로, 즉 두 분포의 비율 $\frac{\pi(A_t \mid S_t)}{\mu(A_t \mid S_t)}$ 을 $G_t$ 에 곱하여 기댓값을 계산해야 합니다. 그러나, 단일 샘플링이 아니라 전체 에피소드에 대한 샘플링이기 때문에 importance sampling한 $G_t^{\pi/\mu}$ 는 아래와 같습니다. 따라서 MC policy evaluation에서 $G_t$ 가 아닌 $G_t^{\pi/\mu}$ 로 가치함수를 업데이트해주면 됩니다. 그러나 importance sampling 같은 경우 infinite variance를 가지는 단점이 있습니다. 이러한 이유로 수렴하기가 매우 어렵습니다. 따라서 현실적으로 importance sampling을 통한 off-policy Monte-Carlo방식은 사용되지 않습니다. Temporal-Difference Control 다음은 Temporal-Difference(TD) Control에 대해 알아보겠습니다. On-policy TD control을 Sarsa이고, off-policy TD control을 Q-Learning이라 합니다. SARSA에 대해서 먼저 알아보겠습니다. Sarsa : On-policy TD Control TD control도 MC control과 마찬가지로, Generalized policy iteration(GPI) 을 따릅니다. Policy evaluation만 TD update을 이용하고 그 외 다른 건 모두 MC control와 같습니다. 위 update 식에서 샘플링 단위가 (S, A, R, S’, A’)이기 때문에 Sarsa 라는 이름이 붙여졌습니다. Srasa 알고리즘 전체는 아래와 같습니다. 그림 11. Sarsa Sarsa도 on-policy MC에서 살펴본 것처럼 정책 발전 문제와 수렴 문제를 살펴보겠습니다. 정책 발전 문제는 on-policy MC와 동일하게 $\epsilon-greedy$ 를 사용하기 때문에 정책 발전은 일어납니다. 반면에 수렴문제는 GLIE를 만족시키는 것 이외에 업데이트 스텝 크기인 $\alpha$ 에 대한 조건이 더 필요합니다. 그 이유는 MC와 다르게 TD는 스텝마다 업데이트가 일어나는 on-line 방식이기 때문에 스텝사이즈 크기에 따라 수렴이 되지 않고 발산이 될 수 있습니다. 스텝크기 $\alpha$ 는 Q 가치함수가 변화가 일어나야 하므로 충분히 크며 동시에 Q 가치함수가 수렴해야 하므로 충분히 작아야 합니다. 그러나 실제 문제를 풀 때 $\alpha$ 를 결정하는 건 위의 이론을 이용하진 않고 domain-specific하게 또는 실험적으로 정한다고 합니다. sarsa 문제 예를 보겠습니다. 아래는 S에서 시작해서 G로 가야하는 문제입니다. 행동은 위, 아래, 좌, 우이며, 화살표가 있는 곳에서 아래에서 위로 바람이 불고 있습니다. 따라서 이 곳을 지날 때 실제 위로 가는 행동을 해도 실제 움직임은 대각선 우상향으로 가게 됩니다. 매 스텝마다 보상은 -1이며 discount factor 1입니다. 그림 12. Sarsa on the Windy Gridworld &amp;lt;그림 12.&amp;gt; 그래프는 Sarsa 학습 결과입니다. 1에피소드가 끝날 때 까지 2000 스텝을 밟지만 그 다음부터 학습속도가 빨라지는 것을 볼 수 있습니다. Q-Learning : Off-policy TD Control 다음은 off-policy TD 방식인 Q-Learning에 대해서 알아봅시다. Off-policy MC와 다르게 importance sampling이 필요 없습니다. Sarsa 에서 $Q(S_t, A_t)$ 를 업데이트 하기 위해, 정책 $\pi$ 에 따라 $(S_t, A_t, R_{t+1}, S_{t+1}, A_{t+1})$ 을 샘플링 한 후, $Q(S_{t+1}, A_{t+1})$ 기반으로 현재 상태 $(S_t, A_t)$ 를 수정했습니다. 즉, 샘플링된 정책과 학습하는 정책이 일치합니다. 그러나 Q-Learning은 off-policy로 샘플링되는 정책(behavior policy)과 학습하는 정책(target policy)이 다릅니다. Next action is chosen using behavior policy $A_{t+1} \sim \mu(\cdot \mid S_t)$ But we consider alternative successor action $A’ \sim \pi(\cdot \mid S_t)$ 다음 상태에 대한 행동을 behavior policy에 따라 선택하지만 실제 $Q(S_t, A_t)$ 를 업데이트하기 위해서 다음 상태에 대한 행동은 behavior policy와 다른 target policy에 의해 선택합니다. 즉, $A’$ 에 대해서 $Q(S_t, A_t)$ 를 업데이트하고 다음 업데이트 할 (s,a) 쌍은 $(S_{t+1}, A’)$ 이 아니라 behavior policy 따른 $(S_{t+1}, A_{t+1})$ 인 것입니다. 이 때, $A’=A$ 일수도 있고, $A’ \ne A$ 일수도 있습니다. Q-learning은 taret policy와 behavior policy를 같이 발전시켜 나갑니다. 이때, target policy $\mu$ 는 $Q(s,a)$ 에 관한 greedy policy이고 behavior policy $\pi$ 는 $Q(s,a)$ 에 관한 $\epsilon-greedy$ 입니다. Target policy : $\pi(S_{t+1}) = arg \underset {a’} maxQ(S_{t+1},a’)$ Behavior policy : 위의 behavior policy와 target policy를 가지고 Q-Learning 식을 다시 쓰면 아래와 같습니다. 따라서, Q-learning 알고리즘은 아래와 같습니다. 그림 13. Q-Learning Sarsa vs. Q-Learning 그렇다면 Sarsa와 Q-Learning은 실제 학습 시 어떤 차이를 보일까요 ? 아래 cliff Waling 예제를 통해 확인해 보겠습니다. 그림 14. Cliff-walking 예 S에서 시작해서 G로 가는 문제입니다. The Cliff에 도달하면 R=-100을 받고 다시 S로 돌아갑니다. 다른 곳에 밟으면 R=-1을 받습니다. 행동은 위, 아래, 좌, 우이며, $\epsilon=0.1$ 입니다. 학습이 완료됐을 때 최적 정책 결과는 &amp;lt;그림 14.&amp;gt;에서 위에 있는 그림입니다. Sarsa는 safe path로 학습되지만 Q-learning은 optimal path로 학습됩니다. Sarsa는 학습되는 방향이 현재 따르는 정책에서 선택된 행동이 고려되기 때문에 path의 길이는 길지만 좀 더 안전한 길을 선택하게 됩니다. 반면에, Q-Learning 같은 경우 학습되는 방향이 현재 따르는 정책과 무관하기 때문에 현재 상태에서 가장 최적의 선택이 될 수 있는 길로 학습이 됩니다. 그렇기 때문에 Sarsa 같은 경우 보상의 합이 Q-Learning보다 크게 나타납니다. 이상으로 이번 포스팅을 마치겠습니다. 읽어주셔서 감사합니다. Importance Sampling, https://untitledtblog.tistory.com/135</summary></entry></feed>

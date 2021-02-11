@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2021-01-07T17:35:39+09:00</updated>
+ <updated>2021-01-18T22:11:18+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -13,7 +13,173 @@
 
  
  <entry>
-   <title>RDD, Resilient Distributed Dataset에 대하여[3] - RDD액션, RDD 데이터 불러오기와 저장하기</title>
+   <title>TADA, Trend Alignment with Dual-Attention Multi-Task Recurrent Neural Networks for Sales Prediction 논문 리뷰</title>
+   <link href="http://localhost:4000/time%20series%20analysis/2021/01/18/tada/"/>
+   <updated>2021-01-18T00:00:00+09:00</updated>
+   <id>http://localhost:4000/time%20series%20analysis/2021/01/18/tada</id>
+   <content type="html">&lt;hr /&gt;
+
+&lt;p&gt;다변량 시계열 예측 모델에 관한 논문으로, 다변량 시계열 데이터를 가지고 encoder-decoder RNN 모델 기반으로 dual-attention과 multi-task RNN으로 구성된 모델입니다.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2&gt;Problem&lt;/h2&gt;
+&lt;p&gt;다변량 시계열 예측을 위한 여러 통계 기반 모델링이 있으나, 판매량에 영향을 주는 변수들 간의 관계를 파악하기 어렵고, 이 변수들로 부터 의미있는 정보(contextual information)을 추출하는 건 더욱 어렵습니다. 예를 들어, 겨울의복은 날씨에 영향에 두드러지게 받지만, 일반적인 셔츠는 사계절내내 잘 입는 옷이기 때문에 겨울의복보단 계절의 영향을 덜 받습니다. 또한 소비자의 주관적인 선호도(브랜드 선호도, 상품 선호도 등)에 따라 상품 판매는 크게 또한 달라지게 됩니다. 따라서, 본 논문에서 주목하는 다변량 시계열 예측에서의 문제는 아래와 같이 크게 세가지입니다.&lt;/p&gt;
+
+&lt;ol&gt;&lt;li&gt;how to fully capture the dynamic dependencies among multiple influential factors?&lt;br /&gt;
+판매에 영향을 주는 여러 변수들 간의 관계는 시간에 따라 변할 가능성이 높습니다. 그렇다면 매 스텝마다 변수들 간의 관계를 어떻게 포착할 수 있을까요 ?&lt;/li&gt;&lt;li&gt;how can we possibly glean wisdoms form the past to compensate for the unpredictability of influential factors?&lt;br /&gt;이 변수들이 미래에 어떻게 변할지는 아무도 모릅니다. 그렇다면 과거 이 변수들의 정보만을 가지고 어떻게 미래를 눈여겨 볼 수 있는 정보를 추출할지는 생각해 봐야 합니다.&lt;/li&gt;
+&lt;li&gt;how to align the upcoming trend with historical sales trends?&lt;br /&gt;현실 시계에서의 판매 트랜드는 전혀 규칙적이지 않습니다. 그렇다면 과거 판매 트렌드를 어떻게 하면 현실 트렌드와 연관지을 수 있을까요 ?&lt;/li&gt;&lt;/ol&gt;
+
+&lt;h2&gt;TADA : Trend Alignment with Dual-Attention Multi-Task RNN&lt;/h2&gt;
+
+&lt;h3&gt;Problem Formulation&lt;/h3&gt;
+
+&lt;p&gt;본 논문에서 풀고자 하는 다변량 시계열 예측 문제는 아래와 같이 수학적으로 정의됩니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\{\hat{y_t\}}^{T+\triangle}_{t=T+1} = F({\{\mathbf x_t\}}^{T}_{t=1}, {\{y_t\}}^{T}_{t=1})&lt;/script&gt;
+
+&lt;p&gt;$\mathbf x_t$ 는 influential factors로 판매량 이외의 변수(ex. 날씨, 브랜드, 상품인덱스 등)이고, $y_t$ 는 판매량 입니다.&lt;/p&gt;
+
+&lt;h3&gt;TADA 모델 개요&lt;/h3&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/w09ZSHF.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 1. 모델 개요&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;위의 그림은 본 논문의 모델 개요입니다. 크게 아래와 같이 구성되어 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Multi-task based Encoder Structures&lt;/li&gt;
+  &lt;li&gt;Dual-Attention based Decoder Structures
+    &lt;ul&gt;
+      &lt;li&gt;Attention got weighted decoder input mapping&lt;/li&gt;
+      &lt;li&gt;attention for trend alignment&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;Multi-task based Encoder Structures&lt;/h4&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/leH0yfV.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 2. Multi-task based Encoder&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;influential factor의 semantic한 특징을 잘 추출한다면 분명 예측에 도움이 될 것입니다. 그러나 매 타임 스텝마다 어떻게 하면 판매량 예측에 도움될 semantic한 특징을 추출할 수 있을까요 ? 본 논문에서는 influential factor를 크게 intrinsic한 속성과 objective한 속성으로 나누어 LSTM을 이용한 인코딩을 각각 따로하였습니다. 이를 통해 각각 두 개의 LSTM(intrinsic LSTM, external LSTM)을 통해 각기 다른 semantic한 특징을 추출할 수 있습니다. 따라서, 위의 문제 정의는 아래와 같이 다시 정의될 수 있습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\{\hat{y_t\}}^{T+\triangle}_{t=T+1} = F({\{\mathbf x_t^{int}\}}^{T}_{t=1}, {\{\mathbf x_t^{ext}\}}^{T}_{t=1}, {\{y_t\}}^{T}_{t=1})&lt;/script&gt;
+
+&lt;p&gt;intrinsic한 속성이란 브랜드, 카테고리, 가격등 상품과 관련된 것이고, objective한 속성은 날씨, 휴일유무, 할인등과 관련된 속성입니다. 아래 표는 논문에서 실험한 데이터의 intrinsic/objective 속성입니다.&lt;/p&gt;
+
+&lt;p&gt;하지만 우리가 구하고 싶은 건 두 가지의 다른 semantic한 feature를 적절하게 결합하여 의미있는 &lt;strong&gt;contextual vector&lt;/strong&gt;를 만드는 것입니다. 따라서 또다른 LSTM 네트워크인 Synergic LSTM을 구축하여 joint representation을 학습합니다. 이때, Synergic LSTM에 입력으로 들어가는 건 각 타임스텝에 해당되는 $h_t^{int}$ 와 $h_t^{ext}$ 뿐만 아니라 판매량 $y_t$ 도 같이 joint space가 구축되도록 학습됩니다.&lt;/p&gt;
+
+&lt;p&gt;먼저, 두 타입스텝 t에서의 두 개의 hidden state을 $h_t^{int}$ 와 $h_t^{ext}$ 이용하여 Synergic LSTM의 인풋인 $\mathbf X_t^{syn}$ 을 아래와 같이 계산합니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbf X_t^{syn} = \mathbf W_{syn}[\mathbf h_t^{int};\mathbf h_t^{ext};y_t]&lt;/script&gt;
+
+&lt;p&gt;그런 다음, intrinsic LSTM/external LSTM과 동일하게 각 타임스텝마다 두 정보가 결합되어 인코딩된 hidden stated인 $\mathbf h^{con}_t$ 를 계산합니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/ijwajF4.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 3. Multi-task based Encoder(2)&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;h4&gt;Dual-Attention based Decoder Structures&lt;/h4&gt;
+&lt;p&gt;Multi-task Encoder를 통해 과거 판매량 시계열 데이터를 인코딩하면 contextual vectors인 ${\mathbf h_t^{con}}^T_{t=1}$ 이 계산되어 나옵니다. $h_t^{con}$ 은 타임스텝 t까지의 시계열 데이터에 대한 contextual 정보를 품고 있습니다.&lt;/p&gt;
+
+&lt;p&gt;LSTM decoder도 encoder와 유사하게 예측에 필요한 contextual vector $\mathbf d_t^{con}$ 을 생성합니다. 따라서, $T &amp;lt; t \leq T + \Delta$ 에 대해 decoder 수학식은 아래와 같습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbf d_t^{con} = LSTM^{dec}(\mathbf x_t^{dec}, \mathbf d^{con}_{t-1})&lt;/script&gt;
+
+&lt;p&gt;위 식에서 $\mathbf x_t^{dec}$ 는 attention weighted input입니다. 그러면 contextual vector가 어떻게 만들어지는지 보기 전에 attention weighted input 계산 과정을 살펴봅시다.&lt;/p&gt;
+
+&lt;h5&gt;Attention for Weighted Decoder Input Mapping&lt;/h5&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/NvCkYMs.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 4. Attention for Weighted Decoder Input&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;Decoder에 입력될 Input은 encoder contextual vector들에서 각 디코터 타임 스텝에 필요한 정보를 적절하게 취하도록 하기 위해 attention 메카니즘을 통해 생성합니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbf x_t^{dec} = \mathbf W_{dec}\left[\sum_{t'=1}^T \alpha_{tt'}^{int}\mathbf h_{t'}^{int};\sum_{t'=1}^T \alpha_{tt'}^{ext}\mathbf h_{t'}^{ext}\right] + \mathbf b_{dec}&lt;/script&gt;
+
+&lt;p&gt;$\alpha_{tt’}^{int}$ 와 $\alpha_{tt’}^{ext}$ 는 어텐션 가중치를 의미합니다. 어텐션 가중치는 아래 과정을 통해 계산됩니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;e^{int}_{tt'} = \mathbf v^{\mathrm T}_{int}tanh(\mathbf M_{int}\mathbf d_{t-1}^{con} + \mathbf H_{int}\mathbf h_{t'}^{int})&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;e^{ext}_{tt'} = \mathbf v^{\mathrm T}_{ext}tanh(\mathbf M_{int}\mathbf d_{t-1}^{con} + \mathbf H_{ext}\mathbf h_{t'}^{ext})&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\alpha_{tt'}^{int} = \frac{exp(e_{tt'}^{int})}{\sum_{s=1}^{T}exp(e_{ts}^{int})}&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\alpha_{tt'}^{ext} = \frac{exp(e_{tt'}^{ext})}{\sum_{s=1}^{T}exp(e_{ts}^{ext})}&lt;/script&gt;
+
+&lt;p&gt;이때, $\sum_{t’=1}^{T}\alpha_{tt’}^{int} = \sum_{t’=1}^{T}\alpha_{tt’}^{ext} = 1$ 이 여야 합니다.&lt;/p&gt;
+
+&lt;h5&gt;Attention for Trend Alignment&lt;/h5&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/riUczJ9.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 5. Attention for Trend Alignment&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;미래를 예측하기 위해선 과거의 trend 패턴을 안다면 좀 더 수월할 수 있습니다. 따라서, 미래에 예상되는 패턴과 유사한 패턴을 과거에서 찾는 작업을 attention을 통해 진행하는 과정을 본 논문에서 제안하였습니다. 그러나, 
+일반적으로 attention 메카니즘은 현 타임스텝에서 아웃풋을 출력하기 위해 이전 hidden state들중에서 가장 align되는 정보를 선택합니다. 과거 정보들 중에서 &lt;strong&gt;미래의 트렌드와 유사한 트렌드 정보&lt;/strong&gt;를 선택적으로 이용하고 싶다면 전통적인 attention 메카니즘을 그대로 사용하기는 어렵습니다. 왜냐하면, 일반적인 데이터에선 trend외에 노이즈도 많이 포함하고 있기 때문입니다. 즉, 전체 데이터에 trend + noise라서 이전 모든 과거들에서 유사한 trend 패턴만을 집중하는 건 힘듭니다. 따라서 논문 저자는 아래와 같은 방법을 고안하였습니다.&lt;/p&gt;
+
+&lt;p&gt;먼저, ${\mathbf h_t^{con}}_{t=1}^T$ 를 $\triangle$ 타임 스텝 크기에 해당되는  contextual vector를 이어붙여서 $\triangle$ -step trend vector를 생성합니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/yUmHRP0.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;$\mathbf p_i$ 는 과거 시계열 데이터에서 $\triangle$ 간격에 해당되는 구간의 트렌드를 나타냅니다. $i$ 가 1씩 증가하므로, 마치 슬라이딩 윈도우 1씩 움직이면서 트렌드를 포착하는 것과 유사합니다.&lt;/p&gt;
+
+&lt;p&gt;마찬가지 방식으로 decoder hidden state들을 이어 붙여 미래에 예상될 트렌드 정보를 생성합니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/I9C1wnQ.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;따라서, 그림5 처럼 과거에 생성된 트렌드 벡터과 미래 트렌드 벡터를 각각 내적하여 가장 큰 값에 해당되는 인덱스 i를 반환합니다. 내적값이 가장 크다는 것은 가장 유사함을 의미합니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;e_i^{trd} = \mathbf p_i^{\mathrm T} \tilde{\mathbf p}&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;i' = argmax(e_i^{trd} , e_{i+1}^{trd},\dots, e_{T+\triangle -1}^{trd})&lt;/script&gt;
+
+&lt;p&gt;그 다음 $\mathbf p_{i’}$ 내의 각 ${\mathbf d_t^{con}}$ 와 $\mathbf h_t^{con}$ 을 아래와 같은 계산과정을 거쳐서 $\tilde {\mathbf d}^{con}$ 을 생성합니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/haL8Udd.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;$\tilde {\mathbf d}^{con}$ 은 타임스텝 t에서의 과거 유사한 트렌드 정보에 집중하여 생성된 aligned contextual vector 입니다.&lt;/p&gt;
+
+&lt;h4&gt;Sales Prediction and Model Learning&lt;/h4&gt;
+
+&lt;p&gt;위에서 생성된 aligned contextual vector ${\widetilde {\mathbf d_t}^{con}}$ 를 가지고 판매량을 예측합니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\hat y_t = \mathbf v_y^{\mathrm T} \mathbf {\widetilde d}^{con} + b_y&lt;/script&gt;
+
+&lt;p&gt;$\hat y_t , \,\,(T+1 \leq t \leq T+\Delta)$ 는 타임스텝 T에서의 예측된 판매량입니다.&lt;/p&gt;
+
+&lt;p&gt;본 논문에서 학습은 L2 regularization과 함께 Mean Squared Error를 minimize하였습니다.&lt;/p&gt;
+
+&lt;h2&gt;Experiment and result.&lt;/h2&gt;
+
+&lt;p&gt;전체적인 결과에 관한 건 논문을 참고 바랍니다. trend alignment 부분에 대한 결과를 살펴보면 과거 유사하다고 찾은 trend와 예측된 trend는 아래 그래프와 같이 나왔습니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/F5w1W2o.png&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;보면 어느정도 과거 매치된 트렌드와 유사한 트렌드를 따르는 것을 확인할 수 있었습니다.&lt;/p&gt;
+
+&lt;h2&gt;Lessons Learned&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;결과를 보면 어느정도 lag가 발생하는 것으로 보입니다.&lt;/li&gt;
+  &lt;li&gt;trend에 대한 파악을 먼저하고 판매량 데이터 입력을 나중에 하면 어떨까?&lt;/li&gt;
+  &lt;li&gt;dual-stage attention에서의 input attention 모듈과 multi-tasked encoder를 결합하는 건 어떨까 ??&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;이상으로 본 논문 리뷰를 마치겠습니다.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;ol&gt;
+  &lt;li&gt;Chen, Tong, et al. “Tada: trend alignment with dual-attention multi-task recurrent neural networks for sales prediction.” 2018 IEEE International Conference on Data Mining (ICDM). IEEE, 2018.&lt;/li&gt;
+&lt;/ol&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>A Dual-Stage Attention-Based Recurrent Neural Network for Time-Series Prediction 논문 리뷰</title>
+   <link href="http://localhost:4000/time%20series%20analysis/2021/01/18/dual-stage-attention/"/>
+   <updated>2021-01-18T00:00:00+09:00</updated>
+   <id>http://localhost:4000/time%20series%20analysis/2021/01/18/dual-stage-attention</id>
+   <content type="html">&lt;p&gt;A Dual-Stage Attention-Based Recurrent Neural Network는 다변량 시계열 예측 모델입니다(Multi-Variate Time Series Prediction). Bahdanau et al.의 &lt;a href=&quot;https://arxiv.org/abs/1409.0473&quot;&gt;Attention network 기반 시퀀스 모델&lt;/a&gt; 을 베이스로, 인코더 뿐만 아니라 디코더에도 Attention netowork를 이용해 예측을 위한 다변량 시계열 변수 간 상대적인 중요도와 타임 스텝 간 상대적인 중요도를 모두 고려한 모델입니다.&lt;/p&gt;
+
+&lt;h2&gt;Problem&lt;/h2&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>RDD, Resilient Distributed Dataset에 대하여[3] - RDD액션, RDD 데이터 불러오기와 저장하기, 공유변수</title>
    <link href="http://localhost:4000/spark%20programming/2021/01/07/rdd(3)/"/>
    <updated>2021-01-07T00:00:00+09:00</updated>
    <id>http://localhost:4000/spark%20programming/2021/01/07/rdd(3)</id>
@@ -271,6 +437,204 @@ b'(2) CoalescedRDD[65] at coalesce at NativeMethodAccessorImpl.java:0 []\n |  Py
 &lt;/ul&gt;
 
 &lt;h2&gt;RDD 데이터 불러오기와 저장하기&lt;/h2&gt;
+&lt;p&gt;스파크는 하둡 API기반이라서 다양한 데이터 포맷과 파일을 지원합니다.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;파일 포맷 : 텍스트파일, JSON, 하둡의 시퀀스파일, csv&lt;/li&gt;
+  &lt;li&gt;파일 시스템 : 로컬 파일 시스템, 하둡파일시스템(HDFS), AWS의 S3, 오픈스택의 Swift등
+    &lt;ul&gt;
+      &lt;li&gt;파일시스템이란 ? 컴퓨터에서 파일이나 자료를 쉽게 발견할 수 있도록 유지 관리하는 방법임. 즉, 저장매체에는 많은 파일이 있으므로, 이러한 파일을 관리하는 방법을 말함. 파일을 빠르게 읽기, 쓰기, 삭제 등 기본적인 기능을 원활히 수행하기 위한 목적임&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;1. 텍스트 파일&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;rdd = sc.textFile(&quot;file:////Users/ralasun/Desktop/ralasun.github.io/_posts/2020-07-11-introRL(1).md&quot;)
+&amp;gt;&amp;gt;&amp;gt; rdd.collect()
+['---', 'layout : post', 'title: Reinforcement Learning 소개[1]', 'category: Reinforcement Learning', 'tags: cs234 reinforcement-learning david-silver sutton', '---', '', '이번 포스팅은 강화학습이 기존에 알려진 여러 방법론들과의 비교를 통한 강화학습 특성과 구성요소를 다룹니다. ...```
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;“file:///”처럼 ///를 세개 작성해야 함. HDFS와 구별하기 위해서임&lt;/li&gt;
+  &lt;li&gt;또한 클러스터내 각 서버에서 동일한 경로를 통해 지정한 파일에 접근이 가능해야 함&lt;/li&gt;
+  &lt;li&gt;sc.textFile(path, n)에서, n을 통해 파티션 개수 정할 수 있음&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;#save
+rdd.saveAsTextFile(&quot;&amp;lt;path_to_save&amp;gt;/sub1&quot;)
+
+#save(gzip)
+rdd.saveAsTextFile(&quot;&amp;lt;path_to_save&amp;gt;/sub1&quot;, codec)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;위와 같이 rdd를 text파일로도 저장이 가능함. 두번째는 압축을 사용하는 방법임&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;2. 오브젝트 파일&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;오브젝트 직렬화 방법으로 RDD를 저장함. python의 경우, pickle형태로 저장함&lt;/li&gt;
+  &lt;li&gt;텍스트파일도 가능함&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize(range(1,1000),3)
+&amp;gt;&amp;gt;&amp;gt; rdd.saveAsPickleFile(&quot;/Users/ralasun/Desktop/pythonpickle.pkl&quot;)
+&amp;gt;&amp;gt;&amp;gt; rdd2 = sc.pickleFile(&quot;/Users/ralasun/Desktop/pythonpickle.pkl&quot;)       
+&amp;gt;&amp;gt;&amp;gt; rdd2.take(2)
+[667, 668]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4&gt;3. 시퀀스 파일&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;시퀀스파일이란, 키와 값으로 구성된 데이터를 저장하는 이진 파일 포맷으로, 하둡에서 자주 사용됨&lt;/li&gt;
+  &lt;li&gt;오브젝트 파일과의 차이점은 오브젝트 파일은 RDD에 포함된 각 데이터가 serializable 인터페이스를 구현하고 있어야 하는 것처럼 시퀀스 파일로 만들고 싶은 RDD가 하둡의 writable 인터페이스를 구현하고 있어야 함.&lt;/li&gt;
+  &lt;li&gt;saveAsNewAPIHadoopFile(path, outputFormatClass, keyClass=None, valueClass=None, keyConverter=None, valueConverter=None, conf=None)
+    &lt;ul&gt;
+      &lt;li&gt;sequence파일로 저장하기 위해선 outputFormatClass에 문자열의 형태로 하둡내 시퀀스포맷의 풀네임을 작성해야 함. keyclass와 valueclass도 마찬가지임. 이렇게 하는 이유는 하둡의 writable 인터페이스를 구현해야 할 객체가 필요하기 때문임.&lt;/li&gt;
+      &lt;li&gt;따라서 내부에서는 keyclass와 valueclass 인자에 전달한 포맷으로 rdd를 변환한 뒤 sequencefile포맷으로 저장하는 작업을 거치는 것임&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt; path = &quot;/Users/ralasun/Desktop/ppkl&quot;
+&amp;gt;&amp;gt;&amp;gt; outputFormatClass = &quot;org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat&quot;
+&amp;gt;&amp;gt;&amp;gt; inputformatClass = &quot;org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat&quot;
+&amp;gt;&amp;gt;&amp;gt; keyClass = &quot;org.apache.hadoop.io.Text&quot;
+&amp;gt;&amp;gt;&amp;gt; valueClass = &quot;org.apache.hadoop.io.IntWritable&quot;
+&amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize([&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;b&quot;,&quot;c&quot;])
+&amp;gt;&amp;gt;&amp;gt; rdd2 = rdd.map(lambda x:(x,1))
+&amp;gt;&amp;gt;&amp;gt; rdd2.collect()
+[('a', 1), ('b', 1), ('c', 1), ('b', 1), ('c', 1)]
+&amp;gt;&amp;gt;&amp;gt; rdd2.saveAsNewAPIHadoopFile(path, outputFormatClass, keyClass, valueClass)
+rdd3 = sc.newAPIHadoopFile(path, inputformatClass, keyClass, valueClass)
+&amp;gt;&amp;gt;&amp;gt; for k, v in rdd3.collect():
+...     print(k,v)
+... 
+a 1
+b 1
+b 1
+c 1
+c 1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2&gt;클러스터 환경에서의 공유 변수&lt;/h2&gt;
+
+&lt;p&gt;클러스터 환경에서 하나의 잡을 수행하기 위해 다수의 서버가 여러 개의 프로세스를 실행합니다. 따라서, 여러 프로세스가 공유할 수 있는 자원을 관리(읽기/쓰기 자원)할 수 있도록 스파크는 지원하는데, 브로드캐스트 변수와 어큐뮬레이터라 합니다.&lt;/p&gt;
+
+&lt;h5&gt;브로드캐스트 변수(Broadcast Variables)&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;스파크 잡이 실행되는 동안 클러스터 내의 모든 서버에서 공유할 수 있는 읽기전용 자원을 설정할 수 있는 변수임&lt;/li&gt;
+  &lt;li&gt;예를 들어, 온라인 쇼핑몰에서 사용자 ID와 구매 정보가 담긴 10TB짜리 로그를 분석할 때, 우리가 찾고자 하는 사용자 ID목록이 담긴 세트 컬렉션 타입의 데이터를 공유 변수로 설정해 각 서버에서 로그를 처리하면서 현재 처리하려는 로그가 우리가 찾고자 하는 로그가 맞는지 확인하는 용도로 사용 가능함&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;&amp;gt;&amp;gt;&amp;gt; bu = sc.broadcast([&quot;u1&quot;,&quot;u2&quot;])
+#1. sparkcontext의 broadcast인자를 이용해서 broadcast변수 생성
+
+&amp;gt;&amp;gt;&amp;gt; rdd = sc.parallelize([&quot;u1&quot;,&quot;u2&quot;,&quot;u3&quot;,&quot;u4&quot;,&quot;u5&quot;,&quot;u6&quot;],3)
+&amp;gt;&amp;gt;&amp;gt; result = rdd.filter(lambda v: v in bu.value)
+#2. broadcast변수 요소 접근시 value매서드를 이용
+
+&amp;gt;&amp;gt;&amp;gt; result.collect()
+['u1', 'u2']
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h5&gt;어큐뮬레이터(Accumulators)&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;어큐뮬레이터는 쓰기 동작을 위한 것임&lt;/li&gt;
+  &lt;li&gt;예를 들어, 온라인 쇼핑몰에서 사용자 접속 로그파일을 각 서버에서 취합해서 분석하는 경우임&lt;/li&gt;
+  &lt;li&gt;또한 다수의 서버로 구성된 클러스터 환경에서 오류가 발생 했을 시, 어느 프로세스에서 오류가 난건지 확인이 필요함. 그러기 위해선 에러 정보를 한곳에 모아서 볼 수 있는 방법이 필요함.&lt;/li&gt;
+  &lt;li&gt;어큐뮬레이터는 이렇게 클러스터내의 모든 서버가 공유하는 쓰기 공간을 제공해서, 각 서버에서 발생하는 이벤트나 정보를 모아두는 용도로 사용함.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;#accumulator 기본 예제
+def accumulate(v, acc):
+    if(len(v.split(&quot;:&quot;)) !=2):
+        acc.add(1)
+
+if __name__ =='__main__':
+    conf = SparkConf()
+    conf.set(&quot;spark.driver.host&quot;, &quot;127.0.0.1&quot;)
+    sc = SparkContext(master=&quot;local[*]&quot;, appName=&quot;RDDOpSample&quot;, conf=conf)
+
+    acc1 = sc.accumulator(0)
+    data = [&quot;U1:Addr1&quot;, &quot;U2:Addr2&quot;, &quot;U3&quot;, &quot;U4:Addr4&quot;, &quot;U5:Addr5&quot;,&quot;U6:Addr6&quot;, &quot;U7&quot;]
+    rdd = sc.parallelize(data)
+    rdd.foreach(lambda v : accumulate(v, acc1))
+    print(acc1.value)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;파이썬의 경우 어큐뮬레이터의 이름 지정 불가능함&lt;/li&gt;
+  &lt;li&gt;기본 제공하는 어큐뮬레이터는 sparkcontext의 accumulator 메서드를 이용하는데, 초깃값으로 정수, 실수, 복소수 타입중 하나여야 함. 따라서, 사용자 정의 데이터 타입에 대한 어큐뮬레이터는 아래와 같이 사용해야 함.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;from pyspark import AccumulatorParam
+from record import Record
+from builtins import isinstance
+
+class RecordAccumulatorParam(AccumulatorParam):
+
+    def zero(self, initialValue):
+        return Record(0)
+
+    def addInPlace(self, v1, v2):
+        if(isinstance(v2, Record)):
+            return v1+v2
+        else:
+            return v1.addAmt(v2)
+
+def accumulate(v, acc):
+    if(len(v.split(&quot;:&quot;))!=2):
+        acc.add(1)
+
+if __name__ =='__main__':
+    conf = SparkConf()
+    conf.set(&quot;spark.driver.host&quot;, &quot;127.0.0.1&quot;)
+    sc = SparkContext(master=&quot;local[*]&quot;, appName=&quot;RDDOpSample&quot;, conf=conf)
+
+    acc = sc.accumulator(Record(0), RecordAccumulatorParam())
+    data = [&quot;U1:Addr1&quot;, &quot;U2:Addr2&quot;, &quot;U3&quot;, &quot;U4:Addr4&quot;, &quot;U5:Addr5&quot;,&quot;U6:Addr6&quot;, &quot;U7&quot;]
+    rdd = sc.parallelize(data)
+    rdd.foreach(lambda v: accumulate(v, acc))
+    print(acc.value.amount) #&amp;gt;&amp;gt; 2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Python&quot;&gt;#AccumulatorParam에 대한 pyspark Document
+
+class pyspark.AccumulatorParam
+# Helper object that defines how to accumulate values of a given type.
+
+	addInPlace(value1, value2)
+	# Add two values of the accumulator’s data type, returning a new value; for efficiency, can also update value1 in place and return it.
+
+	zero(value)
+	# Provide a “zero value” for the type, compatible in dimensions with the provided value (e.g., a zero vector)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Recordclass타입에 대한 accumulator를 작성한 것임.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;어큐뮬레이터 사용시 주의할 점 두 가지&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;ol&gt;
+          &lt;li&gt;어큐뮬레이터를 증가시키는 동작은 클러스터 내 모든 서버에서 가능하나, 어큐뮬레이터 내 데이터를 읽는 동작은 드라이버 프로그램 내에서만 가능
+            &lt;ul&gt;
+              &lt;li&gt;transformation 또는 action 연산 내부에서는 어큐뮬레이터를 증가시킬 수 있으나, 그 값을 참조해서 사용은 불가능하다는 것을 뜻함.&lt;/li&gt;
+              &lt;li&gt;어큐뮬레이터는 액션 메서드 내에서만 수행하는 것이 좋음. 트렌스포메이션은 여러번 수행될 수 있기 때문에 집계가 잘못될 수 있음&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+        &lt;/ol&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;이상으로 본 포스팅을 마치겠습니다.&lt;/p&gt;
 </content>
  </entry>
  

@@ -2,7 +2,7 @@
 layout : post
 title: Model-Free Policy Control, Monte Carlo와 Temporal Difference에 대하여
 category: Reinforcement Learning
-tags: cs234 reinforcement-learning david-silver sutton
+tags: reinforcement-learning
 ---
 
 이번 포스팅은 지난 포스팅 [Model-Free Policy Evaluation](https://ralasun.github.io/reinforcement%20learning/2020/07/28/mc-td-eval/)에 이어 Model-Free Policy Control에 대해 다루도록 하겠습니다. CS234 4강, Deep Mind의 David Silver 강화학습 강의 5강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 5, 6 기반으로 작성하였습니다.

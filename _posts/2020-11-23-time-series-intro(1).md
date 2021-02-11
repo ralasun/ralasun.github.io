@@ -1,8 +1,8 @@
 ---
 layout : post
-title: Introduction to Time Series and forecasting 리뷰) 1. Introduction to Time Series
+title: General Approach to Time Series Analysis - Time Series Data, Stationarity 등에 대하여
 category: Time Series Analysis
-tags: time-series time-series-analysis statistics seasonal-decomposition
+tags: time-series-analysis
 ---
 
 이번 포스팅을 시작으로, 시계열 분석에 대해서 다루도록 하겠습니다. 메인 교재는 Brockwell와 Richard A. Davis의 \< Introduction to Time Series and Forecasting \> 와 패스트캠퍼스의 \<파이썬을 활용한 시계열 분석 A\-Z\> 를 듣고 정리하였습니다. 
