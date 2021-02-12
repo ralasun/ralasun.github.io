@@ -1,7 +1,7 @@
 ---
 layout : post
 title: A Dual-Stage Attention-Based Recurrent Neural Network for Time-Series Prediction 논문 리뷰
-category: Time Series Analysis
+category: Deep Learning
 tags: time-series-analysis
 ---
 
