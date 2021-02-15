@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2021-02-15T16:58:26+09:00</updated>
+ <updated>2021-02-15T17:56:28+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -53,9 +53,8 @@
 
 &lt;p&gt;Degree 행렬은 그래프 노드의 개수가 N개라면 NxN 크기를 가지는 대각행렬입니다. 각 꼭짓점의 차수에 대한 정보를 포함하고 있는 행렬로, 꼭짓점의 차수란 꼭짓점와 연결된 엣지의 갯수를 말합니다.&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;D_{i,j} = \begin{cases}
-		deg(v_i) \quad if \,\, i=j \\
-		 0 \quad otherwise \end{cases}&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;D_{i,j} = \begin{cases} deg(v_i) \quad if \,\, i=j \\
+		                      0 \quad otherwise \end{cases}&lt;/script&gt;
 
 &lt;p&gt;&lt;b&gt;Laplacian matrix&lt;/b&gt;&lt;br /&gt;&lt;/p&gt;
 
@@ -98,7 +97,7 @@
 
 &lt;p&gt;graph neural network는 &lt;a href=&quot;https://www.infona.pl/resource/bwmeta1.element.ieee-art-000004700287&quot;&gt;Scarselli et al.의 The Graph Neural Network Model&lt;/a&gt;에서 처음 등장했습니다. GNN의 목적은 결국 이웃노드들 간의 정보를 이용해서 해당 노드를 잘 표현할 수 있는 특징 벡터를 잘 찾아내는 것입니다. 이렇게 찾아낸 특징 벡터를 통해 task를 수행할 수 있습니다(graph classification, node classification 등).&lt;/p&gt;
 
-&lt;p align=&quot;center&quot;&gt;&amp;lt;img width=400 src='https://imgur.com/eDqPQFW.png'&amp;gt;&lt;figcaption align=&quot;center&quot;&gt;그림 7. GNN&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;400&quot; src=&quot;https://imgur.com/eDqPQFW.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 7. GNN&lt;/figcaption&gt;&lt;/p&gt;
 
 &lt;p&gt;GNN의 동작은 따라서 크게 두가지로 생각할 수 있습니다.&lt;/p&gt;
 
