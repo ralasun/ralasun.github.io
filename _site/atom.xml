@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2021-01-18T22:11:18+09:00</updated>
+ <updated>2021-02-15T16:58:26+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -13,10 +13,164 @@
 
  
  <entry>
+   <title>Introduction to Graph Neural Network - GNN 소개 및 개념</title>
+   <link href="http://localhost:4000/deep%20learning/2021/02/11/gcn/"/>
+   <updated>2021-02-11T00:00:00+09:00</updated>
+   <id>http://localhost:4000/deep%20learning/2021/02/11/gcn</id>
+   <content type="html">&lt;p&gt;이번 포스팅을 시작으로, Graph Neural Network(GNN)에 대해 본격적으로 다루도록 하겠습니다. 이번 포스팅은 Graph Neural Network가 나온 배경 및 기본적인 구조와 개념에 대해 다루도록 하겠습니다.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;우리가 흔히 많이 보는 데이터의 종류로는 이미지, 정형 데이터, 텍스트가 있습니다. 이미지는 2-D grid 형식인 격자 형식을 가지며, 정형 테이터는 테이블 형태를 띕니다. 또한 텍스트는 1-D sequence로 생각할 수 있습니다. 즉, 이들 데이터는 ‘격자’의 모양으로 표현할 수 있으며 이는 Euclidean space 상에 있는 것을 뜻합니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/0bBI5DP.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 1. Euclidean space vs. Non-Euclidean space&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;300&quot; src=&quot;https://imgur.com/wsEg0pl.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 2. 3D mesh 이미지&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;그러나, social network 데이터, molecular 데이터, 3D mesh 이미지 데이터(그림 2.)는 ‘비’ Eculidean space 데이터입니다. 그렇다면 기존 CNN과 RNN계열의 모델과 다르게 이런 형태의 데이터를 처리할 수 있는 새로운 모델이 필요합니다. 그것이 바로 Graph Neural Network 입니다.&lt;/p&gt;
+
+&lt;h1&gt;What is graph?&lt;/h1&gt;
+
+&lt;p&gt;GNN을 본격적으로 시작하기 전에 그래프에 대해서 알아보도록 하겠습니다. 그래프란 $G = (N, E)$ 로 구성된 일종의 자료 구조입니다. V는 노드들의 집합이고, E는 노드 사이를 연결하는 엣지들의 집합입니다. 노드에는 일반적으로 데이터의 정보가 담겨있고, 엣지는 데이터 간의 관계 정보가 포함되어 있습니다. 또한, 아래와 같은 그래프 형태를 ‘undirected graph’ 라고도 합니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/rRWSycm.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 3. graph&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;directed graph&lt;/b&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;300&quot; src=&quot;https://imgur.com/HO2ho4k.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 4. directed graph&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;방향 그래프란 엣지가 방향성을 가지는 그래프입니다. 아래 그림에서 $V_2$ 에서 $V_1$ 으로 향하는 엣지 $e_1$ 이 있다면, $V_2$ 를 predecessor, $V_1$ 을 sucessor 라고 부릅니다. 그리고 $e_1$ 을 $V_2$ 의 outgoing edge, $V_1$ 의 incoming edge 라고 합니다.&lt;/p&gt;
+
+&lt;p&gt;그렇다면, 이러한 그래프를 네트워크의 인풋으로 넣기 위해선 행렬 형태로 표현해야 합니다. 따라서 그래프를 표현하기 위한 방법으로는 adjacency matrix, degree matrix, laplacian matrix가 있습니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/bYiaa4S.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 5. degree vs. adjacency vs. laplacian&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Adjacency matrix&lt;/b&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;adjacency 행렬은 그래프 노드의 개수가 N개라면, NxN 정사각 행렬입니다. i노드와 j노드가 연결되어 있으면 $A_{ij} = 1$ 아니면 $A_{ij} = 0$ 의 성분을 가집니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Degree matrix&lt;/b&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Degree 행렬은 그래프 노드의 개수가 N개라면 NxN 크기를 가지는 대각행렬입니다. 각 꼭짓점의 차수에 대한 정보를 포함하고 있는 행렬로, 꼭짓점의 차수란 꼭짓점와 연결된 엣지의 갯수를 말합니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;D_{i,j} = \begin{cases}
+		deg(v_i) \quad if \,\, i=j \\
+		 0 \quad otherwise \end{cases}&lt;/script&gt;
+
+&lt;p&gt;&lt;b&gt;Laplacian matrix&lt;/b&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;adjacency 행렬은 노드 자신에 대한 정보가 없습니다. 그에 반해 laplacian 행렬은 노드와 연결된 이웃노드와 자기 자신에 대한 정보가 모두 포함된 행렬입니다. laplacian 행렬은 degree 행렬에서 adjacency 행렬을 빼준 것입니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;L = D - A&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;L_{i,j} = \begin{cases}
+		deg(v_i) \quad if \,\, i=j \\
+		 -1 \quad if \,\, i \neq j \\
+		  0 \quad otherwise \end{cases}&lt;/script&gt;
+
+&lt;h1&gt;Motivation : GNN $\approx$ CNN&lt;/h1&gt;
+
+&lt;p&gt;다시 GNN으로 돌아오겠습니다. GNN의 아이디어는 Convolutional Neural Network(CNN)에서 시작되었습니다. CNN은 아래와 같은 특징을 가지고 있습니다.&lt;/p&gt;
+
+&lt;ul&gt;&lt;li&gt;local connectivity&lt;/li&gt;
+&lt;li&gt;shared weights&lt;/li&gt;
+&lt;li&gt;use of Multi-layer&lt;/li&gt;&lt;/ul&gt;
+
+&lt;p&gt;위와 같은 특징 때문에, CNN은 spatial feature를 계속해서 layer마다 계속해서 추출해 나가면서 고차원적인 특징을 표현할 수 있습니다. 위와 같은 특징은 마찬가지로 graph 영역에도 적용할 수 있습니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/qa04Jf2.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 6. GNN $\approx$ CNN&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Local Connectivity&lt;/b&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;그림 3.&amp;gt; 을 보면, CNN과 GNN의 유사한 점을 확인할 수 있습니다. 먼저, graph도 한 노드와 이웃노드 간의 관계를 local connectivity라 볼 수 있기 때문에, 한 노드의 특징을 뽑기 위해서 local connection에 있는 이웃노드들의 정보만 받아서 특징을 추출할 수 있습니다. 즉, CNN의 filter의 역할과 유사합니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Shared Weights&lt;/b&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;또한 이렇게 graph 노드의 특징을 추출하는 weight은 다른 노드의 특징을 추출하는데도 동일한 가중치를 사용할 수 있어(shared weight), computational cost를 줄일 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Use of Multi-layer&lt;/b&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;CNN에서 multi layer 구조로 여러 레이어를 쌓게 되면 초반에는 low-level feature위주로 뽑고, 네트워크가 깊어질수록 high level feature를 뽑습니다. &lt;span style=&quot;color:red&quot;&gt;graph같은 경우에 multi-layer구조로 쌓게되면 초반 layer는 단순히 이웃노드 간의 관계에 대해서만 특징을 추출하지만, 네트워크가 깊어질수록 나와 간접적으로 연결된 노드의 영향력까지 고려된 특징을 추출할 수 있게 됩니다.&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;그렇다면, 위와 같은 특성을 가지려면 GNN은 어떻게 인풋 그래프에 대하여 연산을 해야하는지 알아보도록 하겠습니다.&lt;/p&gt;
+
+&lt;h1&gt;Original Graph Neural Network&lt;/h1&gt;
+
+&lt;p&gt;graph neural network는 &lt;a href=&quot;https://www.infona.pl/resource/bwmeta1.element.ieee-art-000004700287&quot;&gt;Scarselli et al.의 The Graph Neural Network Model&lt;/a&gt;에서 처음 등장했습니다. GNN의 목적은 결국 이웃노드들 간의 정보를 이용해서 해당 노드를 잘 표현할 수 있는 특징 벡터를 잘 찾아내는 것입니다. 이렇게 찾아낸 특징 벡터를 통해 task를 수행할 수 있습니다(graph classification, node classification 등).&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&amp;lt;img width=400 src='https://imgur.com/eDqPQFW.png'&amp;gt;&lt;figcaption align=&quot;center&quot;&gt;그림 7. GNN&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;GNN의 동작은 따라서 크게 두가지로 생각할 수 있습니다.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;propagation step - 이웃노드들의 정보를 받아서 현재 자신 노드의 상태를 업데이트 함&lt;/li&gt;
+  &lt;li&gt;output step - task 수행을 위해 노드 벡터에서 task output를 출력함&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;이를 수식으로 표현하면 아래와 같습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;x_n = f_w(l_n, l_{co[n]}, x_{ne[n]}, l_{ne[n]})&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;o_n = g_w(x_n, l_n)&lt;/script&gt;
+
+&lt;p&gt;이때, $l_n, l_{co[n]}, x_{ne[n]}, l_{ne[n]}$ 은 각각 n 노드의 라벨, n노드와 연결된 엣지들의 라벨, 이웃노드들의 states, 이웃노드들의 라벨입니다. 또한 $f_w$ 와 $o_w$ 는 각각 propagation function(논문에선 transition function 이라 표현함)와 output function입니다.&lt;/p&gt;
+
+&lt;p&gt;propagation function(transition function)은 이웃 노드들의 정보와 노드와 연결된 엣지정보들을 토대로 현재 자신의 노드를 표현합니다. 즉, d-차원의 공간에 이러한 인풋들을 받아서 맵핑하는 과정이라 생각할 수 있습니다. output function은 task 수행을 위해 학습을 통해 얻은 node feature을 입력으로 하여 output을 얻습니다. 예를 들어, node label classification 이라면 node label이 아웃풋이 될 것입니다.&lt;/p&gt;
+
+&lt;h3&gt;Learning algorithm : Banach fixed point theorem&lt;/h3&gt;
+
+&lt;p&gt;그렇다면 어떻게 학습이 이뤄질까요 ? 위에서 Motivation : GNN $\approx CNN$ 에서 Multi-layer를 GNN에 사용하면 얻는 이점은 layer가 깊어질수록 직접적으로 연결된 이웃 노드 이외에 멀리 있는 노드들의 영향력을 고려하여 현재 노드의 feature를 구성할 수 있다고 하였습니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;이렇게 멀리있는 노드에서부터 현재 노드까지 정보가 전달되는 과정을 message passing이라고 합니다. message passing이란 개념은 GNN이 등장하고 난 이후에, Gilmer et al.의 “Neural message passing for quantumchemistry” 에서 등장하였습니다. 해당 논문은 여러 종류의 GNN 구조를 일반화하는 프레임워크를 message passing 이라는 것으로 제안한 논문입니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;하지만, 초기 GNN은 multi-layer 구조가 아니기 때문에 불가능합니다. 따라서, Banach fixed point theorem에 따라, iterative method로 고정된 node feature를 찾습니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;400&quot; src=&quot;https://imgur.com/UIfPnoL.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 8. Network obtained by unfolding the encoding network&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;$x_n$ 와 $o_n$ 이 어떤 수렴된 값을 가지려면, Banach fixed point theorem에 의하면 propagation function이 contraction map이어야 합니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;$F_w$ is a &lt;em&gt;contraction map&lt;/em&gt; with respect to the state, i.e., there exists $\mu$ , $0 \leq \mu \le 1$ , such that $|F_w(x, l) - F_w(y, l)| \leq \mu |x-y|$ holds for any x, y where $| \cdot |$ denotes a vectorial norm.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;b&gt;Contraction Map에 대한 개인적인 생각&lt;/b&gt;&lt;br /&gt;
+사실 contraction map의 수학적인 이해가 완벽하게 되진 않았습니다. 그러나, 제가 생각하는 contraction map은 다음과 같습니다. 선형대수학에서 선형변환을 진행하면, m차원의 벡터가 n차원의 공간으로 맵핑이 됩니다. 이 때, 서로 다른 두 m차원의 벡터가 n차원의 공간으로 맵핑이 되었을 때, 두 벡터 사이의 거리가 줄어드는 방향이라면 이 맵핑 function은 contraction map입니다.&lt;/p&gt;
+
+&lt;p&gt;그렇다면 fixed point가 되려면, 즉 수렴된 node feature들은 contraction map에 의해 정의된 공간 안에서 존재하는 것이고, 어떻게 보면 node feature를 서치하는 범위가 작다라고 생각할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;이러한 문제 때문에 추후 다양한 버전의 GNN은 이러한 제한된 가정을 두지 않고 우리가 딥러닝 네트워크 학습시 사용하는 방식으로 node feature 값을 찾습니다. 즉, node feature의 search space가 훨씬 넓어지는 것입니다.&lt;/p&gt;
+
+&lt;p&gt;다시 돌아와서, 그렇다면 iterative method식으로 수식을 전개하면 아래와 같이 전개할 수 있습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;x_n(t+1) = f_w(l_n, l_{co[n]}, x_{ne[n]}(t), l_{ne[n]})&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;o_n(t) = g_w(x_n(t), l_n), \quad n \in N&lt;/script&gt;
+
+&lt;p&gt;fixed 된 $x_n, o_n$ 을 얻으면 아래와 같은 loss를 계산할 수 있고, gradient 계산을 통해 weight을 업데이트합니다. 여기서 weight은 $F_w$ 의 파라미터 입니다. neural network 라면 network의 가중치가 됩니다.&lt;/p&gt;
+
+&lt;h1&gt;Variants of GNNs&lt;/h1&gt;
+
+&lt;p&gt;Scarselli의 GNN 이후로 여러 변형된 GNN이 많이 등장하였습니다. 초기 GNN은 학습 방식의 단점에 의해 수렴이 잘 되지 않는다는 문제가 있습니다. 이러한 문제를 해결하기 위해 초기 GNN 이후에 다양한 GNN이 등장하였습니다. 대표적으로 Graph Convolutional Network와 Gated Graph Neural Network 등이 있습니다.&lt;/p&gt;
+
+&lt;p&gt;다음 포스팅부터는 GNN이 더욱 더 유명해진 계기가 된 Graph Convolutional Network에 대해 다루도록 하겠습니다. 읽어주셔서 감사합니다.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/abs/1812.08434&quot;&gt;Zhou, Jie, et al. “Graph neural networks: A review of methods and applications.” arXiv preprint arXiv:1812.08434 (2018).&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;What is graph?, &lt;a href=&quot;https://ratsgo.github.io/data%20structure&amp;amp;algorithm/2017/11/18/graph/&quot;&gt;https://ratsgo.github.io/data%20structure&amp;amp;algorithm/2017/11/18/graph/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.infona.pl/resource/bwmeta1.element.ieee-art-000004700287&quot;&gt;Scarselli, F., et al. “The Graph Neural Network Model.” IEEE Transactions on Neural Networks 1.20 (2009): 61-80.&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</content>
+ </entry>
+ 
+ <entry>
    <title>TADA, Trend Alignment with Dual-Attention Multi-Task Recurrent Neural Networks for Sales Prediction 논문 리뷰</title>
-   <link href="http://localhost:4000/time%20series%20analysis/2021/01/18/tada/"/>
+   <link href="http://localhost:4000/deep%20learning/2021/01/18/tada/"/>
    <updated>2021-01-18T00:00:00+09:00</updated>
-   <id>http://localhost:4000/time%20series%20analysis/2021/01/18/tada</id>
+   <id>http://localhost:4000/deep%20learning/2021/01/18/tada</id>
    <content type="html">&lt;hr /&gt;
 
 &lt;p&gt;다변량 시계열 예측 모델에 관한 논문으로, 다변량 시계열 데이터를 가지고 encoder-decoder RNN 모델 기반으로 dual-attention과 multi-task RNN으로 구성된 모델입니다.&lt;/p&gt;
@@ -168,9 +322,9 @@
  
  <entry>
    <title>A Dual-Stage Attention-Based Recurrent Neural Network for Time-Series Prediction 논문 리뷰</title>
-   <link href="http://localhost:4000/time%20series%20analysis/2021/01/18/dual-stage-attention/"/>
+   <link href="http://localhost:4000/deep%20learning/2021/01/18/dual-stage-attention/"/>
    <updated>2021-01-18T00:00:00+09:00</updated>
-   <id>http://localhost:4000/time%20series%20analysis/2021/01/18/dual-stage-attention</id>
+   <id>http://localhost:4000/deep%20learning/2021/01/18/dual-stage-attention</id>
    <content type="html">&lt;p&gt;A Dual-Stage Attention-Based Recurrent Neural Network는 다변량 시계열 예측 모델입니다(Multi-Variate Time Series Prediction). Bahdanau et al.의 &lt;a href=&quot;https://arxiv.org/abs/1409.0473&quot;&gt;Attention network 기반 시퀀스 모델&lt;/a&gt; 을 베이스로, 인코더 뿐만 아니라 디코더에도 Attention netowork를 이용해 예측을 위한 다변량 시계열 변수 간 상대적인 중요도와 타임 스텝 간 상대적인 중요도를 모두 고려한 모델입니다.&lt;/p&gt;
 
 &lt;h2&gt;Problem&lt;/h2&gt;
@@ -2018,7 +2172,7 @@ In&amp;nbsp;[12]:
  </entry>
  
  <entry>
-   <title>Introduction to Time Series and forecasting 리뷰) 1. Introduction to Time Series</title>
+   <title>General Approach to Time Series Analysis - Time Series Data, Stationarity 등에 대하여</title>
    <link href="http://localhost:4000/time%20series%20analysis/2020/11/23/time-series-intro(1)/"/>
    <updated>2020-11-23T00:00:00+09:00</updated>
    <id>http://localhost:4000/time%20series%20analysis/2020/11/23/time-series-intro(1)</id>
@@ -3795,9 +3949,9 @@ $H_{1:t} \to S_t \to H_{t+1:\infty}$&lt;/blockquote&gt;
  
  <entry>
    <title>Junction Tree Variational Autoencoder for Molecular Graph Generation 논문 리뷰</title>
-   <link href="http://localhost:4000/drug%20discovery/2020/07/06/jtvae/"/>
+   <link href="http://localhost:4000/deep%20learning/2020/07/06/jtvae/"/>
    <updated>2020-07-06T00:00:00+09:00</updated>
-   <id>http://localhost:4000/drug%20discovery/2020/07/06/jtvae</id>
+   <id>http://localhost:4000/deep%20learning/2020/07/06/jtvae</id>
    <content type="html">&lt;p&gt;Junction Tree Variational Auto-encoder(JT-VAE)는 기존 SMILES string 기반 생성 모델들이 SMILES string을 사용하는 것에 문제를 제기하여 캐릭터가 아니라 molecular graph가 직접 입력으로 들어가는 모델입니다. 또한, 유효한 화합물 구조를 생성하기 위해 Junction Tree Algorithm에서 아이디어를 착안하여 모델을 제시하였습니다.&lt;/p&gt;
 
 &lt;h2&gt; Problem &lt;/h2&gt;
@@ -4029,9 +4183,9 @@ Tree decomposition에 의해, 두 클러스터 간에 공유되는 원자 갯수
  
  <entry>
    <title>Grammar Variational Autoencoder 논문 리뷰</title>
-   <link href="http://localhost:4000/drug%20discovery/2020/06/19/gvae/"/>
+   <link href="http://localhost:4000/deep%20learning/2020/06/19/gvae/"/>
    <updated>2020-06-19T00:00:00+09:00</updated>
-   <id>http://localhost:4000/drug%20discovery/2020/06/19/gvae</id>
+   <id>http://localhost:4000/deep%20learning/2020/06/19/gvae</id>
    <content type="html">&lt;p&gt;Grammar Variational Auto-Encoder(GVAE)는 Gomez-Bomb barelli et al.(2016)&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;의 VAE기반으로 생성된 신약 후보 물질들이 대부분 유효하지 않는 것에 문제를 제기하여, SMILES string 생성 문법을 직접적으로 제약 조건으로 걸어 유효한 신약 후보 물질을 생성하는 모델입니다.&lt;/p&gt;
 &lt;h2 id=&quot;problem&quot;&gt;Problem&lt;/h2&gt;
 &lt;p&gt;신약 후보 물질의 SMILES string 생성 모델들(RNN, VAE)의 단점은 유효하지 않은 string을 생성하는 경우가 많이 발생한다는 것입니다.&lt;/p&gt;
