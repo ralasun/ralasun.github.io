@@ -1,4 +1,99 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-02-15T17:56:28+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ralasun Resarch Blog</title><subtitle></subtitle><author><name>Seonhwa Lee</name></author><entry><title type="html">Introduction to Graph Neural Network - GNN 소개 및 개념</title><link href="http://localhost:4000/deep%20learning/2021/02/11/gcn/" rel="alternate" type="text/html" title="Introduction to Graph Neural Network - GNN 소개 및 개념" /><published>2021-02-11T00:00:00+09:00</published><updated>2021-02-11T00:00:00+09:00</updated><id>http://localhost:4000/deep%20learning/2021/02/11/gcn</id><content type="html" xml:base="http://localhost:4000/deep%20learning/2021/02/11/gcn/">&lt;p&gt;이번 포스팅을 시작으로, Graph Neural Network(GNN)에 대해 본격적으로 다루도록 하겠습니다. 이번 포스팅은 Graph Neural Network가 나온 배경 및 기본적인 구조와 개념에 대해 다루도록 하겠습니다.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-03-04T14:34:51+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ralasun Resarch Blog</title><subtitle></subtitle><author><name>Seonhwa Lee</name></author><entry><title type="html">Graph Convolutional Network에 대하여, Spectral Graph Convolution vs. Spatial Graph Convolution</title><link href="http://localhost:4000/deep%20learning/2021/02/15/gcn/" rel="alternate" type="text/html" title="Graph Convolutional Network에 대하여, Spectral Graph Convolution vs. Spatial Graph Convolution" /><published>2021-02-15T00:00:00+09:00</published><updated>2021-02-15T00:00:00+09:00</updated><id>http://localhost:4000/deep%20learning/2021/02/15/gcn</id><content type="html" xml:base="http://localhost:4000/deep%20learning/2021/02/15/gcn/">&lt;p&gt;지난 GNN 포스팅&amp;lt;&lt;a href=&quot;https://ralasun.github.io/deep%20learning/2021/02/11/gcn/&quot;&gt;Introduction to Graph Neural Network - GNN 소개 및 개념&lt;/a&gt;&amp;gt;에서 graph neural network의 전반적인 개념에 대해 소개하였습니다. 이번 포스팅은 graph neural network가 더욱 유명해진 계기가 된 &lt;a href=&quot;https://arxiv.org/abs/1609.02907&quot;&gt;Kipf. et, al.의 Graph Convolutional Neural Network&lt;/a&gt;에 대해 다루도록 하겠습니다.&lt;/p&gt;
+
+&lt;p&gt;Kipf. et al.의 GCN을 이해하기 위해서는 먼저, spectral graph convolution에서부터 시작해야 합니다. 그러나 :spectral” 이라는 부분이 생소하신 분들이 많을 거라 생각됩니다. 반면에 일반적인 CNN 동작 방식은 많이 알려져 있습니다. 일반적인 CNN 동작은 spatial convolution입니다. 따라서 이를 유사하게 graph에 적용하는 방식을 spatial graph convolution입니다. 따라서, 이번 포스팅에서는 spectral 방식과 spatial 방식을 비교하고, spectral graph convolution에 대해 설명한 뒤에 Kipf. et al의 Graph Convolutional Network에 대해 다루도록 하겠습니다.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h1&gt;Spatial Graph Convolution vs. &lt;br /&gt;Spectral Graph Convolution&lt;/h1&gt;
+
+&lt;p&gt;Graph convolution은 크게 2가지 방법이 있습니다. Spatial graph convolution과 Spectral graph convolution입니다. Spatial graph convolution은 convolution 연산을 graph위에서 직접 수행하는 방식으로, 각 노드와 가깝게 연결된 이웃 노드들에 한해서 convolution 연산을 수행합니다. 즉, 노드와 이웃노드들을 특정 grid form으로 재배열하여 convolution 연산을 수행하는 것입니다. 그러나, 우리가 일반적으로 아는 CNN의 filter는 고정된 사이즈를 가집니다(그림 1.).&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://i.stack.imgur.com/S5B1k.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 1. CNN operation with fixed-size filter(3x3)&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;따라서, &lt;b&gt;&lt;i&gt;spatial graph convolution 방식의 관건은 고정된 크기의 이웃 노드를 선택하는 것입니다.&lt;/i&gt;&lt;/b&gt; 뿐만 아니라, CNN의 특징 중 하나는 “local invariance” 입니다. 입력의 위치가 바뀌어도 출력은 동일함을 의미합니다. 즉, 이미지 내의 강아지 위치가 달라도 CNN은 강아지라는 아웃풋을 출력함을 의미합니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://miro.medium.com/max/1400/1*HUJ3-xs3nUv-wY_GTBVUMg.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 2. Local invariance&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;따라서, &lt;b&gt;&lt;i&gt;Spatial graph convolution의 또다른 관건은 바로 “local invariance”를 유지를 해야한다는 것입니다.&lt;/i&gt;&lt;/b&gt;&lt;/p&gt;
+
+&lt;p&gt;앞에서 언급한 spatial graph convolution이 다뤄야 할 문제점과 별개로 또다른 문제점이 존재합니다. &lt;b&gt;Spatial graph convolution은 고정된 이웃 노드에서만 정보는 받아서 노드의 정보를 업데이트를 한다는 점입니다.&lt;/b&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;300&quot; src=&quot;https://imgur.com/KWmqbgk.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 3. Select neighborhood of red node&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;그러나, 그래프에서의 한 노드의 정보는 시간에 따라 여러 노드들의 정보의 혼합으로 표현될 수 있습니다. &amp;lt;그림 4.&amp;gt;를 살펴보도록 하겠습니다. 1번노드의 처음 정보는 [1,-1] 이지만 시간에 따라 여러 노드들의 정보(노드들의 signal)들이 밀려 들어오게 됩니다. 즉, 고정된 이웃노드 말고도 멀리 연결되어 있는 노드의 정보도 시간이 흐르면서 밀려 들어올 수 있는 것입니다. 이를 노드 간 message passing이라 합니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/Fv2FJbC.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 4. Message Passing in graph&lt;/figcaption&gt;
+&lt;/p&gt;
+
+&lt;p&gt;즉, 한 노드의 정보는 여러 노드의 signal이 혼재해 있는 것으로, 이를 time domain이 아닌 frequency 도메인으로 분석한다면, 한 노드 내에 혼재된 signal들을 여러 signal의 요소로 나눠서 node의 특징을 더 잘 추출할 수 있습니다. 이것에 관한 것이 바로 “Spectral Graph Convolution”입니다. Spectral graph convolution은 spectral 영역에서 convolution을 수행하는 것입니다. 이에 대해 자세히 살펴보도록 하겠습니다.&lt;/p&gt;
+
+&lt;h1&gt;Dive into Spectral Graph Convolution&lt;/h1&gt;
+
+&lt;p&gt;Signal Processing 분야에서 “spectral analysis”라는 것은 이미지/음성/그래프 신호(signal)을 time/spatial domain이 아니라 frequency domain으로 바꿔서 분석을 진행하는 것입니다. 즉, &lt;em&gt;어떤 특정 신호를 단순한 요소의 합으로 분해하는 것&lt;/em&gt;을 의미합니다. 대표적으로 이를 수행할 수 있는 방법이 푸리에 변환(Fourier Transform)입니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;spectral analysis에서 입력 신호가 전파/음성신호면 time domain을 frequency domain으로 변환하는 것이고, 컴퓨터 비전/그래프/영상처리 분야이면 spatial domain을 frequency domain으로 변환하는 것입니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;푸리에 변환이란, &lt;span style=&quot;text-decoration: underline&quot;&gt;&lt;b&gt;임의의 입력 신호를 다양한 주파수를 갖는 주기함수들의 합으로 분해하여 표현&lt;/b&gt;&lt;/span&gt;하는 것입니다. 아래 그림처럼 빨간색 신호를 파란색의 주기함수들의 성분으로 나누는 작업이 바로 푸리에 변환입니다. 즉, 파란색 주기함수들을 합하면 결국 빨간색 신호가 되는 것입니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://t1.daumcdn.net/cfile/tistory/9967FA3359B63D8122&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 5. 푸리에 변환&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;그렇다면 graph signal에서의 푸리에 변환은 어떤 걸까요 ?&lt;/p&gt;
+
+&lt;p&gt;결론부터 얘기하면, &lt;span style=&quot;text-decoration: underline&quot;&gt;&lt;b&gt;graph signal의 푸리에 변환은 graph의 Laplacian matrix를 eigen-decomposition하는 것&lt;/b&gt;&lt;/span&gt;입니다. 아래에서 수식과 함께 자세히 살펴보도록 하겠습니다.&lt;/p&gt;
+
+&lt;h3&gt;Fourier transform&lt;/h3&gt;
+
+&lt;p&gt;먼저, 푸리에 변환 식에 대해서 살펴봅시다. &lt;span style=&quot;color:gray&quot;&gt;&lt;del&gt;저도 푸리에 변환에 대한 이해가 아직 한없이 부족합니다. 최대한 공부하고 이해한 내용을 풀어볼려고 노력하였습니다.&lt;/del&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\hat{f}(\xi) = \int_{\mathbf{R}^d} f(x)e^{2\pi ix\xi} \,dx \tag{1}&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;f(x) = \int_{\mathbf{R}^d} \hat{f}(\xi) e^{-2\pi ix\xi} \,d\xi \tag{2}&lt;/script&gt;
+
+&lt;p&gt;(1)은 f의 푸리에 변환이고, (2)는 푸리에 역변환입니다. 푸리에 변환은 위에서 설명드린 것처럼, time domain을 frequency domain으로 변환한 것으로, 다양한 주파수를 갖는 주기함수의 합입니다. 그렇다면, 푸리에 역변환은 frequency domain의 함수를 다시 time domain으로 변환하는 것입니다. 푸리에 변환을 바라보는 관점은 여러가지가 존재하지만 그 중 하나는 ‘내적’입니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&quot;임의의 주파수 $f(x)$ 에 대하여, $\hat{f}(\xi)$ 는 $f(x)$ 와 $e^{-2\pi ix\xi}$ 의 내적&quot;&lt;/p&gt;
+
+&lt;p&gt;‘내적’이 내포하고 있는 의미는 유사도입니다. 즉, “a와 b의 내적은 a와 b가 얼마나 닮았는가”를 뜻합니다. 결국 푸리에 변환은 다시 풀어쓰면 아래와 같은 의미를 가지고 있습니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&quot;임의의 주파수 $f(x)$ 에 대하여, $\hat{f}(\xi)$ 는 $f(x)$ 와 $e^{-2\pi ix\xi}$ 가 얼마나 닮았는가&quot;&lt;/p&gt;
+
+&lt;p&gt;그렇다면, $e^{-2\pi ix\xi}$ 의 의미는 무엇일까요 ? 이를 이해하기 위해선 ‘오일러 공식’이 필요합니다. 오일러 공식은 복소지수함수(complext exponential function)를 삼각함수(trigonometric function)로 표현하는 유명한 식입니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;e^{ix} = cost + isinx \tag{3}&lt;/script&gt;
+
+&lt;p&gt;따라서, 오일러 공식에 의해 (1)식의 $e^{2\pi ix\xi}$ 부분을 cos요소와 sin요소의 합으로 표현할 수 있습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;e^{2\pi ix\xi} = cos(2\pi x\xi) + i sin(2\pi x\xi)&lt;/script&gt;
+
+&lt;p&gt;즉, 주어진 주파수 f(x)에 대해 cosine에서 유사한 정도와 sine과 유사한 정도의 합이 푸리에 변환이라고 생각할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;이번엔 푸리에 변환의 선형대수(linear algebra)적인 의미를 살펴보도록 하겠습니다. 선형 대수에서, 벡터 $a \in R^d$ 를 d차원의 orthonormal basis를 찾을 수 있다면, 벡터 $a$ 를 orhonormal basis의 선형결합으로 표현할 수 있습니다. 이 orthonormal basis를 찾는 방법 중 하나가 바로 Eigen-value decomposition 입니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;orthonormal이란 서로 직교하면서 길이가 1인 벡터들을 의미합니다. 또한, 모든 matrix에 대해서 eigen-value decomposition 결과로 찾은 basis가 orthonormal은 아닙니다. 하지만 real-symmetric matrix에 대하여 구한 eigenvector들은 orthgonal한 관계입니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;다시 돌아와서, 푸리에 변환에서 주기함수 요소인 sine과 cosine에 대해 살펴봅시다. 아래와 같이 sine과 sine, sine과 cosine, cosine과 cosine을 내적하면 모두 다 0이 나옵니다. 이는 즉 삼각함수는 직교함을 알 수 있습니다(삼각함수의 직교성).&lt;/p&gt;
+
+&lt;p&gt;그렇다면, 선형대수 관점에서, &lt;span style=&quot;text-decoration: underline&quot;&gt;sine과 cosine 기저들의 선형결합이 즉 푸리에 변환이 되는 것&lt;/span&gt;입니다. 즉, &lt;span style=&quot;text-decoration:underline; color:red&quot;&gt;어떤 특정 signal이 real symmetric matrices이고 이들의 eigenvectors를 구할 수 있다면, eigenvector의 선형결합이 즉 해당 signal의 푸리에 변환&lt;/span&gt;임을 의미하는 것입니다.&lt;/p&gt;
+
+&lt;h3&gt;Laplacian Operator&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/abs/1609.02907&quot;&gt;Kipf, Thomas N., and Max Welling. “Semi-supervised classification with graph convolutional networks.” arXiv preprint arXiv:1609.02907 (2016).&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/abs/1812.08434&quot;&gt;Zhou, Jie, et al. “Graph neural networks: A review of methods and applications.” arXiv preprint arXiv:1812.08434 (2018).&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://dsba.korea.ac.kr/seminar/?mod=document&amp;amp;pageid=1&amp;amp;keyword=spectral&amp;amp;uid=1330&quot;&gt;DSBA 연구실 세미나 자료, [Paper Review] MultiSAGE - Spatial GCN with Contextual Embedding&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;푸리에 변환 참고 페이지
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://darkpgmr.tistory.com/171&quot;&gt;https://darkpgmr.tistory.com/171&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://www.math.ucla.edu/~tao/preprints/fourier.pdf&quot;&gt;https://www.math.ucla.edu/~tao/preprints/fourier.pdf&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://angeloyeo.github.io/2019/10/11/Fourier_Phase.html&quot;&gt;https://angeloyeo.github.io/2019/10/11/Fourier_Phase.html&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;</content><author><name>Seonhwa Lee</name></author><category term="Deep Learning" /><category term="graph-neural-network" /><summary type="html">지난 GNN 포스팅&amp;lt;Introduction to Graph Neural Network - GNN 소개 및 개념&amp;gt;에서 graph neural network의 전반적인 개념에 대해 소개하였습니다. 이번 포스팅은 graph neural network가 더욱 유명해진 계기가 된 Kipf. et, al.의 Graph Convolutional Neural Network에 대해 다루도록 하겠습니다. Kipf. et al.의 GCN을 이해하기 위해서는 먼저, spectral graph convolution에서부터 시작해야 합니다. 그러나 :spectral” 이라는 부분이 생소하신 분들이 많을 거라 생각됩니다. 반면에 일반적인 CNN 동작 방식은 많이 알려져 있습니다. 일반적인 CNN 동작은 spatial convolution입니다. 따라서 이를 유사하게 graph에 적용하는 방식을 spatial graph convolution입니다. 따라서, 이번 포스팅에서는 spectral 방식과 spatial 방식을 비교하고, spectral graph convolution에 대해 설명한 뒤에 Kipf. et al의 Graph Convolutional Network에 대해 다루도록 하겠습니다. Spatial Graph Convolution vs. Spectral Graph Convolution Graph convolution은 크게 2가지 방법이 있습니다. Spatial graph convolution과 Spectral graph convolution입니다. Spatial graph convolution은 convolution 연산을 graph위에서 직접 수행하는 방식으로, 각 노드와 가깝게 연결된 이웃 노드들에 한해서 convolution 연산을 수행합니다. 즉, 노드와 이웃노드들을 특정 grid form으로 재배열하여 convolution 연산을 수행하는 것입니다. 그러나, 우리가 일반적으로 아는 CNN의 filter는 고정된 사이즈를 가집니다(그림 1.). 그림 1. CNN operation with fixed-size filter(3x3) 따라서, spatial graph convolution 방식의 관건은 고정된 크기의 이웃 노드를 선택하는 것입니다. 뿐만 아니라, CNN의 특징 중 하나는 “local invariance” 입니다. 입력의 위치가 바뀌어도 출력은 동일함을 의미합니다. 즉, 이미지 내의 강아지 위치가 달라도 CNN은 강아지라는 아웃풋을 출력함을 의미합니다. 그림 2. Local invariance 따라서, Spatial graph convolution의 또다른 관건은 바로 “local invariance”를 유지를 해야한다는 것입니다. 앞에서 언급한 spatial graph convolution이 다뤄야 할 문제점과 별개로 또다른 문제점이 존재합니다. Spatial graph convolution은 고정된 이웃 노드에서만 정보는 받아서 노드의 정보를 업데이트를 한다는 점입니다. 그림 3. Select neighborhood of red node 그러나, 그래프에서의 한 노드의 정보는 시간에 따라 여러 노드들의 정보의 혼합으로 표현될 수 있습니다. &amp;lt;그림 4.&amp;gt;를 살펴보도록 하겠습니다. 1번노드의 처음 정보는 [1,-1] 이지만 시간에 따라 여러 노드들의 정보(노드들의 signal)들이 밀려 들어오게 됩니다. 즉, 고정된 이웃노드 말고도 멀리 연결되어 있는 노드의 정보도 시간이 흐르면서 밀려 들어올 수 있는 것입니다. 이를 노드 간 message passing이라 합니다. 그림 4. Message Passing in graph 즉, 한 노드의 정보는 여러 노드의 signal이 혼재해 있는 것으로, 이를 time domain이 아닌 frequency 도메인으로 분석한다면, 한 노드 내에 혼재된 signal들을 여러 signal의 요소로 나눠서 node의 특징을 더 잘 추출할 수 있습니다. 이것에 관한 것이 바로 “Spectral Graph Convolution”입니다. Spectral graph convolution은 spectral 영역에서 convolution을 수행하는 것입니다. 이에 대해 자세히 살펴보도록 하겠습니다. Dive into Spectral Graph Convolution Signal Processing 분야에서 “spectral analysis”라는 것은 이미지/음성/그래프 신호(signal)을 time/spatial domain이 아니라 frequency domain으로 바꿔서 분석을 진행하는 것입니다. 즉, 어떤 특정 신호를 단순한 요소의 합으로 분해하는 것을 의미합니다. 대표적으로 이를 수행할 수 있는 방법이 푸리에 변환(Fourier Transform)입니다. spectral analysis에서 입력 신호가 전파/음성신호면 time domain을 frequency domain으로 변환하는 것이고, 컴퓨터 비전/그래프/영상처리 분야이면 spatial domain을 frequency domain으로 변환하는 것입니다. 푸리에 변환이란, 임의의 입력 신호를 다양한 주파수를 갖는 주기함수들의 합으로 분해하여 표현하는 것입니다. 아래 그림처럼 빨간색 신호를 파란색의 주기함수들의 성분으로 나누는 작업이 바로 푸리에 변환입니다. 즉, 파란색 주기함수들을 합하면 결국 빨간색 신호가 되는 것입니다. 그림 5. 푸리에 변환 그렇다면 graph signal에서의 푸리에 변환은 어떤 걸까요 ? 결론부터 얘기하면, graph signal의 푸리에 변환은 graph의 Laplacian matrix를 eigen-decomposition하는 것입니다. 아래에서 수식과 함께 자세히 살펴보도록 하겠습니다. Fourier transform 먼저, 푸리에 변환 식에 대해서 살펴봅시다. 저도 푸리에 변환에 대한 이해가 아직 한없이 부족합니다. 최대한 공부하고 이해한 내용을 풀어볼려고 노력하였습니다. (1)은 f의 푸리에 변환이고, (2)는 푸리에 역변환입니다. 푸리에 변환은 위에서 설명드린 것처럼, time domain을 frequency domain으로 변환한 것으로, 다양한 주파수를 갖는 주기함수의 합입니다. 그렇다면, 푸리에 역변환은 frequency domain의 함수를 다시 time domain으로 변환하는 것입니다. 푸리에 변환을 바라보는 관점은 여러가지가 존재하지만 그 중 하나는 ‘내적’입니다. &quot;임의의 주파수 $f(x)$ 에 대하여, $\hat{f}(\xi)$ 는 $f(x)$ 와 $e^{-2\pi ix\xi}$ 의 내적&quot; ‘내적’이 내포하고 있는 의미는 유사도입니다. 즉, “a와 b의 내적은 a와 b가 얼마나 닮았는가”를 뜻합니다. 결국 푸리에 변환은 다시 풀어쓰면 아래와 같은 의미를 가지고 있습니다. &quot;임의의 주파수 $f(x)$ 에 대하여, $\hat{f}(\xi)$ 는 $f(x)$ 와 $e^{-2\pi ix\xi}$ 가 얼마나 닮았는가&quot; 그렇다면, $e^{-2\pi ix\xi}$ 의 의미는 무엇일까요 ? 이를 이해하기 위해선 ‘오일러 공식’이 필요합니다. 오일러 공식은 복소지수함수(complext exponential function)를 삼각함수(trigonometric function)로 표현하는 유명한 식입니다. 따라서, 오일러 공식에 의해 (1)식의 $e^{2\pi ix\xi}$ 부분을 cos요소와 sin요소의 합으로 표현할 수 있습니다. 즉, 주어진 주파수 f(x)에 대해 cosine에서 유사한 정도와 sine과 유사한 정도의 합이 푸리에 변환이라고 생각할 수 있습니다. 이번엔 푸리에 변환의 선형대수(linear algebra)적인 의미를 살펴보도록 하겠습니다. 선형 대수에서, 벡터 $a \in R^d$ 를 d차원의 orthonormal basis를 찾을 수 있다면, 벡터 $a$ 를 orhonormal basis의 선형결합으로 표현할 수 있습니다. 이 orthonormal basis를 찾는 방법 중 하나가 바로 Eigen-value decomposition 입니다. orthonormal이란 서로 직교하면서 길이가 1인 벡터들을 의미합니다. 또한, 모든 matrix에 대해서 eigen-value decomposition 결과로 찾은 basis가 orthonormal은 아닙니다. 하지만 real-symmetric matrix에 대하여 구한 eigenvector들은 orthgonal한 관계입니다. 다시 돌아와서, 푸리에 변환에서 주기함수 요소인 sine과 cosine에 대해 살펴봅시다. 아래와 같이 sine과 sine, sine과 cosine, cosine과 cosine을 내적하면 모두 다 0이 나옵니다. 이는 즉 삼각함수는 직교함을 알 수 있습니다(삼각함수의 직교성). 그렇다면, 선형대수 관점에서, sine과 cosine 기저들의 선형결합이 즉 푸리에 변환이 되는 것입니다. 즉, 어떤 특정 signal이 real symmetric matrices이고 이들의 eigenvectors를 구할 수 있다면, eigenvector의 선형결합이 즉 해당 signal의 푸리에 변환임을 의미하는 것입니다. Laplacian Operator Kipf, Thomas N., and Max Welling. “Semi-supervised classification with graph convolutional networks.” arXiv preprint arXiv:1609.02907 (2016). Zhou, Jie, et al. “Graph neural networks: A review of methods and applications.” arXiv preprint arXiv:1812.08434 (2018). DSBA 연구실 세미나 자료, [Paper Review] MultiSAGE - Spatial GCN with Contextual Embedding 푸리에 변환 참고 페이지 https://darkpgmr.tistory.com/171 https://www.math.ucla.edu/~tao/preprints/fourier.pdf https://angeloyeo.github.io/2019/10/11/Fourier_Phase.html</summary></entry><entry><title type="html">Introduction to Graph Neural Network - GNN 소개 및 개념</title><link href="http://localhost:4000/deep%20learning/2021/02/11/gcn/" rel="alternate" type="text/html" title="Introduction to Graph Neural Network - GNN 소개 및 개념" /><published>2021-02-11T00:00:00+09:00</published><updated>2021-02-11T00:00:00+09:00</updated><id>http://localhost:4000/deep%20learning/2021/02/11/gcn</id><content type="html" xml:base="http://localhost:4000/deep%20learning/2021/02/11/gcn/">&lt;p&gt;이번 포스팅을 시작으로, Graph Neural Network(GNN)에 대해 본격적으로 다루도록 하겠습니다. 이번 포스팅은 Graph Neural Network가 나온 배경 및 기본적인 구조와 개념에 대해 다루도록 하겠습니다.&lt;/p&gt;
 
 &lt;hr /&gt;
 
@@ -2565,159 +2660,4 @@ if __name__ == &quot;__main__&quot;:
 &lt;hr /&gt;
 &lt;ol&gt;
   &lt;li&gt;함수형 언어, &lt;a href=&quot;https://sungjk.github.io/2017/07/17/fp.html&quot;&gt;https://sungjk.github.io/2017/07/17/fp.html&lt;/a&gt;, &lt;a href=&quot;https://docs.python.org/ko/3/howto/functional.html&quot;&gt;https://docs.python.org/ko/3/howto/functional.html&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</content><author><name>Seonhwa Lee</name></author><category term="Spark Programming" /><category term="data-engineering" /><summary type="html">이번 포스팅은 “빅데이터 분석을 위한 스파크2 프로그래밍 - Chaper2. RDD” 를 읽고 정리하였습니다. 정리 순서는 책 순서와 동일하고, 책을 읽어가면서 이해가 안되는 부분을 추가적으로 정리하였습니다. 2.1 RDD 2.1.1 들어가기에 앞서 RDD를 공부하기 전 기억하고 넘어가야 할 것들에 대해 정리하였습니다. 1. 스파크 클러스터 클러스터란 여러 대의 서버가 마치 한대의 서버처럼 동작하는 것을 뜻합니다. 스파크는 클러스터 환경에서 동작하며 대량의 데이터를 여러 서버에서 병렬 처리합니다 2. 분산 데이터로서의 RDD RDD는 Resilient Distrubuted Datasets으로, ‘회복력을 가진 분산 데이터 집합’이란 뜻입니다. (Resilient : 회복력이 있는) 데이터를 처리하는 과정에서 문제가 발생하더라도 스스로 복구할 수 있는 것을 의미합니다. 이는 그 다음 설명 트랜스포메이션과 액션과 지연(lazy) 동작과 최적화 부분과 함께 다시 설명드리도록 하겠습니다. 3. 트랜스포메이션과 액션 RDD가 제공하는 연산은 크게 트랜스포메이션과 액션이 있습니다. “연산”은 흔히 “메서드”로 이해하시면 됩니다. 트랜스포메이션은 RDD의 변형을 일으키는 연산이고, 실제로 동작이 수행되지는 않습니다. 그림 1. RDD 예시 그림 2.RDD 예시(2) 아래 예시를 보면, 데이터를 읽어 RDD를 생성해서 file변수에 저장한 뒤, flatMap -&amp;gt; map -&amp;gt; reduceByKey 함수를 거치면서 RDD[2], RDD[3], RDD[8]을 새로 생성하는 것을 볼 수 있습니다. 이렇게 transformation을 이전 RDD를 변형해서 새로운 RDD를 생성하는 것입니다. 반면에, action은 동작을 수행해서 원하는 타입의 결과를 만들어내는 것이므로, saveAsTextFile로 수행됩니다. 따라서, saveAsTextFile은 action 연산에 해당됩니다. 4. 지연 동작과 최적화 지연 동작이란, 액션 연산이 수행되기 전까지 실제로 트랜스포메이션 연산을 수행하지 않는 것입니다. 이는 RDD의 특성 중 하나인 ‘회복력’과 관련있습니다. 액션 연산이 수행되기 전까지 동작이 지연이 되는데, 대신에 RDD가 생성되는 방법을 기억하는 것입니다. 따라서 문제가 발생하더라도 기존에 RDD가 생성되는 방법을 기억하여 연산 수행에 문제가 없도록 하는 것입니다. 이는 위의 예시에서 reduceByKey까지는 실제로 트랜스포메이션 연산을 수행하는 것이 아니라 해당 연산을 순서대로 기억해놨다가, saveAsFile연산이 수행될 때(액션 연산이 수행될 때) 비로소 트랜스포메이션 연산도 수행된 것입니다. 지연 동작 방식의 큰 장점은 실행계획의 최적화입니다. RDD의 불변성 오류로 인해 스파크의 데이터가 일부 유실되면, 데이터를 다시 만들어내는 방식으로 복구되는 것이 RDD의 불변성입니다. 이는 위에서 계속 언급한 “회복력”과 관련됩니다. RDD는 RDD1-&amp;gt;RDD2-&amp;gt; … 가 되면서 한번 만들어진 RDD는 내용이 변경되지 않습니다. RDD를 만드는 방법을 기억해서 문제가 발생 시 언제든지 똑같은 데이터를 생성할 수 있습니다. 5. 파티션과 HDFS RDD데이터는 클러스터를 구성하는 여러 서버에 나뉘어서 저장됨 이 때, 분할된 데이터를 파티션 단위로 관리합니다. HDFS는 하둡의 파일 시스템(hadoop distributed file system) 스파크는 하둡 파일 입출력 API에 의존성을 가지고 있음. 6. Job, Executor, 드라이버 프로그램 Job : 스파크 프로그램 실행하는 것 = 스파크 잡(job)을 실행하는 것 하나의 잡은 클러스터에서 병렬로 처리됨 이 때, 클러스터를 구성하는 각 서버마다 executor라는 프로세스가 생성 각 executor는 할당된 파티션 데이터를 처리함 드라이버란 ? 스파크에서 잡을 실행하는 프로그램으로, 메인함수를 가지고 있는 프로그램 드라이버에서 스파크 컨테스트를 생성하고 그 인스턴스를 포함하고 있는 프로그램 스파크컨테스트를 생성해 클러스터의 각 워커 노드들에게 작업을 지시하고 결과를 취합하는 역할을 수행 아래 코드를 보면, main함수 안에 sparkcontext를 생성하고 sc라는 인스턴스를 포함하고 있는 것을 볼 수 있음. 즉, main함수를 가지고 있는 프로그램이 ‘드라이버’에 해당됨 Public static void main(String[] args){ ... JavaSparkContext s c = getSparkContext(&quot;WordCount&quot;, args[0]); ...} 7. 함수의 전달 스파크는 함수형 프로그래밍 언어인 스칼라로 작성되어 “함수”를 다른 함수의 “매개변수”로서 전달 가능 아래 예제(Scala)를 보면 map의 인자에 ‘_+1’이 전달되는데, 익명 함수로 전달되는 것임 val rdd1 = sc.paralleize(1 to 10) val rdd2 = rdd1.map(_+1) 파이썬으로 작성하면 아래와 같이, lambda 함수가 매개변수로 들어가게 됨 rdd1.map(lambda v:v+1) [참고]함수형 프로그래밍 함수형 프로그래밍과 객체 지향 프로그래밍의 차이를 통해 이해해보겠습니다. 객체 지향 프로그래밍은 객체 안에 상태를 저장하고, 해당 상태를 이용해서 제공할 수 있는(메소드)를 추가하고 상태변화를 ‘누가 어디까지 볼 수 있게 할지’를 설정하고 조정합니다. 따라서 적절한 상태 변경이 되도록 구성합니다. 반면에 함수형 프로그래밍은 상태 변경을 피하며 함수 간의 데이터 흐름을 사용합니다. 입력은 여러 함수들을 통해 흘러 다니게 됩니다. 따라서, 함수의 인자로 함수가 들어오고 반환의 결과로도 함수가 나올 수 있습니다. 함수 전달 시 유의할 점 Class PassingFunctionSample{ val count=1 def add(I: int):Int={ count+i } def runMapSample(sc:SparkContext){ val rdd1 = sc.parallelize(1 to 10); val rdd2 = rdd1.map(add)} } 위와 같이 코드를 작성해서 실행하면, ‘java.io.NotSerializaionException’이라는 오류가 발생합니다. 이는 전달된 add함수가 클러스터를 구성하는 각 서버에서 동작할 수 있도록 전달되어야 하는데, 전달이 안되기 때문입니다. 그 이유는 add함수는 PassingFunctionSample의 메소드로 결국 클래스 PassingFunctionSample이 전체 다 전달되기 때문입니다. 해당 클래스는 Serializable 인터페이스를 구현하지 않습니다. 즉, 클래스가 각 서버에 전달될 수 있는 기능을 가지고 있지 않는 것입니다. 함수만 따로 전달되어야 하는 것입니다. 스칼라 같은 경우 ‘싱글톤 객체’를 이용하여 해결 할 수 있습니다. 파이썬의 예제도 살펴보면, 아래는 클래스 전체가 전달되는 잘못된 예입니다. class PassingFunctionSample(): def add1(self, i): return i + 1 def runMapSample1(self, sc): rdd1 = sc.parallelize([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) rdd2 = rdd1.map(self.add1) # rdd2 = rdd1.map(add2) print(&quot;, &quot;.join(str(i) for i in rdd2.collect())) self로 인해 전체 클래스가 전달됩니다.(파이썬은 예외없이 실행되므로 유의할 것!) class PassingFunctionSample(): @staticmethod def add1(self, i): return i + 1 def runMapSample1(self, sc): rdd1 = sc.parallelize([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) rdd2 = rdd1.map(add2) print(&quot;, &quot;.join(str(i) for i in rdd2.collect())) if __name__ == &quot;__main__&quot;: def add2(i): return i + 1 conf = SparkConf() sc = SparkContext(master=&quot;local[*]&quot;, appName=&quot;PassingFunctionSample&quot;, conf=conf) obj = PassingFunctionSample() obj.runMapSample1(sc) 위와 같이 함수 add2가 독립적으로(클래스 전체가) 전달될 수 있도록 해야합니다. 변수 전달 시 유의할 점 class PassingFunctionSample { var increment = 1 def runMapSample3(sc: SparkContext) { val rdd1 = sc.parallelize(1 to 10) val rdd2 = rdd1.map(_ + increment) \\익명함수 전달 print(rdd2.collect.toList) } def runMapSample4(sc: SparkContext) { val rdd1 = sc.parallelize(1 to 10) val localIncrement = increment val rdd2 = rdd1.map(_ + localIncrement) print(rdd2.collect().toList) } } runMapSample3 처럼 변수가 직접 전달되면 안되고, runMapSample4처럼 지역변수로 변환해서 전달해야 합니다. 그래야 나중에 변수가 변경되어 생기는 문제를 방지할 수 있습니다. 데이터 타입에 따른 RDD 연산 RDD 연산 함수에서 인자 타입을 보고 적절하게 맞는 연산 함수를 사용해야 합니다. 이상으로 &amp;lt;RDD, Resilient Distributed DataSet에 대하여[1]&amp;gt; 마치겠습니다. 다음 포스팅에서 이어가도록 하겠습니다. 함수형 언어, https://sungjk.github.io/2017/07/17/fp.html, https://docs.python.org/ko/3/howto/functional.html</summary></entry><entry><title type="html">스파크(Spark) 소개</title><link href="http://localhost:4000/spark%20programming/2020/11/17/introspark/" rel="alternate" type="text/html" title="스파크(Spark) 소개" /><published>2020-11-17T00:00:00+09:00</published><updated>2020-11-17T00:00:00+09:00</updated><id>http://localhost:4000/spark%20programming/2020/11/17/introspark</id><content type="html" xml:base="http://localhost:4000/spark%20programming/2020/11/17/introspark/">&lt;p&gt;데이터 분석가의 역할이 점차 데이터 분석 영역에서 벗어나 조금씩 엔지니어의 영역까지 요구되고 있는 것 같아, 데이터 엔지니어링 관련 공부에 대한 필요성을 느꼈습니다. 데이터 분석을 직업으로 함에도 불구하고, 하둡이나 스파크 등과 같은 빅데이터 분석 쪽은 많이 접해보지 못했습니다. 따라서 이번 포스팅을 시작해서 해당 관련 포스팅을 틈틈히 올리도록 하겠습니다.&lt;/p&gt;
-
-&lt;p&gt;먼저, 교재 &amp;lt;빅데이터 분석을 위한 스파크2 프로그래밍, 대용량 데이터 처리부터 머신러닝까지 - 백성민 저자&amp;gt;를 읽고 포스팅을 진행하도록 하겠습니다. 본 포스팅은 &amp;lt;ch1. 스파크 소개&amp;gt; 에 대해 다뤘습니다.&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;h1&gt;빅데이터의 등장 및 정의&lt;/h1&gt;
-&lt;ul&gt;
-  &lt;li&gt;4차 산업 혁명과 더불어 데이터 처리 기술이 발달함&lt;/li&gt;
-  &lt;li&gt;빅데이터를 크기(volume), 다양성(variety), 속도(velocity)를 이용해서 초기에 정의 내림
-    &lt;ul&gt;
-      &lt;li&gt;다양한 형태를 지닌 대량의 데이터가 빠른 속도로 쌓이고 있다면 이를 빅데이터라 부름&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;그러나 추후에 가변성(variability), 정확성(veracity), 복잡성(complexity), 시인성(visibility)가 추가됨&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1&gt;스파크&lt;/h1&gt;
-&lt;p&gt;스파크는 하둡의 단점이 개선되어 나온 것으로, 하둡은 아래와 같음&lt;/p&gt;
-
-&lt;h3&gt;하둡이란?&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;구글이 대용량 처리와 관련된 두 개의 논문을 더그 커팅이 실제 구현하면서 시작된 아파치 프로젝트임&lt;/li&gt;
-  &lt;li&gt;분산 환경의 병렬처리 프레임워크로, 분산 파일 시스템인 HDFS와 데이터 처리를 위한 맵리듀스 프레임워크로 구성됨
-    &lt;ul&gt;
-      &lt;li&gt;이후에 CPU, 메모리 등 컴퓨팅 자원 관리를 전담하는 리소스 관림 시스템인 Yarn을 포함해, 기존 맵리듀스 프로그래밍 모델을 Yarn 기반으로 구축 관리할 수 있게 함&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;여러대의 서버를 하나의 클러스터로 구성하여, 클러스터 컴퓨팅 환경 제공&lt;/li&gt;
-  &lt;li&gt;기본적인 동작 방법은, 데이터는  HDFS에 저장하고 데이터 처리를 맵리듀스 프로그래밍을 이용하여 HDFS 위에서 수행&lt;/li&gt;
-  &lt;li&gt;&lt;b&gt;HDFS?&lt;/b&gt;
-    &lt;ul&gt;
-      &lt;li&gt;하나의 네임노드와 여러  데이터노드로 구성됨&lt;/li&gt;
-      &lt;li&gt;하나의 네임노드가 다른 데이터노드를 관리하는 형태로 시스템이 돌아감.&lt;/li&gt;
-      &lt;li&gt;전체 데이터는 일정한 크기(블록)로 나눠서 여러 데이터 노드에 분산되어 저장하고, 각 블록이 어디에 저장되어 있는지에 대한 메타 정보가 네임노드에 저장됨&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-&lt;img width=&quot;500&quot; src=&quot;https://imgur.com/6WwaRY4.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 1. HDFS&lt;/figcaption&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;b&gt;맵리듀스 프레임워크?&lt;/b&gt;
-    &lt;ul&gt;
-      &lt;li&gt;데이터 처리 프레임워크로 데이터를 여러 개의 맵 프로세스와 리듀서 프로세스로 나눠서 처리하는 방식&lt;/li&gt;
-      &lt;li&gt;위 그림에서 맵리듀스 잡이 실행되면 네임노드로부터 메타정보를 읽어서 데이터 위치를 확인하고, 데이터를 처리함&lt;/li&gt;
-      &lt;li&gt;맵 프로세스는 여러 데이터 노드에 분산 저장된 데이터를 각 서버에서 병렬로 나누어 처리하며, 리듀서는 그러한 맵 프로세스들의 결과를 조합해 최종 결과를 만들어냄&lt;/li&gt;
-      &lt;li&gt;그러나, 하둡의 맵리듀스 잡은 대부분의 연산 작업을 파일시스템 기반으로 처리하기 때문에 데이터 처리 성능이 떨어짐&lt;/li&gt;
-      &lt;li&gt;반면에, 스파크는 메모리를 이용한 데이터 처리 방식을 제공함으로써 높은 성능을 보여줌&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3&gt;스파크란?&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;스파크는 하둡 기반의 맵리듀스 작업의 단점을 보완한 것으로, 데이터를 메모리 기반으로 처리하기 때문에 처리 성능이 향상됨&lt;/li&gt;
-  &lt;li&gt;또한 작업을 실행하기 전에 최적의 처리 흐름을 찾는 과정을 포함함&lt;/li&gt;
-  &lt;li&gt;맵리듀스에 비해 훨씬 다양한 데이터 처리 함수 제공&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2&gt;RDD, 데이터프레임, 데이터셋 소개와 연산&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;스파크 프로그램 내에서 ‘데이터’를 표현하고 처리하기 위한 프로그래밍 모델로, RDD, 데이터프레임(Dataframe), 데이터셋(Dataset)이 있음
-    &lt;ul&gt;
-      &lt;li&gt;데이터프레임과 데이터셋은 RDD가 보완되서 나온 것이므로, RDD가 기본임&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3&gt;RDD&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;RDD란, resilient distributed dataset으로, 병렬 처리가 가능한 요소로 구성되며 데이터를 처리하는 과정에서 일시적인 문제가 발생하더라도 스스로 에러를 복구할 수 있는 능력을 지닌 데이터 모델임&lt;/li&gt;
-  &lt;li&gt;RDD에 속한 요소들은 파티션이라는 단위로 나눠질 수 있는데, 스파크는 데이터 처리 작업을 수행할 때, 파티션 단위로 나뉘어서 병렬 처리함. &lt;del&gt;하둡에서 맵 프로세스가 여러 데이터 노드에 분산 저장된 데이터를 각 서버에서 병렬 처리하는 것과 유사하다고 생각함&lt;/del&gt;&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;기존 RDD는 덧셈 연산, 그룹화 연산등을 적용 시, 파티션에 속한 데이터들이 네트워크를 통해 다른 서버로 이동하는 셔플링이 발생될 수 있음&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;그런데, 작업 도중에 장애가 발생하여 결과가 유실될 수 있으나, 스파크 같은 경우는 RDD의 생성 과정을 기록해 뒀다가 다시 복구해 주는 기능을 가지고 있음. 이를 수행 하기 위해선 한번 생성된 RDD는 바뀌지 않아야 하는 조건이 있음
-    &lt;ul&gt;
-      &lt;li&gt;이렇게 스파크에서 RDD 생성 과정을 기록해 둔 것을 리니지(lineage)라고 함&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2&gt;DAG&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;맵 리듀스 작업으로 데이터 처리 시, 데이터 처리 방법의 너무 복잡한 경우나 데이터의 크기가 너무 큰 경우 서버의 가용량을 넘겨서 문제가 발생하는 경우가 발생&lt;/li&gt;
-  &lt;li&gt;따라서, 한번의 작업으로 모든 것을 끝낸다기 보다는 하나의 작업을 여러 개의 작은 작업으로 나눠 놓고 각 작업을 최적화해서 일련의 순서대로 나누어 실행하는 경우가 종종 있음&lt;/li&gt;
-  &lt;li&gt;일련의 작업 흐름을 나타내는 워크플로우는 DAG(Directed acyclic graph)를 구성하고, 이를 이용해 일련의 작업을 수행하면 다양한 라이브러리를 연동해서 데이터 처리를 수행 가능
-    &lt;ul&gt;
-      &lt;li&gt;DAG? 란 꼭짓점과 방향성을 가진 엣지로 구성된 그래프 모델임&lt;/li&gt;
-      &lt;li&gt;빅데이터는 DAG를 이용해 복잡한 일련의 작업 흐름을 나타냄&lt;/li&gt;
-      &lt;li&gt;예) 우지 워크플로우 오픈소스&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3&gt;스파크 내에서의 DAG&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;스파크에서 DAG 처리를 담당하는 부분 : DAG스케쥴러&lt;/li&gt;
-  &lt;li&gt;스파크는 전체 작업을 스테이지로 나누고, 다시 여러개의 태스크로 나눠서 수행&lt;/li&gt;
-  &lt;li&gt;드라이버의 메인 함수에서는 스파크 애플리케이션과 스파크 클러스터 연동을 담당하는 스파크 컨텍스트가 있음. 스파크 컨텍스트를 이용해 잡을 실행하고 종료하는 역할을 함
-    &lt;ul&gt;
-      &lt;li&gt;드라이버란 ? RDD를 생성하고 각종 연산을 호출하는 프로그램&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;드라이버가 스파크 컨텍스트를 통해 RDD의 연산 정보를 DAG스케쥴러에 전달하면 스케쥴러는 이 정보를 가지고 실행계획을 수립. 그 후, 클러스터 매니저에게 전달함&lt;/li&gt;
-  &lt;li&gt;DAG스케쥴러는 데이터에 대한 지역성을 높이는 전략과 관련된 것. 즉, 전체 데이터 처리 흐름을 분석해서 네트워크를 통한 데이터 이동이 최소화되도록 스테이지를 구성하는 것이 스케쥴링의 역할임
-    &lt;ul&gt;
-      &lt;li&gt;&lt;b&gt;데이터의 지역성&lt;/b&gt;이란 ? 데이터를 처리하는 장소로 따로 보내 처리하는 것이 아니라, 데이터가 저장되어 있는 서버(블록별로 저장되어 있음)에서 처리하는 것.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;데이터 이동이 최소화되도록 한다는 것은 네트워크를 통한 데이터 이동 즉 &lt;b&gt;“셔플링”&lt;/b&gt;을 최소화하는 것임&lt;/li&gt;
-  &lt;li&gt;셔플링 관련 예시&lt;/li&gt;
-&lt;/ul&gt;
-&lt;ul&gt;&lt;li&gt;방법 1)&lt;/li&gt; 
-&lt;ol&gt;&lt;li&gt;10대 서버에 저장된 모든 로그를 상품에 따라 재분류 한다.&lt;/li&gt;
-&lt;li&gt;상품별 총 판매건수를 계산한 후 원하는 상품의 정보만을 출력한다.&lt;/li&gt;&lt;/ol&gt;
-&lt;li&gt;방법 2)&lt;/li&gt;
-&lt;ol&gt;&lt;li&gt;전체 로그를 분류하기 전에 각 서버별로 원하는 상품 정보만 걸러낸 후 상품별 총 판매건수를 계산한다.&lt;/li&gt;&lt;li&gt;각 서버별로 따로 계산된 상품별 판매건수를 한 곳으로 모아서 더한 후 출력한다.&lt;/li&gt;&lt;/ol&gt;&lt;/ul&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;방법 1의 경우, 10대 서버의 모든 로그 파일을 상품별로 재분류하는 것으로 작업을 시작하나, 동일한 상품번호를 가진 로그파일이 10대의 서버의 무작위로 흩어져 있음. 따라서, 재분류를 위한 “셔플링”이 대량으로 발생함&lt;/li&gt;
-  &lt;li&gt;방법 2의 경우, 셔플을 수행하기 전에 각 서버에 먼저 상품별 부분 집계를 수행한 후 집계된 결과 파일만을 대상으로 네트워크를 통한 2차 합계 연산을 수행하기 때문에, 방법 1에 비해 셔플이 적음&lt;/li&gt;
-  &lt;li&gt;&lt;b&gt;$\rightarrow$ 셔플이 최소화되는 방향으로 연산 수행해야 함&lt;/b&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2&gt;람다 아키텍쳐&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;빅데이터 처리를 위한 시스템을 구성하는 방법 중 하나로, 네이선 마츠가 제안한 아키텍쳐 모델&lt;/li&gt;
-  &lt;li&gt;기존과 같은 대용량 데이터 처리 뿐만 아니라 실시간 로그 분석과 같은 실시간 처리도 중요해짐에 따라 두가지 요구를 충족시키는 아키텍쳐가 필요해졌음&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;500&quot; src=&quot;https://t1.daumcdn.net/cfile/tistory/9995AE4F5BFCC50B20&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 2. 람다 아키텍쳐&lt;sup&gt;[1]&lt;/sup&gt;&lt;/figcaption&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;람다 아키텍쳐 운영 방법&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;ol&gt;&lt;li&gt;새로운 데이터는 일괄 처리 계층(Batch layer)과 속도 계층(speed layer) 모두에게 전달됨&lt;/li&gt;
-&lt;li&gt;일괄 처리 계층(Batch layer)은 원본 데이터를 저장하고 일정 주기마다 한번 씩 일괄적으로 가공해서 배치뷰를 생성함. 이때 배치란, 특정시간마다 주기적으로 계산을 수행하는 것을 말함. 뷰라고 한 부분은 외부에 보여지는 데이터, 결과 데이터임&lt;/li&gt;
-&lt;li&gt;속도 계층은 들어오는 데이터를 즉시 또는 매우 짧은 주기로 철리해 실시간 뷰(Real-time view)를 생성함&lt;/li&gt;
-&lt;li&gt;서빙 계층(serving layer)은 실시간 뷰와 배치 뷰의 결과를 적절히 조합하여 사용자에게 데이터를 전달함. 물론 서빙 계층을 거치지 않고 배치뷰 또는 실시간뷰를 직접 조회(query)할 수 있음&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;즉, 일괄 처리 작업을 통해 데이터를 처리하지만 아직 배치 처리가 수행되지 않은 부분은 실시간 처리를 통해 보완함&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;이상으로, 본 포스팅을 마치겠습니다. 다음 포스팅은 &lt;a href=&quot;https://ralasun.github.io/spark%20programming/2020/11/20/rdd/&quot;&gt;&amp;lt;RDD, Resilient Distributed DataSet에 대하여[1]&amp;gt;&lt;/a&gt; 에 대해 진행하도록 하겠습니다.&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;a name=&quot;lambda-archi&quot;&gt;1. &lt;a href=&quot;https://jhleed.tistory.com/122&quot;&gt;람다 아키텍쳐, https://jhleed.tistory.com/122&lt;/a&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>Seonhwa Lee</name></author><category term="Spark Programming" /><category term="data-engineering" /><summary type="html">데이터 분석가의 역할이 점차 데이터 분석 영역에서 벗어나 조금씩 엔지니어의 영역까지 요구되고 있는 것 같아, 데이터 엔지니어링 관련 공부에 대한 필요성을 느꼈습니다. 데이터 분석을 직업으로 함에도 불구하고, 하둡이나 스파크 등과 같은 빅데이터 분석 쪽은 많이 접해보지 못했습니다. 따라서 이번 포스팅을 시작해서 해당 관련 포스팅을 틈틈히 올리도록 하겠습니다. 먼저, 교재 &amp;lt;빅데이터 분석을 위한 스파크2 프로그래밍, 대용량 데이터 처리부터 머신러닝까지 - 백성민 저자&amp;gt;를 읽고 포스팅을 진행하도록 하겠습니다. 본 포스팅은 &amp;lt;ch1. 스파크 소개&amp;gt; 에 대해 다뤘습니다. 빅데이터의 등장 및 정의 4차 산업 혁명과 더불어 데이터 처리 기술이 발달함 빅데이터를 크기(volume), 다양성(variety), 속도(velocity)를 이용해서 초기에 정의 내림 다양한 형태를 지닌 대량의 데이터가 빠른 속도로 쌓이고 있다면 이를 빅데이터라 부름 그러나 추후에 가변성(variability), 정확성(veracity), 복잡성(complexity), 시인성(visibility)가 추가됨 스파크 스파크는 하둡의 단점이 개선되어 나온 것으로, 하둡은 아래와 같음 하둡이란? 구글이 대용량 처리와 관련된 두 개의 논문을 더그 커팅이 실제 구현하면서 시작된 아파치 프로젝트임 분산 환경의 병렬처리 프레임워크로, 분산 파일 시스템인 HDFS와 데이터 처리를 위한 맵리듀스 프레임워크로 구성됨 이후에 CPU, 메모리 등 컴퓨팅 자원 관리를 전담하는 리소스 관림 시스템인 Yarn을 포함해, 기존 맵리듀스 프로그래밍 모델을 Yarn 기반으로 구축 관리할 수 있게 함 여러대의 서버를 하나의 클러스터로 구성하여, 클러스터 컴퓨팅 환경 제공 기본적인 동작 방법은, 데이터는 HDFS에 저장하고 데이터 처리를 맵리듀스 프로그래밍을 이용하여 HDFS 위에서 수행 HDFS? 하나의 네임노드와 여러 데이터노드로 구성됨 하나의 네임노드가 다른 데이터노드를 관리하는 형태로 시스템이 돌아감. 전체 데이터는 일정한 크기(블록)로 나눠서 여러 데이터 노드에 분산되어 저장하고, 각 블록이 어디에 저장되어 있는지에 대한 메타 정보가 네임노드에 저장됨 그림 1. HDFS 맵리듀스 프레임워크? 데이터 처리 프레임워크로 데이터를 여러 개의 맵 프로세스와 리듀서 프로세스로 나눠서 처리하는 방식 위 그림에서 맵리듀스 잡이 실행되면 네임노드로부터 메타정보를 읽어서 데이터 위치를 확인하고, 데이터를 처리함 맵 프로세스는 여러 데이터 노드에 분산 저장된 데이터를 각 서버에서 병렬로 나누어 처리하며, 리듀서는 그러한 맵 프로세스들의 결과를 조합해 최종 결과를 만들어냄 그러나, 하둡의 맵리듀스 잡은 대부분의 연산 작업을 파일시스템 기반으로 처리하기 때문에 데이터 처리 성능이 떨어짐 반면에, 스파크는 메모리를 이용한 데이터 처리 방식을 제공함으로써 높은 성능을 보여줌 스파크란? 스파크는 하둡 기반의 맵리듀스 작업의 단점을 보완한 것으로, 데이터를 메모리 기반으로 처리하기 때문에 처리 성능이 향상됨 또한 작업을 실행하기 전에 최적의 처리 흐름을 찾는 과정을 포함함 맵리듀스에 비해 훨씬 다양한 데이터 처리 함수 제공 RDD, 데이터프레임, 데이터셋 소개와 연산 스파크 프로그램 내에서 ‘데이터’를 표현하고 처리하기 위한 프로그래밍 모델로, RDD, 데이터프레임(Dataframe), 데이터셋(Dataset)이 있음 데이터프레임과 데이터셋은 RDD가 보완되서 나온 것이므로, RDD가 기본임 RDD RDD란, resilient distributed dataset으로, 병렬 처리가 가능한 요소로 구성되며 데이터를 처리하는 과정에서 일시적인 문제가 발생하더라도 스스로 에러를 복구할 수 있는 능력을 지닌 데이터 모델임 RDD에 속한 요소들은 파티션이라는 단위로 나눠질 수 있는데, 스파크는 데이터 처리 작업을 수행할 때, 파티션 단위로 나뉘어서 병렬 처리함. 하둡에서 맵 프로세스가 여러 데이터 노드에 분산 저장된 데이터를 각 서버에서 병렬 처리하는 것과 유사하다고 생각함 기존 RDD는 덧셈 연산, 그룹화 연산등을 적용 시, 파티션에 속한 데이터들이 네트워크를 통해 다른 서버로 이동하는 셔플링이 발생될 수 있음 그런데, 작업 도중에 장애가 발생하여 결과가 유실될 수 있으나, 스파크 같은 경우는 RDD의 생성 과정을 기록해 뒀다가 다시 복구해 주는 기능을 가지고 있음. 이를 수행 하기 위해선 한번 생성된 RDD는 바뀌지 않아야 하는 조건이 있음 이렇게 스파크에서 RDD 생성 과정을 기록해 둔 것을 리니지(lineage)라고 함 DAG 맵 리듀스 작업으로 데이터 처리 시, 데이터 처리 방법의 너무 복잡한 경우나 데이터의 크기가 너무 큰 경우 서버의 가용량을 넘겨서 문제가 발생하는 경우가 발생 따라서, 한번의 작업으로 모든 것을 끝낸다기 보다는 하나의 작업을 여러 개의 작은 작업으로 나눠 놓고 각 작업을 최적화해서 일련의 순서대로 나누어 실행하는 경우가 종종 있음 일련의 작업 흐름을 나타내는 워크플로우는 DAG(Directed acyclic graph)를 구성하고, 이를 이용해 일련의 작업을 수행하면 다양한 라이브러리를 연동해서 데이터 처리를 수행 가능 DAG? 란 꼭짓점과 방향성을 가진 엣지로 구성된 그래프 모델임 빅데이터는 DAG를 이용해 복잡한 일련의 작업 흐름을 나타냄 예) 우지 워크플로우 오픈소스 스파크 내에서의 DAG 스파크에서 DAG 처리를 담당하는 부분 : DAG스케쥴러 스파크는 전체 작업을 스테이지로 나누고, 다시 여러개의 태스크로 나눠서 수행 드라이버의 메인 함수에서는 스파크 애플리케이션과 스파크 클러스터 연동을 담당하는 스파크 컨텍스트가 있음. 스파크 컨텍스트를 이용해 잡을 실행하고 종료하는 역할을 함 드라이버란 ? RDD를 생성하고 각종 연산을 호출하는 프로그램 드라이버가 스파크 컨텍스트를 통해 RDD의 연산 정보를 DAG스케쥴러에 전달하면 스케쥴러는 이 정보를 가지고 실행계획을 수립. 그 후, 클러스터 매니저에게 전달함 DAG스케쥴러는 데이터에 대한 지역성을 높이는 전략과 관련된 것. 즉, 전체 데이터 처리 흐름을 분석해서 네트워크를 통한 데이터 이동이 최소화되도록 스테이지를 구성하는 것이 스케쥴링의 역할임 데이터의 지역성이란 ? 데이터를 처리하는 장소로 따로 보내 처리하는 것이 아니라, 데이터가 저장되어 있는 서버(블록별로 저장되어 있음)에서 처리하는 것. 데이터 이동이 최소화되도록 한다는 것은 네트워크를 통한 데이터 이동 즉 “셔플링”을 최소화하는 것임 셔플링 관련 예시 방법 1) 10대 서버에 저장된 모든 로그를 상품에 따라 재분류 한다. 상품별 총 판매건수를 계산한 후 원하는 상품의 정보만을 출력한다. 방법 2) 전체 로그를 분류하기 전에 각 서버별로 원하는 상품 정보만 걸러낸 후 상품별 총 판매건수를 계산한다.각 서버별로 따로 계산된 상품별 판매건수를 한 곳으로 모아서 더한 후 출력한다. 방법 1의 경우, 10대 서버의 모든 로그 파일을 상품별로 재분류하는 것으로 작업을 시작하나, 동일한 상품번호를 가진 로그파일이 10대의 서버의 무작위로 흩어져 있음. 따라서, 재분류를 위한 “셔플링”이 대량으로 발생함 방법 2의 경우, 셔플을 수행하기 전에 각 서버에 먼저 상품별 부분 집계를 수행한 후 집계된 결과 파일만을 대상으로 네트워크를 통한 2차 합계 연산을 수행하기 때문에, 방법 1에 비해 셔플이 적음 $\rightarrow$ 셔플이 최소화되는 방향으로 연산 수행해야 함 람다 아키텍쳐 빅데이터 처리를 위한 시스템을 구성하는 방법 중 하나로, 네이선 마츠가 제안한 아키텍쳐 모델 기존과 같은 대용량 데이터 처리 뿐만 아니라 실시간 로그 분석과 같은 실시간 처리도 중요해짐에 따라 두가지 요구를 충족시키는 아키텍쳐가 필요해졌음 그림 2. 람다 아키텍쳐[1] 람다 아키텍쳐 운영 방법 새로운 데이터는 일괄 처리 계층(Batch layer)과 속도 계층(speed layer) 모두에게 전달됨 일괄 처리 계층(Batch layer)은 원본 데이터를 저장하고 일정 주기마다 한번 씩 일괄적으로 가공해서 배치뷰를 생성함. 이때 배치란, 특정시간마다 주기적으로 계산을 수행하는 것을 말함. 뷰라고 한 부분은 외부에 보여지는 데이터, 결과 데이터임 속도 계층은 들어오는 데이터를 즉시 또는 매우 짧은 주기로 철리해 실시간 뷰(Real-time view)를 생성함 서빙 계층(serving layer)은 실시간 뷰와 배치 뷰의 결과를 적절히 조합하여 사용자에게 데이터를 전달함. 물론 서빙 계층을 거치지 않고 배치뷰 또는 실시간뷰를 직접 조회(query)할 수 있음 즉, 일괄 처리 작업을 통해 데이터를 처리하지만 아직 배치 처리가 수행되지 않은 부분은 실시간 처리를 통해 보완함 이상으로, 본 포스팅을 마치겠습니다. 다음 포스팅은 &amp;lt;RDD, Resilient Distributed DataSet에 대하여[1]&amp;gt; 에 대해 진행하도록 하겠습니다. 1. 람다 아키텍쳐, https://jhleed.tistory.com/122</summary></entry></feed>
+&lt;/ol&gt;</content><author><name>Seonhwa Lee</name></author><category term="Spark Programming" /><category term="data-engineering" /><summary type="html">이번 포스팅은 “빅데이터 분석을 위한 스파크2 프로그래밍 - Chaper2. RDD” 를 읽고 정리하였습니다. 정리 순서는 책 순서와 동일하고, 책을 읽어가면서 이해가 안되는 부분을 추가적으로 정리하였습니다. 2.1 RDD 2.1.1 들어가기에 앞서 RDD를 공부하기 전 기억하고 넘어가야 할 것들에 대해 정리하였습니다. 1. 스파크 클러스터 클러스터란 여러 대의 서버가 마치 한대의 서버처럼 동작하는 것을 뜻합니다. 스파크는 클러스터 환경에서 동작하며 대량의 데이터를 여러 서버에서 병렬 처리합니다 2. 분산 데이터로서의 RDD RDD는 Resilient Distrubuted Datasets으로, ‘회복력을 가진 분산 데이터 집합’이란 뜻입니다. (Resilient : 회복력이 있는) 데이터를 처리하는 과정에서 문제가 발생하더라도 스스로 복구할 수 있는 것을 의미합니다. 이는 그 다음 설명 트랜스포메이션과 액션과 지연(lazy) 동작과 최적화 부분과 함께 다시 설명드리도록 하겠습니다. 3. 트랜스포메이션과 액션 RDD가 제공하는 연산은 크게 트랜스포메이션과 액션이 있습니다. “연산”은 흔히 “메서드”로 이해하시면 됩니다. 트랜스포메이션은 RDD의 변형을 일으키는 연산이고, 실제로 동작이 수행되지는 않습니다. 그림 1. RDD 예시 그림 2.RDD 예시(2) 아래 예시를 보면, 데이터를 읽어 RDD를 생성해서 file변수에 저장한 뒤, flatMap -&amp;gt; map -&amp;gt; reduceByKey 함수를 거치면서 RDD[2], RDD[3], RDD[8]을 새로 생성하는 것을 볼 수 있습니다. 이렇게 transformation을 이전 RDD를 변형해서 새로운 RDD를 생성하는 것입니다. 반면에, action은 동작을 수행해서 원하는 타입의 결과를 만들어내는 것이므로, saveAsTextFile로 수행됩니다. 따라서, saveAsTextFile은 action 연산에 해당됩니다. 4. 지연 동작과 최적화 지연 동작이란, 액션 연산이 수행되기 전까지 실제로 트랜스포메이션 연산을 수행하지 않는 것입니다. 이는 RDD의 특성 중 하나인 ‘회복력’과 관련있습니다. 액션 연산이 수행되기 전까지 동작이 지연이 되는데, 대신에 RDD가 생성되는 방법을 기억하는 것입니다. 따라서 문제가 발생하더라도 기존에 RDD가 생성되는 방법을 기억하여 연산 수행에 문제가 없도록 하는 것입니다. 이는 위의 예시에서 reduceByKey까지는 실제로 트랜스포메이션 연산을 수행하는 것이 아니라 해당 연산을 순서대로 기억해놨다가, saveAsFile연산이 수행될 때(액션 연산이 수행될 때) 비로소 트랜스포메이션 연산도 수행된 것입니다. 지연 동작 방식의 큰 장점은 실행계획의 최적화입니다. RDD의 불변성 오류로 인해 스파크의 데이터가 일부 유실되면, 데이터를 다시 만들어내는 방식으로 복구되는 것이 RDD의 불변성입니다. 이는 위에서 계속 언급한 “회복력”과 관련됩니다. RDD는 RDD1-&amp;gt;RDD2-&amp;gt; … 가 되면서 한번 만들어진 RDD는 내용이 변경되지 않습니다. RDD를 만드는 방법을 기억해서 문제가 발생 시 언제든지 똑같은 데이터를 생성할 수 있습니다. 5. 파티션과 HDFS RDD데이터는 클러스터를 구성하는 여러 서버에 나뉘어서 저장됨 이 때, 분할된 데이터를 파티션 단위로 관리합니다. HDFS는 하둡의 파일 시스템(hadoop distributed file system) 스파크는 하둡 파일 입출력 API에 의존성을 가지고 있음. 6. Job, Executor, 드라이버 프로그램 Job : 스파크 프로그램 실행하는 것 = 스파크 잡(job)을 실행하는 것 하나의 잡은 클러스터에서 병렬로 처리됨 이 때, 클러스터를 구성하는 각 서버마다 executor라는 프로세스가 생성 각 executor는 할당된 파티션 데이터를 처리함 드라이버란 ? 스파크에서 잡을 실행하는 프로그램으로, 메인함수를 가지고 있는 프로그램 드라이버에서 스파크 컨테스트를 생성하고 그 인스턴스를 포함하고 있는 프로그램 스파크컨테스트를 생성해 클러스터의 각 워커 노드들에게 작업을 지시하고 결과를 취합하는 역할을 수행 아래 코드를 보면, main함수 안에 sparkcontext를 생성하고 sc라는 인스턴스를 포함하고 있는 것을 볼 수 있음. 즉, main함수를 가지고 있는 프로그램이 ‘드라이버’에 해당됨 Public static void main(String[] args){ ... JavaSparkContext s c = getSparkContext(&quot;WordCount&quot;, args[0]); ...} 7. 함수의 전달 스파크는 함수형 프로그래밍 언어인 스칼라로 작성되어 “함수”를 다른 함수의 “매개변수”로서 전달 가능 아래 예제(Scala)를 보면 map의 인자에 ‘_+1’이 전달되는데, 익명 함수로 전달되는 것임 val rdd1 = sc.paralleize(1 to 10) val rdd2 = rdd1.map(_+1) 파이썬으로 작성하면 아래와 같이, lambda 함수가 매개변수로 들어가게 됨 rdd1.map(lambda v:v+1) [참고]함수형 프로그래밍 함수형 프로그래밍과 객체 지향 프로그래밍의 차이를 통해 이해해보겠습니다. 객체 지향 프로그래밍은 객체 안에 상태를 저장하고, 해당 상태를 이용해서 제공할 수 있는(메소드)를 추가하고 상태변화를 ‘누가 어디까지 볼 수 있게 할지’를 설정하고 조정합니다. 따라서 적절한 상태 변경이 되도록 구성합니다. 반면에 함수형 프로그래밍은 상태 변경을 피하며 함수 간의 데이터 흐름을 사용합니다. 입력은 여러 함수들을 통해 흘러 다니게 됩니다. 따라서, 함수의 인자로 함수가 들어오고 반환의 결과로도 함수가 나올 수 있습니다. 함수 전달 시 유의할 점 Class PassingFunctionSample{ val count=1 def add(I: int):Int={ count+i } def runMapSample(sc:SparkContext){ val rdd1 = sc.parallelize(1 to 10); val rdd2 = rdd1.map(add)} } 위와 같이 코드를 작성해서 실행하면, ‘java.io.NotSerializaionException’이라는 오류가 발생합니다. 이는 전달된 add함수가 클러스터를 구성하는 각 서버에서 동작할 수 있도록 전달되어야 하는데, 전달이 안되기 때문입니다. 그 이유는 add함수는 PassingFunctionSample의 메소드로 결국 클래스 PassingFunctionSample이 전체 다 전달되기 때문입니다. 해당 클래스는 Serializable 인터페이스를 구현하지 않습니다. 즉, 클래스가 각 서버에 전달될 수 있는 기능을 가지고 있지 않는 것입니다. 함수만 따로 전달되어야 하는 것입니다. 스칼라 같은 경우 ‘싱글톤 객체’를 이용하여 해결 할 수 있습니다. 파이썬의 예제도 살펴보면, 아래는 클래스 전체가 전달되는 잘못된 예입니다. class PassingFunctionSample(): def add1(self, i): return i + 1 def runMapSample1(self, sc): rdd1 = sc.parallelize([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) rdd2 = rdd1.map(self.add1) # rdd2 = rdd1.map(add2) print(&quot;, &quot;.join(str(i) for i in rdd2.collect())) self로 인해 전체 클래스가 전달됩니다.(파이썬은 예외없이 실행되므로 유의할 것!) class PassingFunctionSample(): @staticmethod def add1(self, i): return i + 1 def runMapSample1(self, sc): rdd1 = sc.parallelize([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) rdd2 = rdd1.map(add2) print(&quot;, &quot;.join(str(i) for i in rdd2.collect())) if __name__ == &quot;__main__&quot;: def add2(i): return i + 1 conf = SparkConf() sc = SparkContext(master=&quot;local[*]&quot;, appName=&quot;PassingFunctionSample&quot;, conf=conf) obj = PassingFunctionSample() obj.runMapSample1(sc) 위와 같이 함수 add2가 독립적으로(클래스 전체가) 전달될 수 있도록 해야합니다. 변수 전달 시 유의할 점 class PassingFunctionSample { var increment = 1 def runMapSample3(sc: SparkContext) { val rdd1 = sc.parallelize(1 to 10) val rdd2 = rdd1.map(_ + increment) \\익명함수 전달 print(rdd2.collect.toList) } def runMapSample4(sc: SparkContext) { val rdd1 = sc.parallelize(1 to 10) val localIncrement = increment val rdd2 = rdd1.map(_ + localIncrement) print(rdd2.collect().toList) } } runMapSample3 처럼 변수가 직접 전달되면 안되고, runMapSample4처럼 지역변수로 변환해서 전달해야 합니다. 그래야 나중에 변수가 변경되어 생기는 문제를 방지할 수 있습니다. 데이터 타입에 따른 RDD 연산 RDD 연산 함수에서 인자 타입을 보고 적절하게 맞는 연산 함수를 사용해야 합니다. 이상으로 &amp;lt;RDD, Resilient Distributed DataSet에 대하여[1]&amp;gt; 마치겠습니다. 다음 포스팅에서 이어가도록 하겠습니다. 함수형 언어, https://sungjk.github.io/2017/07/17/fp.html, https://docs.python.org/ko/3/howto/functional.html</summary></entry></feed>
