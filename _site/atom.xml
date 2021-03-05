@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2021-03-04T14:34:51+09:00</updated>
+ <updated>2021-03-04T17:01:37+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -13,13 +13,13 @@
 
  
  <entry>
-   <title>Graph Convolutional Network에 대하여, Spectral Graph Convolution vs. Spatial Graph Convolution</title>
+   <title>Graph Convolutional Network에 대하여 - Spectral Graph Convolution</title>
    <link href="http://localhost:4000/deep%20learning/2021/02/15/gcn/"/>
    <updated>2021-02-15T00:00:00+09:00</updated>
    <id>http://localhost:4000/deep%20learning/2021/02/15/gcn</id>
    <content type="html">&lt;p&gt;지난 GNN 포스팅&amp;lt;&lt;a href=&quot;https://ralasun.github.io/deep%20learning/2021/02/11/gcn/&quot;&gt;Introduction to Graph Neural Network - GNN 소개 및 개념&lt;/a&gt;&amp;gt;에서 graph neural network의 전반적인 개념에 대해 소개하였습니다. 이번 포스팅은 graph neural network가 더욱 유명해진 계기가 된 &lt;a href=&quot;https://arxiv.org/abs/1609.02907&quot;&gt;Kipf. et, al.의 Graph Convolutional Neural Network&lt;/a&gt;에 대해 다루도록 하겠습니다.&lt;/p&gt;
 
-&lt;p&gt;Kipf. et al.의 GCN을 이해하기 위해서는 먼저, spectral graph convolution에서부터 시작해야 합니다. 그러나 :spectral” 이라는 부분이 생소하신 분들이 많을 거라 생각됩니다. 반면에 일반적인 CNN 동작 방식은 많이 알려져 있습니다. 일반적인 CNN 동작은 spatial convolution입니다. 따라서 이를 유사하게 graph에 적용하는 방식을 spatial graph convolution입니다. 따라서, 이번 포스팅에서는 spectral 방식과 spatial 방식을 비교하고, spectral graph convolution에 대해 설명한 뒤에 Kipf. et al의 Graph Convolutional Network에 대해 다루도록 하겠습니다.&lt;/p&gt;
+&lt;p&gt;Kipf. et al.의 GCN을 이해하기 위해서는 먼저, spectral graph convolution에서부터 시작해야 합니다. 그러나 :spectral” 이라는 부분이 생소하신 분들이 많을 거라 생각됩니다. 반면에 일반적인 CNN 동작 방식은 많이 알려져 있습니다. 일반적인 CNN 동작은 spatial convolution입니다. 따라서 이를 유사하게 graph에 적용하는 방식을 spatial graph convolution입니다. 따라서, 이번 포스팅에서는 spectral 방식과 spatial 방식을 비교하고, spectral graph convolution에 대해 자세히 설명한 뒤에 Kipf. et al의 Graph Convolutional Network에 대해 다루도록 하겠습니다.&lt;/p&gt;
 
 &lt;hr /&gt;
 
@@ -38,7 +38,7 @@
 &lt;p&gt;앞에서 언급한 spatial graph convolution이 다뤄야 할 문제점과 별개로 또다른 문제점이 존재합니다. &lt;b&gt;Spatial graph convolution은 고정된 이웃 노드에서만 정보는 받아서 노드의 정보를 업데이트를 한다는 점입니다.&lt;/b&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;300&quot; src=&quot;https://imgur.com/KWmqbgk.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 3. Select neighborhood of red node&lt;/figcaption&gt;&lt;/p&gt;
 
-&lt;p&gt;그러나, 그래프에서의 한 노드의 정보는 시간에 따라 여러 노드들의 정보의 혼합으로 표현될 수 있습니다. &amp;lt;그림 4.&amp;gt;를 살펴보도록 하겠습니다. 1번노드의 처음 정보는 [1,-1] 이지만 시간에 따라 여러 노드들의 정보(노드들의 signal)들이 밀려 들어오게 됩니다. 즉, 고정된 이웃노드 말고도 멀리 연결되어 있는 노드의 정보도 시간이 흐르면서 밀려 들어올 수 있는 것입니다. 이를 노드 간 message passing이라 합니다.&lt;/p&gt;
+&lt;p&gt;그러나, 그래프에서의 한 노드의 정보는 시간에 따라 여러 노드들의 정보의 혼합으로 표현될 수 있습니다. &amp;lt;그림 4.&amp;gt;를 살펴보도록 하겠습니다. 1번노드의 t=0일 때 정보는 [1,-1] 이지만 시간에 따라 여러 노드들의 정보(노드들의 signal)들이 밀려 들어오게 됩니다. 즉, 고정된 이웃노드 말고도 멀리 연결되어 있는 노드의 정보도 시간이 흐르면서 밀려 들어올 수 있는 것입니다. 이를 노드 간 message passing이라 합니다.&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/Fv2FJbC.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 4. Message Passing in graph&lt;/figcaption&gt;
 &lt;/p&gt;
@@ -83,7 +83,7 @@
 
 &lt;p&gt;따라서, 오일러 공식에 의해 (1)식의 $e^{2\pi ix\xi}$ 부분을 cos요소와 sin요소의 합으로 표현할 수 있습니다.&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;e^{2\pi ix\xi} = cos(2\pi x\xi) + i sin(2\pi x\xi)&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;e^{2\pi ix\xi} = cos(2\pi x\xi) + i sin(2\pi x\xi) \tag{4}&lt;/script&gt;
 
 &lt;p&gt;즉, 주어진 주파수 f(x)에 대해 cosine에서 유사한 정도와 sine과 유사한 정도의 합이 푸리에 변환이라고 생각할 수 있습니다.&lt;/p&gt;
 
@@ -95,9 +95,39 @@
 
 &lt;p&gt;다시 돌아와서, 푸리에 변환에서 주기함수 요소인 sine과 cosine에 대해 살펴봅시다. 아래와 같이 sine과 sine, sine과 cosine, cosine과 cosine을 내적하면 모두 다 0이 나옵니다. 이는 즉 삼각함수는 직교함을 알 수 있습니다(삼각함수의 직교성).&lt;/p&gt;
 
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/Bdo17jG.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 6. 삼각함수의 직교성&lt;/figcaption&gt;&lt;/p&gt;
+
 &lt;p&gt;그렇다면, 선형대수 관점에서, &lt;span style=&quot;text-decoration: underline&quot;&gt;sine과 cosine 기저들의 선형결합이 즉 푸리에 변환이 되는 것&lt;/span&gt;입니다. 즉, &lt;span style=&quot;text-decoration:underline; color:red&quot;&gt;어떤 특정 signal이 real symmetric matrices이고 이들의 eigenvectors를 구할 수 있다면, eigenvector의 선형결합이 즉 해당 signal의 푸리에 변환&lt;/span&gt;임을 의미하는 것입니다.&lt;/p&gt;
 
-&lt;h3&gt;Laplacian Operator&lt;/h3&gt;
+&lt;h3&gt;Laplacian(Laplace Operator)&lt;/h3&gt;
+
+&lt;p&gt;Graph laplacian을 보기 전에 Laplace Operator에 대해 살펴보도록 하겠습니다. Laplace operator는 differential operator로, 벡터 기울기의 발산(Divergence)을 의미합니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\triangle f= \triangledown \cdot \triangledown f = \triangledown^2 f&lt;/script&gt;
+
+&lt;p&gt;$\triangledown f$ 는 $f$ 의 기울기를 의미하는 것으로 1차함수의 기울기처럼, 한 점에서의 변화하는 정도를 의미합니다. 이를 그림으로 나타나면 아래와 같습니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://raw.githubusercontent.com/angeloyeo/angeloyeo.github.io/master/pics/2019-08-28_laplacian/noname01.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 7. Scalar 함수&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;그림 7.&amp;gt;의 scalar 함수의 gradient는 아래와 같습니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://raw.githubusercontent.com/angeloyeo/angeloyeo.github.io/master/pics/2019-08-28_laplacian/noname03.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 8. Scalar 함수의 gradient&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;그림 7.&amp;gt;과 &amp;lt;그림 8.&amp;gt;을 보시면, (x,y)=(0,2) 부근에는 수렴하는 형태의 gradient가 형성되어 있고, (x,y)=(0,-2) 부근에는 발산하는 형태의 gradient가 형성되어 있습니다. Laplace 연산자를 이용해서 이 기울기의 발산 $\triangle f$ 을 구해주면, 아래와 같습니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://raw.githubusercontent.com/angeloyeo/angeloyeo.github.io/master/pics/2019-08-28_laplacian/noname04.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 9. Divergence&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;divergence가 나타내는 의미, 즉, Laplace operator가 나타내는 의미는 무엇일까요 ? 이 함수의 높고 낮음을 표시하는 것입니다. 고등학교 때, 배운 2차 편미분과 비슷합니다. 이차 편미분 값이 양수면 아래로 볼록이고, 이차 편미분 값이 음수면 위로 볼록인 것과 유사합니다. 즉, 노란 부분일수록 양수 이기때문에 위로볼록인 모양이고, 파란부분일수록 음수값이기 때문에 아래로 볼록입니다.&lt;/p&gt;
+
+&lt;p&gt;그렇다면, graph signal 영역에서 Laplace operator가 갖는 의미가 무엇일까요 ? 여기서 부터는 제 생각이지만, graph signal 영역에서 Laplace operator를 적용한다는 건, 한 노드에서의 signal의 흩어짐 정도, 즉, 흐르는 정도를 알 수 있습니다. 어떤 노드에서 signal이 들어왔을 때 그 signal이 어떤 방향으로 얼마만큼 빠르게 흩어지는지를 알 수 있고 이는 즉 그 노드의 특징이 될 수 있는 것입니다. 위의 그림을 예를 들어서 설명한다면, 만약에 한 signal이 그림 7.의 가장 높은 부분(노란색 부분)에서 시작된다면 가장 낮은 부분(파란색 부분)까지 빠른 속도로 흘러갈 것입니다.&lt;/p&gt;
+
+&lt;p&gt;아래는 이와 관련된 gif이미지입니다. Grid 격자를 어떤 graph라고 생각한다면, 어떤 노드에서 signal이 들어왔을 때 흩어지는 양상을 보실 수 있습니다. 이 흩어지는 양상을 자세히 알기 위해서는 laplcian operator를 이용하여 계산하면 됩니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://miro.medium.com/max/1120/1*gz2hyrcSSJG9MtDzmQLe3w.gif&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 9. Diffusion of some signal in a regular grid graph based on the graph Laplacian&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;h3&gt;Graph Laplacian&lt;/h3&gt;
+
+&lt;p&gt;그러나, 이제까지 설명한 laplacian operator는 지난 포스팅에서 언급한 Laplacian matrix랑 무슨 관련이 있는 걸까요? 이름이 비슷한 걸 보니, laplacian matrix도 어떤 differential operator, 즉 ‘변화’에 관한 행렬임을 짐작할 수 있습니다.&lt;/p&gt;
 
 &lt;hr /&gt;
 
@@ -110,6 +140,12 @@
       &lt;li&gt;&lt;a href=&quot;https://darkpgmr.tistory.com/171&quot;&gt;https://darkpgmr.tistory.com/171&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;https://www.math.ucla.edu/~tao/preprints/fourier.pdf&quot;&gt;https://www.math.ucla.edu/~tao/preprints/fourier.pdf&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;https://angeloyeo.github.io/2019/10/11/Fourier_Phase.html&quot;&gt;https://angeloyeo.github.io/2019/10/11/Fourier_Phase.html&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Laplacian Operator
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://angeloyeo.github.io/2019/08/25/laplacian.html&quot;&gt;https://angeloyeo.github.io/2019/08/28/laplacian.html&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://towardsdatascience.com/spectral-graph-convolution-explained-and-implemented-step-by-step-2e495b57f801&quot;&gt;https://towardsdatascience.com/spectral-graph-convolution-explained-and-implemented-step-by-step-2e495b57f801&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
 &lt;/ol&gt;
