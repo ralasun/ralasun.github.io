@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2021-03-06T13:43:52+09:00</updated>
+ <updated>2021-03-06T14:09:56+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -141,11 +141,34 @@
 
 &lt;p&gt;또한 graph laplacian은 연속적인 성질(continuous)이 아닌 이산적인 성질(discrete)을 띕니다. 이제까지 언급한 특징을 정리되면 아래의 graph laplacian 식이 이해가 되실 것입니다. 아래는 $v_i$ 노드에서 graph laplacian operator를 적용한 것입니다.&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\triangle f(v_i) = \sum_{v_j ~ v_i}[f(v_i) - f(v_j)]&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\triangle f(v_i) = \sum_{v_j ~ v_i}[f(v_i) - f(v_j)] \tag{8}&lt;/script&gt;
 
 &lt;p&gt;Graph laplacian 예를 들어봅시다. 아래와 같은 간단한 graph가 있을 때, 각 노드에 대한 laplacian operator는 아래와 같습니다.&lt;/p&gt;
 
-&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;https://imgur.com/lsal286.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 11. Graph laplacian example&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;400&quot; src=&quot;https://imgur.com/DYfJGS9.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 11. Graph laplacian example&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\triangle f(v_1) = 2f(v_1) - f(v_2) - f(v_3)&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\triangle f(v_2) = 3f(v_2) - f(v_1) - f(v_3) - f(v_4)&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\triangle f(v_3) = 2f(v_3) - f(v_1) - f(v_2)&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\triangle f(v_4) = f(v_4) - f(v_2)&lt;/script&gt;
+
+&lt;p&gt;이를 행렬로 표현하면 아래와 같습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+M = \begin{bmatrix}
+       2 &amp; -1 &amp; -1 &amp; 0 \\
+       -1 &amp; 3 &amp; -1 &amp; -1 \\
+       0 &amp; -1 &amp; 0 &amp; 1\end{bmatrix} 
+       \begin{bmatrix} f(v_1) \\ f(v_2) \\ f(v_3) \\ f(v_4)\end{bmatrix} \tag{9} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;위 식 (9) 의 앞부분 행렬은 지난 GNN 포스팅&amp;lt;&lt;a href=&quot;https://ralasun.github.io/deep%20learning/2021/02/11/gcn/&quot;&gt;Introduction to Graph Neural Network - GNN 소개 및 개념&lt;/a&gt;&amp;gt; 에서 소개한 Laplacian matrix 입니다. 즉, &lt;span style=&quot;text-decoration:underline&quot;&gt;laplacian matrix란 graph representation 중에서 이웃 노드와의 변화 흐름을 통해 노드의 특징을 나타내는 그래프 표현이라고 생각할 수 있습니다.&lt;/span&gt;&lt;/p&gt;
+
+&lt;h3&gt;Graph Fourier Transform&lt;/h3&gt;
+
+&lt;p&gt;Spectral Graph Convolution을 이해하기 위한 마지막 단계입니다. 바로 Graph Fourier Transform입니다. 이제까지 Fourier Transform에서부터 graph laplacian까지 살펴봤습니다. 그렇다면&lt;/p&gt;
 
 &lt;hr /&gt;
 

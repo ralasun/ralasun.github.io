@@ -319,11 +319,34 @@ MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], proces
 
 <p>또한 graph laplacian은 연속적인 성질(continuous)이 아닌 이산적인 성질(discrete)을 띕니다. 이제까지 언급한 특징을 정리되면 아래의 graph laplacian 식이 이해가 되실 것입니다. 아래는 $v_i$ 노드에서 graph laplacian operator를 적용한 것입니다.</p>
 
-<script type="math/tex; mode=display">\triangle f(v_i) = \sum_{v_j ~ v_i}[f(v_i) - f(v_j)]</script>
+<script type="math/tex; mode=display">\triangle f(v_i) = \sum_{v_j ~ v_i}[f(v_i) - f(v_j)] \tag{8}</script>
 
 <p>Graph laplacian 예를 들어봅시다. 아래와 같은 간단한 graph가 있을 때, 각 노드에 대한 laplacian operator는 아래와 같습니다.</p>
 
-<p align="center"><img width="https://imgur.com/lsal286.png" /><figcaption align="center">그림 11. Graph laplacian example</figcaption></p>
+<p align="center"><img width="400" src="https://imgur.com/DYfJGS9.png" /><figcaption align="center">그림 11. Graph laplacian example</figcaption></p>
+
+<script type="math/tex; mode=display">\triangle f(v_1) = 2f(v_1) - f(v_2) - f(v_3)</script>
+
+<script type="math/tex; mode=display">\triangle f(v_2) = 3f(v_2) - f(v_1) - f(v_3) - f(v_4)</script>
+
+<script type="math/tex; mode=display">\triangle f(v_3) = 2f(v_3) - f(v_1) - f(v_2)</script>
+
+<script type="math/tex; mode=display">\triangle f(v_4) = f(v_4) - f(v_2)</script>
+
+<p>이를 행렬로 표현하면 아래와 같습니다.</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+M = \begin{bmatrix}
+       2 & -1 & -1 & 0 \\
+       -1 & 3 & -1 & -1 \\
+       0 & -1 & 0 & 1\end{bmatrix} 
+       \begin{bmatrix} f(v_1) \\ f(v_2) \\ f(v_3) \\ f(v_4)\end{bmatrix} \tag{9} %]]></script>
+
+<p>위 식 (9) 의 앞부분 행렬은 지난 GNN 포스팅&lt;<a href="https://ralasun.github.io/deep%20learning/2021/02/11/gcn/">Introduction to Graph Neural Network - GNN 소개 및 개념</a>&gt; 에서 소개한 Laplacian matrix 입니다. 즉, <span style="text-decoration:underline">laplacian matrix란 graph representation 중에서 이웃 노드와의 변화 흐름을 통해 노드의 특징을 나타내는 그래프 표현이라고 생각할 수 있습니다.</span></p>
+
+<h3>Graph Fourier Transform</h3>
+
+<p>Spectral Graph Convolution을 이해하기 위한 마지막 단계입니다. 바로 Graph Fourier Transform입니다. 이제까지 Fourier Transform에서부터 graph laplacian까지 살펴봤습니다. 그렇다면</p>
 
 <hr />
 
