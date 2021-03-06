@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2021-03-06T14:18:17+09:00</updated>
+ <updated>2021-03-06T16:32:02+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -106,7 +106,7 @@
 
 &lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/Bdo17jG.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 6. 삼각함수의 직교성&lt;/figcaption&gt;&lt;/p&gt;
 
-&lt;p&gt;그렇다면, 선형대수 관점에서, &lt;span style=&quot;text-decoration: underline&quot;&gt;sine과 cosine 기저들의 선형결합이 즉 푸리에 변환이 되는 것&lt;/span&gt;입니다. 즉, &lt;span style=&quot;text-decoration:underline; color:red&quot;&gt;어떤 특정 signal이 real symmetric matrices이고 이들의 eigenvectors를 구할 수 있다면, eigenvector의 선형결합이 즉 해당 signal의 푸리에 변환&lt;/span&gt;임을 의미하는 것입니다.&lt;/p&gt;
+&lt;p&gt;그렇다면, 선형대수 관점에서, &lt;span style=&quot;text-decoration: underline&quot;&gt;sine과 cosine 기저들의 선형결합이 즉 푸리에 변환이 되는 것&lt;/span&gt;입니다. 즉, &lt;span style=&quot;text-decoration:underline; color:red&quot;&gt;어떤 특정 graph signal에 관한 행렬이 존재하고 이 행렬이 real-symmetric matrix이며 이들의 eigenvectors를 구할 수 있다면, eigenvector의 선형결합이 graph signal의 푸리에 변환&lt;/span&gt;임을 의미하는 것입니다.&lt;/p&gt;
 
 &lt;h3&gt;Laplacian(Laplace Operator)&lt;/h3&gt;
 
@@ -128,7 +128,11 @@
 
 &lt;p&gt;divergence가 나타내는 의미, 즉, Laplace operator가 나타내는 의미는 무엇일까요 ? 이 함수의 높고 낮음을 표시하는 것입니다. 고등학교 때, 배운 2차 편미분과 비슷합니다. 이차 편미분 값이 양수면 아래로 볼록이고, 이차 편미분 값이 음수면 위로 볼록인 것과 유사합니다. 즉, 노란 부분일수록 양수 이기때문에 위로볼록인 모양이고, 파란부분일수록 음수값이기 때문에 아래로 볼록입니다.&lt;/p&gt;
 
-&lt;p&gt;그렇다면, graph signal 영역에서 Laplace operator가 갖는 의미가 무엇일까요 ? 여기서 부터는 제 생각이지만, graph signal 영역에서 Laplace operator를 적용한다는 건, 한 노드에서의 signal의 흩어짐 정도, 즉, 흐르는 정도를 알 수 있습니다. &lt;span styple=&quot;text-decoration:underline; color:red&quot;&gt;어떤 노드에서 signal이 들어왔을 때 그 signal이 어떤 방향으로 얼마만큼 빠르게 흩어지는지를 알 수 있고 이는 즉 그 노드의 특징이 될 수 있는 것입니다.&lt;/span&gt; 위의 그림을 예를 들어서 설명한다면, 만약에 한 signal이 그림 7.의 가장 높은 부분(노란색 부분)에서 시작된다면 가장 낮은 부분(파란색 부분)까지 빠른 속도로 흘러갈 것입니다.&lt;/p&gt;
+&lt;p&gt;그렇다면, graph signal 영역에서 Laplace operator가 갖는 의미가 무엇일까요 ? graph signal 영역에서 Laplace operator를 적용한다는 건, 한 노드에서의 signal의 흩어짐 정도, 즉, 흐르는 정도를 알 수 있습니다. &lt;span styple=&quot;text-decoration:underline; color:red&quot;&gt;특정 노드에서 signal이 들어왔을 때 그 signal이 특정 노드와 연결된 노드들로 각각 얼마만큼 빠르게 흩어지는지를 알 수 있고 이는 즉 그 노드의 특징이 될 수 있는 것입니다.&lt;/span&gt; 위의 그림을 예를 들어서 설명한다면, 만약에 한 signal이 그림 7.의 가장 높은 부분(노란색 부분)에서 시작된다면 가장 낮은 부분(파란색 부분)까지 빠른 속도로 흘러갈 것입니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;빨간색으로 강조한 부분이 왜 laplacian matrix의 eigen-value decomposition이 fourier transform과 연결되는지에 관한 부분입니다. 포스팅을 쭉 끝까지 읽어보시면 아하! 하면서 이해가 되실겁니다.&lt;/p&gt;
+&lt;/blockquote&gt;
 
 &lt;p&gt;아래는 이와 관련된 gif이미지입니다. Grid 격자를 어떤 graph라고 생각한다면, 어떤 노드에서 signal이 들어왔을 때 흩어지는 양상을 보실 수 있습니다. 이 흩어지는 양상을 자세히 알기 위해서는 laplcian operator를 이용하여 계산하면 됩니다.&lt;/p&gt;
 
@@ -144,17 +148,25 @@
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;\triangledown^2 f = \lim_{h \rightarrow 0} \frac{f(x+h) - 2f(x) - f(x-h)}{h^2} \tag{7}&lt;/script&gt;
 
-&lt;p&gt;그렇다면 위 laplacian operator가 graph 상에서 적용되면 어떻게 될까요 ? 위 식 (7)은 아래 그림과 같이 표현될 수 있습니다. 즉, x노드와 x노드와 h사이 만큼 떨어진 이웃노드와의 변화량을 통해 x노드의 특징을 구한 것입니다.이것이 바로 x노드에 laplacian operator를 적용한 거라고 생각될 수 있습니다. 따라서, 한 노드의 특징은 해당 노드와 연결된 이웃노드와의 관계 관점에서 표현될 수 있고, 즉 이 표현을 위해 이웃 노드와의 차이(즉, 변화)를 이용한 것이 laplacian operator가 됩니다.&lt;/p&gt;
+&lt;p&gt;그렇다면 위 laplacian operator가 graph 상에서 적용되면 어떻게 될까요 ? 위 식 (7)은 아래 그림과 같이 표현될 수 있습니다. 즉, x노드의 signal f(x)와 x노드와 h사이 만큼 떨어진 이웃노드의 signal f(x+h), f(x-h) 와의 변화량을 통해 x노드의 signal 특징을 구한 것입니다.이것이 바로 x노드 signal에 laplacian operator를 적용한 거라고 생각될 수 있습니다. 따라서, 한 노드 의 특징은 해당 노드와 연결된 이웃노드와의 관계라는 관점에서 표현될 수 있고, 즉 이 표현을 위해 이웃 노드와의 차이(즉, 변화)를 이용한 것이 laplacian operator가 됩니다.&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;400&quot; src=&quot;https://imgur.com/BYvjBKt.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 10. discretized laplacian operator&lt;/figcaption&gt;&lt;/p&gt;
 
 &lt;p&gt;또한 graph laplacian은 연속적인 성질(continuous)이 아닌 이산적인 성질(discrete)을 띕니다. 이제까지 언급한 특징을 정리되면 아래의 graph laplacian 식이 이해가 되실 것입니다. 아래는 $v_i$ 노드에서 graph laplacian operator를 적용한 것입니다.&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\triangle f(v_i) = \sum_{v_j ~ v_i}[f(v_i) - f(v_j)] \tag{8}&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\triangle f(v_i) = Lf|_{v_i} = \sum_{v_j ~ v_i}[f(v_i) - f(v_j)] \tag{8}&lt;/script&gt;
+
+&lt;p&gt;weighted undirected graph인 경우, weighted undirected graph는 노드간 엣지에 가중치가 있는 경우입니다. graph laplacian operator는 아래와 같습니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;400&quot; src=&quot;https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRUOW9mJ2mNgmHDw7_q7uiK2m1slCZgiah1Q&amp;amp;usqp=CAU.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 11. weighted undirected graph&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\triangle f(v_i) = \sum_{j \in N_i}W_{ij}[f(v_i) - f(v_j)] \tag{9}&lt;/script&gt;
+
+&lt;p&gt;여기서 $v_i$ 는 특정노드를 가르키는 인덱스이고, $f(v_i)$ 는 각 노드의 signal 입니다. 즉, 함수 $f \in R^N$ 는 각 노드의 특성을 signal로 맵핑해주는 함수라고 생각하시면 됩니다.&lt;/p&gt;
 
 &lt;p&gt;Graph laplacian 예를 들어봅시다. 아래와 같은 간단한 graph가 있을 때, 각 노드에 대한 laplacian operator는 아래와 같습니다.&lt;/p&gt;
 
-&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;400&quot; src=&quot;https://imgur.com/DYfJGS9.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 11. Graph laplacian example&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;400&quot; src=&quot;https://imgur.com/DYfJGS9.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 12. Graph laplacian example&lt;/figcaption&gt;&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;\triangle f(v_1) = 2f(v_1) - f(v_2) - f(v_3)&lt;/script&gt;
 
@@ -171,17 +183,25 @@ M = \begin{bmatrix}
        2 &amp; -1 &amp; -1 &amp; 0 \\
        -1 &amp; 3 &amp; -1 &amp; -1 \\
        0 &amp; -1 &amp; 0 &amp; 1\end{bmatrix} 
-       \begin{bmatrix} f(v_1) \\ f(v_2) \\ f(v_3) \\ f(v_4)\end{bmatrix} \tag{9} %]]&gt;&lt;/script&gt;
+       \begin{bmatrix} f(v_1) \\ f(v_2) \\ f(v_3) \\ f(v_4)\end{bmatrix} \tag{10} %]]&gt;&lt;/script&gt;
 
-&lt;p&gt;위 식 (9) 의 앞부분 행렬은 지난 GNN 포스팅&amp;lt;&lt;a href=&quot;https://ralasun.github.io/deep%20learning/2021/02/11/gcn/&quot;&gt;Introduction to Graph Neural Network - GNN 소개 및 개념&lt;/a&gt;&amp;gt; 에서 소개한 Laplacian matrix 입니다. 즉, &lt;span style=&quot;text-decoration:underline&quot;&gt;laplacian matrix란 graph representation 중에서 이웃 노드와의 변화 흐름을 통해 노드의 특징을 나타내는 그래프 표현이라고 생각할 수 있습니다.&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;위 식 (10) 의 앞부분 행렬은 지난 GNN 포스팅&amp;lt;&lt;a href=&quot;https://ralasun.github.io/deep%20learning/2021/02/11/gcn/&quot;&gt;Introduction to Graph Neural Network - GNN 소개 및 개념&lt;/a&gt;&amp;gt; 에서 소개한 Laplacian matrix 입니다. 즉, &lt;span style=&quot;text-decoration:underline&quot;&gt;laplacian matrix란 graph representation 중에서 이웃 노드와의 변화 흐름을 통해 노드의 특징을 나타내는 그래프 표현이라고 생각할 수 있습니다.&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;이웃 노드와의 차이(변화, variation)는 결국 노드 간의 매끄러움 정도(smoothness)를 의미합니다. 한 노드가 이웃 노드와의 차이가 작다는 건 그 노드는 이웃 노드와 특성이 비슷한 경우이고, 이를 ‘매끄럽다’라고 생각할 수 있습니다. 반면에, 이웃 노드와의 차이가 크다는 건 그 노드는 이웃 노드와 특성이 상이하다는 것이고 이는 ‘매끄럽지 않다’라고 생각할 수 있습니다. 따라서 Laplacian Matrix는 graph의 smoothness와 관련이 있습니다.&lt;/p&gt;
+
+&lt;p&gt;이를 ‘신호’라는 관점에서 다시 생각해봅시다. 어떤 한 노드 내에서 흐르는 신호는 크게 2가지로 나눈다면, 나와 비슷한 특성을 가진 이웃노드에서 들어오는 신호와 나와 상이한 특성을 가진 이웃노드에서 들어오는 신호로 나눌 수 있습니다. 즉, &lt;span style=&quot;text-decoration:underline; color:red&quot;&gt;한 노드 내에 혼잡해 있는 신호는 나와 유사한 특성을 가진 노드에서 오는 신호와 나와 상이한 특성을 가진 노드에서 오는 신호의 결합으로 생각할 수 있습니다.&lt;/span&gt; 이는 결국 푸리에 변환과 관련된 개념입니다. 그리고 나와 유사한 속성의 노드와 상이한 속성의 노드를 나눌 수 있는 것에 관한 정보가 바로 Laplacian matrix에 담겨져 있는 것입니다. 따라서, &lt;span style=&quot;text-decoration:underline; color:red&quot;&gt;lapalcian matrix를 이용한 푸리에 변환이 바로 “Graph Fourier Transform” 이며, 이는 위에서 언급한 “eigen-value decomposition”과 관련이 있는 것입니다.&lt;/span&gt;&lt;/p&gt;
 
 &lt;h3&gt;Graph Fourier Transform&lt;/h3&gt;
 
-&lt;p&gt;Spectral Graph Convolution을 이해하기 위한 마지막 단계입니다. 바로 Graph Fourier Transform입니다. 이제까지 Fourier Transform에서부터 graph laplacian까지 살펴봤습니다. 또한 Spectral Graph Convolution 설명 시작 전에, &lt;span style=&quot;text-decoration: underline&quot;&gt;&lt;b&gt;graph signal의 푸리에 변환은 graph의 Laplacian matrix를 eigen-decomposition하는 것&lt;/b&gt;&lt;/span&gt; 이라고 하였습니다.&lt;/p&gt;
+&lt;p&gt;그렇다면, graph fourier transform이 왜 Laplacian matrix를 eigen-decomposition을 하는지에 대한 궁금증이 여기서 생깁니다. 이 부분을 이제 짚고 넘어가겠습니다. 이 부분까지 이해가 되신다면, 이 이후에 진행할 spectral graph convolution을 제대로 이해하실 수 있으실 것입니다.&lt;/p&gt;
 
-&lt;p&gt;그렇다면, graph fourier transform이 왜 Laplacian matrix를 eigen-decomposition을 하는지에 대한 궁금증이 여기서 생깁니다. 이 부분을 이제 짚고 넘어가겠습니다. 이 부분까지 이해가 되셨다면, 이 이후에 진행할 spectral graph convolution을 제대로 이해하실 수 있으실 것입니다. 만약에, spectral graph convolution이 아니라 graph convolutional network에 대한 이해로 넘어가고 싶으시다면,&lt;/p&gt;
+&lt;p&gt;위에서 특정 노드와 유사한 노드 집단과 상이한 노드집단을 나눌 수 있다면 특정 노드에 혼잡해 있는 신호를 여러 특성의 신호로 분해할 수 있다고 하였습니다. 그렇다면 먼저 이 집단을 구별할까요 ? 아래 식을 살펴봅시다. 아래 식은 결국, 노드 간의 차이의 합입니다.&lt;/p&gt;
 
-&lt;p&gt;fourier transform이 sine과 cosine의 직교 기저의 선형결합&lt;/p&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;S = \sum_{(i,j) \in \epsilon}W_{ij}[f(i) - f(j)]^2 = \mathbf {f^{\intercal}Lf}&lt;/script&gt;
+
+&lt;p&gt;이는 결국 graph의 smoothness와 관련된 것이며, Laplacian quadratic form으로 표현가능합니다. 위의 식을 최소화하게 하는 f를 찾는다면, 특정 노드와 특성이 유사한 노드 집단과 상이한 노드 집단을 구분할 수 있습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;min_{f \in R^N, \,||f||_2 = 1} \mathbf {f^{\intercal}Lf}&lt;/script&gt;
 
 &lt;hr /&gt;
 
