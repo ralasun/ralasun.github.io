@@ -4,13 +4,22 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2021-03-06T14:09:56+09:00</updated>
+ <updated>2021-03-06T14:18:17+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Graph Convolutional Network에 대하여 - Spectral Graph Convolution(2)</title>
+   <link href="http://localhost:4000/deep%20learning/2021/03/06/gcn(2)/"/>
+   <updated>2021-03-06T00:00:00+09:00</updated>
+   <id>http://localhost:4000/deep%20learning/2021/03/06/gcn(2)</id>
+   <content type="html">&lt;p&gt;gcn(2)&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Graph Convolutional Network에 대하여 - Spectral Graph Convolution</title>
@@ -168,7 +177,11 @@ M = \begin{bmatrix}
 
 &lt;h3&gt;Graph Fourier Transform&lt;/h3&gt;
 
-&lt;p&gt;Spectral Graph Convolution을 이해하기 위한 마지막 단계입니다. 바로 Graph Fourier Transform입니다. 이제까지 Fourier Transform에서부터 graph laplacian까지 살펴봤습니다. 그렇다면&lt;/p&gt;
+&lt;p&gt;Spectral Graph Convolution을 이해하기 위한 마지막 단계입니다. 바로 Graph Fourier Transform입니다. 이제까지 Fourier Transform에서부터 graph laplacian까지 살펴봤습니다. 또한 Spectral Graph Convolution 설명 시작 전에, &lt;span style=&quot;text-decoration: underline&quot;&gt;&lt;b&gt;graph signal의 푸리에 변환은 graph의 Laplacian matrix를 eigen-decomposition하는 것&lt;/b&gt;&lt;/span&gt; 이라고 하였습니다.&lt;/p&gt;
+
+&lt;p&gt;그렇다면, graph fourier transform이 왜 Laplacian matrix를 eigen-decomposition을 하는지에 대한 궁금증이 여기서 생깁니다. 이 부분을 이제 짚고 넘어가겠습니다. 이 부분까지 이해가 되셨다면, 이 이후에 진행할 spectral graph convolution을 제대로 이해하실 수 있으실 것입니다. 만약에, spectral graph convolution이 아니라 graph convolutional network에 대한 이해로 넘어가고 싶으시다면,&lt;/p&gt;
+
+&lt;p&gt;fourier transform이 sine과 cosine의 직교 기저의 선형결합&lt;/p&gt;
 
 &lt;hr /&gt;
 
