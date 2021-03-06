@@ -281,7 +281,7 @@ MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], proces
 
 <p>Graph laplacian을 보기 전에 Laplace Operator에 대해 살펴보도록 하겠습니다. Laplace operator는 differential operator로, 벡터 기울기의 발산(Divergence)을 의미합니다.</p>
 
-<script type="math/tex; mode=display">\triangle f= \triangledown \cdot \triangledown f = \triangledown^2 f</script>
+<script type="math/tex; mode=display">\triangle f= \triangledown \cdot \triangledown f = \triangledown^2 f \tag{5}</script>
 
 <p>$\triangledown f$ 는 $f$ 의 기울기를 의미하는 것으로 1차함수의 기울기처럼, 한 점에서의 변화하는 정도를 의미합니다. 이를 그림으로 나타나면 아래와 같습니다.</p>
 
@@ -297,7 +297,7 @@ MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], proces
 
 <p>divergence가 나타내는 의미, 즉, Laplace operator가 나타내는 의미는 무엇일까요 ? 이 함수의 높고 낮음을 표시하는 것입니다. 고등학교 때, 배운 2차 편미분과 비슷합니다. 이차 편미분 값이 양수면 아래로 볼록이고, 이차 편미분 값이 음수면 위로 볼록인 것과 유사합니다. 즉, 노란 부분일수록 양수 이기때문에 위로볼록인 모양이고, 파란부분일수록 음수값이기 때문에 아래로 볼록입니다.</p>
 
-<p>그렇다면, graph signal 영역에서 Laplace operator가 갖는 의미가 무엇일까요 ? 여기서 부터는 제 생각이지만, graph signal 영역에서 Laplace operator를 적용한다는 건, 한 노드에서의 signal의 흩어짐 정도, 즉, 흐르는 정도를 알 수 있습니다. 어떤 노드에서 signal이 들어왔을 때 그 signal이 어떤 방향으로 얼마만큼 빠르게 흩어지는지를 알 수 있고 이는 즉 그 노드의 특징이 될 수 있는 것입니다. 위의 그림을 예를 들어서 설명한다면, 만약에 한 signal이 그림 7.의 가장 높은 부분(노란색 부분)에서 시작된다면 가장 낮은 부분(파란색 부분)까지 빠른 속도로 흘러갈 것입니다.</p>
+<p>그렇다면, graph signal 영역에서 Laplace operator가 갖는 의미가 무엇일까요 ? 여기서 부터는 제 생각이지만, graph signal 영역에서 Laplace operator를 적용한다는 건, 한 노드에서의 signal의 흩어짐 정도, 즉, 흐르는 정도를 알 수 있습니다. <span styple="text-decoration:underline; color:red">어떤 노드에서 signal이 들어왔을 때 그 signal이 어떤 방향으로 얼마만큼 빠르게 흩어지는지를 알 수 있고 이는 즉 그 노드의 특징이 될 수 있는 것입니다.</span> 위의 그림을 예를 들어서 설명한다면, 만약에 한 signal이 그림 7.의 가장 높은 부분(노란색 부분)에서 시작된다면 가장 낮은 부분(파란색 부분)까지 빠른 속도로 흘러갈 것입니다.</p>
 
 <p>아래는 이와 관련된 gif이미지입니다. Grid 격자를 어떤 graph라고 생각한다면, 어떤 노드에서 signal이 들어왔을 때 흩어지는 양상을 보실 수 있습니다. 이 흩어지는 양상을 자세히 알기 위해서는 laplcian operator를 이용하여 계산하면 됩니다.</p>
 
@@ -306,6 +306,24 @@ MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], proces
 <h3>Graph Laplacian</h3>
 
 <p>그러나, 이제까지 설명한 laplacian operator는 지난 포스팅에서 언급한 Laplacian matrix랑 무슨 관련이 있는 걸까요? 이름이 비슷한 걸 보니, laplacian matrix도 어떤 differential operator, 즉 ‘변화’에 관한 행렬임을 짐작할 수 있습니다.</p>
+
+<script type="math/tex; mode=display">\triangle f = \triangledown^2 f =\sum_{i=1}^{n}\frac{\partial^2 f}{\partial {x_i}^2} \tag{6}</script>
+
+<p>1차원에서의 laplacian operator는 <a href="https://en.wikipedia.org/wiki/Second_derivative">이차도함수 극한 정의</a>와 동일합니다.</p>
+
+<script type="math/tex; mode=display">\triangledown^2 f = \lim_{h \rightarrow 0} \frac{f(x+h) - 2f(x) - f(x-h)}{h^2} \tag{7}</script>
+
+<p>그렇다면 위 laplacian operator가 graph 상에서 적용되면 어떻게 될까요 ? 위 식 (7)은 아래 그림과 같이 표현될 수 있습니다. 즉, x노드와 x노드와 h사이 만큼 떨어진 이웃노드와의 변화량을 통해 x노드의 특징을 구한 것입니다.이것이 바로 x노드에 laplacian operator를 적용한 거라고 생각될 수 있습니다. 따라서, 한 노드의 특징은 해당 노드와 연결된 이웃노드와의 관계 관점에서 표현될 수 있고, 즉 이 표현을 위해 이웃 노드와의 차이(즉, 변화)를 이용한 것이 laplacian operator가 됩니다.</p>
+
+<p align="center"><img width="400" src="https://imgur.com/BYvjBKt.png" /><figcaption align="center">그림 10. discretized laplacian operator</figcaption></p>
+
+<p>또한 graph laplacian은 연속적인 성질(continuous)이 아닌 이산적인 성질(discrete)을 띕니다. 이제까지 언급한 특징을 정리되면 아래의 graph laplacian 식이 이해가 되실 것입니다. 아래는 $v_i$ 노드에서 graph laplacian operator를 적용한 것입니다.</p>
+
+<script type="math/tex; mode=display">\triangle f(v_i) = \sum_{v_j ~ v_i}[f(v_i) - f(v_j)]</script>
+
+<p>Graph laplacian 예를 들어봅시다. 아래와 같은 간단한 graph가 있을 때, 각 노드에 대한 laplacian operator는 아래와 같습니다.</p>
+
+<p align="center"><img width="https://imgur.com/lsal286.png" /><figcaption align="center">그림 11. Graph laplacian example</figcaption></p>
 
 <hr />
 
@@ -324,6 +342,7 @@ MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], proces
     <ul>
       <li><a href="https://angeloyeo.github.io/2019/08/25/laplacian.html">https://angeloyeo.github.io/2019/08/28/laplacian.html</a></li>
       <li><a href="https://towardsdatascience.com/spectral-graph-convolution-explained-and-implemented-step-by-step-2e495b57f801">https://towardsdatascience.com/spectral-graph-convolution-explained-and-implemented-step-by-step-2e495b57f801</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Second_derivative">https://en.wikipedia.org/wiki/Second_derivative</a></li>
     </ul>
   </li>
 </ol>
