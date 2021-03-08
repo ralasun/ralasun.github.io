@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2021-03-06T16:32:02+09:00</updated>
+ <updated>2021-03-08T12:34:24+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -197,11 +197,74 @@ M = \begin{bmatrix}
 
 &lt;p&gt;위에서 특정 노드와 유사한 노드 집단과 상이한 노드집단을 나눌 수 있다면 특정 노드에 혼잡해 있는 신호를 여러 특성의 신호로 분해할 수 있다고 하였습니다. 그렇다면 먼저 이 집단을 구별할까요 ? 아래 식을 살펴봅시다. 아래 식은 결국, 노드 간의 차이의 합입니다.&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;S = \sum_{(i,j) \in \epsilon}W_{ij}[f(i) - f(j)]^2 = \mathbf {f^{\intercal}Lf}&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;S = \sum_{(i,j) \in \epsilon}W_{ij}[f(i) - f(j)]^2 = \mathbf {f^{\intercal}Lf} \tag{11}&lt;/script&gt;
 
-&lt;p&gt;이는 결국 graph의 smoothness와 관련된 것이며, Laplacian quadratic form으로 표현가능합니다. 위의 식을 최소화하게 하는 f를 찾는다면, 특정 노드와 특성이 유사한 노드 집단과 상이한 노드 집단을 구분할 수 있습니다.&lt;/p&gt;
+&lt;p&gt;이는 결국 graph의 smoothness와 관련된 것이며, Laplacian quadratic form으로 표현가능합니다. 위의 식을 최소화하게 하는 $\mathbf f$ 를 찾는다면, 특정 노드와 특성이 유사한 노드 집단과 상이한 노드 집단을 구분할 수 있습니다.&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;min_{f \in R^N, \,||f||_2 = 1} \mathbf {f^{\intercal}Lf}&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;min_{f \in R^N, \,||f||_2 = 1} \mathbf {f^{\intercal}Lf} \tag{12}&lt;/script&gt;
+
+&lt;p&gt;Lagrange 방정식에 의해 최적화 방정식으로 바꿀 수 있습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;L = \mathbf {f^{\intercal}Lf} - \lambda(\mathbf {f^{\intercal}f} - 1) \tag{13}&lt;/script&gt;
+
+&lt;p&gt;위 식을 최소가 되게 하기 위한 $\mathbf f$ 를 찾기 위해 $\mathbf f$ 로 미분하면 아래와 같습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\frac{\partial L}{\partial f} = 2\mathbf {Lf} - 2\lambda \mathbf f = 0 \tag{14}&lt;/script&gt;
+
+&lt;p&gt;따라서, 최소가 되는 $\mathbf f$ 는 아래 식을 만족해야 합니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbf {Lf} = \lambda \mathbf f \tag{15}&lt;/script&gt;
+
+&lt;p&gt;위의 식은 laplacian 행렬의 eigen-value decomposition입니다. laplacian matrix의 eigenvector eigen vector들이 특정 노드와 유사한 노드집단과 상이한 노드집단을 구분하는 기준이 되고, 특히 작은 값의 eigenvalue의 대응하는 eigenvector일수록 graph를 더욱 smooth하게 나누는 기준이 됩니다.&lt;/p&gt;
+
+&lt;p&gt;laplacian matrix의 eigenvector의 예를 들어봅시다. 아래 그림은 사람의 behavior를 graph으로 표현했을 때, 해당 graph의 laplacian 행렬의 eigenvector $u_2, u_3, u_4, u_8, \,\,, (0 &amp;lt; \lambda_2 \leq \lambda_3 \leq \lambda_4 \leq \lambda_8)$ 에 graph 노드를 임베딩한 것입니다. 즉, 그래프 노드 $f(v_i)$ 라면, $u^{\intercal}f(v_i)$ 를 계산한 겁니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;400&quot; src=&quot;https://imgur.com/JWVlsGQ.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 12. Projection on eigenvector of Laplacian Matrix with each graph node&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;사람의 행동을 graph로 표현했을 때, 위의 그림처럼 가까이에 있는 부분끼리 이웃노드에 해당될 가능성이 높습니다. 머리 쪽과 팔쪽은 가까우니깐 이웃노드일 가능성이 높고, 머리와 다리 쪽은 상이한 노드일 가능성이 높습니다. 따라서, eigenvalue가 가장 작은 eigenvector $u_2$ 에 임베딩했을 때, 해당 graph의 노드들을 이웃노드 집단과 상이한 노드 집단으로 잘 분리되는 것을 보실 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;이를 다시 돌아와서 fourier transform 관점에서 해석해봅시다. &lt;span style=&quot;text-decoration:underline; color:red&quot;&gt;graph의 특정 노드 signal을 $f(v_i)$ 를 작은 값의 eigenvalue에 대응되는 eigenvector에 사영시키면, 혼재되어 있는 signal 중 가까운 이웃노드에서 들어오는 signal의 성분을 추출한 것으로 볼 수 있고, 큰 값의 eigenvalue에 대응되는 eigenvector에 사영시키면, 혼재되어 있는 signal 중 멀리 있는 상이한 노드에서 들어오는 signal의 성분을 추출한 것입니다.&lt;/span&gt; 따라서, 혼재되어 있는 graph signal을 eigenvector의 선형결합으로 표현하여, 여러 집단(가장 유사한 집단 &amp;lt; … &amp;lt; 매우 상이한 집단)에서 들어오는 signal의 합으로 표현할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;또한 위에서, fourier transform은  혼합 signal을 sine과 cosine의 주파수의 성분으로 쪼개어 이 성분들의 선형결합이라고 하였습니다. 그리고, 이 때 주파수의 성분은 삼각함수의 직교성으로 인해, 직교기저를 이룬다고 하였습니다. 마찬가지로, laplacian matrix은 real-symmetric 행렬이어서 eigenvector들이 직교기저를 이룹니다. 즉, graph signal을 laplacian eigenvector 행렬에 사영시키면, graph signal을 laplacian의 직교 기저들의 성분으로 분해하여 이를 합한 선형결합에 해당됩니다.&lt;/p&gt;
+
+&lt;p&gt;이제까지 설명한 것을 토대로 Graph Fourier Transform은 바로 Laplacian 행렬의 Eigen-value decomposition과 관련이 있게 되는 것입니다. 수식으로도 왜 그렇게 되는지 알 수 있는데, 이는 다음과 같습니다.&lt;/p&gt;
+
+&lt;p&gt;Fourier transform의 식을 다시 쓰면 아래와 같습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\hat{f}(\xi) = &lt;f, e^{2\pi ix\xi}&gt;\int_{\mathbf{R}^d} f(x)e^{2\pi ix\xi} \,dx %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;주파수 성분은 $e^{2\pi ix\xi}$ 이며, 여기에 laplace operator를 적용하면 아래와 같습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;Lf = -\triangle(e^{2\pi ix\xi}) = -\frac{\partial^2}{\partial x^2}e^{2\pi ix\xi} = (2\pi \xi)^2 e^{2\pi ix\xi} = \lambda f&lt;/script&gt;
+
+&lt;p&gt;즉, 주파수 성분 $e^{2\pi ix\xi}$ 도 laplace operator의 eigen-function라고 볼 수 있습니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;1차원 같은 경우, eigen-function이라 한 이유는 eigen-vector는 2차원 이상일 때의 eigen-function이라고 볼 수 있기 때문입니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;이제까지는 왜 Graph Fourier Transform이 Laplacian 행렬이 eigen-value decomposition과 관련 있는지 개념적인 이유와 수식적인 이유에 대해서 살펴봤습니다. 그러면 마지막으로, Graph Fourier Transform의 수식을 정리해보도록 하겠습니다.&lt;/p&gt;
+
+&lt;p&gt;Laplacian 행렬의 eigen-value decomposition은 아래와 같습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbf {L} = \mathbf {U^{\intercal}\Lambda U}&lt;/script&gt;
+
+&lt;p&gt;이를 이용한 graph fourier transform과 inverse graph fourier transform은 아래와 같습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathcal {F}(\mathbf x) = \mathbf {U^{\intercal}x}&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathcal {F^{-1}}(\hat {\mathbf {x}}) = \mathbf {U} \hat {\mathbf {x}}&lt;/script&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;inverse fourier transform은 frequency domain으로 변환된 signal을 다시 time domain으로 변환하는 것입니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3&gt;Spectral Graph Convolution&lt;/h3&gt;
+
+&lt;p&gt;드디어 Spectral Graph Convolution 입니다. 꽤 많이 돌아왔으나, Spectral Graph Convolution을 이해하기 위해서 필요한 Fourier Transform, Graph Laplacian, Graph Fourier Transform을 살펴봤습니다. 그렇다면 이제까지 배운 개념을 가지고 Spectral Graph Convolution이 어떻게 작동하는지 알아보겠습니다.&lt;/p&gt;
+
+&lt;h5&gt;Convolution Theorem&lt;/h5&gt;
 
 &lt;hr /&gt;
 
@@ -221,6 +284,11 @@ M = \begin{bmatrix}
       &lt;li&gt;&lt;a href=&quot;https://angeloyeo.github.io/2019/08/25/laplacian.html&quot;&gt;https://angeloyeo.github.io/2019/08/28/laplacian.html&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;https://towardsdatascience.com/spectral-graph-convolution-explained-and-implemented-step-by-step-2e495b57f801&quot;&gt;https://towardsdatascience.com/spectral-graph-convolution-explained-and-implemented-step-by-step-2e495b57f801&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Second_derivative&quot;&gt;https://en.wikipedia.org/wiki/Second_derivative&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Graph Fourier Transform
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://arxiv.org/pdf/1211.0053&quot;&gt;Shuman, David I., et al. “The emerging field of signal processing on graphs: Extending high-dimensional data analysis to networks and other irregular domains.” IEEE signal processing magazine 30.3 (2013): 83-98.&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
 &lt;/ol&gt;
