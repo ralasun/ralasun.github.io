@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2021-03-09T12:02:28+09:00</updated>
+ <updated>2021-03-09T12:04:22+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -280,7 +280,7 @@ M = \begin{bmatrix}
 
 &lt;p&gt;이 개념을 적용한 것이 CNN에서의 filter에 해당되는 것입니다. 이미지 영역내에서의 convolution은 filter라는 시스템에 이미지라는 신호를 입력하여 filter에 해당되는 특징을 출력해 내는 것입니다.&lt;/p&gt;
 
-&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;400&quot; src=&quot;https://imgur.com/wvuTh7M&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 15. 이미지와 특정 filter의 convolution 연산 수행 후&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;400&quot; src=&quot;https://imgur.com/wvuTh7M.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 15. 이미지와 특정 filter의 convolution 연산 수행 후&lt;/figcaption&gt;&lt;/p&gt;
 
 &lt;p&gt;convolution의 기본 개념에 대해서 대략적으로 살펴봤습니다. graph convolution은 그렇다면 우리는 어떤 graph의 특징을 추출해 낼 수 있는 filter를 학습으로 얻고 싶은 것입니다.&lt;/p&gt;
 
