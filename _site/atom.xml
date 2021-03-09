@@ -4,7 +4,7 @@
  <title>Ralasun Resarch Blog</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2021-03-08T12:34:24+09:00</updated>
+ <updated>2021-03-09T12:02:28+09:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Seonhwa Lee</name>
@@ -232,11 +232,11 @@ M = \begin{bmatrix}
 &lt;p&gt;Fourier transform의 식을 다시 쓰면 아래와 같습니다.&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\hat{f}(\xi) = &lt;f, e^{2\pi ix\xi}&gt;\int_{\mathbf{R}^d} f(x)e^{2\pi ix\xi} \,dx %]]&gt;&lt;/script&gt;
+\hat{f}(\xi) = &lt;f, e^{2\pi ix\xi}&gt;\int_{\mathbf{R}^d} f(x)e^{2\pi ix\xi} \,dx \tag{16} %]]&gt;&lt;/script&gt;
 
 &lt;p&gt;주파수 성분은 $e^{2\pi ix\xi}$ 이며, 여기에 laplace operator를 적용하면 아래와 같습니다.&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;Lf = -\triangle(e^{2\pi ix\xi}) = -\frac{\partial^2}{\partial x^2}e^{2\pi ix\xi} = (2\pi \xi)^2 e^{2\pi ix\xi} = \lambda f&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;Lf = -\triangle(e^{2\pi ix\xi}) = -\frac{\partial^2}{\partial x^2}e^{2\pi ix\xi} = (2\pi \xi)^2 e^{2\pi ix\xi} = \lambda f \tag{17}&lt;/script&gt;
 
 &lt;p&gt;즉, 주파수 성분 $e^{2\pi ix\xi}$ 도 laplace operator의 eigen-function라고 볼 수 있습니다.&lt;/p&gt;
 
@@ -248,13 +248,13 @@ M = \begin{bmatrix}
 
 &lt;p&gt;Laplacian 행렬의 eigen-value decomposition은 아래와 같습니다.&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbf {L} = \mathbf {U^{\intercal}\Lambda U}&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbf {L} = \mathbf {U^{\intercal}\Lambda U} \tag{18}&lt;/script&gt;
 
 &lt;p&gt;이를 이용한 graph fourier transform과 inverse graph fourier transform은 아래와 같습니다.&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathcal {F}(\mathbf x) = \mathbf {U^{\intercal}x}&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathcal {F}(\mathbf x) = \mathbf {U^{\intercal}x} \tag{19}&lt;/script&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathcal {F^{-1}}(\hat {\mathbf {x}}) = \mathbf {U} \hat {\mathbf {x}}&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathcal {F^{-1}}(\hat {\mathbf {x}}) = \mathbf {U} \hat {\mathbf {x}} \tag{20}&lt;/script&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;inverse fourier transform은 frequency domain으로 변환된 signal을 다시 time domain으로 변환하는 것입니다.&lt;/p&gt;
@@ -264,7 +264,53 @@ M = \begin{bmatrix}
 
 &lt;p&gt;드디어 Spectral Graph Convolution 입니다. 꽤 많이 돌아왔으나, Spectral Graph Convolution을 이해하기 위해서 필요한 Fourier Transform, Graph Laplacian, Graph Fourier Transform을 살펴봤습니다. 그렇다면 이제까지 배운 개념을 가지고 Spectral Graph Convolution이 어떻게 작동하는지 알아보겠습니다.&lt;/p&gt;
 
-&lt;h5&gt;Convolution Theorem&lt;/h5&gt;
+&lt;h5&gt;convolution theorem&lt;/h5&gt;
+
+&lt;p&gt;입력과 출력이 있는 시스템에서, 출력 값은 현재의 입력에만 영향을 받는 것이 아니라 이전의 입력값에도 영향을 받습니다. &lt;span style=&quot;text-decoration:underline&quot;&gt;따라서 이전의 값까지의 영향을 고려하여 시스템의 출력을 계산하기 위한 연산이 convolution입니다.&lt;/span&gt; 어떤 시스템에 입력신호가 들어가서 출력신호가 있다고 했을 때, 출력신호는 입력신호와 시스템함수의 convolution 연산을 통해서 나오는 것입니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;400&quot; src=&quot;https://imgur.com/dk7otIh.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 13. convolution&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;(f*g)(t) = \int_{-\infty}^{\infty}f(\tau)g(t-\tau)d\tau \tag{21}&lt;/script&gt;
+
+&lt;p&gt;convolution의 특징은 &lt;span style=&quot;text-decoration:underline&quot;&gt;시스템의 출력으로 ‘시스템의 특성’을 알 수 있다는 점입니다.&lt;/span&gt; &amp;lt;그림 13.&amp;gt;에서 시스템의 특성이 담긴 시스템 함수가 위와 같은 모양이라면, 출력도 시스템 함수와 유사한 모양으로 나옵니다.&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;그림 14&amp;gt;와 같은 모양을 가진 시스템 함수라면, 출력도 시스템 함수와 유사한 모양이 나옵니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;400&quot; src=&quot;https://t1.daumcdn.net/cfile/tistory/11297E0F4CFB6C3721&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 14. convolution(2)&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;이 개념을 적용한 것이 CNN에서의 filter에 해당되는 것입니다. 이미지 영역내에서의 convolution은 filter라는 시스템에 이미지라는 신호를 입력하여 filter에 해당되는 특징을 출력해 내는 것입니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img width=&quot;400&quot; src=&quot;https://imgur.com/wvuTh7M&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 15. 이미지와 특정 filter의 convolution 연산 수행 후&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;convolution의 기본 개념에 대해서 대략적으로 살펴봤습니다. graph convolution은 그렇다면 우리는 어떤 graph의 특징을 추출해 낼 수 있는 filter를 학습으로 얻고 싶은 것입니다.&lt;/p&gt;
+
+&lt;p&gt;convolution theorem은 그럼 어떤 것일까요 ? ‘time 영역에서의 signal과 시스템 함수와의 convolution 연산은 각각 frequency 영역으로 변환한 뒤의 곱과 같다’가 바로 convolution theorem 입니다. ‘time 영역에서의 signal과 시스템 함수와의 convolution 연산은 각각 frequency 영역으로 변환한 뒤의 곱과 같다’가 바로 convolution theorem 입니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;convolution in spatial/time domain is equivalent to multiplication in Fourier domain&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p align=&quot;center&quot;&gt;&lt;img src=&quot;https://imgur.com/hnw3IeK.png&quot; /&gt;&lt;figcaption align=&quot;center&quot;&gt;그림 16. convolution theorem&lt;/figcaption&gt;&lt;/p&gt;
+
+&lt;p&gt;frequency 영역에서의 convolution은 단순 곱으로 계산될 수 있기 때문에 훨씬 편리합니다. 마찬가지로 graph 영역에서도 graph signal을 fourier transform으로 frequency 도메인으로 바꿔서 계산하면 마찬가지로 편리해집니다. 또한 노드와 가까이 있는 이웃노드에서부터 멀리 떨어져 있는 노드에서 오는 신호까지 모두 고려하여 graph signal의 특징을 추출할 수 있게 되는 것입니다. 이것이 바로 ‘spectral graph convolution’ 입니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;멀리 떨어져 있는 노드에서 오는 신호까지 고려한다는 것이 사실 ‘convolution’ 입니다. convolution은 현재 출력 값은 현재 입력값 뿐만 아니라 이전 입력값에도 영향을 받는다는 것을 고려한 연산입니다. 즉, 멀리 떨어져 있는 노드에서 오는 신호는 비교적 최근에 온 신호가 될 것이고, 이웃노드에서 온 신호가 비교적 이전 시간에서 이미 영향을 준 신호입니다. 그러나 이를 모든 시간에 대해 분해에서 연산하기가 어렵기 때문에(시간 영역에서의 convolution 연산이 어렵기 때문에) frequency 영역으로 바꿔서 간편하게 계산을 하는 것입니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;따라서, spectral graph convolution 식은 아래와 같습니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbf {x} * G \mathbf {g} = \mathcal F^{-1}(\mathcal {F}(\mathbf {x}) \odot \mathcal {F}(\mathbf {g})) = \mathbf {U}(\mathbf {U^{\intercal}x} \odot \mathbf {U^{\intercal}g})&lt;/script&gt;
+
+&lt;p&gt;$\mathbf {g}_\theta = diag(\mathbf {U^{\intercal}g})$ 라 가정한다면(학습할 filter가 대각요소만 있다고 가정한다면), 위의 식은 아래와 같이 됩니다.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mathbf {x} * \mathbf {g}_\theta = \mathbf {U} \mathbf {g}_{\theta} \mathbf {U^{\intercal}x}&lt;/script&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;이번 포스팅은 spectral graph convolution 연산을 이해하기 위해서 fourier transform, laplacian operator 와 graph fourier transform을 살펴보고, 마지막으로 spectral graph convolution을 설명하였습니다. &lt;a href=&quot;https://ralasun.github.io/deep%20learning/2021/03/06/gcn(2)/&quot;&gt;다음 포스팅&lt;/a&gt;에서 이어서 spectral-based CNN에 대해서 살펴보도록 하겠습니다.&lt;/p&gt;
+
+&lt;p&gt;spectral-based CNN을 깊게 이해하기 위해 리서치를 하고 이해한 내용을 최대한 정리하였으나 전공 분야가 아니라 부족한 부분이 많을 거라고 예상됩니다. 혹시나 내용이 틀렸거나 문의가 있으시면 메일이나 댓글 달아주세요!&lt;/p&gt;
 
 &lt;hr /&gt;
 
@@ -291,7 +337,15 @@ M = \begin{bmatrix}
       &lt;li&gt;&lt;a href=&quot;https://arxiv.org/pdf/1211.0053&quot;&gt;Shuman, David I., et al. “The emerging field of signal processing on graphs: Extending high-dimensional data analysis to networks and other irregular domains.” IEEE signal processing magazine 30.3 (2013): 83-98.&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
+  &lt;li&gt;spectral graph convolution
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://trip2ee.tistory.com/101&quot;&gt;https://trip2ee.tistory.com/101&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://m.blog.naver.com/PostView.nhn?blogId=namunny&amp;amp;logNo=110183516999&amp;amp;proxyReferer=https:%2F%2Fwww.google.com%2F&quot;&gt;https://m.blog.naver.com/PostView.nhn?blogId=namunny&amp;amp;logNo=110183516999&amp;amp;proxyReferer=https:%2F%2Fwww.google.com%2F&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://arxiv.org/pdf/1312.6203.pdf%20http://arxiv.org/abs/1312.6203&quot;&gt;Bruna, Joan, et al. “Spectral networks and locally connected networks on graphs.” arXiv preprint arXiv:1312.6203 (2013).&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
 &lt;/ol&gt;
+
 </content>
  </entry>
  
