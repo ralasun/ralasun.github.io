@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Short-time Fourier Transform(STFT) 과 Discrete Wavelet Transform(DWT) &middot; Ralasun Resarch Blog
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/main.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://raw.githubusercontent.com/ralasun/ralasun.github.io/master/public/favicon.png">
+  <link rel="shortcut icon" href="https://raw.githubusercontent.com/ralasun/ralasun.github.io/master/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  
+  <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_SVG"> </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });
+  </script>
+  
+</head>
+
+
+  <body>
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="sidebar-personal-info">
+      <div class="sidebar-personal-info-section">
+        <img src="http://localhost:4000/public/img/profile_v1.jpg"/>
+      </div>
+      <div class="sidebar-personal-info-section">
+        <p><strong>한걸음씩</strong>, 그리고 <strong>꾸준히</strong> 나아가기</p>
+      </div>
+      
+      
+      
+      <div class="sidebar-personal-info-section">
+        <p> Follow me: 
+        
+        
+        
+        <a href="https://www.linkedin.com/in/ralasun">
+          <i class="fa fa-linkedin" aria-hidden="true"></i>
+        </a>
+        
+        |
+        
+        
+        
+        <a href="https://github.com/ralasun">
+          <i class="fa fa-github" aria-hidden="true"></i>
+        </a>
+        
+        |
+        
+        
+        
+        <a href="mailto:sunhwalsh91@gmail.com">
+          <i class="fa fa-envelope" aria-hidden="true"></i>
+        </a>
+        
+        
+        
+        </p>
+      </div>
+      
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    
+      
+      
+      
+
+      
+
+      <span class="">
+        <a class="sidebar-nav-item " href="/">
+          Home
+        </a>
+
+        
+      </span>
+
+    
+      
+      
+      
+
+      
+
+      <span class="foldable">
+        <a class="sidebar-nav-item " href="/blog/">
+          Blog
+        </a>
+
+        
+          
+            
+            
+            
+              <a class="sidebar-nav-item sidebar-nav-item-sub " href="/blog/categories/">
+                Posts
+              </a>
+          
+        
+          
+            
+            
+            
+              <a class="sidebar-nav-item sidebar-nav-item-sub " href="/blog/tags/">
+                Tags
+              </a>
+          
+        
+      </span>
+
+    
+      
+      
+      
+
+      
+
+      <span class="">
+        <a class="sidebar-nav-item " href="/about/">
+          About
+        </a>
+
+        
+      </span>
+
+    
+  </nav>
+
+  <div class="sidebar-item">
+    <p>
+    &copy; 2021 Seonhwa Lee. This work is liscensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home" title="Ralasun Resarch Blog">
+              <img class="masthead-logo" width="200" height="30" src="http://localhost:4000/public/logo.jpg"/>
+            </a>
+            <small>research blog for data science</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="post">
+  <h1 class="post-title">Short-time Fourier Transform(STFT) 과 Discrete Wavelet Transform(DWT)</h1>
+  <span class="post-date">21 Jun 2021</span>
+   | 
+  
+    <a href="/blog/tags/#signal-analysis" class="post-tag">signal-analysis</a>
+  
+  
+  <article>
+    <p>Fourier Transform의 단점은 무한히 흘러가는 파동에 대한 주파수 분석만 가능하기 때문에 국소적인 시간 부분 단위로는 주파수 분석을 할 수가 없습니다. 따라서 시간-주파수 영역 모두 분석할 수 있는 방법으로 Short-term Fourier Transform과 Discrete Wavelet Transform이 있습니다.</p>
+
+<h1>Limitation of Fourier Transform</h1>
+
+<p align="center"><img width="500" src="https://imgur.com/2Xr5hU4.png" /></p>
+<figcaption align="center">그림 1. Fourier Transform</figcaption>
+
+<p>&lt;그림 1.&gt;을 보면, 시간에 따라 주파수가 변화는 신호에 대해서 푸리에 변환은 시간에 따른 변화 정보를 담지 못합니다. 일정한 속도로 진동하는 정현파(sine함수와 cosine함수)가 아니라 갑자기 sharp한 포인트를 가지는 파동같은 경우에도 이러한 변화를 푸리에 변환을 통해선 확인할 수가 없습니다.</p>
+
+<p>따라서, 일정한 시간 블럭(window)로 나눠서 각각 블럭에 대해 푸리에 변환을 적용한다면 이러한 푸리에 변환의 단점을 어느정도 완화시킬 수 있습니다. 이 방법이 바로 국소 푸리에 변환(Short-Time Fourier Transform, STFT)입니다.</p>
+
+<h1>Short-Time Fourier Transform(STFT)</h1>
+
+\[\hat f(t, u) = \int_{-\infty}^{\infty}f(t')w(t'-t)e^{-i2\pi t'u}dt' \tag{1}\]
+
+<p>국소 푸리에 변환은 신호를 슬라이딩 윈도우 기법처럼 특정 길이를 가진 윈도우를 시그널 위에 움직이면서, 각각 윈도우에서 푸리에 변환을 하는 것입니다. 특정 시간 t에 대해서 푸리에 변환을 여러번 계산하게 되는데, 계산한 횟수만큼 평균을 구해서 특정 시간 t에서의 주파수 스펙트럼을 구합니다.</p>
+
+<p>그렇다면 <span style="text-decoration: underline">국소 푸리에 변환의 결과에 영향을 주는 변수</span>는 어떤걸까요? 바로 <span style="text-decoration: underline"><b>슬라이딩 윈도우</b></span>의 크기입니다.</p>
+
+<h2>Trade-offs between frequency resolution and time resolution</h2>
+
+<p align="center"><img width="500" src="https://imgur.com/7DE3e69.png" /></p>
+<figcaption align="center">그림 2. Trade-Offs between Frequency and Time in STFT</figcaption>
+
+<p>윈도우 크기가 너무 작으면(narrow window), 주파수 영역의 해상도가 떨어집니다. 조금만 생각하면 이해하기 쉽습니다. 푸리에 변환하는 대상인 윈도우를 크기를 작게해서 변환하는 윈도우 갯수를 늘린다면, 비슷한 시각 근처의 윈도우들의 분석 결과가 대부분 유사할 것입니다. 따라서, 특정 시간 t 주변에 frequency 스펙트럼이 비슷하게 그려지기 때문에, &lt;그림 2.&gt; 처럼 frequency 축으로 ‘spread-out’ 되어 해상도가 떨어집니다. 반대로 윈도우 크기가 너무 크면(broad window), 반대로 주파수 영역 해상도는 올라가지만 time 영역 해상도가 떨어집니다. &lt;그림 2.&gt;를 보시면, 왼쪽그림으로 갈수록 시간 영역에 흐릿한 영역이 넓어지는 것을 확인할 수 있습니다.</p>
+
+<p>그렇다면, 어떻게 해야 시간 영역과 주파수 영역 모두 해상도를 높게 가져갈 수 있을까요 ? <span style="text-decoration: underline">&lt;그림 1.&gt;의 신호에서 진동이 빠른 부분(높은 주파수)은 윈도우 크기를 작게 가져가고, 진동이 느린 부분(낮은 주파수)은 윈도우 크기를 넓게 가져가는 것입니다.</span> 그러나, STFT는 고정된 윈도우 사이즈에 대해서만 계산이 가능합니다. 이의 단점을 해결한 것이 바로 <b>웨이블릿 변환(Wavelet Transform)</b>입니다.</p>
+
+<h1>Wavelet Transform</h1>
+
+<p>푸리에 변환은 cosine과 sine으로 구성된 기저함수로의 분해입니다. 여기서 cosine과 sine은 정현파로, 시간에 따라 변하지 않고 일정한 속도와 크기로 움직입니다. 반면에 웨이블릿 변환은 ‘웨이블릿(wavelet)’이라는 기저함수로 분해됩니다. Wave는 파동, let은 ‘작다’ 라는 의미로, 작은 파동을 뜻합니다. <span style="text-decoration: underline">웨이블릿 변환은 사전에 정의된 웨이블릿 기저함수들로 분해</span>하는 것입니다. 그렇다면 웨이블릿 변환은 왜 시간과 주파수 영역 둘 다에서 높은 해상도를 가지는 걸까요 ? 웨이블릿의 특징을 살펴보면 알 수 있습니다.</p>
+
+<p align="center"><img src="https://miro.medium.com/max/1400/1*Ioee_j_s29XVULQVUN_OmA.png" /></p>
+<figcaption align="center">그림 3. Example Wavelets</figcaption>
+
+<p>&lt;그림 1.&gt;은 웨이블릿 함수의 예입니다. 웨이블릿은 국소 시간 부분에만 파동이 존재하고, 대부분은 0의 값을 가지는 파동입니다.</p>
+
+<blockquote>
+  <p>A Wavelet is wave-like oscillation that is localized in time</p>
+</blockquote>
+
+<p>웨이블릿은 2가지 파라미터가 있습니다. scale과 location입니다. Scale은   웨이블릿 파동을 늘이거나 줄이는데 관여합니다.</p>
+
+<p align="center"><img src="https://miro.medium.com/max/1400/1*F4yPDvEePSWVLb7C9rRuag.png" /></p>
+<figcaption align="center">그림 4. 웨이블릿의 scale변수</figcaption>
+
+<p>scale값이 크면, 웨이블릿은 늘어난 형태로 즉 작은 주파수를 가지게 되고, 국소 시간 부분의 크기가 증가합니다. 반대로 scale이 작아지면 웨이블릿은 큰 주파수를 가지게 되고 국소 시간 부분의 크기가 감소합니다.</p>
+
+<p align="center"><img src="https://miro.medium.com/max/1400/1*QUAYlxYNrdRX0f4gRjTLtA.png" /></p>
+<figcaption align="center">그림 5. 웨이블릿의 location변수</figcaption>
+
+<p>location변수는 wavelet의 이동과 관련됩니다. 주어진 location 변수만큼 웨이블릿은 주어진 신호를 슬라이딩하면서 변환을 계산하는 것입니다. 이러한 특징 때문에 웨이블릿 변환은 <b>합성곱(convolution)</b>으로 볼 수 있습니다.</p>
+
+<p algin="center"><img src="https://miro.medium.com/max/1200/1*4fXf0Yy8TMLSk7LXoZDDWw.gif" /></p>
+<figcaption align="center">그림 6. 웨이블릿 변환 애니메이션</figcaption>
+
+<p>따라서, <span style="text-decoration: underline">웨이블릿 변환은 작은 주파수에 대해선 넓은 윈도우 크기를 가지고, 큰 주파수에 대해선 좁은 윈도우 크기를 가지기 때문에 시간과 주파수 두 영역 모두에서 높은 해상도를 가질 수 있게 되는 것</span>입니다.</p>
+
+<h2>Differences among FT, STFT, and WT</h2>
+
+<p align="center"><img src="https://imgur.com/ueD0HKr.png" /><figcaption align="center">그림 5. FT, STFT 와 WT 비교</figcaption></p>
+
+<p>&lt;그림 5.&gt;는 푸리에 변환, 국소 푸리에 변환과 웨이블릿 변환을 비교한 그림입니다. FT는 time domain영역에 대한 주파수 변화는 볼 수 없고, STFT는 모두 동일한 윈도우 크기에 대해서만 주파수 영역을 분석할 수 있습니다. 반면에 WT는 주파수 크기에 따른 유연한 윈도우 크기를 설정하여 시간과 주파수 영역에 대한 해상도를 높일 수 있습니다.</p>
+
+<h2>Various kinds of Wavelets</h2>
+
+<p>아래는 다양한 웨이블릿 함수입니다.</p>
+
+<p align="center"><img src="https://miro.medium.com/max/1400/1*mkdL9Wjoj2MjbPtkrpoZjA.png" /></p>
+<figcaption align="center">그림 6. 웨이블릿 종류들</figcaption>
+
+<p>그림에서 다양한 웨이블릿인 것처럼, 어떤 웨이블릿을 선택하느냐에 따라 다른 변환 결과를 갖게 될 것입니다. 따라서, 주어진 신호에서 어떠한 특징을 뽑고 싶은지를 판단해야 하므로, 각 웨이블릿의 특징들을 살펴봐야 합니다. 여기서는 생략하도록 하겠습니다.</p>
+
+<h2>Discrete Wavelet Transform</h2>
+
+<p>좀 더 들어가서, 이산 웨이블릿 변환의 계산과정에 대해 살펴보겠습니다. 웨이블릿 변환은 해당 신호가 주어진 scale과 location 변수를 가진 wavelet과 얼마만큼 닮았는지에 대한 양에 해당되는 계수를 구하는 과정입니다. 따라서 이 계수들은 filter-bank를 반복적으로 적용하는 형태로 순차적으로 계산됩니다.</p>
+
+<p align="center"><img src="https://imgur.com/7KNw6xP.png" /></p>
+<figcaption align="center">그림 7. Filter bank view of wavelet decomposition</figcaption>
+
+<p>이산 웨이블릿 변환에서는 두 변수 scale(a)과 location(b)은 2의 배수씩 증가시켜서 다양한 웨이블릿 형태를 얻습니다.</p>
+
+\[a^j = 2^j , \,\,\,\, b_{j,k} = 2^jk \triangle t, \\where \,\, j = 1, 2, \dots, \infty, \\k=-\infty, \dots, -2, -1, 0, 1, 2, \dots, \infty\]
+
+<p>직관적으로 이해하면, scale이 커질수록 주파수가 작아지기 때문에 국소 시간 부분의 크기가 증가합니다. 따라서, 여기에 맞춰서 scale이 커질수록 shift되는 정도도 큼직해야하고, 반면에 샘플링 정도는 작아져야 합니다. 그렇게 되어야 시간-주파수 영역에서의 해상도를 유지할 수 있습니다(그림 8.).</p>
+
+<p align="center"><img src="https://imgur.com/eCoFXbq.png" /><figcaption align="center">그림 8. dyadic sampling</figcaption></p>
+
+<p>따라서 처음에 적용하는 웨이블릿은 scale이 가장 작기 때문에, 높은 주파수 영역대의 웨이블릿과의 신호와의 합성곱의 결과로 해당 웨이블릿과 유산한 양이 계산됩니다. 그렇다면 나머지 주파수 영역대에 대해서도 그 다음 scale인 2배된 scale을 통과해야 하는데 이는 마치 high-pass filter를 통과하고 난 나머지 부분에 대해서 처음 적용했던 필터보단 낮지만 높은 주파수 영역대를 살펴보는 또다른 high-pass filter를 통과시키는 것과 같은 과정을 거치게 됩니다. 따라서 결국엔 recursive한 형태를 보이게 되는 겁니다.</p>
+
+<p align="center"><img src="https://imgur.com/WN4GtSe.png" /><figcaption align="center">그림 9. filter bank view of wavelet decomposition(2)</figcaption></p>
+
+<hr />
+
+<p>이상으로 포스팅을 마치겠습니다.</p>
+
+<hr />
+
+<ol>
+  <li>The Wavelet Transform, <a href="https://towardsdatascience.com/the-wavelet-transform-e9cfa85d7b34">https://towardsdatascience.com/the-wavelet-transform-e9cfa85d7b34</a></li>
+  <li>Lecture 16 : Limitations of the Fourier Transform: STFT, <a href="https://qiml.radiology.wisc.edu/wp-content/uploads/sites/760/2020/10/notes_016_stft.pdf">https://qiml.radiology.wisc.edu/wp-content/uploads/sites/760/2020/10/notes_016_stft.pdf</a></li>
+  <li>Lecture 17 : Wavelets: Motivation and Description, <a href="https://qiml.radiology.wisc.edu/wp-content/uploads/sites/760/2020/10/notes_017_wavelets_intro.pdf">https://qiml.radiology.wisc.edu/wp-content/uploads/sites/760/2020/10/notes_017_wavelets_intro.pdf</a></li>
+</ol>
+
+  </article>
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/signal%20analysis/2021/06/18/ft-vs-wt/">
+            Discrete Fourier Transform에 대하여
+            <small>18 Jun 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/deep%20learning/2021/03/06/gcn(2)/">
+            Graph Convolutional Network에 대하여 - Spectral Graph Convolution(2)(작성 중)
+            <small>06 Mar 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/deep%20learning/2021/02/15/gcn/">
+            Graph Convolutional Network에 대하여 - Spectral Graph Convolution
+            <small>15 Feb 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+
+<div class="comments">
+  <h2>Comments</h2>
+  <div id="disqus_thread"></div>
+  <script>
+var disqus_config = function () {
+  this.page.url = 'http://localhost:4000/signal%20analysis/2021/06/21/stft-dwt/'; // Replace PAGE_URL with your page's canonical URL variable
+  this.page.identifier = '/signal%20analysis/2021/06/21/stft-dwt'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = '//ralasun-github-io.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if (target === toggle) {
+            checkbox.checked = !checkbox.checked;
+            e.preventDefault();
+          } else if (checkbox.checked && !sidebar.contains(target)) {
+            /* click outside the sidebar when sidebar is open */
+            checkbox.checked = false;
+          }
+        }, false);
+      })(document);
+    </script>
+    
+    <script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-166283746-1', 'auto');
+ga('send', 'pageview');
+    </script>
+    
+  </body>
+  
+  <script id="dsq-count-scr" src="//ralasun-github-io.disqus.com/count.js" async></script>
+  
+</html>

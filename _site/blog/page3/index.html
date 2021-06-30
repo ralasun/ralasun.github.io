@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Blog &middot; Ralasun Resarch Blog
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/main.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://raw.githubusercontent.com/ralasun/ralasun.github.io/master/public/favicon.png">
+  <link rel="shortcut icon" href="https://raw.githubusercontent.com/ralasun/ralasun.github.io/master/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  
+  <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_SVG"> </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });
+  </script>
+  
+</head>
+
+
+  <body>
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="sidebar-personal-info">
+      <div class="sidebar-personal-info-section">
+        <img src="http://localhost:4000/public/img/profile_v1.jpg"/>
+      </div>
+      <div class="sidebar-personal-info-section">
+        <p><strong>한걸음씩</strong>, 그리고 <strong>꾸준히</strong> 나아가기</p>
+      </div>
+      
+      
+      
+      <div class="sidebar-personal-info-section">
+        <p> Follow me: 
+        
+        
+        
+        <a href="https://www.linkedin.com/in/ralasun">
+          <i class="fa fa-linkedin" aria-hidden="true"></i>
+        </a>
+        
+        |
+        
+        
+        
+        <a href="https://github.com/ralasun">
+          <i class="fa fa-github" aria-hidden="true"></i>
+        </a>
+        
+        |
+        
+        
+        
+        <a href="mailto:sunhwalsh91@gmail.com">
+          <i class="fa fa-envelope" aria-hidden="true"></i>
+        </a>
+        
+        
+        
+        </p>
+      </div>
+      
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    
+      
+      
+      
+
+      
+
+      <span class="">
+        <a class="sidebar-nav-item " href="/">
+          Home
+        </a>
+
+        
+      </span>
+
+    
+      
+      
+      
+
+      
+
+      <span class="foldable">
+        <a class="sidebar-nav-item " href="/blog/">
+          Blog
+        </a>
+
+        
+          
+            
+            
+            
+              <a class="sidebar-nav-item sidebar-nav-item-sub " href="/blog/categories/">
+                Posts
+              </a>
+          
+        
+          
+            
+            
+            
+              <a class="sidebar-nav-item sidebar-nav-item-sub " href="/blog/tags/">
+                Tags
+              </a>
+          
+        
+      </span>
+
+    
+      
+      
+      
+
+      
+
+      <span class="">
+        <a class="sidebar-nav-item " href="/about/">
+          About
+        </a>
+
+        
+      </span>
+
+    
+  </nav>
+
+  <div class="sidebar-item">
+    <p>
+    &copy; 2021 Seonhwa Lee. This work is liscensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home" title="Ralasun Resarch Blog">
+              <img class="masthead-logo" width="200" height="30" src="http://localhost:4000/public/logo.jpg"/>
+            </a>
+            <small>research blog for data science</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="posts">
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/code%20snippet/2020/12/01/any-all-usage/">
+        pandas.DataFrame.any(), numpy.any()
+      </a>
+    </h1>
+
+    <span class="post-date">01 Dec 2020</span>
+     | 
+    
+    <a href="/blog/tags/#pandas" class="post-tag">pandas</a>
+    
+    <a href="/blog/tags/#numpy" class="post-tag">numpy</a>
+    
+    
+
+    <article>
+      <hr />
+
+<p>평소에 헷갈리는 any(), all()에 대해 정리하였습니다.</p>
+
+<hr />
+
+<h1>df.isna()</h1>
+
+<div class="prompt input_prompt">
+In&nbsp;[1]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+</code></pre></div></div>
+
+<div class="prompt input_prompt">
+In&nbsp;[2]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'./data/top1_1880109251922.csv'</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'date'</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'Date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'date'</span><span class="p">])</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">set_index</span><span class="p">(</span><span class="s">'Date'</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">asfreq</span><span class="p">(</span><span class="s">'D'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>df.isna()는 데이터프레임에서 NaN 요소에 해당되는 부분을 True로 리턴해준다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[3]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="n">isna</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>store</th>
+      <th>product_c</th>
+      <th>sales</th>
+    </tr>
+    <tr>
+      <th>Date</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2018-02-01</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2018-02-02</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2018-02-03</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2018-02-04</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2018-02-05</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2019-07-27</th>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2019-07-28</th>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2019-07-29</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2019-07-30</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2019-07-31</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+<p>546 rows × 4 columns</p>
+</div>
+
+<h1>df.any()</h1>
+
+<p>여기서, dataframe.any(axis=0)인 경우엔 각 column의 row를 다 훑어서, row요소들 중 적어도 하나의 row애 True가 있으면, True를 반환합니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[4]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="n">isna</span><span class="p">().</span><span class="nb">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>date         True
+store        True
+product_c    True
+sales        True
+dtype: bool
+</code></pre></div></div>
+
+<p>반면에, dataframe.any(axis=1)인 경우엔 각 index별로 column요소를 다 훑어서 적어도 하나의 column에 True가 있으면 True를 반환합니다.
+아래 코드를 보면, 해당 index에 data, store, product_c, sales가 모두 True이면 해당 index row는 True를 반환합니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[5]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="n">isna</span><span class="p">().</span><span class="nb">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Date
+2018-02-01    False
+2018-02-02    False
+2018-02-03    False
+2018-02-04    False
+2018-02-05    False
+              ...  
+2019-07-27     True
+2019-07-28     True
+2019-07-29    False
+2019-07-30    False
+2019-07-31    False
+Freq: D, Length: 546, dtype: bool
+</code></pre></div></div>
+
+<h1>np.any()</h1>
+
+<p>np.any() 는 dataframe.any()와 유사합니다. 주어진 축(axis) 정보에 따라 해당 요소에서 True가 하나 이상이라도 있으면 True를 반환합니다. 아래는 np.any()의 예제입니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[6]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+</code></pre></div></div>
+
+<p>먼저, 예제 array를 생성합니다. True, False로 구성된 random한 array를 만들었습니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[7]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">samplearr</span> <span class="o">=</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">]</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">choice</span><span class="p">(</span><span class="n">samplearr</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">47</span><span class="p">))</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">choice</span><span class="p">(</span><span class="n">samplearr</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">47</span><span class="p">))</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">choice</span><span class="p">(</span><span class="n">samplearr</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">47</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext output_stream highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ True  True  True  True  True  True False  True  True  True False False
+ False  True False  True False False False False  True False  True  True
+ False  True False False False  True False  True False  True  True False
+ False  True False False  True False False  True  True  True False]
+[False False  True False  True False  True  True False  True  True False
+  True False  True False False False False False  True  True False False
+ False False  True False False  True False False False  True False  True
+  True  True False False  True  True  True  True False  True  True]
+[False False  True False False False False  True False False  True  True
+  True False False  True  True  True  True False False False False  True
+ False  True  True  True  True  True  True  True False False False  True
+ False False False False False False  True  True  True  True  True]
+</code></pre></div></div>
+
+<p>np.any(a,b,c)는 에러를 발생합니다. 반드시, 하나의 array나 아니면 array와 유사한 list형식으로 묶어서 넣어줘야합니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[8]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">any</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---------------------------------------------------------------------------
+</code></pre></div></div>
+
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TypeError                                 Traceback (most recent call last)
+</code></pre></div></div>
+
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;ipython-input-8-7a7facd3228c&gt; in &lt;module&gt;
+----&gt; 1 np.any(a,b,c)
+</code></pre></div></div>
+
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;__array_function__ internals&gt; in any(*args, **kwargs)
+</code></pre></div></div>
+
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in any(a, axis, out, keepdims)
+   2328 
+   2329     """
+-&gt; 2330     return _wrapreduction(a, np.logical_or, 'any', axis, None, out, keepdims=keepdims)
+   2331 
+   2332 
+</code></pre></div></div>
+
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in _wrapreduction(obj, ufunc, method, axis, dtype, out, **kwargs)
+     85                 return reduction(axis=axis, out=out, **passkwargs)
+     86 
+---&gt; 87     return ufunc.reduce(obj, axis, dtype, out, **passkwargs)
+     88 
+     89 
+</code></pre></div></div>
+
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TypeError: only integer scalar arrays can be converted to a scalar index
+</code></pre></div></div>
+
+<h2>axis=0 vs. axis=1</h2>
+
+<p>그전에 axis=0과 1에 따라 차이를 살펴봅시다. axis=0인 경우엔 각 column의 모든 row를 훑고, axis=1인 경우엔 각 row의 모든 column을 훑습니다. 아래는 관련 그림입니다.</p>
+
+<p><img src="/images/2020-12-01-any-all-usage_files/axis.jpg" alt="jpg" /></p>
+
+<p>axis=0인 경우, 각각의 column요소에서 모든 row를 훑어서 하나 이상이 True요소라면 True를 반환합니다. 결과는 [a,b,c]의 column의 갯수만큼 출력됩니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[9]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">any</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([ True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True, False,  True,  True,  True,  True, False,  True,  True,
+        True,  True,  True,  True,  True, False,  True,  True,  True,
+        True,  True, False, False,  True,  True,  True,  True,  True,
+        True,  True])
+</code></pre></div></div>
+
+<p>axis=1인 경우, 각각의 row요소에서 모든 column을 훑어서 하나 이상이 True요소라면 True를 반환합니다. 결과는 [a,b,c]의 row 갯수만큼 출력됩니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[10]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">any</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([ True,  True,  True])
+</code></pre></div></div>
+
+<h1>np.all()</h1>
+
+<p>np.all()은 np.any()와 반대로, 검사할 축에 모든 요소가 True여야지만 True를 반환합니다. 아래는 예제입니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[11]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">all</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([False, False,  True, False, False, False, False,  True, False,
+       False, False, False, False, False, False, False, False, False,
+       False, False, False, False, False, False, False, False, False,
+       False, False,  True, False, False, False, False, False, False,
+       False, False, False, False, False, False, False,  True, False,
+        True, False])
+</code></pre></div></div>
+
+<div class="prompt input_prompt">
+In&nbsp;[12]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">all</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([False, False, False])
+</code></pre></div></div>
+
+
+    <article>
+    <div class="post-more">
+      
+      <a href="/code%20snippet/2020/12/01/any-all-usage/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
+      
+      <a href="/code%20snippet/2020/12/01/any-all-usage/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
+    </div>
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/time%20series%20analysis/2020/11/23/time-series-intro(1)/">
+        General Approach to Time Series Analysis - Time Series Data, Stationarity 등에 대하여
+      </a>
+    </h1>
+
+    <span class="post-date">23 Nov 2020</span>
+     | 
+    
+    <a href="/blog/tags/#time-series-analysis" class="post-tag">time-series-analysis</a>
+    
+    
+
+    <article>
+      <p>이번 포스팅을 시작으로, 시계열 분석에 대해서 다루도록 하겠습니다. 메인 교재는 Brockwell와 Richard A. Davis의 &lt; Introduction to Time Series and Forecasting &gt; 와 패스트캠퍼스의 &lt;파이썬을 활용한 시계열 분석 A-Z&gt; 를 듣고 정리하였습니다.</p>
+
+<hr />
+
+<h2>1.1. What is Time Series?</h2>
+
+<p>시계열이란, 일정 시간 간격으로 배치된 데이터들의 수열입니다. 그 중에서 discrete한 시계열이란 관측이 발생한 시각 t의 집합 $T_0$ 가 discrete한 경우이며, 관측치가 시간 구간 안에서 연속적으로 발생한다면 continuous한 시계열입니다.</p>
+
+<p>시계열 시퀀스는 일반적으로 자기 상관성이 있는 수열입니다. 즉, 과거의 데이터가 현재를 넘어서 미래까지 영향을 미치는 것을 뜻합니다.</p>
+
+<p>[Cov(X_i, X_j) \neq 0]</p>
+
+<p>따라서, 시계열 데이터로 모델링을 하기 위해선 먼저 데이터를 최대한 분해해서 살펴봐야 합니다. 확률 모델링을 하기 위해선 i.i.d 여야 하기 때문입니다. 일반적으로 시계열 데이터는 trend, seasonality, noise 항으로 구성되어 있습니다. 여기서 시계열 데이터가 자기 상관성을 가지게 되는 요인은 trend와 seasonality 요소 때문이고, noise는 i.i.d한 독립변수로 구성된 에러항입니다.</p>
+
+<h2>1.2. Objectives of Time Series Analysis</h2>
+<p>시계열 분석의 목적은 주로 시계열 데이터를 보고 앞으로 일어날 일들을 예측하는 것입니다. 그러기 위에선 기존에 있는 시계열 데이터를 가지고 추론을 해야합니다. 따라서, 이러한 추론을 하기 위해선 가정에 맞는 적절한 확률 모델을 선택하여 모델링을 진행해야 합니다.</p>
+
+<p>그러나, 시계열 데이터는 자기 상관성이 존재하는 데이터입니다. 따라서 확률적 모델링을 통해 이 시계열 데이터를 서로 독립인 데이터로 변환해야 하는데 이 과정이 seasonal adjustment 또는 trend and seasonal decomposition입니다. 그 밖에 log transformation, differencing 같은 과정도 존재합니다.</p>
+
+<p>어쨌든, 시계열 분석의 궁극적인 목표는 독립적인 변수로 최대한 변환한 뒤, 이를 기반으로 확률적 통계 모델링을 해서, inference를 하는 것입니다. Inference 결과는 다시 우리가 얻고자 하는 예측값으로 바꾸기 위한 reverting 과정을 거쳐야 합니다. 왜냐하면, seasonal adjustment나 Decomposition을 통해 상관성을 제거했기 때문에 원하는 예측값을 얻기 위해선 다시 원래대로 이 과정을 뒤집어서 돌아가야 하는 것입니다.</p>
+
+<h2>1.3. Some Simple Time Series Models</h2>
+<p>위에서 말씀 드린 것과 같이 시계열 데이터를 보고 적절한 확률 모델을 선택하는 것은 매우 중요합니다. 따라서, 몇가지 간단한 time series model을 소개하겠습니다.</p>
+
+<h3>1.3.1. Definition of a time series model</h3>
+<p>관측된 ${x_t}$ 에 대한 time-series 모델이란, 랜덤 변수 ${X_t}$ 시퀀스들의 joint distribution 을 의미합니다.</p>
+
+<blockquote>
+  <p>A time series model for the observed data ${x_t}$ is a specification of the joint distributions(or possibly only the means and covariances) of a sequence of random variables ${X_t}$ of which ${x_t}$ is postulated to be a realization.</p>
+</blockquote>
+
+<p>즉, 랜덤 변수들의 시퀀스 ${X_1, X_2, \dots }$ 로 구성된 time-series 확률 모델은 랜덤 벡터 $(X_1, \dots, x_n)’ ,\,\, n=1,2,\dots,$ 의 결합 분포입니다. 아래 그림은 랜던 변수들의 시퀀스 ${S_t, t=1, \dots, 200}$ 로 나올 수 있는 가능성 중 한가지가 ‘실현’ 된 것입니다.</p>
+
+<p align="center"><img src="https://imgur.com/izJrvZl.png" /><figcaption align="center">그림 1. Time-series 예시</figcaption></p>
+
+<h3>1.3.2. Some Simple Time Series Model</h3>
+
+<ol><li>iid Noise<br />
+가장 기본적인 time series 모델은 noise항으로만 이뤄진 경우입니다.(거의 현실세계에선 없다고 생각하시면 됩니다.)</li>
+<li>Binary Process<br />
+i.i.d Noise의 종류로, binary 분포를 따르는 noise인 경우입니다. 랜덤 변수들의 시퀀스 $\{X_t,\,\,t=1,2,\dots,\}$ 가 $P[X_t = 1]=p$ , $P[X_t = -1] = 1-p$ 를 따릅니다.</li>
+<li>Models with only Trend<br />
+trend요소와 noise항만 있는 경우입니다. 여기서 trend요소란 패턴이 선형관계를 가지고 있을 때입니다. 자세히 말하면, 시계열이 시간에 따라 증가, 감소, 또는 일정 수준을 유지하는 경우입니다.
+
+$$X_t = m_t + Y_t$$
+
+<p align="center"><img src="https://imgur.com/AjlrE80.png" /><figcaption align="center">그림 2. Time series with only trend component</figcaption></p></li>
+
+<li>Models with only Seaonality<br />
+seasonal요소와 noise항만 있는 경우입니다. 여기서 seasonal요소란 일정한 빈도로 주기적으로 반복되는 패턴을 말합니다. 반면에, 일정하지 않은 빈도로 발생하는 패턴은 Cycle이라 합니다.(여기서는 seasonal 기준으로 설명하겠습니다.)
+
+$$X_t = S_t + Y_t$$</li>
+
+<p align="center"><img src="https://imgur.com/6NZcDiO.png" /><figcaption align="center">그림 3. Times series with only seasonality(period=12month)</figcaption></p>
+</ol>
+
+<h3>1.3.3 A General Approach to Time Series Modeling</h3>
+<p>시계열 분석에 대해 깊게 들어가기 전에, 시계열 데이터 모델링하는 방법에 대해 대략적으로 알아봅시다.</p>
+
+<p>1) 그래프로 그린 후, 그래프 상에서 아래와 같은 요소가 있는지 체크한다.(Plot the series and examine the main features of the graph)<br /></p>
+<ul><li>trend</li><li>a seasonal component</li><li>any apparent sharp changes in behavior</li><li>any outlying observations</li></ul>
+
+<p>2) 정상상태의 잔차를 얻기 위해, trend와 seasonality 요소를 제거한다. (Remove the trend and seasonal components to get stationary residuals)<br />
+     trend와 seasonality 요소를 제거하기 전에, 전처리를 해야하는 경우가 있습니다. 예를 들어, 아래와 같이 지수적으로 증가하는 경우에, 로그를 취해서 variance가 일정하도록 만든 후 모델링을 하면 정확도를 높일 수 있습니다.</p>
+
+<p align="center"><img src="https://imgur.com/V85l07h.png" /><figcaption align="center">그림 1. 로그 취하기 전</figcaption></p>
+<p align="center"><img src="https://imgur.com/e0GKRKU.png" /><figcaption align="center">그림 2. 로그 취한 후</figcaption></p>
+
+<p>이외에도 여러 방법이 있습니다. 추후에 설명하도록 하겠습니다. 어쨌든, 이 모든 방법들의 핵심은 <b>정상상태의 잔차</b>를 만드는 것입니다.</p>
+
+<p>3) auto-correlation 함수, 여러 다양한 통계량을 이용하여 잔차를 핏팅할 모델을 선택한다. (Choose a model to fit the residuals, making use of various sample statistics including the sample autocorrelation function)</p>
+
+<p>4) 핏팅된 모델로 예측한다.<br /> 
+     여기서 잔차를 예측하는 것이고, 예측된 잔차를 원래 예측해야 할 값으로 변환한다.</p>
+
+<h2>1.4. Stationary Models and the Autocorrelation Function</h2>
+
+<p>시계열 데이터가 정상상태(stationarity)를 가지기 위해서, 시계열이 확률적인 특징이 시간이 지남에 따라 변하지 않는다는 가정을 충족시켜야 합니다. 그러나 시계열 데이터는 trend와 seasonality요소로 인해, 평균과 분산이 변할 수 있습니다.</p>
+
+<blockquote>
+  <p>a time series ${{X_t, t=0, \pm1, …}}$ is said to be stationary if it has statistical properties similar to those of the “time-shifted” series ${{X_{t+h}, t=0, \pm1, …}}$ for each integer h.</p>
+</blockquote>
+
+<blockquote>
+  <p>Trends can result in a varying mean over time, whereas seasonality can result in a changing variance over time, both which define a time series as being non-stationary. Stationary datasets are those that have a stable mean and variance, and are in turn much easier to model.</p>
+</blockquote>
+
+<p>시계열에 대한 평균과 공분산은 아래와 같이 정의됩니다.</p>
+<p align="center"><img src="https://imgur.com/65biJ1q.png" /><figcaption align="center">그림 3. 시계열의 평균과 공분산</figcaption></p>
+
+<h4>Strict Stationarity vs. Weak Stationarity</h4>
+<p>엄격한 정상상태가 되려면,  $(X_1,\dots , X_n)$ 의 결합분포와 $(X_{1+h}, \dots, X_{n+h})$ 의 결합분포가 시간간격 h에 상관없이 동일해야 합니다. 그러나 이를 이론적으로 증명하기 어렵기 때문에, 약한 정상상태(weak stationarity)만을 만족하면 정상상태에 있다고 생각하고 시계열 문제를 풉니다. 약한 정상상태는 아래 조건을 만족합니다. 즉, 결합분포가 동일해야 한다는 강력한 조건이 사라졌기 때문에 약한 정상상태라고 하는 것입니다.</p>
+
+<p>\((1) \,\, E(X_t) = u\)
+\((2) \,\, Cov(X_{t+h}, X_{t}) = \gamma_h, for\; all\; h\)
+\((3)\,\, Var(X_t) = Var(X_{t+h})\)</p>
+
+<p>(2)식은 공분산은 t에 독립임을 의미합니다. 정상상태 시계열의 공분산은 아래와 같이 하나의 변수 h에 대해 나타낼 수 있습니다.</p>
+
+<p>[\gamma_X(h) = \gamma_X(h,0) = \gamma_X(t+h, t)]</p>
+
+<p>이때 함수 $\gamma_X(\cdot)$ 을 lag h에 대한 auto-covariance 함수(ACVF)라 합니다. auto-correlation 함수(ACF)는 ACVF를 이용해 아래와 같이 정의됩니다.</p>
+
+<p>[\rho_X(h)=\frac{\gamma_X(h)}{\gamma_X(0)}=Cor(X_{t+h}, X_t)]</p>
+
+<h4>White Noise</h4>
+<p>시계열 ${{X_t}}$ 가 독립적인 랜덤 변수의 시퀀스이고, 평균이 0이고, 분산이 $\sigma^2$ 이면, White Noise라 합니다. 아래는 White Noise의 조건입니다.</p>
+
+<ul>
+  <li>
+\[E(X_t)=0\]
+  </li>
+  <li>
+\[V(X_t)=V(X_{t+h})=\sigma^2\]
+  </li>
+  <li>
+\[\gamma_X(t+h, t)=0\;(h\neq0)\]
+  </li>
+</ul>
+
+<h3>1.4.1 The Sample Autocorrelation Function</h3>
+
+<p>관측 데이터 가지고 자기 상관의 정도를 볼때, sample auto-correlation 함수(sample ACF)를 사용합니다. Sample ACF는 ACF의 추정으로, 계산은 아래와 같습니다.</p>
+<p align="center"><img src="https://imgur.com/jjzBk3z.png" /><figcaption align="center">그림 4. Sample ACF</figcaption></p>
+
+<p>White Noise인 경우, 시계열 그래프와 ACF 그래프는 아래와 같습니다. lag가 1이상인 경우, 거의 ACF값이 0에 가까운 것을 볼 수 있고, 95% 신뢰구간 안에 들어와 있습니다.</p>
+
+<p align="center"><img src="https://imgur.com/RaoTZJj.png" /><figcaption align="center">그림 5. White Noise ACF</figcaption></p>
+
+<p>아래는 그림 1. 그래프에 플롯된 데이터를 가지고 그린 ACF입니다. 보시면, ACF가 lag가 커짐에 따라 서서히 감소하는 형태를 띄는데 이는 trend가 있는 데이터에서 나타납니다.</p>
+<p align="center"><img src="https://imgur.com/N6vk5oN.png" /><figcaption align="center">그림 6. Sequence with trend ACF</figcaption></p>
+
+<h2>1.5. Estimation and Elimination of Trend and Seasonal Components</h2>
+
+<p>trend와 seasonality가 존재하는 시계열의 모델링인 경우, 아래와 같이 additive 형태를 띌 수 있습니다.</p>
+
+<p>[X_t = m_t + s_t + Y_t]</p>
+
+<p>시계열 모델링의 최종 목표는 잔차항 $Y_t$ 가 정상상태에 놓이게 하는 것입니다. 따라서 잔차항을 분석하기 위해서 trend 요소 $m_t$ 와 seasonal 요소 $s_t$ 를 제거해야 합니다.</p>
+
+<h3>1.5.1. Estimation and Elimination of Trend in the Absence of Seasonality</h3>
+<p>seasonal 요소가 없고, trend요소만 있는 모델링은 아래와 같이 진행할 수 있습니다.</p>
+
+<p>[X_t = m_t + Y_t, \quad t=1, \dots ,n, \; where \; EY_t = 0]</p>
+
+<h4>method1. Trend Estimation</h4>
+
+<p>trend 요소를 추정하는 방법은 Moving Average와 Smoothing을 이용하는 방법 2가지가 있습니다.</p>
+
+<h5>a) Smoothing with a finite moving average filter</h5>
+
+<p>과거 n개의 시점을 평균을 구해 다음 시점을 예측하는 방식입니다.</p>
+
+<p>[W_t = (2q+1)^{-1}\sum_{j=-q}^{q}X_{t-j}]</p>
+
+<p>이때, $X_t = m_t + Y_t$ 이므로, 아래와 같은 식으로 유도됩니다.</p>
+
+<p>[W_t = (2q+1)^{-1}\sum_{j=-q}^{q}X_{t-j} = (2q+1)^{-1}\sum_{j=-q}^{q}m_{t-j} + (2q+1)^{-1}\sum_{j=-q}^{q}Y_{t-j}]</p>
+
+<p>만약에 $m_t$ 가 대략 선형관계를 띄고 있다면 잔차항의 평균은 0에 가까울 것입니다. 즉, 트렌드가 선형관계를 띄고 있을 때, moving average filter를 씌어주면 trend요소만 추출할 수 있는 것을 의미합니다.</p>
+
+<p>[W_t = (2q+1)^{-1}\sum_{j=-q}^{q}X_{t-j} = (2q+1)^{-1}\sum_{j=-q}^{q}m_{t-j} + (2q+1)^{-1}\sum_{j=-q}^{q}Y_{t-j} \approx m_t]</p>
+
+<p align="center"><img src="https://imgur.com/rEHZBt2.png" /><figcaption align="center">그림 7. Moving average filter 취하기 전</figcaption></p>
+
+<p align="center"><img src="https://imgur.com/QPByqUu.png" /><figcaption align="center">그림 8. Moving average filter 취한 후</figcaption></p>
+
+<p align="center"><img src="https://imgur.com/dPTzLn3.png" /><figcaption align="center">그림 9. Trend 제거 후 잔차항</figcaption>
+
+위에 그림 7,8,9 를 살펴 봅시다. 그림 8은 그림 7에서 과거시점 5개를 이용하여 moving average 필터를 씌운 후입니다. 뚜렷한 트렌드가 있지 않음을 보실 수 있습니다. ~~잔차항에 대한 분석은 다시 한번 살펴봐야 할 것 같습니다.~~
+
+Simple Moving Average Filter는 trend가 linear하고, Noise가 White Noise일 때, 시계열 데이터에서 trend요소를 잘 추출할 수 있습니다. 그러나 Non-linear한 trend라면, Noise가 White Noise라 하더라도, trend 추정이 올바르지 않습니다. 그럴 땐, 적절한 가중치를 부여하여 Moving Average Filter를 씌워야 합니다.
+
+$$\sum_{j=-7}^{j=7}a_jX_{t-j} = \sum_{j=-7}^{j=7}a_j m_{t-j}+\sum_{j=-7}^{j=7}a_jY_{t-j} \approx \sum_{j=-7}^{j=7}a_j m_{t-j} = m_t$$
+
+<h5>b) Exponential smoothing</h5>
+Moving averages는 과거 n개의 시점에 동일한 가중치를 부여하는 방법입니다. 그러나, 현재시점과 가까울수록 좀 더 현재시점에 영향을 많이 미치는 경우가 일반적으로 생각하기엔 자연스러울 수 있습니다. 예로 주식을 생각하면 될 것 같습니다. 따라서, Exponential smoothing 방법은 현재 시점에 가까울수록 더 큰 가중치를 주는 방법입니다. 
+
+<p align="center"><img src="https://imgur.com/ciknR6Y.png" /><figcaption align="center">그림 10. Exponential Smoothing</figcaption></p>
+
+Exponential Smoothing 수식은 아래와 같습니다.
+
+$$\hat{m}_t = \alpha X_t + (1-\alpha)\hat{m}_{t-1},\,\,t=2, \dots, n,$$
+$$\hat{m}_1=X_1$$
+
+아래 그림은 그림 7을 exponential smoothing을 취한 trend 추정 그래프입니다.
+<p align="center"><img src="https://imgur.com/hKOWuWu.png" /><figcaption align="center">그림 11. Exponential Smoothing 취한 후</figcaption></p>
+
+<h5>c) Smoothing by elimination of high-frequency component</h5>
+trend를 추출하는 방법 중 하나로, 여러 frequency의 합으로 trend를 표현해서 이를 제거하는 것입니다(이 부분은 추후에 4장에 가서 다시 설명하도록 하겠습니다).
+
+<p align="center"><img src="https://imgur.com/hn90Hgr.png" /><figcaption align="center">그림 12. frequency합으로 smoothing을 취한 후( $\alpha=0.4$ )</figcaption></p>
+
+<h5>d) Polynomial fitting</h5>
+$m_t = a_0 + a_1t + a_2t^2 + \dots + a_nt^n$ 으로 모델링하여, $\sum_{t=1}^n(x_t-m_t)^2$ 을 최소화하는 방식으로 파라미터 $a_k,\,(k=0, \dots, k=n$ 을 구하는 방식으로 trend를 추정할 수 있습니다. 
+
+<del>$X_t - Y_t = m_t$ 에서, $Y_t$ 는 stationary state을 가정하고 있기 때문에, polynomial model을 구축할 수 있는 것입니다.</del>
+
+<h4>method2. Trend Elimination by Differencing</h4>
+method1 방법은 trend를 추정한 뒤, 시계열 $\{X_t\}$ 에서 빼주는 방식으로 trend를 제거하였습니다. 이번엔 difference(차분)를 통해서 trend요소를 제거하는 방법을 알아보도록 하겠습니다. Lag-1 difference operator $\bigtriangledown$ 는 아래와 같습니다.
+
+$$\bigtriangledown X_t = X_t-X_{t-1} = (1-B)X_t$$
+
+B는 backward-shift operator로 $BX_t = X{t-1}$ 입니다. j lag difference는 $\bigtriangledown (X_t) = \bigtriangledown (\bigtriangledown^{j-1} (X_t))$ 입니다. 예를 들어, 2-lag difference는 아래와 같습니다.
+
+$$ \begin{align*} \bigtriangledown^2 X_t&amp;=\bigtriangledown (\bigtriangledown (X_t))=\bigtriangledown ((\bigtriangledown (X_t))\\&amp;=(1-B)(1-B)X_t=(1-2B+B^2)X_t = X_t - 2X_{t-1} + X_{t-2}\end{align*} $$
+
+<h5>Why difference helps eliminating trend components? (Maybe or seasonal components)</h5>
+여기서, 제가 공부하면서 궁금했던 포인트는 왜 difference가 trend 제거에 도움이 되는가? 였습니다. 제가 생각한 답은 아래와 같습니다. trend와 seasonal 요소를 제거하려는 이유는 '고정된 평균과 분산을 가지는 분포'를 가지기 위해서입니다. 그래야지 통계적 모델링이 가능하기 때문입니다. 즉 반대로 말하면, trend와 seasonal 요소는 시간에 따라 평균과 분산이 변함을 의미합니다. 즉 그 변하는 요소를 제거하기 위해서 difference를 하는 것입니다. 
+
+difference를 통해서 변동성을 제거하는 건 고등학교 수학 때 배웠던 미분을 통해 이해할 수 있습니다. 예를 들어, 일차함수 $y=a+bx$ 는 x값에 따라 y값이 변합니다. 그러나 일차미분을 통해 구한 기울기 b값은 고정이 됩니다. 반면에 이차함수 $y=ax^2 + bx + c$ 는 이차미분을 통해 2a라는 고정값을 갖게 됩니다. 여기서 미분 과정을 difference라 생각하시면 됩니다.
+
+&gt; 영어로도 미분이 differentiation 임을 생각하면 와닿습니다.
+
+일차함수 y는 변하는 특성 + 고정된 특성을 둘다 가지고 있는데 일차 미분을 통해 a라는 고정된 특성만을 추출하는 것입니다. 
+
+만약에 trend가 일차함수와 같은 관계를 가지고 있다면 1-lag difference 만으로도 변동성을 잡을 수 있게 되는 것이지요. 마찬가지로 2-lag difference는 trend가 이차함수와 같은 관계를 가지고 있다면 적용되는 것입니다. 
+
+그러나, 과도한 difference는 시계열을 과하게 변동성을 제거해 버려서, over-correction이 될 수도 있기 때문에 조심해야 합니다.
+
+<p align="center"><img src="https://imgur.com/dPdnSMm.png" /><figcaption align="center">그림 13. Difference 적용 전</figcaption></p>
+
+<p align="center"><img src="https://imgur.com/RPMUFSJ.png" /><figcaption align="center">그림 14. Difference 적용 후</figcaption></p>
+
+<h3>1.5.2. Estimation and Elimination of Both Trend and Seasonality</h3>
+
+trend와 seasonal 요소가 다 있는 경우 아래와 같이 표현될 수 있습니다(additive model인 경우).<del>multiplicative model인 케이스도 있습니다.</del>
+
+$$X_t = m_t + s_t + Y_t, \,\, t=1, \dots, n,$$
+$$where,\,\,EY_t = 0, s_{t+d}=s_t,\,\,and\,\,\sum_{j=1}^{d}s_j=0$$
+
+두 가지 방법을 소개하겠습니다. 먼저, 첫번째 방법입니다.
+
+<h4>method 1. Estimation of Trend and Seasonal components</h4>
+아래와 같은 데이터가 있을 때, trend와 seasonal 요소를 제거해 봅시다. 아래 시계열 같은 경우, 주기가 d=12로, 1년 단위로 싸이클이 반복되는 것을 확인할 수 있습니다.
+
+<p align="center"><img src="https://imgur.com/hCcOOp9.png" /><figcaption align="center">그림 15. Accidental Deaths, U.S.A., 1973-1978</figcaption></p>
+
+<ol><li>먼저, trend 요소를 제외합니다. trend 요소를 제외하는 방법으로 moving average filter를 이용할 수 있습니다.<br /><br />
+예를 들어, 시계열 시퀀스 $\{x_1, x_2, \dots, x_n\}$ 이고, 주기 period $d=2q$ 라 한다면, 아래와 같은 moving average filter 식을 세울 수 있습니다.
+
+$$\hat{m_t} = (0.5x_{t-q} + x_{t-q+1} + \dots + x_{t+q-1} + 0.5x_{t+q})/d,\,\, q&lt;t\leq n-q$$ 
+
+&gt; 양 끝에 0.5씩 붙는 이유는 분자의 갯수는 홀수개 즉 $2q+1$ 이지만, 분모는 짝수 $d=2q$ 이기 때문에, 양 끝에 항의 가중치를 0.5씩만 해주는 것입니다.
+
+반면에, 주기가 $d=2q+1$ 이라면, 아래와 같은 식을 세울 수 있습니다.
+
+$$\hat{m_t} = (2q+1)^{-1}\sum_{j=-q}^{q}X_{t-j}$$
+</li>
+<li>그 다음은 seasonality 요소를 구하는 차례입니다. 먼저, 위에서 구한 trend요소를 원 시계열 데이터에서 $x_{k+jd} - \hat{m_{k+jd}}$ 와 같이 제거해야 합니다. 그런 다음, 동일한 주기에 해당하는 $x-\hat{m}$ 요소들을 가지고 평균 $w_k, \,\,(k=1, \dots, d)$ 를 구해줍니다. </li>
+<li>이 때, $w_k$ 들의 평균은 0이 아닐 수 있습니다. 따라서, seasonal 요소들의 평균이 0이 되도록 다시 한번 평균을 빼줍니다.<del>다시 한번 정규화가 되도록 해주는 것입니다.</del>) 
+
+$$\hat{s_k} = w_k - \frac{1}{d}\sum_{i=1}^{d}w_i,\,\,k=1, \dots, d$$
+
+$$and, \,\, \hat{s_k}=\hat{s_{k-d}},\,k&gt;d$$
+
+따라서, deseaonalized된 데이터는 $d_t = x_t - \hat{s_t},\,\, t=1,\dots ,n$ 이며, detrended된 데이터는 $d_t = x_t - \hat{m_t},\,\, t=1, \dots, n$ 입니다.
+</li>
+<li>마지막으로, noise 추정값은 trend와 seasonal 요소를 모두 제거한 항입니다.</li>
+<li>또한 trend 모델링을 위해, 다시 한번 parametric form으로 다시 한번 재추정하는 과정을 거칩니다. Parametric form으로 다시 한번 trend 요소를 재추정 하는 목적은 prediction과 simulation을 하기 위해서 입니다.</li>
+</ol>
+
+<p align="center"><img src="https://imgur.com/srdCVkU.png" /><figcaption align="center">그림 16. Trend and seasonal decomposition 예시</figcaption></p>
+<p align="center"><img src="https://imgur.com/oYkGLqN.png" /><figcaption align="center">그림 17. Trend and seasonal decomposition 예시</figcaption></p>
+
+<h4>method 2. Elimination of Trend and Seasonal components by Differencing</h4>
+Trend 요소를 Differencing 방법을 통해 제거한 것과 동일하게 진행됩니다. Differencing operator $\bigtriangledown_d$ 을 $X_t = m_t + s_t + Y_t$ 식 양변에 취해주면 아래와 같습니다.
+
+$$\bigtriangledown_dX_t = m_t - m_{t-d} + Y_t - Y_{t-d}$$
+
+
+<h2>1.6. Testing the Estimated Noise Sequence</h2>
+
+1.5까지 과정을 거치면 우린 Noise 항을 갖게 됩니다. 그러나 이 Noise 항이 White Noise 항인지는 확인이 필요합니다. 만약에 white noise 항이 맞다면, noise sequence를 모델링 하는 것입니다. 만약에 noise 항이 white noise가 아니라 여전히 depedency가 보인다면 다른 방법을 적용해야 합니다.
+
+이번 챕터에서는 white noise인지를 확인하는 방법에 대해 살펴봅니다.
+
+<h3>(a) The sample autocorrelation function</h3>
+
+Sample acf를 그려서, 95%신뢰구간 안에 대부분 들어와 있는지 확인합니다. 만약 2,3개 이상이 신뢰구간 밖에 있거나 1개가 유난히 구간 안에 멀리 벗어 났다면, 우린 white noise라고 세웠던 가설을 기각해야 합니다.
+
+<h3>(b) The portmanteau test(Ljung-Box test)</h3>
+
+Portmanteau 검정 통계량은 <b>일정 기간 동안 일련의 관측치가 랜덤이고 독립적인지 여부를 검사하는데 사용합니다</b>. 통계량은 아래와 같습니다(Box-pierece 검정이라고도 합니다.). 
+
+$$Q = n\sum_{j=1}^{h}\hat{\rho(j)^2}$$
+
+$\hat{\rho(j)}$ 가 0에 가깝다면, $\hat{\rho(j)^2}$ 은 더욱 0에 가까울 것이지만, 몇몇 $\hat{\rho(j)}$ 의 절대값이 크다면, 그 항들에 영향을 받아 전체적인 Q값도 커지게 될 것입니다. 
+
+&gt; h는 lag입니다. h를 무리하게 크게 잡는다면, Q값은 커질 위험이 있습니다. 적당한 h를 잡는 것이 중요합니다.
+
+귀무가설은 시차 h에 대한 자기 상관이 0이라는 귀무가설을 검정합니다. 통계량이 지정된 임계값보다 크면 하나 이상의 시차에 대한 자기 상관이 0과 유의하게 다르며, 일정 기간 랜덤 및 독립적이지 않음을 뜻합니다.
+
+아래는 좀 더 refined된 통계량으로 Ljung-Box 라 합니다.
+
+$$Q = n(n+2)\sum_{k=1}^{h}\hat{\rho(k)}/(n-k)$$
+
+그 밖에, turning point test, difference-sign test, rank test, fitting an autoregressive model, checking for normality등이 있습니다. 
+
+<hr />
+이상으로, &lt;Introduction to Time Series and forecasting 리뷰) 1. Introduction to Time Series&gt; 포스팅을 마치겠습니다. 
+
+<hr />
+
+<ol><li>
+<a href="" url="https://blog.naver.com/sw4r/221024668866">Strict Stationarity vs. Weak Stationarity, https://blog.naver.com/sw4r/221024668866</a></li>
+<li>고려대학교 김성범 교수님 <예측모델> 수업자료&lt;/li&gt;
+<li><a href="" url="https://otexts.com/fppkr/residuals.html">portmanteau 검정 : https://otexts.com/fppkr/residuals.html&lt;/li&gt;&lt;/ol&gt;
+</a></li></예측모델></li></ol></p>
+
+    <article>
+    <div class="post-more">
+      
+      <a href="/time%20series%20analysis/2020/11/23/time-series-intro(1)/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
+      
+      <a href="/time%20series%20analysis/2020/11/23/time-series-intro(1)/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
+    </div>
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/spark%20programming/2020/11/20/rdd/">
+        RDD, Resilient Distributed DataSet에 대하여[1]
+      </a>
+    </h1>
+
+    <span class="post-date">20 Nov 2020</span>
+     | 
+    
+    <a href="/blog/tags/#data-engineering" class="post-tag">data-engineering</a>
+    
+    
+
+    <article>
+      <p>이번 포스팅은 “빅데이터 분석을 위한 스파크2 프로그래밍 - Chaper2. RDD” 를 읽고 정리하였습니다. 정리 순서는 책 순서와 동일하고, 책을 읽어가면서 이해가 안되는 부분을 추가적으로 정리하였습니다.</p>
+
+<h2>2.1 RDD</h2>
+<h3>2.1.1 들어가기에 앞서</h3>
+
+<p>RDD를 공부하기 전 기억하고 넘어가야 할 것들에 대해 정리하였습니다.</p>
+<h4>1. 스파크 클러스터</h4>
+<p>클러스터란 여러 대의 서버가 마치 한대의 서버처럼 동작하는 것을 뜻합니다. 스파크는 클러스터 환경에서 동작하며 대량의 데이터를 여러 서버에서 병렬 처리합니다</p>
+
+<h4>2. 분산 데이터로서의 RDD</h4>
+<p>RDD는 Resilient Distrubuted Datasets으로, ‘회복력을 가진 분산 데이터 집합’이란 뜻입니다. (Resilient : 회복력이 있는) 데이터를 처리하는 과정에서 문제가 발생하더라도 스스로 복구할 수 있는 것을 의미합니다.
+이는 그 다음 설명 <b>트랜스포메이션과 액션</b>과 <b>지연(lazy) 동작과 최적화</b> 부분과 함께 다시 설명드리도록 하겠습니다.</p>
+
+<h4>3. 트랜스포메이션과 액션</h4>
+<p>RDD가 제공하는 연산은 크게 트랜스포메이션과 액션이 있습니다. “연산”은 흔히 “메서드”로 이해하시면 됩니다.<br />
+트랜스포메이션은 RDD의 변형을 일으키는 연산이고, 실제로 동작이 수행되지는 않습니다.</p>
+<p align="center"><img src="https://imgur.com/wWLMGK1.jpg" /><figcaption align="center">그림 1. RDD 예시</figcaption></p>
+<p align="center"><img src="https://imgur.com/ooJKxAu.png" /><figcaption align="center">그림 2.RDD 예시(2)</figcaption></p>
+
+<p>아래 예시를 보면, 데이터를 읽어 RDD를 생성해서 file변수에 저장한 뒤, flatMap -&gt; map -&gt; reduceByKey 함수를 거치면서 RDD[2], RDD[3], RDD[8]을 새로 생성하는 것을 볼 수 있습니다. 이렇게 transformation을 이전 RDD를 변형해서 새로운 RDD를 생성하는 것입니다.</p>
+
+<p>반면에, action은 동작을 수행해서 원하는 타입의 결과를 만들어내는 것이므로, saveAsTextFile로 수행됩니다. 따라서, saveAsTextFile은 action 연산에 해당됩니다.</p>
+
+<h4>4. 지연 동작과 최적화</h4>
+<p>지연 동작이란, 액션 연산이 수행되기 전까지 실제로 트랜스포메이션 연산을 수행하지 않는 것입니다. 이는 RDD의 특성 중 하나인 ‘회복력’과 관련있습니다. 액션 연산이 수행되기 전까지 동작이 <b>지연</b>이 되는데, 대신에 RDD가 생성되는 방법을 기억하는 것입니다. 따라서 문제가 발생하더라도 기존에 RDD가 생성되는 방법을 기억하여 연산 수행에 문제가 없도록 하는 것입니다. 이는 위의 예시에서 reduceByKey까지는 실제로 트랜스포메이션 연산을 수행하는 것이 아니라 해당 연산을 순서대로 기억해놨다가, saveAsFile연산이 수행될 때(액션 연산이 수행될 때) 비로소 트랜스포메이션 연산도 수행된 것입니다.</p>
+
+<p>지연 동작 방식의 큰 장점은 <b>실행계획의 최적화</b>입니다.</p>
+
+<h4>RDD의 불변성</h4>
+<p>오류로 인해 스파크의 데이터가 일부 유실되면, 데이터를 다시 만들어내는 방식으로 복구되는 것이 RDD의 불변성입니다. 이는 위에서 계속 언급한 “회복력”과 관련됩니다.</p>
+
+<p>RDD는 RDD1-&gt;RDD2-&gt; … 가 되면서 한번 만들어진 RDD는 내용이 변경되지 않습니다. RDD를 만드는 방법을 기억해서 문제가 발생 시 언제든지 똑같은 데이터를 생성할 수 있습니다.</p>
+
+<h4>5. 파티션과 HDFS</h4>
+<ul>
+  <li>RDD데이터는 클러스터를 구성하는 여러 서버에 나뉘어서 저장됨</li>
+  <li>이 때, 분할된 데이터를 파티션 단위로 관리합니다.</li>
+  <li>HDFS는 하둡의 파일 시스템(hadoop distributed file system)</li>
+  <li>스파크는 하둡 파일 입출력 API에 의존성을 가지고 있음.</li>
+</ul>
+
+<h4>6. Job, Executor, 드라이버 프로그램</h4>
+<ul>
+  <li>Job : 스파크 프로그램 실행하는 것 = 스파크 잡(job)을 실행하는 것</li>
+  <li>하나의 잡은 클러스터에서 병렬로 처리됨</li>
+  <li>이 때, 클러스터를 구성하는 각 서버마다 executor라는 프로세스가 생성</li>
+  <li>각 executor는 할당된 파티션 데이터를 처리함</li>
+  <li>드라이버란 ? 스파크에서 잡을 실행하는 프로그램으로, 메인함수를 가지고 있는 프로그램</li>
+  <li>드라이버에서 스파크 컨테스트를 생성하고 그 인스턴스를 포함하고 있는 프로그램</li>
+  <li>스파크컨테스트를 생성해 클러스터의 각 워커 노드들에게 작업을 지시하고 결과를 취합하는 역할을 수행</li>
+  <li>아래 코드를 보면, main함수 안에 sparkcontext를 생성하고 sc라는 인스턴스를 포함하고 있는 것을 볼 수 있음. 즉, main함수를 가지고 있는 프로그램이 ‘드라이버’에 해당됨</li>
+</ul>
+
+<pre><code class="language-Java">Public static void main(String[] args){
+	...
+	JavaSparkContext s c = getSparkContext("WordCount", args[0]);
+	...}
+</code></pre>
+
+<h4>7. 함수의 전달</h4>
+<ul>
+  <li>스파크는 함수형 프로그래밍 언어인 스칼라로 작성되어 “함수”를 다른 함수의 “매개변수”로서 전달 가능</li>
+  <li>아래 예제(Scala)를 보면 map의 인자에 ‘_+1’이 전달되는데, 익명 함수로 전달되는 것임</li>
+</ul>
+
+<pre><code class="language-Scala">val rdd1 = sc.paralleize(1 to 10)
+val rdd2 = rdd1.map(_+1)
+</code></pre>
+<ul>
+  <li>파이썬으로 작성하면 아래와 같이, lambda 함수가 매개변수로 들어가게 됨</li>
+</ul>
+
+<pre><code class="language-Python">rdd1.map(lambda v:v+1)
+</code></pre>
+
+<h4>[참고]함수형 프로그래밍</h4>
+<p>함수형 프로그래밍과 객체 지향 프로그래밍의 차이를 통해 이해해보겠습니다. 객체 지향 프로그래밍은 객체 안에 상태를 저장하고, 해당 상태를 이용해서 제공할 수 있는(메소드)를 추가하고 상태변화를 ‘누가 어디까지 볼 수 있게 할지’를 설정하고 조정합니다. 따라서 적절한 상태 변경이 되도록 구성합니다. 반면에 함수형 프로그래밍은 상태 변경을 피하며 함수 간의 데이터 흐름을 사용합니다. 입력은 여러 함수들을 통해 흘러 다니게 됩니다. 따라서, 함수의 인자로 함수가 들어오고 반환의 결과로도 함수가 나올 수 있습니다.</p>
+
+<h4>함수 전달 시 유의할 점</h4>
+
+<pre><code class="language-Scala">Class PassingFunctionSample{
+	val count=1
+	def add(I: int):Int={
+	count+i
+	}
+	
+	def runMapSample(sc:SparkContext){
+	val rdd1 = sc.parallelize(1 to 10);
+	val rdd2 = rdd1.map(add)}
+	}
+</code></pre>
+
+<p>위와 같이 코드를 작성해서 실행하면, ‘java.io.NotSerializaionException’이라는 오류가 발생합니다. 이는 전달된 add함수가 클러스터를 구성하는 각 서버에서 동작할 수 있도록 전달되어야 하는데, 전달이 안되기 때문입니다. 그 이유는 add함수는 PassingFunctionSample의 메소드로 결국 클래스 PassingFunctionSample이 전체 다 전달되기 때문입니다. 해당 클래스는 Serializable 인터페이스를 구현하지 않습니다. 즉, 클래스가 각 서버에 전달될 수 있는 기능을 가지고 있지 않는 것입니다. 함수만 따로 전달되어야 하는 것입니다.</p>
+
+<p>스칼라 같은 경우 ‘싱글톤 객체’를 이용하여 해결 할 수 있습니다. 파이썬의 예제도 살펴보면, 아래는 클래스 전체가 전달되는 잘못된 예입니다.</p>
+
+<pre><code class="language-Python">class PassingFunctionSample():
+
+    def add1(self, i):
+        return i + 1
+
+    def runMapSample1(self, sc):
+        rdd1 = sc.parallelize([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+        rdd2 = rdd1.map(self.add1) 
+        # rdd2 = rdd1.map(add2)
+        print(", ".join(str(i) for i in rdd2.collect()))
+</code></pre>
+
+<p>self로 인해 전체 클래스가 전달됩니다.(파이썬은 예외없이 실행되므로 유의할 것!)</p>
+
+<pre><code class="language-Python">class PassingFunctionSample():
+
+    @staticmethod
+    def add1(self, i):
+        return i + 1
+
+    def runMapSample1(self, sc):
+        rdd1 = sc.parallelize([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+        rdd2 = rdd1.map(add2)
+        print(", ".join(str(i) for i in rdd2.collect()))
+
+
+if __name__ == "__main__":
+
+    def add2(i):
+        return i + 1
+
+    conf = SparkConf()
+    sc = SparkContext(master="local[*]", appName="PassingFunctionSample", conf=conf)
+
+    obj = PassingFunctionSample()
+    obj.runMapSample1(sc)
+</code></pre>
+
+<p>위와 같이 함수 add2가 독립적으로(클래스 전체가) 전달될 수 있도록 해야합니다.</p>
+
+<h4>변수 전달 시 유의할 점</h4>
+
+<pre><code class="language-Scala">class PassingFunctionSample {
+
+	var increment = 1
+
+  def runMapSample3(sc: SparkContext) {
+    val rdd1 = sc.parallelize(1 to 10)
+    val rdd2 = rdd1.map(_ + increment) \\익명함수 전달
+    print(rdd2.collect.toList)
+  }
+
+  def runMapSample4(sc: SparkContext) {
+    val rdd1 = sc.parallelize(1 to 10)
+    val localIncrement = increment
+    val rdd2 = rdd1.map(_ + localIncrement)
+    print(rdd2.collect().toList)
+  }
+}
+</code></pre>
+<p>runMapSample3 처럼 변수가 직접 전달되면 안되고, runMapSample4처럼 지역변수로 변환해서 전달해야 합니다. 그래야 나중에 변수가 변경되어 생기는 문제를 방지할 수 있습니다.</p>
+
+<h4>데이터 타입에 따른 RDD 연산</h4>
+<p>RDD 연산 함수에서 인자 타입을 보고 적절하게 맞는 연산 함수를 사용해야 합니다.</p>
+
+<hr />
+
+<p>이상으로 &lt;RDD, Resilient Distributed DataSet에 대하여[1]&gt; 마치겠습니다. 다음 포스팅에서 이어가도록 하겠습니다.</p>
+
+<hr />
+
+<ol>
+  <li>함수형 언어, <a href="https://sungjk.github.io/2017/07/17/fp.html">https://sungjk.github.io/2017/07/17/fp.html</a>, <a href="https://docs.python.org/ko/3/howto/functional.html">https://docs.python.org/ko/3/howto/functional.html</a></li>
+</ol>
+
+    <article>
+    <div class="post-more">
+      
+      <a href="/spark%20programming/2020/11/20/rdd/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
+      
+      <a href="/spark%20programming/2020/11/20/rdd/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
+    </div>
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/spark%20programming/2020/11/17/introspark/">
+        스파크(Spark) 소개
+      </a>
+    </h1>
+
+    <span class="post-date">17 Nov 2020</span>
+     | 
+    
+    <a href="/blog/tags/#data-engineering" class="post-tag">data-engineering</a>
+    
+    
+
+    <article>
+      <p>데이터 분석가의 역할이 점차 데이터 분석 영역에서 벗어나 조금씩 엔지니어의 영역까지 요구되고 있는 것 같아, 데이터 엔지니어링 관련 공부에 대한 필요성을 느꼈습니다. 데이터 분석을 직업으로 함에도 불구하고, 하둡이나 스파크 등과 같은 빅데이터 분석 쪽은 많이 접해보지 못했습니다. 따라서 이번 포스팅을 시작해서 해당 관련 포스팅을 틈틈히 올리도록 하겠습니다.</p>
+
+<p>먼저, 교재 &lt;빅데이터 분석을 위한 스파크2 프로그래밍, 대용량 데이터 처리부터 머신러닝까지 - 백성민 저자&gt;를 읽고 포스팅을 진행하도록 하겠습니다. 본 포스팅은 &lt;ch1. 스파크 소개&gt; 에 대해 다뤘습니다.</p>
+
+<hr />
+
+<h1>빅데이터의 등장 및 정의</h1>
+<ul>
+  <li>4차 산업 혁명과 더불어 데이터 처리 기술이 발달함</li>
+  <li>빅데이터를 크기(volume), 다양성(variety), 속도(velocity)를 이용해서 초기에 정의 내림
+    <ul>
+      <li>다양한 형태를 지닌 대량의 데이터가 빠른 속도로 쌓이고 있다면 이를 빅데이터라 부름</li>
+    </ul>
+  </li>
+  <li>그러나 추후에 가변성(variability), 정확성(veracity), 복잡성(complexity), 시인성(visibility)가 추가됨</li>
+</ul>
+
+<h1>스파크</h1>
+<p>스파크는 하둡의 단점이 개선되어 나온 것으로, 하둡은 아래와 같음</p>
+
+<h3>하둡이란?</h3>
+<ul>
+  <li>구글이 대용량 처리와 관련된 두 개의 논문을 더그 커팅이 실제 구현하면서 시작된 아파치 프로젝트임</li>
+  <li>분산 환경의 병렬처리 프레임워크로, 분산 파일 시스템인 HDFS와 데이터 처리를 위한 맵리듀스 프레임워크로 구성됨
+    <ul>
+      <li>이후에 CPU, 메모리 등 컴퓨팅 자원 관리를 전담하는 리소스 관림 시스템인 Yarn을 포함해, 기존 맵리듀스 프로그래밍 모델을 Yarn 기반으로 구축 관리할 수 있게 함</li>
+    </ul>
+  </li>
+  <li>여러대의 서버를 하나의 클러스터로 구성하여, 클러스터 컴퓨팅 환경 제공</li>
+  <li>기본적인 동작 방법은, 데이터는  HDFS에 저장하고 데이터 처리를 맵리듀스 프로그래밍을 이용하여 HDFS 위에서 수행</li>
+  <li><b>HDFS?</b>
+    <ul>
+      <li>하나의 네임노드와 여러  데이터노드로 구성됨</li>
+      <li>하나의 네임노드가 다른 데이터노드를 관리하는 형태로 시스템이 돌아감.</li>
+      <li>전체 데이터는 일정한 크기(블록)로 나눠서 여러 데이터 노드에 분산되어 저장하고, 각 블록이 어디에 저장되어 있는지에 대한 메타 정보가 네임노드에 저장됨</li>
+    </ul>
+  </li>
+</ul>
+
+<p align="center">
+<img width="500" src="https://imgur.com/6WwaRY4.png" /><figcaption align="center">그림 1. HDFS</figcaption></p>
+
+<ul>
+  <li><b>맵리듀스 프레임워크?</b>
+    <ul>
+      <li>데이터 처리 프레임워크로 데이터를 여러 개의 맵 프로세스와 리듀서 프로세스로 나눠서 처리하는 방식</li>
+      <li>위 그림에서 맵리듀스 잡이 실행되면 네임노드로부터 메타정보를 읽어서 데이터 위치를 확인하고, 데이터를 처리함</li>
+      <li>맵 프로세스는 여러 데이터 노드에 분산 저장된 데이터를 각 서버에서 병렬로 나누어 처리하며, 리듀서는 그러한 맵 프로세스들의 결과를 조합해 최종 결과를 만들어냄</li>
+      <li>그러나, 하둡의 맵리듀스 잡은 대부분의 연산 작업을 파일시스템 기반으로 처리하기 때문에 데이터 처리 성능이 떨어짐</li>
+      <li>반면에, 스파크는 메모리를 이용한 데이터 처리 방식을 제공함으로써 높은 성능을 보여줌</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>스파크란?</h3>
+<ul>
+  <li>스파크는 하둡 기반의 맵리듀스 작업의 단점을 보완한 것으로, 데이터를 메모리 기반으로 처리하기 때문에 처리 성능이 향상됨</li>
+  <li>또한 작업을 실행하기 전에 최적의 처리 흐름을 찾는 과정을 포함함</li>
+  <li>맵리듀스에 비해 훨씬 다양한 데이터 처리 함수 제공</li>
+</ul>
+
+<h2>RDD, 데이터프레임, 데이터셋 소개와 연산</h2>
+<ul>
+  <li>스파크 프로그램 내에서 ‘데이터’를 표현하고 처리하기 위한 프로그래밍 모델로, RDD, 데이터프레임(Dataframe), 데이터셋(Dataset)이 있음
+    <ul>
+      <li>데이터프레임과 데이터셋은 RDD가 보완되서 나온 것이므로, RDD가 기본임</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>RDD</h3>
+<ul>
+  <li>RDD란, resilient distributed dataset으로, 병렬 처리가 가능한 요소로 구성되며 데이터를 처리하는 과정에서 일시적인 문제가 발생하더라도 스스로 에러를 복구할 수 있는 능력을 지닌 데이터 모델임</li>
+  <li>RDD에 속한 요소들은 파티션이라는 단위로 나눠질 수 있는데, 스파크는 데이터 처리 작업을 수행할 때, 파티션 단위로 나뉘어서 병렬 처리함. <del>하둡에서 맵 프로세스가 여러 데이터 노드에 분산 저장된 데이터를 각 서버에서 병렬 처리하는 것과 유사하다고 생각함</del></li>
+  <li>
+    <p>기존 RDD는 덧셈 연산, 그룹화 연산등을 적용 시, 파티션에 속한 데이터들이 네트워크를 통해 다른 서버로 이동하는 셔플링이 발생될 수 있음</p>
+  </li>
+  <li>그런데, 작업 도중에 장애가 발생하여 결과가 유실될 수 있으나, 스파크 같은 경우는 RDD의 생성 과정을 기록해 뒀다가 다시 복구해 주는 기능을 가지고 있음. 이를 수행 하기 위해선 한번 생성된 RDD는 바뀌지 않아야 하는 조건이 있음
+    <ul>
+      <li>이렇게 스파크에서 RDD 생성 과정을 기록해 둔 것을 리니지(lineage)라고 함</li>
+    </ul>
+  </li>
+</ul>
+
+<h2>DAG</h2>
+<ul>
+  <li>맵 리듀스 작업으로 데이터 처리 시, 데이터 처리 방법의 너무 복잡한 경우나 데이터의 크기가 너무 큰 경우 서버의 가용량을 넘겨서 문제가 발생하는 경우가 발생</li>
+  <li>따라서, 한번의 작업으로 모든 것을 끝낸다기 보다는 하나의 작업을 여러 개의 작은 작업으로 나눠 놓고 각 작업을 최적화해서 일련의 순서대로 나누어 실행하는 경우가 종종 있음</li>
+  <li>일련의 작업 흐름을 나타내는 워크플로우는 DAG(Directed acyclic graph)를 구성하고, 이를 이용해 일련의 작업을 수행하면 다양한 라이브러리를 연동해서 데이터 처리를 수행 가능
+    <ul>
+      <li>DAG? 란 꼭짓점과 방향성을 가진 엣지로 구성된 그래프 모델임</li>
+      <li>빅데이터는 DAG를 이용해 복잡한 일련의 작업 흐름을 나타냄</li>
+      <li>예) 우지 워크플로우 오픈소스</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>스파크 내에서의 DAG</h3>
+<ul>
+  <li>스파크에서 DAG 처리를 담당하는 부분 : DAG스케쥴러</li>
+  <li>스파크는 전체 작업을 스테이지로 나누고, 다시 여러개의 태스크로 나눠서 수행</li>
+  <li>드라이버의 메인 함수에서는 스파크 애플리케이션과 스파크 클러스터 연동을 담당하는 스파크 컨텍스트가 있음. 스파크 컨텍스트를 이용해 잡을 실행하고 종료하는 역할을 함
+    <ul>
+      <li>드라이버란 ? RDD를 생성하고 각종 연산을 호출하는 프로그램</li>
+    </ul>
+  </li>
+  <li>드라이버가 스파크 컨텍스트를 통해 RDD의 연산 정보를 DAG스케쥴러에 전달하면 스케쥴러는 이 정보를 가지고 실행계획을 수립. 그 후, 클러스터 매니저에게 전달함</li>
+  <li>DAG스케쥴러는 데이터에 대한 지역성을 높이는 전략과 관련된 것. 즉, 전체 데이터 처리 흐름을 분석해서 네트워크를 통한 데이터 이동이 최소화되도록 스테이지를 구성하는 것이 스케쥴링의 역할임
+    <ul>
+      <li><b>데이터의 지역성</b>이란 ? 데이터를 처리하는 장소로 따로 보내 처리하는 것이 아니라, 데이터가 저장되어 있는 서버(블록별로 저장되어 있음)에서 처리하는 것.</li>
+    </ul>
+  </li>
+  <li>데이터 이동이 최소화되도록 한다는 것은 네트워크를 통한 데이터 이동 즉 <b>“셔플링”</b>을 최소화하는 것임</li>
+  <li>셔플링 관련 예시</li>
+</ul>
+<ul><li>방법 1)</li> 
+<ol><li>10대 서버에 저장된 모든 로그를 상품에 따라 재분류 한다.</li>
+<li>상품별 총 판매건수를 계산한 후 원하는 상품의 정보만을 출력한다.</li></ol>
+<li>방법 2)</li>
+<ol><li>전체 로그를 분류하기 전에 각 서버별로 원하는 상품 정보만 걸러낸 후 상품별 총 판매건수를 계산한다.</li><li>각 서버별로 따로 계산된 상품별 판매건수를 한 곳으로 모아서 더한 후 출력한다.</li></ol></ul>
+
+<ul>
+  <li>방법 1의 경우, 10대 서버의 모든 로그 파일을 상품별로 재분류하는 것으로 작업을 시작하나, 동일한 상품번호를 가진 로그파일이 10대의 서버의 무작위로 흩어져 있음. 따라서, 재분류를 위한 “셔플링”이 대량으로 발생함</li>
+  <li>방법 2의 경우, 셔플을 수행하기 전에 각 서버에 먼저 상품별 부분 집계를 수행한 후 집계된 결과 파일만을 대상으로 네트워크를 통한 2차 합계 연산을 수행하기 때문에, 방법 1에 비해 셔플이 적음</li>
+  <li><b>$\rightarrow$ 셔플이 최소화되는 방향으로 연산 수행해야 함</b></li>
+</ul>
+
+<h2>람다 아키텍쳐</h2>
+<ul>
+  <li>빅데이터 처리를 위한 시스템을 구성하는 방법 중 하나로, 네이선 마츠가 제안한 아키텍쳐 모델</li>
+  <li>기존과 같은 대용량 데이터 처리 뿐만 아니라 실시간 로그 분석과 같은 실시간 처리도 중요해짐에 따라 두가지 요구를 충족시키는 아키텍쳐가 필요해졌음</li>
+</ul>
+
+<p align="center"><img width="500" src="https://t1.daumcdn.net/cfile/tistory/9995AE4F5BFCC50B20" /><figcaption align="center">그림 2. 람다 아키텍쳐<sup>[1]</sup></figcaption></p>
+
+<ul>
+  <li>람다 아키텍쳐 운영 방법</li>
+</ul>
+
+<ol><li>새로운 데이터는 일괄 처리 계층(Batch layer)과 속도 계층(speed layer) 모두에게 전달됨</li>
+<li>일괄 처리 계층(Batch layer)은 원본 데이터를 저장하고 일정 주기마다 한번 씩 일괄적으로 가공해서 배치뷰를 생성함. 이때 배치란, 특정시간마다 주기적으로 계산을 수행하는 것을 말함. 뷰라고 한 부분은 외부에 보여지는 데이터, 결과 데이터임</li>
+<li>속도 계층은 들어오는 데이터를 즉시 또는 매우 짧은 주기로 철리해 실시간 뷰(Real-time view)를 생성함</li>
+<li>서빙 계층(serving layer)은 실시간 뷰와 배치 뷰의 결과를 적절히 조합하여 사용자에게 데이터를 전달함. 물론 서빙 계층을 거치지 않고 배치뷰 또는 실시간뷰를 직접 조회(query)할 수 있음</li>
+</ol>
+
+<ul>
+  <li>즉, 일괄 처리 작업을 통해 데이터를 처리하지만 아직 배치 처리가 수행되지 않은 부분은 실시간 처리를 통해 보완함</li>
+</ul>
+
+<hr />
+
+<p>이상으로, 본 포스팅을 마치겠습니다. 다음 포스팅은 <a href="https://ralasun.github.io/spark%20programming/2020/11/20/rdd/">&lt;RDD, Resilient Distributed DataSet에 대하여[1]&gt;</a> 에 대해 진행하도록 하겠습니다.</p>
+
+<hr />
+
+<p><a name="lambda-archi">1. <a href="https://jhleed.tistory.com/122">람다 아키텍쳐, https://jhleed.tistory.com/122</a></a></p>
+
+
+    <article>
+    <div class="post-more">
+      
+      <a href="/spark%20programming/2020/11/17/introspark/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
+      
+      <a href="/spark%20programming/2020/11/17/introspark/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
+    </div>
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/reinforcement%20learning/2020/07/29/mc-td-control/">
+        Model-Free Policy Control, Monte Carlo와 Temporal Difference에 대하여
+      </a>
+    </h1>
+
+    <span class="post-date">29 Jul 2020</span>
+     | 
+    
+    <a href="/blog/tags/#reinforcement-learning" class="post-tag">reinforcement-learning</a>
+    
+    
+
+    <article>
+      <p>이번 포스팅은 지난 포스팅 <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/28/mc-td-eval/">Model-Free Policy Evaluation</a>에 이어 Model-Free Policy Control에 대해 다루도록 하겠습니다. CS234 4강, Deep Mind의 David Silver 강화학습 강의 5강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 5, 6 기반으로 작성하였습니다.</p>
+
+<hr />
+
+<p>지난 포스팅에서는 일정 정책 $\pi$ 아래 환경 모델을 모를 때 가치함수를 추정하는 방법인 Monte-Carlo(MC) policy evaluation과 Temporal Difference(TD) policy evaluation에 대해 다뤘습니다. 그러나 sequential decision prcoess 문제의 최종 목표는 최적화된 정책을 갖는 것(Control)입니다. 환경 모델을 알 때 Dynamic Programming(DP)는 policy iteration과 value iteration을 통해 최적 정책을 구할 수 있습니다. 환경 모델을 모를 때 최적 정책을 찾는 방법 Model-Free Control에 대해 자세히 다루기 전에 먼저, Generalized Policy Iteration에 대해 알아보겠습니다.</p>
+
+<h2>Generalized Policy Iteration</h2>
+<p>DP에서의 policy iteration을 다시 자세히 살펴봅시다. 정책 발전(policy improvement)를 greedy하게 하였으며, policy evaluation과 policy improvement를 번갈아 반복하는 policy iteration을 통해 최적 가치함수와 최적 정책을 구했습니다.</p>
+
+<p>[\pi_0 \overset E\to v_{\pi_0} \overset I\to \pi_1 \overset E\to v_{\pi_1} \overset I\to \pi_2 \overset E\to \cdots \overset I\to \pi_\ast \overset E\to v_\ast]</p>
+
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/89000330-0ee5fb00-d332-11ea-82a4-d700a773ada1.png" />
+<figcaption align="center">그림 1. Policy Iteration</figcaption></p>
+
+<p>&lt;그림 1.&gt;은 policy iteration을 그림으로 표현한 것입니다. 두 선은 각각 수렴된 가치함수와 정책들을 의미하고, 화살표는 policy evaluation과 policy improvement를 나타냅니다. 이 과정은 모두 결국 최적 정책과 최적 가치함수를 찾기 위한 것이기 때문에 두 선은 한 점에서 만납니다. 그런데, policy evaluation은 수렴할 때까지 시간이 오래 소요됩니다. 따라서, 위 가치함수 라인에 다다를 때까지 policy evaluation을 수행할 필요가 있을까요 ?</p>
+
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/89000708-fd512300-d332-11ea-99f1-ebe65c2e5fc7.jpg" /><figcaption align="center">그림 2. Value Iteration</figcaption></p>
+
+<p>policy evaluation은 수렴할 때까지 시간이 오래 소요되기 때문에, 수렴할 때까지 기다리는 것이 아니라, 좀 더 효율적으로 접근하는 방법이 value iteration입니다. 가치함수를 한 스텝에 대해서만 업데이트를 하고, greedy policy improvement를 수행하는 value iteration을 통해 최적 가치함수와 정책을 찾았습니다.</p>
+
+<p>위 두 방법 모두 결국 policy evaluation과정과 policy improvement과정의 상호작용으로 이뤄집니다. 두 과정 모두 안정화될 때, 즉 더 이상의 변화나 발전이 이뤄지지 않을 때, 그 때의 가치함수와 정책은 최적입니다. 따라서, 상호작용되는 과정이 조금씩은 차이가 있을 수 있지만 결국 둘의 상호작용으로 최적점에 다다르게 되는 것입니다. 이것이 바로 Generalized Policy Iteration(GPI)입니다.</p>
+<p align="center">
+<img height="400" src="https://user-images.githubusercontent.com/37501153/89001031-d34c3080-d333-11ea-85cd-0893f0f52fa7.png" /><figcaption align="center">그림 3. Generalized Policy Iteration</figcaption></p>
+
+<p>Model-free control도 마찬가지로 GPI를 통해 최적 가치 함수와 최적 정책을 구합니다. Model-free control에 대해 알아보도록 하겠습니다. Model-free policy evaluation하는 방법으로 Monte-Carlo(MC)와 Temporal Difference(TD)가 있습니다. 마찬가지로, model-free control 하는 방법으로도 Monte-Carlo control와 Temporal-Difference control이 있습니다. 먼저, Monte-Carlo control부터 알아보겠습니다.</p>
+
+<h2>Monte-Carlo Control</h2>
+<p>지난 포스팅에서 알아본 monte-carlo estimation이 이제 control에 어떻게 사용되는지 생각해봅시다.</p>
+
+<h3>Monte Carlo Estimation of Action Values</h3>
+<p>Monte-Carlo control도 Monte-Carlo estimation과 함께 GPI를 통해 최적정책을 찾아나갑니다. 그러나, DP에서 다른 점이 있습니다. DP는 현재 상태 $s$ 에서 행동 $a$ 를 취했을 때, 받을 수 있는 보상과 다음 상태가 어떻게 될지 알 수 있습니다. 따라서 다음 상태로 올 수 있는 모든 후보들과 보상을 고려하여 최대 가치를 반환하는 다음 상태를 찾은 후 그 상태로 가게 되는 행동을 취합니다. 즉, 상태 가치 함수 정보만으로 충분합니다.</p>
+
+<p>그러나 model-free 환경의 문제점은 직접 경험하지 않는 이상 다음 상태와 보상이 어떻게 될지 알 수 없습니다. 따라서 상태 가치 함수만으로 행동을 선택할 때 충분한 정보를 제공하지 못합니다. 이러한 이유로 model-free control에서는 상태 가치 함수 $v(s)$ 에 대한 evaluation이 아니라, <b>상태-행동 가치 함수 $q(s,a)$ 에 대한 evaluation</b>을 수행합니다. 상태 s에 대해 모든 행동 a에 대해 $q(s,a)$ 를 비교하여 가장 가치가 높은 행동을 선택하는 것이 상태 s에 대한 정책이 되는 것입니다.</p>
+<p align="center">
+<img width="171" alt="model-free-gpi" src="https://user-images.githubusercontent.com/37501153/89005037-76a24300-d33e-11ea-88ad-2f2cdb180929.png" /><figcaption align="center">그림 4. GPI with Q value</figcaption></p>
+
+<h3>Importance of Exploration</h3>
+<p>GPI는 ‘좋은’ 정책 $\pi$ 을 계속 찾아나가면 언젠간 최적 정책 $\pi_*$ 에 수렴합니다. 그러면 ‘좋은’ 정책 $\pi$ 는 ‘좋은’ $Q_\pi$ 추정치를 찾아야 합니다. 그래야지만 policy improvement를 통해 최적 정책을 찾아나갈 수 있기 때문입니다.</p>
+
+<p>[q_{\pi}(s, \pi’(s)) \geq v_\pi(s)]</p>
+
+<p>‘좋은’ $Q_\pi$ 추정치는 어떻게 찾을까요? 가능한 한 나올 수 있는 모든 $(s,a)$ 시퀀스를 경험하면 됩니다. MC policy evaluation에서 true expected value에 수렴하기 위해서 에피소드 샘플링을 많이 해야 하는 것과 같습니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/89006289-5922a880-d341-11ea-9bfc-1fdf7d99a074.jpg" /><figcaption align="center">그림 5. Greedy policy improvement in MDP and Model-Free</figcaption></p>
+
+<p>그러나 model-free 환경에서 모든 $(s,a)$ 쌍으로 구성된 모든 시퀀스를 경험하기는 어렵습니다. 경우의 수가 너무 많기 때문이고, 환경을 모르기 때문에 예측도 어렵습니다. &lt;그림 5.&gt;를 보면 DP같은 경우는 환경을 알기 때문에 V(s)를 추정하기 위해 다음에 나올 trasition model $P^{a}_{ss’}$ 와 함께 모든 상태 s를 고려할 수 있습니다. 따라서, ‘좋은’ 추정치를 계산할 수 있습니다. 즉, 이렇게 찾아진 가치 함수 추정치 기반으로 greedy하게 행동을 선택해도 policy improvement가 일어납니다( <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/13/dp/">DP포스팅 policy improvement</a> 참고 ).</p>
+
+<p>반면에, model-free 같은 경우, MC와 TD모두 샘플링을 통해 (s,a)를 경험해 나갑니다. 그렇기 때문에 많은 (s,a)쌍을 방문하지 못하는 문제가 발생합니다. 이로 인해 어떤 (s,a)에 대해서는 좋은 추정치를 얻지 못합니다. 따라서 부정확한 추정치 기반으로 greedy하게 행동을 선택하는 건 심각한 문제를 일으킵니다. Q(s,a)를 추정하는 이유는 상태 s에 있을 때, 여러 행동 a들을 비교하기 위해서입니다. 그러나 어떤 행동 a에 대해서 Q(s,a)가 나쁜 값을 가지게 된다면 공정한 비교가 되지 않습니다. 즉, 학습이 제대로 이뤄지지 않게 되는 것입니다. 이 문제가 바로 <span style="color:red">‘exploration’</span> 문제입니다. 따라서 정책을 평가하기 위한 좋은 Q(s,a)를 구하기 위해선 충분하고 지속적인 탐험(continual exploration)이 보장되어야 합니다.</p>
+
+<p>충분하고 지속적인 탐험을 가장 심플하게 구현한 건 모든 행동들에 대해 선택할 가능성을 열어두는 것입니다. 이러한 방법 중 하나가 $\epsilon-greedy$ 입니다.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[\begin{align*} \pi(a \mid s)&amp;=m \underset a ax{\mathbb E[R_{t+1} = \gamma v_k(S_{t+1})</td>
+      <td>S_t=s, A_t=a]}\&amp;=m \underset a ax{\sum_{s’,r}p(s’,r</td>
+      <td>s,a)[r+\gamma v_k(s’)]} \end{align*}]</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>The simplest idea for ensuring continual exploration is that all actions are tried with non-zero probability.</blockquote>
+
+<p>$\epsilon-greedy$ 는 $\epsilon$ 의 확률로  행동을 랜덤하게 선택하고, $1-\epsilon$ 의 확률로 greedy한 행동을 선택합니다. $\frac{\epsilon}{m} + 1-\epsilon + \frac{\epsilon}{m}\times(m-1) = 1$ 이 되므로 $\epsilon-greedy$ 식을 아래와 같이 구축할 수 있습니다. 여전히 $\epsilon$ 의 확률로 탐험할 가능성을 두는 것입니다.</p>
+
+<p>[\pi(a \mid s) = 
+	\begin{cases}
+		\frac{\epsilon}{m} + 1-\epsilon &amp; \quad \text{if} \quad a^{*}=arg \underset m maxQ(s,a) <br />
+		\frac{\epsilon}{m} &amp; \quad \text{otherwise}
+		\end{cases}]</p>
+
+<h3> on-policy Monte-Carlo Control </h3>
+<p><i>이 단락에서 다루는 MC Control은 on-policy 기반입니다. on-policy와 off-policy의 차이는 off-policy MC Control에서 설명하도록 하겠습니다.</i></p>
+<p align="center"><img width="835" alt="mcgpi" src="https://user-images.githubusercontent.com/37501153/89014690-d9043f00-d350-11ea-98b7-544f99f73981.png" /><figcaption align="center">그림 6. Monte-Carlo Policy Iteration</figcaption></p>
+
+<p>진짜로 이제 MC기반의 Control에 대해 알아보겠습니다. 위에서 model-free인 경우도 Generalized Policy Iteration을 통해 최적 가치함수와 최적 정책을 찾는다고 하였습니다. MC기반 policy evaluation은 상태-행동 가치 함수인 $Q_\pi$ 를 찾는 것이고, MC기반 policy improvement는 $\epsilon-greedy$ 를 따릅니다. 그런데, &lt;그림 6.&gt;의 왼쪽 그림처럼, policy evaluation을 $Q_\pi$ 를 수많은 에피소드를 샘플링해서 수렴할 때 반복하는 건 너무 번거롭습니다. 따라서 DP의 value iteration처럼 에피소드 하나가 끝날 때까지만 상태-행동 가치 함수 Q를 업데이트하고, policy improvement를 수행합니다.</p>
+
+<p>이런 방식의 MC 기반 GPI가 과연 최적 정책을 찾게 해주는지에 대해선 아직 해결해야 할 문제가 남았습니다. $\epsilon-greedy$ 방식이 진짜로 정책을 발전 시키는지에 대한 문제와 하나의 최정정책, 가치함수로의 수렴하는지에 대한 문제입니다. 먼저 첫번째 문제부터 살펴보겠습니다.</p>
+
+<p><b>$\epsilon-greedy$ Improvement</b><br />
+$\epsilon-greedy$ 방식으로 정책을 발전시키려면 $V_{\pi_{i+1}}(s) \geq V_{\pi_{i}}(s)$ 를 만족해야 합니다. 아래는 이와 관련된 증명입니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/89119377-16033980-d4e9-11ea-8e30-c556dbf7263f.jpg" /><figcaption align="center">그림 7. $\epsilon-greedy$ policy improvement</figcaption></p>
+
+<p>$Q^{\pi_i}(s,\pi_{i+1}(s)) \geq V_\pi(s)$ 이므로, $V_{\pi_{i+1}}(s) \geq V_{\pi_{i}}(s)$ 가 성립합니다. 이렇게 되는 자세한 과정은 지난 <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/13/dp/">DP 포스팅 policy improvement</a>쪽을 참고 바랍니다. 따라서, $\epsilon-greedy$ 에 의한 정책 발전이 일어납니다.</p>
+
+<p><b>Greedy in the Limit of Infinite Exploration</b><br />
+정책 발전이 일어나는 것과 동시에, 매 스텝마다 정책을 발전시키려면 결국 greedy한 정책으로 수렴해야 합니다. $\epsilon-greedy$ 방식은 모든 행동이 선택될 확률이 non-zero probability라 가정을 하지만, 결국 iteration을 반복해 나가면서 하나의 행동에 대해 $\pi(a \mid s) = 1$ 의 확률을 가져야 되는 것입니다. 이것에 관한 내용을 Greedy in the Limit of Infinite Exploration(GLIE) 라 합니다. 따라서, GLIE를 만족해야 수렴된 정책을 가질 수 있습니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/89119773-c5411000-d4eb-11ea-9982-1904dd2dcfc3.jpg" /><figcaption align="center">그림 8. Greedy in the Limit with Infinite Exploration(GLIE)</figcaption></p>
+
+<p>$e-greedy$ 가 GLIE를 만족하게 하는 가장 심플한 방법은 $\epsilon = \frac{1}{k}$ 로 하여 매 스텝마다 $\epsilon$ 을 감소시켜 0에 수렴하게 하는 것입니다. 따라서, GLIE Monte-Carlo Control 알고리즘을 정리하면 아래와 같습니다.</p>
+<p align="center"><img width="500" src="https://user-images.githubusercontent.com/37501153/89120084-4699a200-d4ee-11ea-8bfe-9c2cfe05a53a.jpg" /><figcaption align="center">그림 9. On Policy Monte-Carlo Control</figcaption></p>
+
+<h3>off-policy Monte-Carlo</h3>
+<p>Off-policy MC에 대해 설명하기 전에 on-policy learning과 off-policy learning에 대해 알아보겠습니다.</p>
+
+<p><b>on-policy vs. off-policy</b><br />
+이제까지 설명한 MC control 방법은 on-policy control입니다. On-policy란 탐험할 때 따르는 정책과 찾고자 하는 최적 정책이 같은 경우입니다. $\epsilon-greedy$ MC control이 왜 on-policy인지 살펴보면 다음과 같습니다. 한 에피소드 내에서 매 상태 s마다 행동 a를 샘플링합니다. 이 때, $\epsilon$ 의 확률로 정책에 따른 행동 $a=arg \underset m maxQ(s,a)$ 을 샘플링합니다. 그리고 한 에피소드가 다 끝나고 정책을 업데이트 할 때도 이렇게 정책에 따른 행동들을 기반으로 가치함수를 업데이트하여 $\pi_k = \epsilon-greedy(Q)$ 로 정책을 발전시킵니다. 즉, <span style="color:red">기존 행동 샘플링할 때 사용된 정책 기반으로 정책을 발전시키는 것</span>입니다. 이것이 바로 <span style="color:red">on-policy learning</span>입니다.</p>
+
+<blockquote>On-policy learning is<br />- learn on the job<br />- learn about policy $\pi$ from experience sampled from $\pi$</blockquote>
+
+<p>그러나 이미 정책을 발전시키는 과정이 greedy한 정책을 한번 찾은 후, 그 정책 위에서 $\epsilon-greedy$ 같은 방법으로 탐험을 하는 것입니다. 그렇기 때문에 탐험을 하는 (s,a)공간이 매우 협소합니다. 이미 발전시킨 정책 위에서 탐험을 하기 때문에, (s,a) 공간위에서 보면 이미 발전시킨 정책 $\pi$ 에 해당되는 공간 근처에서만 탐험이 이뤄지는 것입니다. 마치 그림으로 표현하면 아래와 같을 수 있습니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/89122084-78ffcb00-d4ff-11ea-8a2a-89d288f13a3a.jpg" /><figcaption align="center">그림 10. On-policy exploration</figcaption></p>
+<p>그렇다면 이를 해결할 수 있는 방법은 어떤 것이 있을까요? 바로, <span style="color:red">탐험하는 정책과 최적 정책을 찾기 위해 학습하는 정책을 분리하는 것</span>입니다. 이것이 바로 <span style="color:red">off-policy learning</span>입니다. 마치 분류 모델을 위한 지도학습을 진행 할 때, 모든 라벨에 해당되는 데이터가 존재하고, 분포도 고루 존재하면 학습이 더 잘되는 것과 비슷하다고 생각하면 됩니다. 좀 더 다양한 경험을 한 시퀀스 데이터가 많으면 best 답안에 가까운 정책을 찾을 수 있습니다. 그렇기 위해선 탐험의 범위가 넓어야 합니다.</p>
+<blockquote>Off-policy learning is<br />- look over someone's shoulder<br />- learn about policy $\pi$ from experience sampled from $\mu$</blockquote>
+<p>일반적으로, 학습하고자 하는 정책을 target policy라 하고, 학습을 위한 데이터를 생성하기 위한 정책을 behavior정책이라 합니다.
+학습을 위한 데이터를 학습하고 하는 정책에서 ‘벗어나서’ 수집하기 때문에, ‘off-policy’라 합니다.</p>
+
+<p><b>Importance Sampling</b><br />
+대부분의 off-policy 방식은 importance sampling을 이용합니다. Importance sampling이란 기댓값을 계산하고자 하는 확률 분포 $p(x)$ 의 확률 밀도 함수(probability density function, PDF)를 모르거나 안다고 해도 $p$ 에서 샘플을 생성하기 어려울 때, 비교적 샘플을 생성하기 쉬운 $q(x)$ 에서 샘플을 생성하여 $p$ 의 기댓값을 계산하는 것입니다.</p>
+
+<p>[\begin{align<em>} E_{x \sim p}[f(x)]&amp;=\int p(x)f(x)dx\&amp;=\int \frac{p(x)}{q(x)}q(x)f(x)dx\&amp;=E_{x \sim q}[\frac{p(x)}{q(x)}f(x)] \end{align</em>}]</p>
+
+<p><b>Importance Sampling for Off-Policy Monte-Carlo</b><br />
+그렇다면 importance sampling을 off-policy MC에서 어떻게 이용하는지 알아보도록 하겠습니다. 위에서 설명한 importance sampling 개념대로 target policy와 behavior policy를 보면, 기댓값을 계산하고자 하는 확률 분포 $p(x)$ 에 해당하는 건 target policy $\mu$ 이고, 실제 샘플하는 분포 $q(x)$ 는 behavior policy $\pi$ 입니다. 우리가 계산하고자 하는 기댓값은 $V(s) = E[G_t \mid S_t=s]$ 이므로, 즉 두 분포의 비율 $\frac{\pi(A_t \mid S_t)}{\mu(A_t \mid S_t)}$ 을 $G_t$ 에 곱하여 기댓값을 계산해야 합니다. 그러나, 단일 샘플링이 아니라 전체 에피소드에 대한 샘플링이기 때문에 importance sampling한 $G_t^{\pi/\mu}$ 는 아래와 같습니다.</p>
+
+<p>[G_t^{\pi/\mu} = \frac{\pi(A_t \mid S_t)}{\mu(A_t \mid S_t)}\frac{\pi(A_{t+1} \mid S_{t+1})}{\mu(A_{t+1} \mid S_{t+1})} \dots \frac{\pi(A_{T} \mid S_{T})}{\mu(A_{T} \mid S_{T})}G_t]</p>
+
+<p>따라서 MC policy evaluation에서 $G_t$ 가 아닌 $G_t^{\pi/\mu}$ 로 가치함수를 업데이트해주면 됩니다.</p>
+
+<p>[V(S_t) \leftarrow V(S_t) + \alpha(G_t^{\pi/\mu} - V(S_t))]</p>
+
+<p>그러나 importance sampling 같은 경우 infinite variance를 가지는 단점이 있습니다. 이러한 이유로 수렴하기가 매우 어렵습니다. 따라서 현실적으로 importance sampling을 통한 off-policy Monte-Carlo방식은 사용되지 않습니다.</p>
+
+<h2>Temporal-Difference Control </h2>
+<p>다음은 Temporal-Difference(TD) Control에 대해 알아보겠습니다. On-policy TD control을 Sarsa이고, off-policy TD control을 Q-Learning이라 합니다. SARSA에 대해서 먼저 알아보겠습니다.</p>
+
+<h3>Sarsa : On-policy TD Control</h3>
+<p>TD control도 MC control과 마찬가지로, Generalized policy iteration(GPI) 을 따릅니다. Policy evaluation만 TD update을 이용하고 그 외 다른 건 모두 MC control와 같습니다.</p>
+
+<p>[Q(S,A) \leftarrow Q(S,A) + \alpha(R+\gamma Q(S’,A’) - Q(S,A))]</p>
+
+<p>위 update 식에서 샘플링 단위가 (S, A, R, S’, A’)이기 때문에 Sarsa 라는 이름이 붙여졌습니다. Srasa 알고리즘 전체는 아래와 같습니다.</p>
+
+<p align="center"><img width="7500" alt="sarsa" src="https://user-images.githubusercontent.com/37501153/89125122-19adb500-d517-11ea-80e7-ed18b5449e7a.png" /><figcaption align="center">그림 11. Sarsa</figcaption></p>
+
+<p>Sarsa도 on-policy MC에서 살펴본 것처럼 정책 발전 문제와 수렴 문제를 살펴보겠습니다. 정책 발전 문제는 on-policy MC와 동일하게 $\epsilon-greedy$ 를 사용하기 때문에 정책 발전은 일어납니다.</p>
+
+<p>반면에 수렴문제는 GLIE를 만족시키는 것 이외에 업데이트 스텝 크기인 $\alpha$ 에 대한 조건이 더 필요합니다. 그 이유는 MC와 다르게 TD는 스텝마다 업데이트가 일어나는 on-line 방식이기 때문에 스텝사이즈 크기에 따라 수렴이 되지 않고 발산이 될 수 있습니다. 스텝크기 $\alpha$ 는 Q 가치함수가 변화가 일어나야 하므로 충분히 크며 동시에 Q 가치함수가 수렴해야 하므로 충분히 작아야 합니다.</p>
+
+<p>[\sum_{t=1}^{\infty}\alpha_t=\infty]</p>
+
+<p>[\sum_{t=1}^{\infty}\alpha^2_t&lt;\infty]</p>
+
+<p>그러나 실제 문제를 풀 때 $\alpha$ 를 결정하는 건 위의 이론을 이용하진 않고 domain-specific하게 또는 실험적으로 정한다고 합니다.</p>
+
+<p>sarsa 문제 예를 보겠습니다. 아래는 S에서 시작해서 G로 가야하는 문제입니다. 행동은 위, 아래, 좌, 우이며, 화살표가 있는 곳에서 아래에서 위로 바람이 불고 있습니다. 따라서 이 곳을 지날 때 실제 위로 가는 행동을 해도 실제 움직임은 대각선 우상향으로 가게 됩니다. 매 스텝마다 보상은 -1이며 discount factor 1입니다.</p>
+<p align="center">
+<img width="490" alt="sarsa-example" src="https://user-images.githubusercontent.com/37501153/89125501-ed476800-d519-11ea-89ef-24c2ee66c8dc.png" /><figcaption align="center">그림 12. Sarsa on the Windy Gridworld</figcaption></p>
+<p>&lt;그림 12.&gt; 그래프는 Sarsa 학습 결과입니다. 1에피소드가 끝날 때 까지 2000 스텝을 밟지만 그 다음부터 학습속도가 빨라지는 것을 볼 수 있습니다.</p>
+
+<h3>Q-Learning : Off-policy TD Control</h3>
+<p>다음은 off-policy TD 방식인 Q-Learning에 대해서 알아봅시다. Off-policy MC와 다르게 importance sampling이 필요 없습니다. Sarsa 에서 $Q(S_t, A_t)$ 를 업데이트 하기 위해, 정책 $\pi$ 에 따라 $(S_t, A_t, R_{t+1}, S_{t+1}, A_{t+1})$ 을 샘플링 한 후, $Q(S_{t+1}, A_{t+1})$ 기반으로 현재 상태 $(S_t, A_t)$ 를 수정했습니다. 즉, 샘플링된 정책과 학습하는 정책이 일치합니다. 그러나 Q-Learning은 off-policy로 샘플링되는 정책(behavior policy)과 학습하는 정책(target policy)이 다릅니다.</p>
+
+<p>[Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha(R_{t+1}+\gamma Q(S_{t+1},A’)-Q(S_t, A_t))]</p>
+
+<ul>
+  <li>Next action is chosen using behavior policy $A_{t+1} \sim \mu(\cdot \mid S_t)$</li>
+  <li>But we consider alternative successor action $A’ \sim \pi(\cdot \mid S_t)$</li>
+</ul>
+
+<p>다음 상태에 대한 행동을 behavior policy에 따라 선택하지만 실제 $Q(S_t, A_t)$ 를 업데이트하기 위해서 다음 상태에 대한 행동은 behavior policy와 다른 target policy에 의해 선택합니다. 즉, $A’$ 에 대해서 $Q(S_t, A_t)$ 를 업데이트하고 다음 업데이트 할 (s,a) 쌍은 $(S_{t+1}, A’)$ 이 아니라 behavior policy 따른 $(S_{t+1}, A_{t+1})$ 인 것입니다. 이 때, $A’=A$ 일수도 있고, $A’ \ne A$ 일수도 있습니다.</p>
+
+<p>Q-learning은 taret policy와 behavior policy를 같이 발전시켜 나갑니다. 이때, target policy $\mu$ 는 $Q(s,a)$ 에 관한 greedy policy이고 behavior policy $\pi$ 는 $Q(s,a)$ 에 관한 $\epsilon-greedy$ 입니다.</p>
+
+<ul>
+  <li>Target policy : $\pi(S_{t+1}) = arg \underset {a’} maxQ(S_{t+1},a’)$</li>
+  <li>Behavior policy : <br />
+\(\mu(a \mid s) = 
+  \begin{cases}
+      \frac{\epsilon}{m} + 1-\epsilon &amp; \quad \text{if} \quad a^{*}=arg \underset m maxQ(s,a) \\
+      \frac{\epsilon}{m} &amp; \quad \text{otherwise}
+      \end{cases}\)</li>
+</ul>
+
+<p>위의 behavior policy와 target policy를 가지고 Q-Learning 식을 다시 쓰면 아래와 같습니다.</p>
+
+<p>[\begin{align<em>} Q(S_t,A_t) &amp;\leftarrow Q(S_t, A_t) + \gamma Q(S_{t+1},A’)\&amp;\leftarrow Q(S_t, A_t) + \gamma Q(S_{t+1},arg \underset {a’} maxQ(S_{t+1},a’)\&amp;\leftarrow Q(S_t, A_t) + \gamma m \underset {a’} ax Q(S_{t+1}, a’) \end{align</em>}]</p>
+
+<p>따라서, Q-learning 알고리즘은 아래와 같습니다.</p>
+<p align="center"><img width="500" alt="qlearning-alg" src="https://user-images.githubusercontent.com/37501153/89126483-ecfe9b00-d520-11ea-8264-347a78f9b7d5.png" /><figcaption align="center">그림 13. Q-Learning</figcaption></p>
+
+<p><b>Sarsa vs. Q-Learning</b><br />
+그렇다면 Sarsa와 Q-Learning은 실제 학습 시 어떤 차이를 보일까요 ? 아래 cliff Waling 예제를 통해 확인해 보겠습니다.</p>
+<p align="center"><img width="500" alt="q-vs-sarsa" src="https://user-images.githubusercontent.com/37501153/89126761-410a7f00-d523-11ea-8613-7dac00ed99d1.png" /><figcaption align="center">그림 14. Cliff-walking 예</figcaption></p>
+
+<p>S에서 시작해서 G로 가는 문제입니다. The Cliff에 도달하면 R=-100을 받고 다시 S로 돌아갑니다. 다른 곳에 밟으면 R=-1을 받습니다. 행동은 위, 아래, 좌, 우이며, $\epsilon=0.1$ 입니다. 학습이 완료됐을 때 최적 정책 결과는 &lt;그림 14.&gt;에서 위에 있는 그림입니다. Sarsa는 safe path로 학습되지만 Q-learning은 optimal path로 학습됩니다.</p>
+
+<p>Sarsa는 학습되는 방향이 현재 따르는 정책에서 선택된 행동이 고려되기 때문에 path의 길이는 길지만 좀 더 안전한 길을 선택하게 됩니다. 반면에, Q-Learning 같은 경우 학습되는 방향이 현재 따르는 정책과 무관하기 때문에 현재 상태에서 가장 최적의 선택이 될 수 있는 길로 학습이 됩니다. 그렇기 때문에 Sarsa 같은 경우 보상의 합이 Q-Learning보다 크게 나타납니다.</p>
+
+<hr />
+
+<p>이상으로 이번 포스팅을 마치겠습니다. 읽어주셔서 감사합니다.</p>
+
+<hr />
+
+<ol>
+  <li><a href="https://untitledtblog.tistory.com/135">Importance Sampling, https://untitledtblog.tistory.com/135</a></li>
+</ol>
+
+
+    <article>
+    <div class="post-more">
+      
+      <a href="/reinforcement%20learning/2020/07/29/mc-td-control/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
+      
+      <a href="/reinforcement%20learning/2020/07/29/mc-td-control/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
+    </div>
+  </div>
+  
+</div>
+
+<div class="pagination">
+  
+    <a class="pagination-item older" href="/blog/page4">Older</a>
+  
+  
+    
+      <a class="pagination-item newer" href="/blog/page2">Newer</a>
+    
+  
+</div>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if (target === toggle) {
+            checkbox.checked = !checkbox.checked;
+            e.preventDefault();
+          } else if (checkbox.checked && !sidebar.contains(target)) {
+            /* click outside the sidebar when sidebar is open */
+            checkbox.checked = false;
+          }
+        }, false);
+      })(document);
+    </script>
+    
+    <script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-166283746-1', 'auto');
+ga('send', 'pageview');
+    </script>
+    
+  </body>
+  
+  <script id="dsq-count-scr" src="//ralasun-github-io.disqus.com/count.js" async></script>
+  
+</html>

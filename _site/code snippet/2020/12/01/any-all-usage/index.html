@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      pandas.DataFrame.any(), numpy.any() &middot; Ralasun Resarch Blog
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/main.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://raw.githubusercontent.com/ralasun/ralasun.github.io/master/public/favicon.png">
+  <link rel="shortcut icon" href="https://raw.githubusercontent.com/ralasun/ralasun.github.io/master/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  
+  <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_SVG"> </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });
+  </script>
+  
+</head>
+
+
+  <body>
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="sidebar-personal-info">
+      <div class="sidebar-personal-info-section">
+        <img src="http://localhost:4000/public/img/profile_v1.jpg"/>
+      </div>
+      <div class="sidebar-personal-info-section">
+        <p><strong>한걸음씩</strong>, 그리고 <strong>꾸준히</strong> 나아가기</p>
+      </div>
+      
+      
+      
+      <div class="sidebar-personal-info-section">
+        <p> Follow me: 
+        
+        
+        
+        <a href="https://www.linkedin.com/in/ralasun">
+          <i class="fa fa-linkedin" aria-hidden="true"></i>
+        </a>
+        
+        |
+        
+        
+        
+        <a href="https://github.com/ralasun">
+          <i class="fa fa-github" aria-hidden="true"></i>
+        </a>
+        
+        |
+        
+        
+        
+        <a href="mailto:sunhwalsh91@gmail.com">
+          <i class="fa fa-envelope" aria-hidden="true"></i>
+        </a>
+        
+        
+        
+        </p>
+      </div>
+      
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    
+      
+      
+      
+
+      
+
+      <span class="">
+        <a class="sidebar-nav-item " href="/">
+          Home
+        </a>
+
+        
+      </span>
+
+    
+      
+      
+      
+
+      
+
+      <span class="foldable">
+        <a class="sidebar-nav-item " href="/blog/">
+          Blog
+        </a>
+
+        
+          
+            
+            
+            
+              <a class="sidebar-nav-item sidebar-nav-item-sub " href="/blog/categories/">
+                Posts
+              </a>
+          
+        
+          
+            
+            
+            
+              <a class="sidebar-nav-item sidebar-nav-item-sub " href="/blog/tags/">
+                Tags
+              </a>
+          
+        
+      </span>
+
+    
+      
+      
+      
+
+      
+
+      <span class="">
+        <a class="sidebar-nav-item " href="/about/">
+          About
+        </a>
+
+        
+      </span>
+
+    
+  </nav>
+
+  <div class="sidebar-item">
+    <p>
+    &copy; 2021 Seonhwa Lee. This work is liscensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home" title="Ralasun Resarch Blog">
+              <img class="masthead-logo" width="200" height="30" src="http://localhost:4000/public/logo.jpg"/>
+            </a>
+            <small>research blog for data science</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="post">
+  <h1 class="post-title">pandas.DataFrame.any(), numpy.any()</h1>
+  <span class="post-date">01 Dec 2020</span>
+   | 
+  
+    <a href="/blog/tags/#pandas" class="post-tag">pandas</a>
+  
+    <a href="/blog/tags/#numpy" class="post-tag">numpy</a>
+  
+  
+  <article>
+    <hr />
+
+<p>평소에 헷갈리는 any(), all()에 대해 정리하였습니다.</p>
+
+<hr />
+
+<h1>df.isna()</h1>
+
+<div class="prompt input_prompt">
+In&nbsp;[1]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+</code></pre></div></div>
+
+<div class="prompt input_prompt">
+In&nbsp;[2]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'./data/top1_1880109251922.csv'</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'date'</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s">'Date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'date'</span><span class="p">])</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">set_index</span><span class="p">(</span><span class="s">'Date'</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">asfreq</span><span class="p">(</span><span class="s">'D'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>df.isna()는 데이터프레임에서 NaN 요소에 해당되는 부분을 True로 리턴해준다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[3]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="n">isna</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>store</th>
+      <th>product_c</th>
+      <th>sales</th>
+    </tr>
+    <tr>
+      <th>Date</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2018-02-01</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2018-02-02</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2018-02-03</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2018-02-04</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2018-02-05</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2019-07-27</th>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2019-07-28</th>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2019-07-29</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2019-07-30</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2019-07-31</th>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+<p>546 rows × 4 columns</p>
+</div>
+
+<h1>df.any()</h1>
+
+<p>여기서, dataframe.any(axis=0)인 경우엔 각 column의 row를 다 훑어서, row요소들 중 적어도 하나의 row애 True가 있으면, True를 반환합니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[4]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="n">isna</span><span class="p">().</span><span class="nb">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>date         True
+store        True
+product_c    True
+sales        True
+dtype: bool
+</code></pre></div></div>
+
+<p>반면에, dataframe.any(axis=1)인 경우엔 각 index별로 column요소를 다 훑어서 적어도 하나의 column에 True가 있으면 True를 반환합니다.
+아래 코드를 보면, 해당 index에 data, store, product_c, sales가 모두 True이면 해당 index row는 True를 반환합니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[5]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span><span class="p">.</span><span class="n">isna</span><span class="p">().</span><span class="nb">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Date
+2018-02-01    False
+2018-02-02    False
+2018-02-03    False
+2018-02-04    False
+2018-02-05    False
+              ...  
+2019-07-27     True
+2019-07-28     True
+2019-07-29    False
+2019-07-30    False
+2019-07-31    False
+Freq: D, Length: 546, dtype: bool
+</code></pre></div></div>
+
+<h1>np.any()</h1>
+
+<p>np.any() 는 dataframe.any()와 유사합니다. 주어진 축(axis) 정보에 따라 해당 요소에서 True가 하나 이상이라도 있으면 True를 반환합니다. 아래는 np.any()의 예제입니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[6]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+</code></pre></div></div>
+
+<p>먼저, 예제 array를 생성합니다. True, False로 구성된 random한 array를 만들었습니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[7]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">samplearr</span> <span class="o">=</span> <span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">]</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">choice</span><span class="p">(</span><span class="n">samplearr</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">47</span><span class="p">))</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">choice</span><span class="p">(</span><span class="n">samplearr</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">47</span><span class="p">))</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">choice</span><span class="p">(</span><span class="n">samplearr</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">47</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext output_stream highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ True  True  True  True  True  True False  True  True  True False False
+ False  True False  True False False False False  True False  True  True
+ False  True False False False  True False  True False  True  True False
+ False  True False False  True False False  True  True  True False]
+[False False  True False  True False  True  True False  True  True False
+  True False  True False False False False False  True  True False False
+ False False  True False False  True False False False  True False  True
+  True  True False False  True  True  True  True False  True  True]
+[False False  True False False False False  True False False  True  True
+  True False False  True  True  True  True False False False False  True
+ False  True  True  True  True  True  True  True False False False  True
+ False False False False False False  True  True  True  True  True]
+</code></pre></div></div>
+
+<p>np.any(a,b,c)는 에러를 발생합니다. 반드시, 하나의 array나 아니면 array와 유사한 list형식으로 묶어서 넣어줘야합니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[8]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">any</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---------------------------------------------------------------------------
+</code></pre></div></div>
+
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TypeError                                 Traceback (most recent call last)
+</code></pre></div></div>
+
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;ipython-input-8-7a7facd3228c&gt; in &lt;module&gt;
+----&gt; 1 np.any(a,b,c)
+</code></pre></div></div>
+
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;__array_function__ internals&gt; in any(*args, **kwargs)
+</code></pre></div></div>
+
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in any(a, axis, out, keepdims)
+   2328 
+   2329     """
+-&gt; 2330     return _wrapreduction(a, np.logical_or, 'any', axis, None, out, keepdims=keepdims)
+   2331 
+   2332 
+</code></pre></div></div>
+
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/opt/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py in _wrapreduction(obj, ufunc, method, axis, dtype, out, **kwargs)
+     85                 return reduction(axis=axis, out=out, **passkwargs)
+     86 
+---&gt; 87     return ufunc.reduce(obj, axis, dtype, out, **passkwargs)
+     88 
+     89 
+</code></pre></div></div>
+
+<div class="language-plaintext output_traceback_line highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TypeError: only integer scalar arrays can be converted to a scalar index
+</code></pre></div></div>
+
+<h2>axis=0 vs. axis=1</h2>
+
+<p>그전에 axis=0과 1에 따라 차이를 살펴봅시다. axis=0인 경우엔 각 column의 모든 row를 훑고, axis=1인 경우엔 각 row의 모든 column을 훑습니다. 아래는 관련 그림입니다.</p>
+
+<p><img src="/images/2020-12-01-any-all-usage_files/axis.jpg" alt="jpg" /></p>
+
+<p>axis=0인 경우, 각각의 column요소에서 모든 row를 훑어서 하나 이상이 True요소라면 True를 반환합니다. 결과는 [a,b,c]의 column의 갯수만큼 출력됩니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[9]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">any</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([ True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True,  True,  True,  True,  True,  True,  True,  True,  True,
+        True, False,  True,  True,  True,  True, False,  True,  True,
+        True,  True,  True,  True,  True, False,  True,  True,  True,
+        True,  True, False, False,  True,  True,  True,  True,  True,
+        True,  True])
+</code></pre></div></div>
+
+<p>axis=1인 경우, 각각의 row요소에서 모든 column을 훑어서 하나 이상이 True요소라면 True를 반환합니다. 결과는 [a,b,c]의 row 갯수만큼 출력됩니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[10]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">any</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([ True,  True,  True])
+</code></pre></div></div>
+
+<h1>np.all()</h1>
+
+<p>np.all()은 np.any()와 반대로, 검사할 축에 모든 요소가 True여야지만 True를 반환합니다. 아래는 예제입니다.</p>
+
+<div class="prompt input_prompt">
+In&nbsp;[11]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">all</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([False, False,  True, False, False, False, False,  True, False,
+       False, False, False, False, False, False, False, False, False,
+       False, False, False, False, False, False, False, False, False,
+       False, False,  True, False, False, False, False, False, False,
+       False, False, False, False, False, False, False,  True, False,
+        True, False])
+</code></pre></div></div>
+
+<div class="prompt input_prompt">
+In&nbsp;[12]:
+</div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="p">.</span><span class="nb">all</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext output_data_text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([False, False, False])
+</code></pre></div></div>
+
+
+  </article>
+
+  <!-- Begin section for dataframe table formatting -->
+<style type="text/css">
+.input_area div.highlighter-rouge {
+  background: #263238  !important;
+}
+
+div.highlighter-rouge, figure.highlight {
+  font-size: 0.675em  !important;
+}
+
+.output_stream, .output_data_text, .output_traceback_line {
+  margin-left: 3% !important;
+  border: none !important;
+  border-radius: 4px !important;
+  background-color: #fafafa !important;
+  box-shadow: none !important;
+  color: #515151  !important;
+  font-size: 0.4em !important;
+}
+
+
+table.dataframe {
+    width: 100%;
+    max-height: 240px;
+    display: block;
+    overflow: auto;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    line-height: 20px;
+    text-align: center;
+}
+table.dataframe th {
+  font-weight: bold;
+  padding: 4px;
+}
+table.dataframe td {
+  padding: 4px;
+}
+table.dataframe tr:hover {
+  background: #b8d1f3;
+}
+
+</style>
+
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/signal%20analysis/2021/06/21/stft-dwt/">
+            Short-time Fourier Transform(STFT) 과 Discrete Wavelet Transform(DWT)
+            <small>21 Jun 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/signal%20analysis/2021/06/18/ft-vs-wt/">
+            Discrete Fourier Transform에 대하여
+            <small>18 Jun 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/deep%20learning/2021/03/06/gcn(2)/">
+            Graph Convolutional Network에 대하여 - Spectral Graph Convolution(2)(작성 중)
+            <small>06 Mar 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+
+<div class="comments">
+  <h2>Comments</h2>
+  <div id="disqus_thread"></div>
+  <script>
+var disqus_config = function () {
+  this.page.url = 'http://localhost:4000/code%20snippet/2020/12/01/any-all-usage/'; // Replace PAGE_URL with your page's canonical URL variable
+  this.page.identifier = '/code%20snippet/2020/12/01/any-all-usage'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = '//ralasun-github-io.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if (target === toggle) {
+            checkbox.checked = !checkbox.checked;
+            e.preventDefault();
+          } else if (checkbox.checked && !sidebar.contains(target)) {
+            /* click outside the sidebar when sidebar is open */
+            checkbox.checked = false;
+          }
+        }, false);
+      })(document);
+    </script>
+    
+    <script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-166283746-1', 'auto');
+ga('send', 'pageview');
+    </script>
+    
+  </body>
+  
+  <script id="dsq-count-scr" src="//ralasun-github-io.disqus.com/count.js" async></script>
+  
+</html>

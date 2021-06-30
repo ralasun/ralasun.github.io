@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Blog &middot; Ralasun Resarch Blog
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/main.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://raw.githubusercontent.com/ralasun/ralasun.github.io/master/public/favicon.png">
+  <link rel="shortcut icon" href="https://raw.githubusercontent.com/ralasun/ralasun.github.io/master/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  
+  <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_SVG"> </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });
+  </script>
+  
+</head>
+
+
+  <body>
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="sidebar-personal-info">
+      <div class="sidebar-personal-info-section">
+        <img src="http://localhost:4000/public/img/profile_v1.jpg"/>
+      </div>
+      <div class="sidebar-personal-info-section">
+        <p><strong>한걸음씩</strong>, 그리고 <strong>꾸준히</strong> 나아가기</p>
+      </div>
+      
+      
+      
+      <div class="sidebar-personal-info-section">
+        <p> Follow me: 
+        
+        
+        
+        <a href="https://www.linkedin.com/in/ralasun">
+          <i class="fa fa-linkedin" aria-hidden="true"></i>
+        </a>
+        
+        |
+        
+        
+        
+        <a href="https://github.com/ralasun">
+          <i class="fa fa-github" aria-hidden="true"></i>
+        </a>
+        
+        |
+        
+        
+        
+        <a href="mailto:sunhwalsh91@gmail.com">
+          <i class="fa fa-envelope" aria-hidden="true"></i>
+        </a>
+        
+        
+        
+        </p>
+      </div>
+      
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    
+      
+      
+      
+
+      
+
+      <span class="">
+        <a class="sidebar-nav-item " href="/">
+          Home
+        </a>
+
+        
+      </span>
+
+    
+      
+      
+      
+
+      
+
+      <span class="foldable">
+        <a class="sidebar-nav-item " href="/blog/">
+          Blog
+        </a>
+
+        
+          
+            
+            
+            
+              <a class="sidebar-nav-item sidebar-nav-item-sub " href="/blog/categories/">
+                Posts
+              </a>
+          
+        
+          
+            
+            
+            
+              <a class="sidebar-nav-item sidebar-nav-item-sub " href="/blog/tags/">
+                Tags
+              </a>
+          
+        
+      </span>
+
+    
+      
+      
+      
+
+      
+
+      <span class="">
+        <a class="sidebar-nav-item " href="/about/">
+          About
+        </a>
+
+        
+      </span>
+
+    
+  </nav>
+
+  <div class="sidebar-item">
+    <p>
+    &copy; 2021 Seonhwa Lee. This work is liscensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home" title="Ralasun Resarch Blog">
+              <img class="masthead-logo" width="200" height="30" src="http://localhost:4000/public/logo.jpg"/>
+            </a>
+            <small>research blog for data science</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="posts">
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/reinforcement%20learning/2020/07/28/mc-td-eval/">
+        Model-Free Policy Evaluation, Monte Carlo와 Temporal Difference에 대하여
+      </a>
+    </h1>
+
+    <span class="post-date">28 Jul 2020</span>
+     | 
+    
+    <a href="/blog/tags/#reinforcement-learning" class="post-tag">reinforcement-learning</a>
+    
+    
+
+    <article>
+      <p>이번 포스팅과 다음 포스팅은 유한개의 상태, 유한개의 행동에 대해 환경 모델을 모를 때, sequential decision process를 푸는 방법에 다룹니다. 지난 <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/13/dp/">DP 포스팅</a>에서, policy iteration을 이용하여 MDP를 풀었습니다. 마찬가지로 환경 모델을 알지 못한 경우도 유사하게 접근할 수 있습니다. policy iteration은 policy evaluation과 policy control로 나뉘는데 이번 포스팅은 policy evaluation을 푸는 방법에 다룰 것이고 다음 포스팅은 policy control에 대해 다루도록 하겠습니다. CS234 3강, Deep Mind의 David Silver 강화학습 강의 4강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 5, 6 기반으로 작성하였습니다.</p>
+
+<hr />
+
+<p>policy evaluation은 현 정책이 얼마나 좋은지 평가하는 것으로, 현 정책 아래 가치함수를 구하는 것입니다. DP는 환경 모델을 알 때, 벨만 기대 방정식을 이용하여 iterative한 방법으로 현 정책 아래에서 가치함수를 구하는 과정입니다. 현 상태에서 특정 행동을 취할 때, 나올 수 있는 다음 상태와 받을 보상을 알고 있기 때문에 아래 식과 같이 expectation을 직접 “계산”을 할 수 있었습니다.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[v_\pi(s) = \sum_a\pi(a</td>
+      <td>s)\sum_{s’,r}p(s’,r</td>
+      <td>s,a)[r+\gamma v_\pi(s’)]]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>(이러한 이유로, DP는 learning이 아니라 planning이라 했었습니다.) 그러나 환경 모델을 알지 못할 때, 즉, 상태 변환 모델과 보상 모델을 알지 못할 때 어떻게 정책을 평가할 수 있을까요? 바로 경험(experience)을 직접하는 것입니다. 시퀀스를 직접 밟아 나가면서 가치함수를 학습해 나가는 것입니다. 이 때, 경험을 통해 가치함수를 학습하는 방법을 두가지가 있습니다. Monte Carlo 방식와 Temporal Difference 방식입니다. 먼저, Monte Carlo policy evaluation 부터 알아보겠습니다.</p>
+
+<h2>Monte-Carlo Policy Evaluation</h2>
+<p>Monte-Carlo Policy Evaluation을 살펴보기 전에, Monte-Carlo 방식을 우선 알아보겠습니다.</p>
+
+<h3>Monte-Carlo Methods</h3>
+<p>Monte-Carlo 방법은 무작위 샘플링을 통해 우리가 알아보고자 하는 시스템의 분포를 추정하는 것입니다. 아래 그림은 Monte-Carlo 방식으로 원의 넓이를 추정하는 것입니다.</p>
+<p align="center">
+<img alt="mc-pi" width="500" src="https://user-images.githubusercontent.com/37501153/88665561-c2c06e00-d119-11ea-82cd-672553bac47d.gif" />
+<figcaption align="center">그림 1. Monte-Carlo 예</figcaption></p>
+<p>원의 넓이를 구하는 방법이 너무나 복잡하거나 알 수 없다고 가정해 봅시다. 이런 상황에서 원의 넓이를 가장 쉽게 구하는 방법은 점을 무수히 많이 뿌려본 뒤, 사각형의 넓이 $\times$  (원 안에 들어온 점의 갯수 / 전체 점의 갯수) 로 원의 넓이를 추정할 수 있습니다. 이처럼 Monte-Carlo방식은 점을 무수히 많이 찍는 것처럼 무작위 샘플링으로 데이터를 많이 수집하게 되면 우리가 알고자 하는 시스템의 분포를 추정할 수 있다는 개념입니다.</p>
+
+<h3>Monte-Carlo Policy Evaluation</h3>
+<p>따라서, Monte-Carlo Policy Evaluation이란 에이전트가 환경과 직접 상호작용하여 상태, 행동, 보상으로 이뤄진 시퀀스를 무수히 많이 <span style="color:red">sampling</span>하여 경험을 얻고, 그 경험을 바탕으로 가치함수를 구하는 것입니다. 즉, 무작위 샘플링을 통해 환경 모델을 내재적으로 추정하는 것이죠. ‘내재적’이라 표현한 이유는 추정하고자 하는 것이 상태 변이 확률 또는 보상 확률이 아니라 value function이기 때문입니다. 결국 value function를 구하기 위해선 환경 정보를 알고 있어야 구할 수 있는데(DP에서의 Policy Evaluation 참고) 샘플링을 통해 이를 구하는 것이 내재적으로 환경모델을 추정하는 거라고 생각할 수 있는 것이죠.</p>
+
+<p>다시 정리하면 Monte-Carlo 방식은 환경에 대한 정보없이, 오로지 ‘경험(experience)’를 통해 학습하는 것입니다.</p>
+<blockquote>사실 학습은 policy evaluation과 policy control의 상호작용으로 이뤄집니다. 본 포스팅은 학습이라 표현하지만, policy evaluation에 초점을 맞춰 작성하였습니다.</blockquote>
+<p>value function의 정의를 다시 살펴보면,</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[v_\pi(s) = E_\pi[G_t</td>
+      <td>s_t=s]]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>상태 s에서의 return $G_t$ 에 대한 기댓값입니다. Monte-Carlo 방식으로 value function을 구하면 샘플링한 많은 경험들 중에서 상태 s에서부터의 return $G_t$ 를 직접 구한 뒤, 경험의 갯수만큼 나눠주면 됩니다. 즉, return에 대한 기댓값이 아니라 <span style="color:red">return에 관한 평균값</span>입니다.</p>
+<blockquote>Monte-Carlo policy evaluation uses empirical mean return instead of expected return. In other words, Policy is evaluated based on averaging sample returns.</blockquote>
+<p>아래 예시를 통해, 어떻게 계산하는지 알아봅시다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/88672014-eedfed00-d121-11ea-92ba-d14ed0f22508.jpeg" />
+<figcaption align="center">그림 2. Monte-Carlo Policy Evaluation 예</figcaption></p>
+<p>&lt;그림 2&gt;와 같이, C1에서 시작한 시퀀스들에 대한 return 값들이 있습니다. $s_t = C1$ 의 value function을 Monte-Carlo 방식으로 추정하면 (-2.25-3.125-3.41-3.20)/4 = -3.0 이 됩니다.</p>
+
+<p>그러나 Monte-Carlo 방식으로 가치함수를 추정하려면 샘플 시퀀스인 episode가 끝나야 합니다. <span style="color:red">즉, 모든 에피소드가 끝나야 Monte-Carlo 방식을 적용할 수 있습니다.</span> 따라서 에피소드가 끝날 때 까지 기다린 후, 평균값을 업데이트하는 방식으로 적용할 수 있습니다.</p>
+
+<h4>first-visit MC vs. every-visit MC</h4>
+<p>Monte-Carlo 방식은 두 가지가 있습니다. first-visit MC와 every-visit MC입니다. 한 에피소드에서 같은 상태를 여러번 반복해서 지나갈 수 있습니다. 이 때, 첫번째 상태에 대한 return값만 value function 업데이트에 이용하고, 나머지는 무시하는 방법이 first-visit MC이고 모든 경우를 고려한 것이 every-visit MC입니다. 아래 그림은 first-visit MC policy evaluation과 every-visit MC policy evaluation 순서입니다.</p>
+
+<p align="center">
+<img width="400" src="https://user-images.githubusercontent.com/37501153/88681428-86e2d400-d12c-11ea-92b5-383464f1e817.jpg" />
+<img width="400" src="https://user-images.githubusercontent.com/37501153/88682203-5e0f0e80-d12d-11ea-95f4-983819379c31.jpg" />
+<figcaption align="center">그림 3. first-visit/every-visit MC Policy Evaluation</figcaption></p>
+
+<p>일반적으로 first-visit MC를 많이 씁니다. 그렇다면 first-visit과 every-visit은 어떤 차이가 있을까요? first-visit MC 같은 경우, 각 상태에 대한 return들은 모두 독립입니다. 왜냐하면 샘플링된 episode가 독립이므로 first-visit만 고려하기 때문에, 각 상태에 대한 return $G_t$ 은 서로 관련이 없고 독립입니다. 즉, 상태 s에 대한 return $G_t$ 는 $v_\pi(s)$ 분포에서, i.i.d성질을 지니게 됩니다(independent and identically distributed). 따라서, 대수 법칙(law of large numbers)에 따라, 상태 s에 대한 return 값을 무수히 많이 샘플링 하게 된다면, return에 대한 평균은 우리가 구하고 싶은 상태 s의 value function 기댓값인 $\mathbb{E_\pi}[G_t \mid s_t=s]$ 에 수렴합니다.</p>
+
+<p>쉽게 다시 설명하겠습니다. 어떤 상태 s에 대한 가치를 구할 때마다 항상 다르게 나올 수 있습니다. 그런데 충분히 많이 상태 s를 밟는다면 대표적으로 많이 나오는 값이나 그 값 주변 값이 자주 등장하겠지요. 즉, 우리는 $v_\pi(s)$ 가 분포를 이룬다고 생각할 수 있습니다. 그런데 우리가 구하고 싶은 건 분포안에서 $v_\pi(s)$ 를 대표하는 값을 찾고 싶은 것입니다. 즉, 자주 등장하는 값을 말입니다. 따라서, 그 분포의 평균인 기댓값 $\mathbb{E_\pi}[G_t \mid s_t=s]$ 을 말입니다. first-visit MC 방식으로 샘플링한 $G_t$ 는 i.i.d성질을 띄기 때문에, 분포를 정확히 모르지만(분포를 안다면 굳이 샘플링 하지 않고 바로 기댓값이 계산이 가능하겠죠?) 결국 $v_\pi(s)$ 분포를 추정할 수 있고, 이는 우리가 구하고 싶은 기댓값에 수렴할 수 있음을 의미합니다.</p>
+
+<p>따라서, <span style="color:red">first-visit MC 방식에 의한 추정은 unbiased한 성질을 지닙니다.</span> 반면에, <span style="color:red">every-visit MC 방식에 의한 추정은 biased한 성질을 띕니다.</span> 한 에피소드 내에서 같은 상태를 여러 번 반복해서 지나갔다면, 그 상태들 간은 독립적이지 않고, 상관관계를 가지게 됩니다. 따라서, i.i.d하지 않기 때문에 biased합니다. 그렇기 때문에 MC 방식에 의한 policy evaluation은 first-visit MC를 선호하는 편이라 합니다(sutton and barto교재 및 stanford강의 참고).</p>
+
+<h4>Incremental Monte-Carlo Updates</h4>
+<p>Value function을 업데이트하는 방식을 에피소드가 끝날 때마다 마치 온라인 방식처럼 순차적으로 업데이트할 수 있습니다. 시퀀스 $x_1, x_2, \dots$ 에 대한 평균 $\mu_1, \mu_2, \dots$ 가 있을 때,</p>
+
+<p>[\begin{align<em>} \mu_k&amp;=\frac{1}{k}\sum_{j=1}^{k}x_j\&amp;=\frac{1}{k}\left(x_k+\sum_{j=1}^{k-1}x_j\right)\&amp;=\frac{1}{k}\left(x_k + (k-1)\mu_{k-1}\right)\&amp;=\mu_{k-1}+\frac{1}{k}\left(x_k-\mu_{k-1}\right)\end{align</em>}]</p>
+
+<p>입니다. 따라서, episode $S_1, A_1, R_2, \dots, S_T$ 가 끝날 때마다 아래와 같이 업데이트 할 수 있습니다.</p>
+
+<p>[N(S_t) \leftarrow N(S_t) + 1]</p>
+
+<p>[V(S_t) \leftarrow V(S_t) + \frac{1}{N(S_t)}\left(G_t-V(S_t)\right)]</p>
+
+<p>두번째 식을 마치 $\left(G_t-V(S_t)\right)$ 를 새로운 데이터와 기존 평균과의 오차 즉 에러항으로 본다면, 기존 평균값을 오차의 방향으로 1/k만큼 수정해 나간다고 해석할 수 있습니다.</p>
+
+<p>위의 업데이트 방식은 맨 처음에 샘플한 에피소드부터, 가장 최근에 샘플한 에피소드까지 모두 중요하게 생각함을 의미합니다. 왜냐하면 동등하게 에피소드 개수만큼으로 나누고 있기 때문입니다. 하지만 시간에 따라 조금씩 변하는 문제 같은 경우(non-stationary)에 위와 같은 업데이트 방식은 적합하지 않습니다. 따라서, 새 에피소드와 기존 평균사이의 오차를 항상 일정 크기만큼 업데이트하여 시간이 지날수록 오래된 과거는 잊고 가장 최근 사건을 좀 더 기억할 수 있게끔 해줍니다.</p>
+
+<p>[V(S_t) \leftarrow V(S_t) + \alpha\left(G_t-V(S_t)\right)]</p>
+
+<h2>Temporal-Difference Policy Evaluation</h2>
+<p>다음은 Temporal-Difference Policy Evaluation에 대해 알아보겠습니다. Temporal-Difference(TD) 도 Monte-Carlo(MC) 와 마찬가지로 환경 모델을 알지 못할 때(model-free), 직접 경험하여 Sequential decision process 문제를 푸는 방법입니다. Temporal-Difference 학습은 Monte-Carlo와 Dynamic Programming을 합쳐 놓은 방식입니다.  MC처럼, 환경모델을 알지 못하기 때문에 직접 <span style="color:red">sampling</span>한 데이터를 통해 학습을 해야 합니다. DP처럼, 에피소드가 끝날 때까지 기다리지 않고 다른 가치 추정치를 가지고 현재 상태 가치를 추정합니다. 이를 <span style="color:red">bootstrap</span>이라 합니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/88749790-01444000-d18f-11ea-8e52-bc959e3e20ef.jpeg" />
+<figcaption align="center">그림 4. DP에서의 bootstrap</figcaption></p>
+<p>TD는 MC와 다르게 <span style="color:red">무한한 에피소드에 대해서도 적용</span>할 수 있습니다. 그 이유는 MC는 업데이트를 하기 위해서 한 에피소드가 끝날 때까지 기다려야 합니다. 그래야 return $G_t$ 를 구한 뒤, 업데이트를 할 수 있기 때문입니다. <b>따라서, MC는 에피소드 샘플링을 통해 실제 return $G_t$ 을 향해 $V(S_t)$ 를 수정해나갑니다.</b></p>
+
+<p>[V(S_t) \leftarrow V(S_t) + \alpha\left(G_t-V(S_t)\right)]</p>
+
+<p>반면에, TD는 에피소드가 끝날 때까지 기다릴 필요 없이, 다음 상태를 밟을 때까지만 기다렸다가 업데이트합니다. 그렇기 때문에 에피소드가 끝나지 않는 시퀀스에 대해서도 적용할 수 있으며, 시퀀스를 밟아나가면서 그때그때 가치함수를 수정해 나갈 수 있습니다. 이러한 특징으로 인해, TD 방법은 <span style="color:red">online learning이 가능</span>합니다. 이 부분이 TD의 매우 큰 장점입니다.</p>
+
+<p>[V(S_t) \leftarrow + \alpha[R_{t+1}+\gamma V(S_{t+1})-V(S_t)]]</p>
+
+<p>TD policy evaluation을 상세히 살펴보면, DP에서의 벨만 기대 방정식을 이용한 policy evaluation과 유사한 것을 보실 수 있습니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/88760395-e7fbbd80-d1a7-11ea-8e22-a202c0814dbc.jpeg" />
+<figcaption align="center">그림 5. DP와 TD</figcaption></p>
+<p>그러나 DP는 환경모델을 알기 때문에, 다음 상태가 될 수 있는 모든 후보들을 고려하여 가중 평균을 한 추정값으로 다음 상태의 가치 추정값만을 가지로 현재 상태의 가치를 업데이트합니다. 반면에, TD는 환경에 대한 정보가 없기 때문에 다음 상태까지 직접 밟아보는 것입니다. 이것을 ‘다음 상태 s’를 직접 샘플링하였다’라고 합니다. 그러나 DP처럼 다른 상태의 추정값을 가지고 현재 상태값을 수정하고자 합니다. 이를 bootstrap이라 합니다. 즉, TD에서의 bootstrap은 아래 그림 처럼 이해할 수 있습니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/88756436-9bf84b00-d19e-11ea-9c9f-94791c8b32f6.jpg" />
+<figcaption align="center">그림 6. TD policy evaluation by bootstrapping</figcaption></p>
+<p>따라서, MC는 실제 return $G_t$ 를 향해 $V(S_t)$ 를 수정해 나가지만 <b>TD는 estimate $G_t$ 을 향해 $V(S_t)$ 를 고쳐나가면서 시퀀스를 진행합니다.</b></p>
+
+<blockquote><ul>
+<li>MC Policy Evaluation :<br />update value $V(S_t)$ toward actual return $G_t$</li>
+<li>TD Policy Evaluation :<br /> update value $V(S_t)$ toward estimated return $R_{t+1} + \gamma V(S_{t+1})-V(S_t)$</li></ul></blockquote>
+
+<h3>General form of update rule</h3>
+<p>위의 MC/TD 업데이트 식은 일반적으로 아래와 같은 형태를 띕니다.</p>
+
+<p>[NewEstimate \leftarrow OldEstimate + StepSize \left[Target - OldEstimate\right]]</p>
+
+<p>$\left[Target - OldEstimate\right]$ 는 오차를 나타냅니다. MC와 TD 모두 Target을 향해 기존 Estimate을 업데이트합니다. 그러나, 기존 estimate을 새로운 target으로 교체하는 건 위험합니다. 왜냐하면 초기단계에서는 새로운 target이 우리가 찾는 정답이 아닐 수도 있기 때문에, target과 기존 estimate의 오차의 일부만큼만 조금씩 수정해 나갑니다. MC target은 $G_t$ 이고, TD target은 $R_{t+1}+\gamma V(S_{t+1})$ 입니다. 또한, MC error는 $G_t - V(S_t)$ 이고, TD error는 $R_{t+1}+\gamma V(S_{t+1}) - V(S_t)$ 입니다. 보통  TD error는 $\delta_t$ 로 표현합니다. 왜냐하면, 같은 에피소드 내에서, TD error는 매 t step마다 다르기 때문입니다.</p>
+
+<h3> Temporal Difference Policy Evaluation Algorithm </h3>
+<p>TD policy evaluation 알고리즘 순서도는 아래와 같습니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/88760737-93a50d80-d1a8-11ea-8094-57124c27e696.png" />
+<figcaption align="center">그림 7. TD(0) policy evaluation algorithm</figcaption></p>
+<p>일정 정책 $\pi$ 아래, (S, A, R, S’)를 샘플링하고, 업데이트합니다. 그런 다음 (S’, A’, R, S’‘)를 샘플링하고 업데이트합니다. 이 과정을 V(S)가 수렴할 때까지 반복합니다. 여기서 한가지 의문점이 있습니다. MC방식은 unbiased estimator이기 때문에 대수의 법칙에 따라, true expected estimate에 수렴한다고 하였습니다. 과연 TD방식은 수렴할까요? 이는 <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/29/mc-td-control/">다음 포스팅 Model-Free Control</a>에서 다루도록 하겠습니다.</p>
+
+<p>TD policy evaluation 예를 살펴보겠습니다.</p>
+<p align="center"><img width="500" src="https://user-images.githubusercontent.com/37501153/88761833-eaabe200-d1aa-11ea-8c41-5b60f2d76259.jpg" /><figcaption align="center">그림 8. TD policy evaluation 예(1)</figcaption></p>
+<p>먼저 $(s_3, a_1, 0, s_2)$ 에 대해 $v(s_3)$ 를 업데이트하고, 그 다음 $(s_2, a_1, 0, s_2)$ 에 대해 $v(s_2)$ 를, $(s_2, a_1, 0, s_1)$ 에 대해 $v(s_2)$ 를, 마지막으로 $(s_1, a_1, 1, terminal)$ 에 대해 $v(s_1)$ 을 업데이트하면 한 에피소드에 대해 업데이트를 완료하게 됩니다.</p>
+<p align="center"><img width="500" src="https://user-images.githubusercontent.com/37501153/88763595-59d70580-d1ae-11ea-8d31-d892a0e42267.jpeg" /><figcaption align="center">그림 9. TD policy evaluation 예(2)</figcaption></p>
+
+<h2>Monte-Carlo vs. Temporal-Difference</h2>
+<p>이제까진 MC와 TD방식으로 policy evaluation하는 것을 보았습니다. 그러면 두 방식의 특성을 비교하겠습니다.</p>
+
+<h3>Bias/Variance Trade-Off</h3>
+<p>MC와 TD의 특징을 bias-variance trade-off 관점에서 보겠습니다. MC는 위에서 설명한 것처럼, return $G_t$ 는 $v_\pi(S_t)$ 의 unbiased estimate 입니다. 따라서 <span style="color:red">MC는 low bias의 특징</span>을 띕니다. 반면에, TD는 bootstrap 기반이기 때문에 TD target $R_{t+1} + \gamma V(S_{t+1})$ 은 $v_\pi(S_t)$ 의 biased estimate 입니다. 따라서 <span style="color:red">TD는 high bias 특징</span>을 가집니다.</p>
+
+<p>그러나, variance관점에서 두 방식은 반대입니다. MC같은 경우, 한 에피소드가 끝날 때까지 계속 샘플링을 해야합니다. 이로인해, random성이 많이 증가하게 되죠. 반면에, TD같은 경우 업데이트를 위해 (s, a, r, s’)을 한번만 샘플링 하기 때문에 MC에 비해 random성이 작습니다. 이러한 특징으로 인해, <span style="color:red">MC는 high variance를, TD는 low variance</span>를 갖습니다.</p>
+<blockquote><ul><li>Return depends on many random actions, transitions, rewards</li><li>TD target depends on one random action, transition, reward</li></ul></blockquote>
+<p align="center"><img width="500" src="https://user-images.githubusercontent.com/37501153/88870731-15507600-d251-11ea-96b6-5d3850150ecf.jpeg" /><figcaption align="center">그림 10. Graphical Illustration of Bias-Variance trade off</figcaption></p>
+
+<h3>Properties of MC and TD</h3>
+<p>위의 bias-variance trade-off 성질로 인해 MC와 TD는 아래와 같은 특성을 같습니다.</p>
+
+<p><b>MC : high variance and zero bias</b><br />
+MC는 zero bias이기 때문에 초기값에 상관없이 항상 수렴하게 됩니다. 이러한 수렴을 잘하는 특징 덕분에 좋은 근사 가치 함수도 갖게 됩니다(value function approximation, 추후에 포스팅 예정). 그러나, high variance인해 항상 true expected value에 수렴함에 불구하고, 언제 수렴할지는 불분명합니다. 왜냐하면, high variance로 인해 수렴할 때까지 굉장히 많은 에피소드 샘플링이 필요하기 때문입니다. 그리고 한 에피소드가 끝날 때까지 기다려야 하는데, 에피소드의 길이가 긴 경우 더욱 적용하기 어렵습니다. 따라서 실용성 측면에서 떨어지는 단점이 있습니다.</p>
+
+<p>MC가 zero bias를 가질 수 있는 이유는 $G_t$ 가 i.i.d성질을 가지기 때문이라고 설명하였습니다. 이는 $V(S_t)$ 를 계산하는데 $S_t$ 의 markov property를 이용하지 않음을 뜻합니다. 따라서, Markov domain인 아닌 경우 MC를 적용하여 문제를 해결할 수 있습니다(handling non-markovian domains).</p>
+
+<p><b>TD : low variance and high bias</b><br />
+반면에 TD는 low variance로 인해 수렴이 가능하다면, MC에 비해 수렴지점까지 빨리 도달할 수 있습니다(그림 11,12 참고). 하지만 초기값에 따라 수렴여부가 달라지고(sensitive to initial value), 그리고 근사 가치 함수를 찾지 못할 수도 있습니다. 하지만, on-line 학습이 가능하기 때문에, 따라서 쉽게 적용할 수 있습니다.</p>
+
+<p>TD는 $V(S_t)$ 를 계산하기 위해서 $V(S_{t+1})$ estimate 을 이용합니다(bootstrap). 이는 MC와는 다르게 markov property를 이용합니다. 따라서, TD는 Markovian domain에서 적용가능합니다.</p>
+
+<p>위에서 설명한 MC와 TD의 특성을 정리하면 아래와 같습니다.</p>
+
+<table style="width:100%">
+  <tr>
+    <th><b>Monte Carlo</b></th>
+    <th><b>Temporal Difference</b></th>
+  </tr>
+  <tr>
+    <td>
+    <ul><li>high variance and zero bias</li><li>good convergence properties, even with function approximation</li><li>not very sensitive to initial value</li><li>very simple to understand but may not be efficient due to applying only to episodic task</li><li>can apply both to markov domain and non-markov domain</li><li>sample and no bootstrap</li></ul></td>
+    <td><ul><li>low variance and high bias</li><li>could converge to true estimate, but it could fail with function approximation</li><li>more sensitive to initial value</li><li>usually more efficient than MC</li><li>can apply to markov domain</li><li>sample and bootstrap</li></ul></td>
+  </tr>
+</table>
+
+<p>위 표에서 마지막 특성에 관하여 MC, TD와 DP 사이의 관계를 back-up diagram과 함께 잘 나타낸 그림이 있습니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/89119964-23222780-d4ed-11ea-97b9-335a7d66c5d4.jpg" /><figcaption align="center">그림 11. TD, MC and DP</figcaption></p>
+<p>DP같은 경우, 환경 모델을 잘 알기 때문에 다음 스텝에 대해 full backup을 그린 관계와 같습니다. 그러나 에피소드가 끝날 때까지 backup을 그릴 필요가 없기 때문에 shallow-backup이고, bootstrap을 이용합니다. 반면에, TD같은 경우, 다음 상태에 대해 한 상태에 대해서만 샘플링을 하기 때문에 sample-backup이며, DP와 마찬가지로 한 스텝만 내다보기 때문에 shallow-backup이며 bootstrap을 이용합니다. 마지막으로 MC같은 경우, 모든 에피소드가 끝날 때까지 기다려야 하기 때문에 deep-backup이고, 샘플링을 하여 경험을 쌓기 때문에 sample-backup입니다. 그러나 bootstrap을 이용하지 않습니다.</p>
+
+<p>TD가 MC보다 수렴이 더 빠른 것에 대해 수학적으로 증명된 적은 없습니다. 그러나, 실험적으로 확인했을 때 TD가 MC보다 수렴이 빠릅니다. 이에 관해 Sutton과 berto교재에 MC와 TD의 수렴에 관한 예제가 있습니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/88873551-d671ee80-d257-11ea-9f09-c62328dee7f3.png" /><figcaption align="center">그림 12. Random Walk 예(1)</figcaption></p>
+<p>위의 예는 C에서 시작하여 각 스텝마다 왼쪽 또는 오른쪽으로 0.5의 확률로 동일하게 갈 수 있다고 할 때, 양 끝의 사각형에 도달하면 에피소드가 끝나는 문제입니다. 각 상태 A, B, C, D, E에서 value를 MC와 TD를 이용하여 구한 결과는 아래와 같습니다. 이때, 각 상태에서의 true value는 1/6, 2/3, 3/6, 4/6, 5/6입니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/88898226-624f3f00-d287-11ea-97fc-0029133d082c.png" /><figcaption align="center">그림 13. Random Walk 예(2)</figcaption></p>
+<p>왼쪽 그림은 TD(0)를 여러 에피소드를 거쳤을 때, 각 상태에서의 value입니다. 100 에피소드 정도 진행했을 때, true value에 수렴하는 것을 확인할 수 있습니다. 오른쪽 그림은 step size $\alpha$ 를 달리했을 때 각각 MC와 TD에서의 RMS error 입니다. 실험적으로 TD가 MC보다 더 빨리 수렴합니다.</p>
+
+<p><b>differences between MC and TD trough Batch Update</b><br />
+MC와 TD의 작동원리를 보여주는 사례를 하나 더 소개하겠습니다. 먼저 그전에 batch update에 대해 설명하도록 하겠습니다. k개의 에피소드 또는 k개의 스텝을 미리 샘플링 해 놓은 뒤, k개의 MC 또는 TD 방식의 error를 각각 구해서 다 합한 후, 한 번 update를 하는 방식을 batch update이라 합니다. 아래 예를 각각 MC와 TD 방식의 batch update로 풀어보겠습니다.</p>
+
+<p>아래와 같이 8개의 에피소드가 있습니다. 첫번째 에피소드는 A에서 시작해서 reward를 0을 받고, 그 다음 B로 가고 reward를 0을 받고 끝납니다. 그 다음 여섯개 에피소드는 B에서 시작해서 reward를 1을 받고 끝납니다. 마지막 하나는 B에서 시작해서 reward를 1을 받고 끝납니다. 이때, MC와 TD방식으로 V(A), V(B)가 각각 어떻게 될까요 ?</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/88902645-75fda400-d28d-11ea-952d-ced88051631e.png" /><figcaption align="center">그림 14. Batch update 예시</figcaption></p>
+
+<p>MC방식으로 한다면, $V(A)=0, V(B)=\frac{3}{4}$ 입니다. 그러나 TD방식으로 한다면 $V(B)=0$ 이지만 $V(A)=\frac{3}{4}$ 입니다. $V(A)$ 에서 차이가 나는 이유는 MC는 mean squared error를 최소화하는 방식으로 해답을 구하지만, TD는 markov model의 likelihood를 최대화하는 방식으로 해답을 구하기 때문입니다.</p>
+
+<p>[\sum_{k=1}^{K}\sum_{t=1}^{T_k}\left(G_t^k - V(s_t^k)\right)^2]</p>
+
+<ul><li>MC converges to solution with minimum mean-squared error</li><li>Best fit to the observed returns</li></ul>
+
+<p>MC는 관측된 return이 true value estimate과의 차이가 최소화시키는 방향으로 갑니다. 반면에, TD는 markov property 성질을 이용하기 때문에 MDP를 해결하는 방향으로 갑니다. 실제 구현은 아니지만 내재적으로는 마치 환경모델의 transition model과 reward model의 maximum likelihood를 구한 뒤 DP를 푸는 방식과 유사하게 작동하는 것입니다. 실제로 위의 예제를 아래 방식으로 환경 모델을 구한 뒤 DP로 접근하면 똑같은 해답을 구할 수 있습니다.</p>
+
+<p>[\hat P^a_{s,s’} = \frac{1}{N(s,a)}\sum_{k=1}{K}\sum_{t=1}{T_k}\mathbf 1(s_t^k, a_t^k, s_{t+1}^k = s, a, s’)]</p>
+
+<p>[\hat R^a_s = \frac{1}{N(s,a)}\sum_{k=1}{K}\sum_{t=1}{T_k}\mathbf 1(s_t^k, a_t^k=s,a)r^k_t]</p>
+
+<ul><li>TD(0) converges to solution of max likelihood Markov model</li><li>Solution to the MDP $&lt;S, A, \hat P, \hat R, \gamma &gt;$ that best fits the data</li></ul>
+
+<hr />
+
+<p>이상으로 이번 포스팅을 마치겠습니다. 다음 포스팅은 <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/29/mc-td-control/">Model-Free Control</a>에 대해 진행하겠습니다.</p>
+
+    <article>
+    <div class="post-more">
+      
+      <a href="/reinforcement%20learning/2020/07/28/mc-td-eval/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
+      
+      <a href="/reinforcement%20learning/2020/07/28/mc-td-eval/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
+    </div>
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/reinforcement%20learning/2020/07/13/dp/">
+        Dynamic Programming, Policy Iteration부터 Value Iteration까지
+      </a>
+    </h1>
+
+    <span class="post-date">13 Jul 2020</span>
+     | 
+    
+    <a href="/blog/tags/#reinforcement-learning" class="post-tag">reinforcement-learning</a>
+    
+    
+
+    <article>
+      <p>지난 <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/12/mdp/">MDP 포스팅</a>에 이어서, 이번 포스팅은 MDP를 iterative하게 푸는 방법 중 하나인 Dynamic Programming(DP)에 대해서 다룹니다. CS234 2강, Deep Mind의 David Silver 강화학습 강의 3강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 4 기반으로 작성하였습니다. 또한, 대부분 수식 표기법은 Sutton 교재를 따랐습니다.</p>
+
+<hr />
+
+<p>일반적으로 Dynamic Programming란 복잡한 문제를 간단한 여러 개의 문제로 나누어 푸는 방법을 말합니다. 지난 시간에서 벨만 방정식(벨만 기대 방정식, 벨만 최적 방정식)은 recursive한 관계를 가지고 있기 때문에, 벨만 방정식을 풀기 위한 솔루션으로 DP 사용이 적합하다고 할 수 있습니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87278417-5e998980-c51f-11ea-9be2-b1b55ad4c070.jpeg" />
+<figcaption align="center">그림 1. Dynamic programming 조건</figcaption></p>
+
+<p>따라서, 상태 $s \in S$, 행동 $a \in A$, 보상 $r \in R$ 인 환경 모델 $p(s’,s|r,a)$ 을 아는 상황에서, 벨만 기대 방정식과 벨만 최적 방정식의 recursive한 성질을 이용하여 최적 가치 함수 $v_\ast, q_\ast$ 를 구하는 것이 Dynamic Programming을 이용한 MDP 를 푸는 것입니다.</p>
+<p align="center">
+<img width="700" src="https://user-images.githubusercontent.com/37501153/87279033-08c5e100-c521-11ea-8ccc-de84ed44d45f.jpeg" />
+<figcaption align="center">그림 2. 벨만 방정식 : Recursive 관계</figcaption></p>
+<blockquote>MDP문제는 환경모델을 완벽하게 아는 상황이기 때문에, dynamic programming은 'reinforcement learning'이 아니라 'planning' 방법입니다.</blockquote>
+<p>DP설명은 finite MDP에 유한하여 설명하도록 하겠습니다. 일반적으로 continuous MDP문제는 DP방법이 아닌 다른 방법을 이용하여 풀기 때문입니다.</p>
+
+<p>지난 <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/11/introRL(2)">강화학습 소개[2] 포스팅</a>에서, sequential decision making 문제 종류로 evaluation(prediction)과 control을 소개하였습니다. evaluation은 일정 정책 아래, 기대보상을 추정하여 현재 따르는 정책의 좋고/나쁨을 평가하는 것입니다. 즉, 현재 정책의 평가가 되는 것입니다. control은 정책들의 평가를 기반으로 최적의 정책을 찾는 것입니다. evaluation과 control은 독립적인 과정이 아니라 서로 연계되어 있는 과정이라 하였습니다. 마찬가지로 Dynamic Programing도 evaluation에 해당하는 Policy Evaluation과 control에 해당하는 Policy Improvement로 구성됩니다. 각각에 대해 알아봅시다.</p>
+<blockquote>DP설명은 finite MDP에 유한하여 설명하도록 하겠습니다. 일반적으로 continuous MDP문제는 DP방법이 아닌 다른 방법을 이용하여 풀기 때문입니다.</blockquote>
+
+<h2>Policy Evaluation</h2>
+<p>Policy evaluation은 벨만 기대 방정식을 이용하여 iterative한 방법으로 현 정책 아래의 가치함수를 구하는 과정입니다. 아래 벨만 기대 방정식을</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[v_\pi(s)=\sum_a\pi(a</td>
+      <td>s)\sum_{s’,r}p(s’,r</td>
+      <td>s,a)[r+\gamma v_\pi(s’)]]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>update rule의 관계를 가진 방정식으로 취급한 뒤,</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[v_{k+1}(s)=\sum_a\pi(a</td>
+      <td>s)\sum_{s’,r}p(s’,r</td>
+      <td>s,a)[r+\gamma v_{k}(s’)]]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>k=0부터 수렴할 때까지 반복적으로 계산하는 것입니다. 즉 가치 함수를 초기화한 후, $v_0 \to v_1 \to v_2 \to \cdots \to v_\pi$ 으로 수렴할 때까지 <span style="color:red"><b>모든 상태에 대해서 동시에 업데이트</b></span>하는 것입니다.</p>
+<p align="center"> 
+<img width="500" src="https://i.imgur.com/WzCwUj1.jpg" />
+<figcaption align="center">그림 3. Iterative Policy Evaluation</figcaption></p>
+<p>이를 back-up diagram으로 다시 표현해 봅시다.</p>
+<p align="center"> 
+<img width="500" src="https://imgur.com/OKUnBIF.jpg" />
+<figcaption align="center">그림 4. Back-up diagram for iterative policy evaluation</figcaption></p>
+<p>그림 4.를 보시면, k 스텝에서 다음 상태를 이용하여 k+1 스텝의 현재 상태를 업데이트합니다. 또한 업데이트되는 방식은 다음 상태에서 나올 수 있는 누적보상의 가중 평균으로 계산됩니다(벨만 기대 방정식이기 때문입니다).</p>
+
+<blockquote>To produce each successive approximation, $v_{k+1}$ from $v_{k}$, iterative policy evaluation applies the same operation to each state s: it replaces the old value of s with a new value obtained form the old values of the successor states of s and the expected immediate rewards, along all the one-step transitions possible under the policy being evaluated. - Sutton and Barto, Reinforcement Learning : An Introduction</blockquote>
+
+<p>아래 그리드월드 예제로, policy evaluation을 살펴봅시다.</p>
+<p align="center">
+<img width="500" src="https://imgur.com/XQHYowT.jpg" />
+<figcaption align="center">그림 5. 그리드월드 예제</figcaption></p>
+<p>처음 시작 상태에서 여러 경로를 다니다가 회색색깔에 도착하면 끝나는 게임이 있다고 합시다. 각 상태마다 받는 보상은 -1이고, 행동 좌,우,위,아래 방향에 대해 갈 확률은 0.25라 한다면, k=0, k=1, k= $\infty$ 을 수렴할 때까지 반복하면 각 $v_k$ 에 대해 각 상태의 가치함수 값은 아래 그림과 같습니다.</p>
+<p align="center">
+<img width="400" src="https://i.imgur.com/usVVNHF.jpg" />
+<img width="400" src="https://imgur.com/44Y2N5r.jpg" /> 
+<figcaption align="center">그림 6. 그리드월드 예제 - policy evaluation</figcaption></p>
+<p>왼쪽 행은 가치함수 결과이고, 오른쪽 행은 각 가치함수에서 greedy한 전략을 보여줍니다. 그러나 위 예제같은 경우는 간단한 케이스이어서 빨리 수렴에 도달합니다. 일반적으로 상태 집합의 크기 $|S|$ 가 큰 경우, 수렴할 때까지의 속도가 매우 느릴 수도 있기 때문에, 아래 알고리즘과 같이 어느 정도 수렴조건을 만족하면 다음 스텝으로 넘어가는 방법을 주로 택합니다.</p>
+<p align="center">
+<img width="500" src="https://imgur.com/l5QDFUd.jpg" />
+<figcaption align="center">그림 6. Policy evaluation 알고리즘</figcaption></p>
+
+<h2>Policy Improvement</h2>
+<p>결국 현재 정책을 평가하는 이유는 더 나은 정책을 찾기 위한 것입니다. 그렇다면 현재 정책 평가한 것을 기반으로 어떻게 더 나은 정책을 찾는지 알아보도록 하겠습니다.</p>
+
+<p>임의의 정책 $\pi$ 아래 policy evaluation을 통해 $v_\pi$ 를 구했다고 하겠습니다. 그림 6.에서 처럼 수렴된 $v_\pi$ 에 대한 greedy policy가 있을 것입니다. 하지만 그 greedy policy 이외의 다른 행동 $a$ 을 선택하고, 즉, $a \neg \pi(s)$ 하고, 기존 정책 $\pi$ 를 따른다고 했을 때,</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[q_\pi(s,a) = \sum_{s’,r}p(s’,r</td>
+      <td>s,a)[r+\gamma v_\pi(s’)]]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>기존 정책에 따른 $v_\pi(s)$ 보다 크다면 새로 선택된 행동 a가 발전된 전략일 것입니다(policy improvement).</p>
+
+<p>[q_\pi(s, \pi’(s)) \geq v_\pi(s)]</p>
+
+<p><span style="color:gray">처음에, 이 부분을 혼자 공부할 때, 이해하기 어려웠던 부분이 ‘greedy policy 이외의 다른 행동 $a$ 를 선택하고 기존 정책을 따른다는 부분’이었습니다. 저는 이 부분은 아래와 같이 이해하였습니다.</span></p>
+<p align="center">
+<img src="https://imgur.com/n7Z1Gy4.jpg" />
+<figcaption align="center">그림 7. </figcaption></p>
+<p>그러나, 지난 <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/12/mdp/">MDP 포스팅</a>에서 더 나은 정책이 되려면 $q_\pi(s, \pi’(s)) \geq v_\pi(s)$ 가 아닌 $v_{\pi}(s) \geq v_{\pi’}(s)$ 를 만족해야 합니다. 이를 유도하는 수학적 증명은 아래와 같습니다.</p>
+<p align="center">
+<img src="https://imgur.com/OLBeIIc.jpg" />
+<figcaption align="center">그림 8.</figcaption></p>
+<p>따라서, greedy하게 policy improvement하는 방식을 수식으로 깔끔하게 정리하면</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[\begin{align*} \pi’{\left(s\right)} =&amp;{arg \underset a max}{q_\pi(s,a)}\=&amp;{arg \underset amax}{\mathbb E[R_{t+1}+\gamma v_\pi(S_{t+1})</td>
+      <td>S_t=s,A_t=a]}\=&amp;{arg \underset amax}{\sum_{s’,r}p(s’,r</td>
+      <td>s,a)[r + \gamma v_\pi(s’)]}\end{align*}]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>입니다. 즉 기존 정책에서 발전된 새로운 정책 $\pi’$ 가 되었습니다.</p>
+
+<p>만약에, 새로운 정책 $\pi’$ 가 기존 정책 $\pi$ 에서 더이상의 발전이 없다면, $v_\pi=v_\pi’$ 이를 만족하기 때문에, 아래 식이 성립됩니다.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[\begin{align*} v_\pi’(s) =&amp;{m \underset aax}{\mathbb E[R_{t+1}+\gamma v_\pi’(S_{t+1})</td>
+      <td>S_t=s, A_t=a]}\=&amp;{m \underset aax}\sum_{s’,r}p(s’,r</td>
+      <td>s,a)[r+\gamma v_\pi’(s’)] \end{align*}]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>위의 식을 가만보면, 어디서 많이 봤습니다. 바로 <b>벨만 최적 방정식</b>입니다. 즉, 더이상 발전이 없을 때, $v_\pi’$ 는 최적정책임을 의미합니다.</p>
+
+<h2>Policy Iteration</h2>
+<p>최적 정책을 찾기 위해서 결국 evaluation과 imporvement과정을 번갈아 가면서 정책이 더 이상 발전이 없을 때까지 진행해야 합니다. 이를 policy iteration이라 합니다.</p>
+
+<p>[\pi_0 \overset E\to v_{\pi_0} \overset I\to \pi_1 \overset E\to v_{\pi_1} \overset I\to \pi_2 \overset E\to \cdots \overset I\to \pi_\ast \overset E\to v_\ast]</p>
+
+<p>E는 evalution이고, I는 improvement를 뜻합니다. Finite MDP인 경우 정책 후보의 갯수도 유한하기 때문에 반드시 언젠간 수렴합니다. Policy iteration 알고리즘은 아래 그림과 같습니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87383157-9f52da80-c5d3-11ea-84c9-28fa2ec398cf.jpeg" />
+<figcaption align="center">그림 9. Policy iteration</figcaption></p>
+<p>그림 9.를 보면, policy improvement를 한 후, 다시 policy evalutation을 할 때, 이전 정책 $/pi$ 에 관한 $v_\pi$ 로 초기값으로 하여 진행합니다.</p>
+
+<h2>Value Iteration</h2>
+<p>최적 정책을 찾는 방법엔 policy iteration 말고 value iteration도 있습니다. Value iteration에 대해 설명하기 전에 먼저 벨만 최적 방정식에서의 optimality의 개념을 다시 한번 생각해 봅시다.</p>
+
+<h3>Principle of Optimality</h3>
+<p>벨만 최적 방정식을 다시 한번 살펴보면,</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[\begin{align*} v_\pi’(s) =&amp;{m \underset aax}{\mathbb E[R_{t+1}+\gamma v_\pi’(S_{t+1})</td>
+      <td>S_t=s, A_t=a]}\=&amp;{m \underset aax}\sum_{s’,r}p(s’,r</td>
+      <td>s,a)[r+\gamma v_\pi’(s’)] \end{align*}]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>상태 s에서 optimal value를 가지려면, 다음 상태 s’까지 진행해봐야 상태 s의 가치가 최적인지 아닌지 판단할 수 있습니다. 아래와 같이 $s_t$ 가 terminal state인 시퀀스가 있다고 한다면,</p>
+
+<p>[s_0 \to s_1 \to s_2 \to \cdots \to s_t]</p>
+
+<p>상태 $s_0$ 의 가치는 $s_1$ 에 도착해야 알고, $s_1$ 의 가치는 $s_2$ 에 도착해야 알고, …, $s_{t-1}$ 의 가치는 $s_t$ 에 도착해야 압니다. 즉 $s_t$ 의 최적가치를 알고 있어야 처음 상태 $s_0$ 의 최적가치값을 알 수 있단 얘기입니다. 아래 예를 살펴보겠습니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87384499-e1c9e680-c5d6-11ea-946e-bb180a6ef863.jpeg" />
+<figcaption align="center">그림 10. value iteration 예시</figcaption></p>
+<p>회색인 부분이 도달해야 하는 골이라 하면, 골까지 가는 가장 짧은 경로를 찾는 문제입니다. 흰색 칸을 밟을 때마다 받는 보상은 -1, 회색 칸을 밟으면 보상 0을 받는다고 할 때, 처음 상태가 정해진 것이 아니라면 당연히 회색 부분 근처 칸에서 시작하는게 최적일 것입니다. 그리고 회색 칸은 종결지점이기 때문에 회색 칸 이후로 더이상의 시퀀스가 존재하지 않아, 회색 칸의 최적가치는 즉각적인 보상인 0일 것입니다. 그렇다면 골에서 가장 멀리 있는 맨 오른쪽 칸의 최적 가치는 어떻게 구할까요? <b>골의 최적가치가 골에서 가까운 위치부터 퍼져나가 맨 오른쪽 칸의 최적 가치를 계산할 수 있도록 도달해야 합니다.</b></p>
+
+<p>그러나, DP에서 모든 상태에 대한 업데이트를 동시에 진행하기 때문에, 골의 최적가치가 퍼져나가 다른 상태의 최적가치를 구할 수 있을 때까지 <b>여러 번 반복 진행</b>해야 합니다. 이것이 바로 “Value Iteration”입니다.<br />
+<br />
+Value iteration을 수식으로 표현하면 아래와 같습니다.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[\begin{align*} v_{k+1}&amp;=m \underset a ax{\mathbb E[R_{t+1} = \gamma v_k(S_{t+1})</td>
+      <td>S_t=s, A_t=a]}\&amp;=m \underset a ax{\sum_{s’,r}p(s’,r</td>
+      <td>s,a)[r+\gamma v_k(s’)]} \end{align*}]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>위 수식을 보시면, 벨만 최적 방정식과 유사합니다. 즉, value iteration은 벨만 최적 방정식을 업데이트 형식으로 바뀐 것입니다.</p>
+
+<blockquote>policy evalutation은 벨만 기대 방정식을 업데이트 형식으로 바꾼 것이고, value iteration은 벨만 최적 방정식을 업데이트 형식으로 바뀐 것입니다.</blockquote>
+
+<p>value iteration은 policy iteration 처럼 명시적인 정책 발전 과정을 중간에 생략하고, 최적 가치 함수를 바로 계산하여 마지막에 정책 발전을 한번만 수행하여 최적 정책을 얻는 과정이라 생각할 수 있습니다.</p>
+
+<hr />
+
+<p>이상으로 이번 포스팅을 마치겠습니다. 읽어주셔서 감사합니다.</p>
+
+<hr />
+
+<ol>
+  <li><a href="http://web.stanford.edu/class/cs234/slides/lecture2.pdf">CS234 Winter 2019 course Lecture 2</a></li>
+  <li><a href="http://incompleteideas.net/book/bookdraft2017nov5.pdf">Richard S. Sutton and Andre G. Barto : Reinforcement Learning : An Introduction</a></li>
+  <li><a href="https://www.davidsilver.uk/wp-content/uploads/2020/03/DP.pdf">David Silver Lecture 3</a></li>
+  <li><a href="https://ko.wikipedia.org/wiki/동적_계획법">위키백과, 동적계획법</a></li>
+</ol>
+
+    <article>
+    <div class="post-more">
+      
+      <a href="/reinforcement%20learning/2020/07/13/dp/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
+      
+      <a href="/reinforcement%20learning/2020/07/13/dp/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
+    </div>
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/reinforcement%20learning/2020/07/12/mdp/">
+        Markov Process에서 Markov Decision Process까지
+      </a>
+    </h1>
+
+    <span class="post-date">12 Jul 2020</span>
+     | 
+    
+    <a href="/blog/tags/#reinforcement-learning" class="post-tag">reinforcement-learning</a>
+    
+    
+
+    <article>
+      <p>이전 포스팅 <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/11/introRL(1)">강화학습 소개[1]</a>, <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/11/introRL(2)">강화학습 소개[2]</a>에 이어서, MDP에 대해 다룹니다. CS234 2강, Deep Mind의 David Silver 강화학습 강의 2강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 3 기반으로 작성하였습니다.</p>
+
+<hr />
+
+<p>강화학습은 sequential decision process 문제를 푸는 방법입니다. 그렇다면 sequential decision process를 풀기 위해서 수학적으로 표현해야 하는데 이것이 바로 Markov Decision Process(MDP)입니다. 또한 MDP는 에이전트 상태가 마코브 성질을 따르는 경우이기 때문에, 환경모델을 완벽하게 아는 Fully Observability를 가집니다.</p>
+<blockquote>MDPs are a mathematically idealized form of the reinforecement learning problem for which precise theoretical statements can be made. - Sutton and Barto, Reinforcement Learning: An Introduction</blockquote>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87244726-49b6ea80-c47a-11ea-92aa-0e293341492a.jpeg" />
+<figcaption align="center">그림 1. Markov Property</figcaption>
+</p>
+
+<p>지난 포스팅에서 대부분의 문제들은 그러나 Partial Observability를 가지는 POMDP라 하였습니다. 그러나, POMDP를 풀기 위해서도 MDP가 중요합니다. 그 이유는 POMDP는 MDP의 상태를 히스토리로 두고 풀 수 있기 때문입니다.</p>
+
+<p>MDP를 자세히 이해하기 위해서 Markov process(Markov Chain)와 Markov Reward Process를 먼저 살펴본 뒤, MDP를 살펴보도록 하겠습니다.</p>
+
+<h1>Markov Process</h1>
+<p>Markov Process(Markov chain)은 마코브 성질을 가지는 랜덤 상태 $S_1, S_2, \dots$ 들의 시퀀스입니다. Finite Markov Process인 경우 상태들의 집합은 유한개로 구성됩니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87244920-efb72480-c47b-11ea-9a04-dd74b9832c99.jpeg" />
+<figcaption align="center">그림 2. Markov process</figcaption>
+</p>
+<p>상태들간의 변환 확률 행렬(state transition matrix)은 현재 상태에서 다른 상태로 갈 확률을 모든 상태에 대해 행렬 형태로 나타낸 것입니다. 현재 상태 s에서 다음 상태 s’로 갈 확률은</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[P_{ss’}= \mathbf P[S_{t+1}=s’</td>
+      <td>S_t=s]]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>입니다. 따라서, 상태 변환 확률 행렬 $\mathit P$ 는 아래와 같습니다. 각 행의 합은 1이 됩니다.</p>
+
+<p>[\mathit P = \left( \begin{matrix}
+		\mathit P_{11} &amp; \cdots &amp; \mathit P_{1n}<br />
+		\vdots &amp; \ddots &amp; \vdots<br />
+		\mathit P_{n1} &amp; \cdots &amp; \mathit P_{nn}<br />
+		\end{matrix} \right)]</p>
+
+<p>Markov Process 예를 들어봅시다. 아래 예는 학생들의 수업을 듣는 패턴을 Markov Process로 나타낸 것입니다. 동그라미는 학생들의 상태(facebook, class1, …)이며, 화살표는 각 상태에서 다른 상태로 넘어갈 확률을 나타냅니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87245061-2a6d8c80-c47d-11ea-8f14-2af98ec61e0c.jpeg" />
+<figcaption align="center">그림 2. Student Markov Process </figcaption></p>
+<p>그림 2.를 보면, 시작하는 상태가 같아도 밟고 지나가는 상태들의 경우가 모두 다를 수 있습니다. 예를 들어서, Class1에서 시작하여도</p>
+<ul>
+<li>C1 C2 C3 Pass Sleep</li>
+<li>C1 fb fb C1 C2 Sleep</li>
+<li>C1 C2 C3 Pub C2 C3 Pass Sleep</li></ul>
+<p>이처럼, 실제로 이렇게 샘플된 시퀀스를 <b>에피소드(episode)</b>라 부릅니다.</p>
+
+<h1>Markov Reward Process</h1>
+<p>다음으로는 Markov Reward Process(MRP)를 살펴봅시다. MRP는 Markov chain에 reward가 더해진 것입니다. 임의의 상태들의 시퀀스를 상태 변환 확률에 따라 밟아가면서 각 상태에 도착할 때마다 보상을 얼마나 받는지도 시퀀스로서 파악하는 것입니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87245196-740aa700-c47e-11ea-9b03-e4659ba28c84.png" />
+<figcaption align="center">그림 3. Markov Reward Process</figcaption></p>
+<p>$R_s$ 는 보상함수로, 상태 $S_s$ 일 때, 받을 수 있는 즉각적인 보상에 대한 기댓값이다. 여기서 중요한 점은 <b>앞으로 받을 보상들을 고려한 누적 보상값이 아닌 즉각적으로 받는 보상(immediate reward)</b>입니다.</p>
+
+<p>지난 포스팅에서 환경모델은 크게 상태변이모델과 보상모델로 구성된다고 했습니다. 따라서, 상태변이확률과 보상함수를 결합하여 환경 모델을 아래와 같이 표현할 수도 있습니다. 이는 현재 상태 t-1 스텝에서, 다음 스텝에 받을 보상과 상태가 r과 s’이 될 확률입니다.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[p(s’,r</td>
+      <td>s) = P[S_{t+1}=s’, R_{t+1}=r</td>
+      <td>S_{t}=s]]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>아래는 학생 Markov Reward Process 예시입니다. 빨간색으로 표시된 숫자가 각 상태에서 받는 즉각적인 보상입니다.</p>
+<p align="center">
+<img width="350" src="https://user-images.githubusercontent.com/37501153/87245285-2e9aa980-c47f-11ea-9981-0f512f0078c0.png" />
+<figcaption align="center">그림 4. Student MRP</figcaption></p>
+
+<h2>return and value function</h2>
+<p>MRP에서 Reward는 즉각적인 보상입니다. 그러나 우리가 궁극적으로 하고 싶은 건 매 스텝마다 받는 보상을 누적했을 때, 이 누적값이 최대화가 되도록 하는 것입니다(reward hypothesis - <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/11/introRL(1)">지난 포스팅 참조</a>.) 따라서, 누적된 보상은 어떻게 구할까요 ? 이를 위해 필요한 개념이 return과 value function입니다.</p>
+
+<p><b>Return and Horizon</b><br />
+먼저, horizon에 대한 개념을 살펴봅시다. horizon은 에피소드에서의 t 스텝 갯수입니다. 유한 개일수도 무한 개일수도 있습니다. 유한개일 경우 finite MRP(또는 finite MDP)라 합니다.</p>
+
+<p>Return은 t 스텝에서부터 horizon까지 디스카운트된 누적 보상(discounted sum of rewards)의 합입니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87245504-de244b80-c480-11ea-9786-3093366daf5e.png" />
+<figcaption align="center">그림 5. Return</figcaption></p>
+<p>discount factor $\gamma \in [0,1]$ 은 미래 보상을 현재 가치로 환산해주는 요소입니다. 왜 현재 가치로 환산해야 할까요? 여러가지 이유가 있습니다. 먼저 수학적으로 계산 시 수렴해야 하기 때문입니다. 그렇지 않으면 반환값이나 앞으로 설명할 가치함수가 전혀 수렴되지 않기 때문이죠. 다른 이유로는 미래에 대한 불확실성 때문입니다. 금융에서 이자를 떠올리시면 됩니다. discount factor가 1에 가까울수록 미래보상을 더 중요한거고 0에 가까울수록 현재보상이 더 중요한 것입니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87245719-9f8f9080-c482-11ea-88b0-3bc33ad3889a.jpeg" />
+<figcaption align="center">그림 6. Return(2)</figcaption></p>
+<p>만약에 종결 상태가 있는 경우, 즉 horizon이 유한한 경우, $\gamma=1$ 로 둘 수 있습니다.</p>
+
+<p>아래 그림은 student MRP에서, 각 episode마다 return을 계산한 것입니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87245967-e088a480-c484-11ea-9845-f576166f57e4.png" />
+<figcaption align="center">그림 7. Return 예시</figcaption></p>
+
+<p><b>Value Function</b><br />
+가치함수는 현재 놓여진 상태가 얼마나 좋은지를 알려주는 함수입니다. ‘얼마나 좋은지’에 대한 개념은 결국 현재 상태에서 앞으로 시퀀스를 밟아나갈 때 받을 누적보상이 얼마나 클까?와 관련됩니다. 따라서 가치 함수의 정의는 return의 기댓값입니다. MRP에서는 현재 에이전트의 행동에 관한 요소가 없기 때문에, 상태 가치 함수이지만, 추후에 MDP는 행동요소가 포함되어 있기 때문에 MDP에서의 가치함수는 상태-행동 가치 함수입니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87245875-2133ee00-c484-11ea-8587-50bf90c43442.png" />
+<figcaption align="center">그림 8. value function</figcaption></p>
+<p>상태 가치 함수는 어떻게 계산할 수 있을까요? 가장 간단하게는 에피소드를 엄청나게 많이 샘플링하는 것입니다. 그 다음 각 에피소드마다 return을 계산하고, 그 return값들을 평균내면 됩니다. 이를 simulation 이라 합니다. 그러나 마코브 성질을 이용하면 가치함수는 recursive한 형태로 변하게 됩니다. 이것이 바로 bellman equation입니다.</p>
+
+<h2>Bellman Equation for MRPs</h2>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87246187-a9b38e00-c486-11ea-8150-6f1a7354d6be.jpeg" />
+<figcaption align="center">그림 9. Bellman equation 유도</figcaption></p>
+<p>가치함수는 위 그림처럼 현 상태에서의 즉각적인 보상 $R_{t+1}$ 와 다음 상태에서 받을 누적 보상 $\gamma v(S_{t+1})$ 로 분해되며 recursive한 구조를 가집니다. 이는 <b>현재 상태 가치와 다음 상태 가치사이의 관계</b>를 나타냅니다. 이 방정식이 바로 벨만 방정식(Bellman Equation)입니다.</p>
+
+<p>벨만 방정식은 현재 상태와 다음 상태 사이의 관계를 나타내기 때문에 아래와 같이 back-up diagram으로 많이 표현합니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87246759-4c214080-c48a-11ea-8b7f-c0a7800fef30.jpeg" />
+<figcaption align="center">그림 10. back-up diagram for bellman equation</figcaption></p>
+
+<p>finite MDP인 경우, 아래 그림과 같이 행렬방정식으로 표현됩니다. 벨만 방정식이 선형방정식으로, 아래와 같이 직접적으로 풀 수 있으나 계산 복잡도가 높습니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87246872-fa2cea80-c48a-11ea-8a25-a57082c47176.jpeg" />
+<figcaption align="center">그림 11. Analytic Solution for Value of MRP</figcaption></p>
+
+<p>상태, 행동집합의 크기가 작은 경우엔 행렬방정식으로 풀 수 있지만 크기가 큰 경우에는 불가능합니다. 따라서 이런 경우엔 iterative한 방법으로 방정식을 풀 수 있습니다. iterative 방법들에 대해선 추후에 다루도록 하겠습니다.</p>
+<ul><li>dynamic programming</li>
+<li>monte-carlo evaluation</li>
+<li>temporal difference learning</li></ul>
+
+<p>이제까지 MRP를 정의하였고 MRP를 정의내리기 위해 필요한  return, 가치함수, 가치함수로 유도되는 벨만방정식도 살펴보았습니다. 이제 Markov Decision Process를 살필 준비가 되었습니다.</p>
+
+<h1>Markov Decision Process</h1>
+<p>Markov Decision Process(MDP)는 MRP에 행동(actions)이 더해진 것입니다. 즉, 명시적인 의사결정이 등장합니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87247097-9acfda00-c48c-11ea-9c4a-7732a7c7e9d0.png" />
+<figcaption align="center">그림 11. Markov  Decision Process	</figcaption></p>
+
+<p>위에서 언급했듯이, 환경모델은 상태변이모델과 보상모델로 이뤄졌기 때문에, MRP에서 이를 하나로 나타낼 수 있었습니다. 마찬가지로, MDP에서 환경모델은 행동(action)까지 고려한 통합된 환경모델은 아래와 같습니다.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[p(s’,r</td>
+      <td>s, a) = P[S_{t+1}=s’, R_{t+1}=r</td>
+      <td>S_{t}=s, A_{t}=a]]</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Policies</h2>
+<p>MDP에서 좋은 의사결정을 하기 위해, 에이전트 내부에 행동 전략을 가지고 있어야 합니다. 이를 policy라 합니다. 정책의 정의는 아래 식처럼,</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[\pi(a</td>
+      <td>s)= P[A_t=a</td>
+      <td>S_t=s]]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>현재 상태 $S_t=s$ 에서, 모든 행동들에 대한 확률 분포입니다. 상태는 마코브 성질을 가지므로, 현재 상태만으로도 의사결정 시 충분한 근거가 될 수 있습니다. 따라서, 현재상태만 조건으로 가진 조건부 확률분포가 되는 것입니다. 또한, MDP의 policy는 시간에 따라 변하지 않습니다(stationary). 이 말은 시간이 지남에 따라 에이전트가 동일한 상태를 여러번 지나간다 해도 그 상태에 있을 때의 행동전략은 변하지 않는다는 뜻입니다.</p>
+
+<p>MDP와 명시적인 policy가 있다면, 이는 MRP문제와 동일합니다. MDP의 보상함수는</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[R^{\pi}(s) = \sum_{a \in A}\pi(a</td>
+      <td>s)R(s,a)]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>는 policy와 가중평균으로 MRP의 보상함수로 바뀝니다. 마찬가지로, MDP의 상태변이함수도</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[P^{\pi}(s’</td>
+      <td>s) = \sum_{a \in A}\pi(a</td>
+      <td>s)P(s’</td>
+      <td>s,a)]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>policy와의 가중평균으로 MRP의 상태변이함수가 됩니다. 이 두식의 변환은 결국 MDP에서의 벨만방정식을 풀 때, MRP에서 사용한 방법(simulation, analytic solution, iterative method)을 동일하게 사용해도 되는 것을 뜻합니다.</p>
+
+<h2>Value Function and Bellman Expectation Equation</h2>
+<p>MDP아래에서 Value Function을 다시 살펴봅시다. 기존에 상태만은 고려한 state value function이 있고, 이젠 행동까지 고려한 state-action value function이 있습니다.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[v_{\pi}(s) = \mathbf E[R_{t+1}+\gamma v_{\pi}(S_{t+1})</td>
+      <td>S_t=s]]</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[q_{\pi}(s,a) = \mathbf E[R_{t+1}+\gamma q_{\pi}(S_{t+1}, A_{t+1})</td>
+      <td>S_t=s, A_t=a]]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>State value function을 현 상태와 다음 상태사이의 관계로 분해한 것처럼, state-action value function도 동일한 방식으로 분해할 수 있습니다. 이렇게 분해된 식은 Bellman expectation equation 또는 bellman equation이라 합니다.</p>
+
+<blockquote>$v_{\pi}$, $q_{\pi}$ 의미는 정책 $\pi$ 에 따라 행동했을 때의 가치함수를 의미합니다.</blockquote>
+
+<p>MRP에서, 벨만 방정식을 back-up diagram으로 나타낸 것처럼 $v_{\pi}$, $q_{\pi}$ 도 back-up diagram으로 표현가능합니다.</p>
+<p align="center">
+<img src="https://user-images.githubusercontent.com/37501153/87249534-914d6e80-c49a-11ea-8ae2-7e9d042ab586.jpg" />
+<figcaption align="center">그림 12. 4종류 bellman equation</figcaption></p>
+<p>총 4종류의 back-up diagram이 나오며, 이는 4종류의 bellman equation을 뜻합니다.</p>
+
+<h2>Bellman Optimal Equation</h2>
+<p>이제까지 알아본 가치함수(또는 벨만 기대 방정식)는 일정 정책 아래에서의 가치를 구한 것이기 때문에, 정책의 가치라고도 생각할 수 있습니다. 그러나 강화학습의 목표는 reward hypothesis에 따라, 누적보상이 최대가 되는 “최적 정책”을 찾는 것입니다. 그럼 최적 정책은 어떻게 찾을까요? 여러 정책들 간의 비교를 통해서 찾을 수 있습니다. 이와 관련된 개념이 ‘partial ordering’입니다.</p>
+
+<p><b>partial ordering</b><br />
+여러 정책들 간 비교가 가능하다는 건 ‘이 정책이 다른 정책보다 낫다’가 수학적으로 비교가 가능하다는 것입니다. 따라서 이 수학적 비교의 척도가 되는 것이 가치함수간의 비교입니다.
+정책 $\pi$ 가 다른 정책 $\pi’$ 보다 나을려면, 각 정책 아래 가치함수를 구했을 때 모든 상태에 대해서 $v_{\pi}(s) \geq v_{\pi’}(s)$ 입니다.</p>
+
+<p>[\pi \geq \pi’, if\,\,and\,\,only\,\,if\,\,v_{\pi}(s) \geq v_{\pi’}(s), for \,\,all\,\,\,s \in S]</p>
+
+<p>즉, 최소한 하나의 정책이 다른 정책보다 같거나 나은 정책이 존재한다는 것입니다. 이것이 바로 최적 정책(optimal policy) $\pi_\ast$ 이고 이때 가치 함수를 최적 가치 함수(optimal value function) $v_\ast(s)$ 라 합니다. 가치함수의 종류에는 상태-가치 함수와 상태-행동 가치 함수가 있습니다. 최적 상태-가치 함수(optimal state-value function) $v_*(s)$ 는</p>
+
+<p>[v_*(s) = \underset{\pi}max\,v_{\pi}(s)]</p>
+
+<p>이고, 최적 상태-행동 가치함수(optimal state-action value function) $q_*(s,a)$ 는</p>
+
+<p>[q_*(s,a)  = \underset{\pi}max\,q_{\pi}(s,a)]</p>
+
+<p>입니다. MDP에서 최적 가치 함수를 찾았다면, 이는 결국 일련의 최고의 결정을 수행할 수 있는 것을 뜻하고, sequntial decision making 문제를 “해결”한 것입니다.</p>
+
+<p><b>Bellman Optimality Equations</b><br />
+상태 가치 함수와 상태-행동 가치 함수를  back-up diagram을 이용하여 4종류의 bellman expectation equation을 세울 수 있었습니다. 마찬가지로, 최적 상태 가치 함수와 최적 상태-행동 가치 함수를 같은 방식으로 4종류의 bellman optimality equation을 세울 수 있습니다.</p>
+<p align="center">
+<img src="https://user-images.githubusercontent.com/37501153/87273683-c1395800-c514-11ea-9df3-bdf38cafc876.jpg" />
+<figcaption align="center">그림 13. Bellman Optimality Equation</figcaption></p>
+
+<p>벨만 기대 방정식과 벨만 최적 방정식은 현 상태와 이전 상태 사이에서의 recursive한 관계를 가진다는 것이 특징입니다. MDP문제를 푸는 방법(벨만 방정식을 푸는 방법)중 하나인 Dynamic Progamming은 바로 이 recursive한 관계를 이용하여 iterative하게 해답을 찾아나가는 과정입니다. DP는 추후 포스팅에서 다루도록 하겠습니다.</p>
+
+<p><b>Finding an Optimality and Solving the Bellman Optimality Equation</b><br />
+이제까지 최적정책의 정의와 최적정책을 찾기 위한 최적 가치 함수에 대해서 알아봤습니다. 그런데 아직 해결이 안된 부분이 있습니다. 바로, <b>최적 가치 함수를 이용하여 어떻게 최적 정책을 찾을까?</b>에 관한 물음과 <b>상태의 갯수가 많은 상황에서, 즉 복잡도가 높은 MDP문제에서 방정식을 어떻게 풀까?</b>에 관한 물음입니다. 먼저 전자부터 살펴보겠습니다.</p>
+
+<p>벨만 최적 방정식을 풀어서 $v_\ast$ 를 구했다면, 정책을 구하는 건 어렵지 않습니다. 그림 13.에서 1번, 3번 최적방정식에서,</p>
+
+<p>[\pi_\ast(s) = arg \underset a max(q_\ast(s,a))]</p>
+
+<p>$q_\ast(s,a)$ 가 최대가 되는 행동 a 가 바로 상태 s에 대한 최적 정책입니다. Recursive한 관계에서 살펴보면,</p>
+
+<p>[\pi_\ast(s) = arg \underset a max(R^a_s + \gamma\sum_{s’}P^a_{ss’}v_\ast(s’))]</p>
+
+<p>와 같습니다. 즉, 최적 정책을 찾을 땐 greedy하게 찾습니다. greedy한 이유는 정책의 행동을 선택할 때, 앞으로의 모든 상황을 고려하는 것이 아니라 다음 상태의 상황만을 고려하기 때문입니다. 그러나 greedy하게 선택해도 될까요 ? 정답은 yes 입니다. 왜냐하면 <strong>이미 가치함수를 구하는 과정에서 미래 상황까지 고려한 가치를 구했기 때문에 이것을 기반으로 한 greedy 선택 안에는 이미 long-term sequence를 고려한 것</strong>입니다.</p>
+
+<p>마지막으로, 방정식을 푸는 방법에 대한 물음입니다. 이미 이전에 벨만 기대 방정식을 푸는 방법에 대해서 살펴보았습니다. 벨만 기대 방정식은 linear equation이기 때문에, 복잡도가 높지 않은 MDP 문제에서 analytic하게 구할 수 있습니다. 그러나 복잡도가 높은 MDP문제는 불가능하므로, iterative method인 dynammic progamming, monte-carlo evalution, Temporal difference가 있다고 하였습니다. 반면에, 벨만 최적 방정식은 non-linear equation이기 때문에 analytic하게 풀 수는 없습니다. 따라서 위에서 언급한 iterative method를 적용해야 합니다.</p>
+
+<hr />
+
+<p>이상으로 MDP 포스팅을 마치겠습니다. 다음 포스팅은 Dynamic Progamming에 대해 진행하겠습니다.</p>
+
+<hr />
+
+<ol>
+  <li><a href="http://web.stanford.edu/class/cs234/slides/lecture2.pdf">CS234 Winter 2019 course Lecture 2</a></li>
+  <li><a href="http://incompleteideas.net/book/bookdraft2017nov5.pdf">Richard S. Sutton and Andre G. Barto : Reinforcement Learning : An Introduction</a></li>
+  <li><a href="https://www.davidsilver.uk/wp-content/uploads/2020/03/MDP.pdf">David Silver Lecture 2</a></li>
+</ol>
+
+    <article>
+    <div class="post-more">
+      
+      <a href="/reinforcement%20learning/2020/07/12/mdp/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
+      
+      <a href="/reinforcement%20learning/2020/07/12/mdp/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
+    </div>
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/reinforcement%20learning/2020/07/11/introRL(2)/">
+        Reinforcement Learning 소개[2]
+      </a>
+    </h1>
+
+    <span class="post-date">11 Jul 2020</span>
+     | 
+    
+    <a href="/blog/tags/#reinforcement-learning" class="post-tag">reinforcement-learning</a>
+    
+    
+
+    <article>
+      <p>이번 포스팅은 <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/11/introRL(1)/">강화학습 소개[1]</a>에 이어서 진행합니다. CS234 1강, Deep Mind의 David Silver 강화학습 강의 1강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 1 기반으로 작성하였습니다.</p>
+
+<hr />
+
+<p>지난 포스팅에서, 강화학습의 특성과 강화학습 문제를 정의하기 위해 필요한 요소, 강화학습 문제의 종류에 대해서 알아봤습니다. 에이전트는 에이전트의 상태를 가지고 어떻게 좋은 행동을 선택할 수 있을까요 ? 이 문제에 대한 답을 하기 전에, 에이전트가 상태 이외에 어떠한 요소를 가지고 있어야 하는지 알아봅시다.</p>
+
+<h2>Major Components of an RL Agent</h2>
+<p>강화학습 에이전트를 구성하는 요소는 크게 정책(policy), 가치 함수(value function), 모델(Model)입니다.</p>
+
+<p><b>Policy</b><br />
+정책은 에이전트의 행동전략(agent’s behavior)입니다. 정책은 일종의 함수로, 주체의 상태를 행동으로 맵핑합니다. 정책의 종류는 deterministic policy $a = \pi(s)$ 와 stochastic policy와 $\pi(a|s) = P [A_t=a|S_t=s]$ 가 있습니다.</p>
+<blockquote>A policy is a map from state to action</blockquote>
+
+<p>아래와 같이 화성탐사기 예를 들어봅시다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87240302-5c69f900-c453-11ea-87ba-7b34cd3fbdb1.jpg" />
+<figcaption align="center">그림 1. 화성탐사기 예제</figcaption>
+</p>
+<p>위의 그림과 같이, 화성탐사기가 도달할 수 있는 상태는 총 7가지 상태이고, 각 상태에서 취할 수 있는 행동은 왼쪽/오른쪽 두가지입니다. s1 상태에서 +1 보상을, s7 상태에서 +10 보상을, 나머지 상태에서 0의 보상을 받습니다.</p>
+
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87240430-82dc6400-c454-11ea-9687-455bbccff299.jpg" />
+<figcaption align="center">그림 2. 화성 탐사기 정책 예시</figcaption>
+</p>
+<p>위 예는 화성 탐사가 가질 수 있는 정책 중 하나입니다(사실 이 예제는 너무 단순해서 이 정책이 최적 정책이긴 합니다). s7상태에서 가장 큰 보상을 받기 때문에 어떤 상태에서 시작하던 간에 오른쪽으로 가는 것이 최고의 정책이죠. 또한 이 정책의 특성은 deterministic입니다. 그 이유는 각 상태에서 나올 수 있는 모든 행동들의 가능성을 보여주는 것이 아니라, 한가지 행동만을 출력하기 때문입니다.</p>
+
+<p><b>Value Function</b><br />
+다음은 가치 함수입니다. 가치 함수는 특정 정책 아래, 현재 에이전트 상태에서 앞으로 받을 미래 보상까지 고려한 누적보상 예측값입니다. 에이전트는 이 가치값을 기반으로 현 상태의 좋고 나쁨을 판단합니다. 또한 정책 간 가치함수를 비교를 통한 행동 선택의 기반이 되기도 합니다.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[V_{\pi} = E_{\pi}[R_{t+1} + \gamma R_{t+2} + \gamma^2R_{t+3} + \dots</td>
+      <td>S_t=s]]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>$\gamma$ 는 discount factor로, 현재 보상과 미래 보상간의 중요도 차이를 보여줍니다. 추후에 더 자세히 설명하도록 하겠습니다. 아래는 가치함수의 예입니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87240661-69d4b280-c456-11ea-8279-8c3fa528358e.jpg" />
+<figcaption align="center">그림 3. 화성 탐사기 가치함수 예시</figcaption>
+</p>
+<p>화성 탐사 문제를 그림 1. 처럼 정의했을 때, 각 상태에서 가질 수 있는 화성 탐사 에이전트의 가치함수입니다.</p>
+
+<p><b>Model</b><br />
+모델이란 환경(정확히, 주체가 영향을 받고 있는 환경)이 주체의 행동에 따라 어떻게 변하는지에 관한 모델입니다. 즉 환경의 동적모델(dynamic models of the environment)이죠.</p>
+<blockquote>
+<ul>
+<li>A model predicts what the environment will do next</li>
+<li>$P$ predicts the next state</li>
+<li>$R$ predicts the next immediate reward</li>
+</ul>
+</blockquote>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[P^a_{ss’} = P[S_{t+1}=s’</td>
+      <td>S_t=s, A_t=a]]</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[R^a_s = E[R_{t+1}</td>
+      <td>S_t=s,A_t=a]]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>환경의 모델은 크게 두 가지가 있습니다. 변이모델(transition/dynamics model)과 보상입니다. 변이모델은 에이전트의 행동에 따라 다음 상태에 대한 정보를 알려줍니다. 보상모델은 에이전트가 선택한 행동에 대해 변이모델에 따라 다음 상태에 갔을 때 받는 즉각적인 보상입니다. 아래는 모델에 관한 화성탐사 예시입니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87240816-e3b96b80-c457-11ea-90ce-96d711a65cc4.jpg" />
+<figcaption align="center">그림 4. 화성 탐사기 모델 예시</figcaption>
+</p>
+
+<h2>Categorizing RL Agents</h2>
+<p>에이전트를 구성하는 요소로는 모델, 가치함수, 정책임을 알았습니다. 그러나 사실 구성요소를 어떻게 조합하느냐에 따라 강화학습 에이전트의 종류를 몇가지로 나눌 수 있습니다.</p>
+<p align="center">
+<img width="300" src="https://user-images.githubusercontent.com/37501153/87240991-88887880-c459-11ea-881b-49b8789bde78.jpg" />
+<figcaption align="center">그림 5. RL Agent Taxonomy</figcaption></p>
+<ul>
+<li>Value Based</li>
+에이전트가 행동을 선택할 때, 가치함수의 결과값이 가장 높은 쪽으로 선택하는 것입니다. 이때, 정책이 명시적으로 표현되지 않고 내재적으로 표현됩니다.
+<li>Policy Based</li>
+명시적인 정책을 가진 에이전트입니다. 즉, 특성 상태에서 어떤 행동이 확률적으로 높은지를 보고 행동하는 것입니다.
+<li>Actor-Critic</li>
+위 Value-based와 policy based가 합쳐진 상태입니다.
+<li>Model Free</li>
+변이확률과 보상함수에 대한 정보가 없는 경우입니다. 에이전트는 환경모델을 알 수 없으나 경험을 해나가면서 환경을 이해해 나가면서 문제를 해결하는 케이스입니다.
+<li>Model Based</li>
+환경 모델을 구축하여 문제를 푸는 케이스입니다.</ul>
+
+<h2>Key Challenges in Learning to Make Sequences of Good Decisions</h2>
+<p>연속적인 의사 결정 문제는 문제의 상태에 따라 다르게 접근해야 합니다. 어떤 문제 같은 경우, 환경의 모델을 완벽하게 아는 경우가 있을 수 있습니다. 예를 들어, 무인 헬리콥터에서, 헬리콥터가 있는 환경에서 바람의 속도, 바람의 방향, 장애물의 위치, 날씨, 온도등 헬리콥터에 영향을 줄 수 있는 모든 요소들을 다 파악할 수 있으면 환경 모델을 완벽하게 아는 경우입니다. 이런 경우, 우리는 헬리콥터를 움직일 때마다 어떠한 결과를 초래하고 헬리콥터 움직임에 좋은지 나쁜지를 일일이 “계산”할 수 있습니다. 이런 경우를 Planning이라 합니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87241351-46f9cc80-c45d-11ea-8551-ac02e8a60e28.jpg" />
+<figcaption align="center">그림 6. Planning</figcaption>
+</p>
+<p>하지만, 대부분의 경우, 환경 모델을 완벽하게 아는 것은 불가능합니다. 따라서 환경에 직접 부딪혀 가면서(환경과 상호작용하면서) 경험을 통해 환경모델을 간접적으로 익히는 것입니다. 따라서 에이전트는 환경과의 상호작용을 통해 얻은 경험을 바탕으로 자신만의 전략을 구축해 나가는 것입니다. 포커 게임에서, 상대방이 가지고 있는 패나 전략을 알 순 없지만 상대방과 여러 번 게임을 통해 상대방 전략을 간접적으로 익힐 수 있습니다. 이렇게 푸는 방법이 “Reinforcement Learning”입니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87241443-12d2db80-c45e-11ea-8d6d-dfda09341bfe.jpg" />
+<figcaption align="center">그림 7. Reinforcement Learning</figcaption>
+</p>
+
+<h2>Exploration and Exploitation</h2>
+<p>강화학습은 <b>환경과의 상호작용을 통해 경험을 쌓아가면서 에이전트의 전략을 스스로 구축해나가는 것</b>이라 하였습니다. 좋은 전략을 구축하기 위해, 실패도 해보고 성공도 해보면서 배워나가야 합니다. 그러나 어느 정도 경험을 했다면, 이 경험을 바탕으로 대략적인 전략을 구축해 나가야합니다. 이와 관련 강화학습 문제가 exploration과 exploitation입니다.</p>
+
+<p>exploration이란 추후에 에이전트가 더 좋은 결정을 내릴수도 있기 때문에 새로운 결정을 시도해보는 과정입니다. 반면에, exploitation은 이제까지의 경험을 바탕으로 결정을 내리는 과정입니다. 이 둘 사이는 trade-off관계에 있습니다. exploration을 많이 하면 새로운 시도로 좋은 의사 결정 전략을 구축할 수 있지만 반면에 지금 당장 받을 보상을 희생해야 합니다. 이 둘 사이의 trade-off관계에 관한 예를 들어봅시다. 외식을 하기 위해 식당을 선택하는 경우, 이제까지 경험을 바탕으로 좋아하는 식당을 가는 건 exploitation이고, 새로운 식당을 시도해 보는 건 exploration입니다. 이 외에 다른 예는 아래와 같습니다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87241596-c25c7d80-c45f-11ea-8454-ed31384441ef.jpg" />
+<figcaption align="center">그림 8. exploration and exploitation</figcaption>
+</p>
+
+<h2>Evalutation(Prediction) and Control</h2>
+<p>에이전트는 좋은 경험을 쌓기 위해서, exploration과 exploitation을 균형있게 활용해야합니다. 하지만  어떻게 활용하면서 경험을 쌓고, 전략을 구축하는 걸까요? 이제 관한 문제가 evalution과 control입니다.</p>
+
+<p>evaluation은 일정 정책 아래, 기대보상을 추정하여 현재 따르는 정책이 좋고/나쁨을 평가하는 것입니다. 기대보상 추정은 결국 가치함수를 구하는 것입니다. 가치함수 $V_{\pi}(s)$ 는 현 정책을 따랐을 때, 상태 $s$ 의 가치입니다. 직접적으로는 현 상태의 가치지만 현 정책 아래에서 계산한 것이기 때문에 현 정책의 가치로도 생각할 수 있습니다. control은 최적정책을 찾는 것입니다. evalutation과정을 통해 정책의 가치를 평가했다면, 이 평가를 기반으로 더 나은 정책이 있는지를 찾는 과정입니다.</p>
+
+<p>evaluation과 control은 독립적인 과정이 아닙니다. evaluation을 해야 control을 하고, control을 해야 evalutation을 할 수 있습니다. 즉 서로 맞물려서 최적의 정책을 찾아 나가는 것입니다. 아래 그리드월드 예제를 들어봅시다.</p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87241960-4b28e880-c463-11ea-9aea-94314e98f3e9.jpg" />
+<figcaption align="center">그림 9. evalutation(prediction)</figcaption></p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87241958-46643480-c463-11ea-8d86-772141a0e043.jpg" />
+<figcaption align="center">그림 10. control</figcaption>
+</p>
+
+<p>그림 9에서 주어진 정책은 모든 행동(좌, 우, 위, 아래)으로 갈 확률이 0.25로 동일합니다. 이 정책 아래 각 상태(그리드월드 한 칸)의 가치를 평가하면 오른쪽 숫자로 채워진 테이블이 됩니다. 최적 정책을 최적 가치함수 기반으로 찾을 수 있습니다. 그림 10처럼 최적 가치함수가 가운데 표처럼 구해졌다고 합시다. 이 기반으로 구한 최적 정책은 오른쪽 표와 같습니다. A’상태에서의 최적 정책은 위로 올라가는 것입니다. 왜냐하면 A’ 주변 가치함수 값들은 14.4, 17.8, 14.4입니다. A’에서 가장 높은 17.8의 가치를 가진 상태로 가는 것이 최적이기 때문입니다.</p>
+
+<hr />
+
+<p>이상으로, Reinforcement Learning 소개[2] 포스팅을 마치겠습니다. 다음 포스팅은 <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/12/mdp/">Markov Decision Process</a>을 알아보도록 하겠습니다.</p>
+
+<hr />
+
+<ol>
+  <li><a href="http://web.stanford.edu/class/cs234/slides/lecture1.pdf">CS234 Winter 2019 course Lecture 1</a></li>
+  <li><a href="http://incompleteideas.net/book/bookdraft2017nov5.pdf">Richard S. Sutton and Andre G. Barto : Reinforcement Learning : An Introduction</a></li>
+  <li><a href="https://www.davidsilver.uk/wp-content/uploads/2020/03/intro_RL.pdf">David Silver Lecture 1</a></li>
+</ol>
+
+
+    <article>
+    <div class="post-more">
+      
+      <a href="/reinforcement%20learning/2020/07/11/introRL(2)/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
+      
+      <a href="/reinforcement%20learning/2020/07/11/introRL(2)/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
+    </div>
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/reinforcement%20learning/2020/07/11/introRL(1)/">
+        Reinforcement Learning 소개[1]
+      </a>
+    </h1>
+
+    <span class="post-date">11 Jul 2020</span>
+     | 
+    
+    <a href="/blog/tags/#reinforcement-learning" class="post-tag">reinforcement-learning</a>
+    
+    
+
+    <article>
+      <p>이번 포스팅은 강화학습이 기존에 알려진 여러 방법론들과의 비교를 통한 강화학습 특성과 구성요소를 다룹니다. CS234 1강, Deep Mind의 David Silver 강화학습 강의 1강, Richard S. Sutton 교재 Reinforcement Learning: An Introduction의 Chapter 1 기반으로 작성하였습니다.</p>
+
+<hr />
+
+<p align="center">
+<img width="450" alt="introRL" src="https://user-images.githubusercontent.com/37501153/87217901-2f511400-c389-11ea-96de-492485cf0b9d.png" />
+<figcaption align="center">그림 1.</figcaption>
+</p>
+<p>아래 그림과 같이, Computer Science, Engineering, Mathematics 등 다양한 분야에서 여러 문제들을 풀기 위한 방법론들이 있습니다. 예를 들어, Pyschology 분야의 Classical/Operant Conditioning은 동물들의 의사결정에 대해 연구하고, Enginnering 분야의 Optimal Control와 Mathematics 분야의 Operation Research는 자연 현상을 일련의 시퀀스로 파악하여 공학적 또는 수학적 관점에서 ‘어떻게 하면 최상의 결과를 얻을까?’ 를 연구합니다. 즉, 이러한 연구들의 공통점은 각 분야에서 정의한 문제 해결을 위해 <b>과학적 의사결정(scientific decision making)</b>을 연구한다는 것입니다.</p>
+
+<p>이와 마찬가지로, 강화학습도 <b>“좋은 의사결정을 내리기 위한 방법”</b>에 관한 연구입니다. 특히, <b>“순차적인 의사결정이 필요한 문제”</b>를 풀기 위한 방법론입니다(Learn to make good sequences of decisions). 여기서, “good decisions”은 결국 최적의 해결책(optimal soltuion)을 찾는 것을 의미하고, “learn”은 학습하는 대상이 처한 상황이 어떤지 모른 채, 직접 부딪혀 나가면서 경험을 통해 배워나가는 것을 의미합니다. 이는 마치, 사람이 학습해 나가는 방법과도 유사하죠.</p>
+
+<blockquote>Sutton 교재에서, 강화학습이 사람의 학습 방법과 유사하다고 기술되어 있습니다. 유아기 때, 걷기까지 걷는 방법을 알려주는 선생님이 존재하지 않고, 아기가 스스로 여러번 시도와 실패 끝에 걷는 방법을 터득합니다. 강화학습도 이러한 측면에서의 특성을 가지고 있습니다.</blockquote>
+
+<h1>Characteristics of Reinforcement Learning</h1>
+<p>강화학습의 특징을 다른 방법론과 비교를 통해 알아봅시다. 강화학습의 특징을 우선 정리하고, 그 후 비교를 통해 구체적으로 알아볼 것입니다. 강화학습은 아래와 같이 4가지 특징을 가지고 있습니다.</p>
+<ul>
+<li>Optimization</li>
+<li>Delayed consequences</li>
+<li>Exploration</li>
+<li>Generalization</li>
+</ul>
+<p>
+<b>1. Optimization</b><br />
+good decision이란 최적의 해결책(optimal solution)에 해당된다고 하였습니다. 즉, Optimization은 강화학습의 목적에 해당되며, 그 목적은 좋은 결정을 내리기 위한 최적의 방법을 찾는 것입니다.
+<blockquote>Goal is to find an optimal way to make decisions</blockquote>
+</p>
+
+<p>
+<b>2. Delayed Consequences</b><br />
+순차적인 의사결정 문제에서, 현재 내린 결정은 후에 일어날 상황에 영향을 줄 수 있습니다. 예를 들어, 돈을 저축하는 건 현재 시점에선 마이너스 행위일 수도 있지만, 만기 이후를 생각하면 플러스 행위입니다. 즉, 현재 내린 결정에 대한 영향력을 확실히 알 수가 없고(delayed consequences), 이로 인해 결정의 좋고 나쁨을 평가하는 것이 어렵습니다.  
+</p>
+
+<p>
+<b>3. Exploration</b><br />
+위에서, 강화'학습'은 에이전트(학습하는 사람, 기계 등을 지칭)가 학습하는 상황/대상에 대한 어떠한 정보가 없기 때문에 스스로 배워나가는 것이라 하였습니다. 따라서, 에이전트는 무수히 많은 의사결정을 통해 탐험을 해야합니다. 자전거를 타는 기술을 익히기 위해 수많은 실패를 하는 것처럼 말입니다. 그러나, 이 '탐험'도 '잘'해야 합니다. 어떠한 탐험을 하느냐에 따라 경험하는 것이 다르기 때문입니다. 이렇게 얻어진 경험이 좋은 경험일 수도 나쁜 경험일 수도 있습니다.</p>
+
+<p>
+<b>4. Generalization</b><br />
+여러 머신러닝 방법론과 마찬가지로, 강화학습은 특정 문제만 풀수 있는 에이전트가 아니라 일반화된 문제를 풀 수 있는 에이전트를 학습하고 싶습니다. 바둑을 예로 들어봅시다. 강화학습을 통해 바둑게임 에이전트를 만들고자 할 때, 대전을 하는 상대방이 어떠한 전략을 가지고 있던 간에 항상 이길 수 있는 에이전트를 만드는 것이 목표지 특정 전략에만 강한 에이전트를 만들고 싶은 것이 아닙니다. <br /><br />
+위와 같은 이유로, rule-based 방식으로 순차적 의사결정문제를 풀기가 어렵습니다. rule-based 기반 해결책은 generalization 특성을 갖지 못하기 때문입니다. 
+<blockquote>pre-programmed policy is hard to get generalization on the problem we want to tackle.</blockquote>
+</p>
+<p>‌
+강화학습은 위와 같이 4가지 특성을 가지고 있습니다. 이제 여러 방법론(Planning, supervised learning, unsupervised learning, imitation learning)과 비교를 통해 위 4가지 특성에 대해 강화학습이 다른 방법론과 어떻게 다른지 알아 봅시다.</p>
+
+<h2>AI Planning vs Reinforcement Learning</h2>
+<p align="center">
+<img alt="planning" width="500" src="https://user-images.githubusercontent.com/37501153/87219220-56f9a980-c394-11ea-933d-1e59431206ac.jpeg" />
+<figcaption align="center">그림 2. planning</figcaption>
+</p>
+<p>Planning이란 에이전트가 학습하는 환경에 대한 정보를 완벽히 알고 있는 경우입니다. 그림 2.는 유명한 아타리 게임입니다. 만약에 아타리 게임의 에이전트가 게임 콘솔 안의 모든 게임 알고리즘과 하드웨어 작동 방식등 완벽하게 알고 있다고 해봅시다.(<del>거의 불가능한 상황이긴 합니다.</del>)</p>
+<blockquote>
+Agent just computes good sequence of decisions but given model of how decisions impact world
+</blockquote>
+
+<p>이 말은 에이전트가 현재 게임 상황에서 왼쪽/오른쪽 움직임에 대해 나올 결과를 완벽히 알 수 있다는 뜻입니다. 즉, 에이전트는 더이상 ‘학습’이 아니라 어떻게 의사 결정을 내릴지 ‘계획’하면 되는 것이지요. 따라서, planning은 4가지 특성 중, exploration은 해당되지 않습니다.</p>
+<ul>
+<li>Optimization</li>
+<li>Delayed consequences</li>
+<li><del>Exploration</del></li>
+<li>Generalization</li>
+</ul>
+
+<h2>Supervised/Unsupervised Learning vs Reinforcement Learning</h2>
+<p>지도학습은 라벨이 있는 데이터 셋 ${{(x_1,y_1), \dots ,(x_i,y_i))}}$ 을 학습 한 후, 입력 $x_i$ 가 들어오면 입력에 대한 라벨 $\hat y_i$ 를 예측하는 문제입니다. 반면에 비지도 학습은 라벨이 없는 데이터 셋에 대하여 ${{x_1, \dots ,x_i}}$ 에 대하여 학습을 통해 데이터 셋의 구조를 파악하는 것입니다. 강화학습과의 차이점은 데이터 셋의 유무에 있습니다. 강화학습은 어떻게 보면, 탐험을 통해 데이터 셋을 스스로 구축해 나가는 것이라 볼 수 있지만, 지도/비지도 학습은 이 경험에 해당되는 데이터 셋이 주어진 것이기 때문에, 탐험을 할 필요가 없습니다. 또다른 차이점은 의사결정에 해당되는 라벨 예측 행위가 추후 또다른 예측 행위에 영향을 주지 않습니다. 따라서, exploration과 delayed consequences가 없습니다.</p>
+<ul>
+<li>Optimization</li>
+<li><del>Delayed consequences</del></li>
+<li><del>Exploration</del></li>
+<li>Generalization</li>
+</ul>
+
+<h2>Imitation Learning vs. Reinforcement Learning</h2>
+<p>둘의 차이점을 비교하기 전에, <a href="https://medium.com/@SmartLabAI/a-brief-overview-of-imitation-learning-8a8a75c44a9c">imitation learning</a>이 뭔지 간략하게 알아봅시다. 좋은 의사결정을 내리기 위한 에이전트를 강화학습을 통해 만들기 위해선 에이전트가 탐험 시 내린 의사결정에 대한 좋고 나쁨을 알려줘야 합니다. 우리는 이를 ‘보상’이라 합니다. 그러나 현실 문제에서 정확한 보상함수를 정의내리기가 어렵습니다. 따라서 이를 해결하기 위해 나온 방법이 imitation learning입니다. 에이전트가 직접 탐험하는 것이 아니라 모방하고 싶은 에이전트의 행동을 지도학습 방식으로 해결하는 것입니다.</p>
+<p align="center">
+<img alt="imitation learning" width="500" src="https://user-images.githubusercontent.com/37501153/87220082-f9695b00-c39b-11ea-8488-2e9906448f0e.jpg" />
+<figcaption align="center">그림 3. Imitation Learning</figcaption>
+</p>
+<p>따라서, imitation learning은 모방하고 싶은 에이전트의 경험을 데이터 셋으로서 활용하기 때문에 exploration 요소가 없습니다.</p>
+<ul>
+<li>Optimization</li>
+<li>Delayed consequences</li>
+<li><del>Exploration</del></li>
+<li>Generalization</li>
+</ul>
+
+<h1>The Reinforcement Learning Problem</h1>
+<p>이번 섹션에서는 강화학습 문제를 정의하기 위해 필요한 요소들을 알아봅시다.</p>
+
+<h2>Rewards &amp; Sequential Decision Making</h2>
+<p>좋은 행동을 하는 에이전트를 강화학습을 통해 만들기 위해선 에이전트가 탐험할 때 결정한 행동에 대한 좋고 나쁨을 알려줘야 합니다. 우리는 이를 ‘보상’이라 합니다.</p>
+<blockquote>강화학습에서 '의사 결정'을 '행동'이라 부릅니다.</blockquote>
+<p>보상 $R_t$ 는 $t$ 스텝에서 에이전트가 의사결정을 잘 내리고 있는지에 대해 환경이 주는 즉각적인 피드백 지표(imediate reward)입니다. 즉, 에이전트의 목표는 매 스텝마다 받는 보상을 누적했을 때, 이 누적값이 최대화가 되도록 의사결정을 하는 것입니다. 이 말은 에이전트는 당장 받는 보상이 아니라 앞으로 받을 보상을 고려해서 행동한다는 것입니다. 이러한 아이디어는 가설로 구축할 수 있습니다.</p>
+<p><blockquote><b>reward hypothesis</b><br />
+That all of what we mean by goals and purposes can be well thought of as the maximization of the expected value of the cumulative sum of a received scalar signal.</blockquote>
+</p>
+<p>예를 들어, 게임같은 경우 이기면 (+)보상을, 질 경우 (-)보상으로 보상을 정의내릴 수 있습니다. 또한 발전소를 컨트롤 하는 경우, 전력을 생산하는 경우엔 (+)보상을 줄 수 있지만 만약에 안전 임계치를 초과한 경우 (-)보상으로 정의내릴 수 있습니다.</p>
+<p align="center">
+<img alt="sequential-decision-making" width="500" src="https://user-images.githubusercontent.com/37501153/87220849-6e3f9380-c3a2-11ea-8f9b-cf5320abca64.jpg" />
+<figcaption align="center">그림 4. Sequential Decision Making</figcaption>
+</p>
+<p>따라서, 강화학습의 목표는 순차적인 의사결정을 통해 누적 보상의 기댓값을 최대화하는 것입니다. 현재 행동은 앞으로 할 행동들에 영향을 줄 수 있으며 더 많은 보상을 나중에 받기 위해 현재 당장 받을 즉각적인 보상은 포기할 수도 있습니다.</p>
+
+<p>그러면 보상은 누가 주는 걸까요 ? 바로 에이전트가 놓여있는 환경입니다. 에이전트 이외 그 밖의 요소가 환경이 될 수 있습니다. 예를 들어, 주식시장을 살펴봅시다. 주식의 매매 여부를 결정하는 주체는 에이전트이고, 팔기, 사기, 그대로 두기는 행동(의사결정)입니다. 만약에 에이전트가 주식을 파는 행동을 하였다면, 이 행동의 좋고 나쁨은 어떻게 결정될까요? 우리는 흔히, 내가 판 주식이 올랐다면 이 행동은 나쁜거라고 생각할 수 있습니다<del>(왜냐면, 더 있다가 팔면 좋았을 테니깐요.)</del>. 그럼 내가 판 주식이 오르게 하는 건 어떤걸까요? 바로 주체 이외의 여러 요소들에 의해 결정됩니다. 그 주식과 관련된 여러 기업일 수도 있고, 정치도 해당될 수 있고, 여러 가지 요소가 주식에 영향을 줍니다. 바로 이러한 부분이 강화학습에서의 ‘환경’입니다.</p>
+<blockquote>예상할 수 있듯이, 환경을 정의내리기엔 매우 어렵습니다.</blockquote>
+<p>따라서, 강화학습의 목표를 다시 정의내리자면, <b>주체는 <em>“환경과의 상호작용”</em>을 통해서 누적 보상을 최대화</b>하는 것입니다. 그림 4와 그림5는 주체가 환경과의 상호작용하는 일련의 과정을 보여줍니다.</p>
+<p align="center">
+<img width="500" alt="agent-env-interaction" src="https://user-images.githubusercontent.com/37501153/87221282-c4620600-c3a5-11ea-8a6e-adcce86b754e.png" />
+<figcaption align="center">그림 5. 주체와 환경간의 상호작용</figcaption>
+</p>
+<p>매 스텝에서, 에이전트가 누적보상이 최대가 되도록 행동 $A_t$ (action) 을 결정하면, 환경은 선택한 행동에 대한 결과 $O_{t+1}$ (observation) 와 행동에 대한 실제 보상 $R_{t+1}$ (imediate reward) 을 알려줍니다. 주식시장을 다시 예로 들어보면, 주체가 주식을 파는 것이 행동 결정이고, 추후에 그 기업의 주식이 오르는 것이 행동에 대한 결과이며, 이에 대해 돈을 잃는 것이 실제 보상입니다.</p>
+
+<h2>History and State</h2>
+<p>연속적인 의사 결정(sequential decision making)이기 때문에, 매스텝마다 행동 $A$, 관찰 $O$, 보상 $R$이 발생합니다. 따라서 발생한 모든 행동, 관찰, 보상에 대한 시퀀스를 히스토리(history)라고 합니다.</p>
+
+<p>[H_t = O_1, R_1, A_1, \dots, A_{t-1}, O_t, R_t]</p>
+
+<blockquote>The history is the sequence of observations, actions, rewards. In other words, It is all observable variables up to time t</blockquote>
+<p>따라서, 에이전트는 히스토리 기반으로 다음에 취할 행동을 선택합니다. 왜냐하면, 히스토리는 이전에 발생한 모든 일들을 다 기록하기 때문에 꽤나 행동 선택에 꽤나 괜찮은 근거가 될 수 있기 때문입니다.</p>
+
+<p>그러나, 행동을 선택할 때마다, 매번 이전 과거 정보를 파악하는 건 힘든 일입니다. 따라서 에이전트는 다음 행동을 선택하는데 <b>상태(state)정보</b>를 이용합니다.
+상태정보가 행동 선택의 근거가 되기 위해선 상태는 과거 히스토리 정보를 담고 있어야 합니다. 따라서, 수학적으로 표현하면 상태는 히스토리의 함수입니다.</p>
+
+<p>[S_t = f(H_t)]</p>
+
+<blockquote>State is information assumed to determine what happens next</blockquote>
+
+<p>상태에는 크게 Environment State(World State), Agent State, Information State가 있습니다.</p>
+
+<p><b>Environment State(World State)</b><br /></p>
+<p align="center">
+<img alt="environment state" width="500" src="https://user-images.githubusercontent.com/37501153/87238822-aa2a3580-c442-11ea-8b87-a098c7288a58.jpeg" />
+<figcaption align="center">그림 6. Environment State</figcaption>
+</p>
+<p>환경 상태 $S^e_t$ 는 주체 이외의 환경에 대한 상태로, 예를 들어 게임에서는 게임의 콘솔 내부일수도 있고, 주식시장에서는 주식에 영향을 주는 모든 요소일수 있습니다. 에이전트는 사실 환경을 볼 수 없으며 볼 수 있다 하더라도 불필요한 정보들이 많을 것입니다.</p>
+
+<p><b>Agent State</b><br /></p>
+<p align="center">
+<img alt="agent state" width="500" src="https://user-images.githubusercontent.com/37501153/87238872-49e7c380-c443-11ea-880a-40d6a5738804.jpeg" />
+<figcaption align="center">그림 7. Agent State</figcaption>
+</p>
+<p>에이전트 상태 $S^a_t$ 는 행동하는 주체의 상태를 표현한 것입니다(the agent’s internal representation). 에이전트는 이 상태를 기반으로 다음 행동을 선택하고, 강화학습 시 사용되는 상태 정보입니다. 또한, 히스토리의 함수 $S_t^a=f(H_t)$ 로 표현될 수 있습니다.</p>
+
+<p><b>Information State</b><br />
+정보 상태(information state)는 마코브 성질을 가지는 마코브 상태입니다.</p>
+<p align="center">
+<img src="https://user-images.githubusercontent.com/37501153/87239025-2d4c8b00-c445-11ea-9c11-473ca87cd331.jpg" />
+<figcaption align="center">그림 8. Markov State</figcaption>
+</p>
+<p>$S_t$ 가 주어졌을 때 $S_{t+1}$ 의 확률은 $t$ 시점까지의 모든 상태가 주어졌을 때 $S_{t+1}$ 의 확률과 같으면 마코브 상태입니다. 즉, 현재상태 이전의 과거정보들은 미래정보에 대해 아무런 영향을 주지 않는다는 것입니다. 그 이유는 이미 현재 상태는 과거 정보를 충분히 포함하고 있기 때문에, 이 정보만으로 미래를 파악하기에 충분하다는 것입니다.</p>
+
+<blockquote>The state is sufficient statistic of the future.<br />
+The future is independent of the past given the present
+$H_{1:t} \to S_t \to H_{t+1:\infty}$</blockquote>
+<p>마코브 상태로는 환경상태 $S^e_t$ 와 히스토리 $H_t$ 입니다. $S^e_t$ 는 주체한테 미치는 영향을 모두 포함하고 있기 때문에 마코브 상태이고 마찬가지로 $H_t$도 관찰가능한 일련의 모든 시퀀스를 포함하고 있기 때문에 역시 마코브 상태입니다.</p>
+
+<h2>MDP and POMDP</h2>
+<p>강화학습 문제를 정의하기 위해서, 상태, 행동, 보상에 대한 정의가 필요합니다. 하지만 상태는 마코브 상태일수도 있고 아닐 수도 있습니다. 그럼 각각에 따라 강화학습 문제를 접근하는 방법도 달라집니다. 아래에서 더 살펴봅시다.</p>
+
+<p><b>Fully Observable Environments</b><br />
+에이전트가 환경 상태를 직접적으로 관찰할 수 있을 때, 에이전트는 Fully Observability를 가집니다. 이는 결국 에이전트 상태가 환경상태와 동일한 경우입니다.</p>
+
+<p>[O_t = S^a_t = S^e_t]</p>
+
+<p>일반적으로, 에이전트가 Fully Observability를 가질 때, Markov Decision Process(MDP)를 따른다고 합니다.</p>
+
+<p>아래와 같이 MDP의 예로 화성탐사 문제를 정의해봅시다.&lt;p align='center'&gt;
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87240302-5c69f900-c453-11ea-87ba-7b34cd3fbdb1.jpg" /></p>
+<figcaption align="center">그림 9. 화성탐사기 예제</figcaption>
+<p>&lt;/p&gt;
+위의 그림과 같이, 화성탐사기가 도달할 수 있는 상태는 총 7가지 상태이고, 각 상태에서 취할 수 있는 행동은 왼쪽/오른쪽 두가지입니다. s1 상태에 있으면, +1보상을, s7상태에 있으면 +10보상을 받고, 나머지 상태에서는 0의 보상을 받습니다. 이처럼, 화성탐사기가 어느 상태에 있을 때 어떤 보상을 받을지 다 알고 있는 상황이 화성탐사기 에이전트가 환경상태임을 의미합니다.</p>
+
+<p><b>Partially Observable Environments</b><br />
+에이전트가 환경을 간접적으로 관찰할 수 밖에 없을 때, 에이전트는 Partial observability를 가집니다. 예를 들어, 로봇은 카메라 센서로만 인식할 수 있는 장애물만 파악할 수 있습니다. 카드게임에서는 상대방의 카드패는 알 수 없고, 본인이 가진 카드만 알 수 있습니다.</p>
+
+<p>[O_t = S^a_t \neq S^e_t]</p>
+
+<p>이 경우 에이전트 상태는 환경 상태와 동일하지 않으며, 에이전트가 partially observable Markov Decision process(POMDP)를 따릅니다.</p>
+
+<p>에이전트는 본인의 상태를 반드시 정의내려야 합니다. 전체 히스토리를 에이전트 상태로 둘 수도 있고, ‘환경에 대한 정보가 ~할 것이다’라는 믿음으로 구축할 수도 있습니다. 아니면, RNN을 이용하여 인코딩된 벡터로 에이전트 상태를 나타낼 수도 있습니다.</p>
+<ul>
+<li>use history : $S_t^a = H_t$ </li>
+<li><span style="color:red">Beliefs</span> of environment state : $S_t^a = (P[S^e_t = s^1], \dots, P[s^e_t = s^n])$ </li>
+<li>Recurrent neural network : $S^a_t = \sigma(S^a_{t-1}W_s+O_tW_o)$ </li></ul>
+
+<p><b>Deterministic ? Stochastic?</b><br /></p>
+<p align="center">
+<img width="500" src="https://user-images.githubusercontent.com/37501153/87239676-bf0bc680-c44c-11ea-821e-7f85a6a00d21.jpg" />
+<figcaption align="center">그림 10. Deterministic vs. Stochastic</figcaption>
+</p>
+<p>강화학습 문제를 MDP인지 POMDP로 보는 관점말고도 deterministic한지 stochastic한지 보는 관점도 있습니다. deterministic한 강화학습 문제는 환경이 에이전트의 행동에 따라 변할 때 그 결과 오로지 하나의 결과만 보여줍니다(single observation and reward). 그러나, stochastic한 강화학습 문제는 에이전트의 행동에 따라 환경이 변할 때, 가능성 있는 여러 결과를 보여줍니다. 물론 그 결과가 나올 확률과 함께 말이죠.</p>
+
+<hr />
+
+<p>이번 포스팅은 여기까지 마치겠습니다. <a href="https://ralasun.github.io/reinforcement%20learning/2020/07/11/introRL(2)">Reinforcement Learning 소개(2)</a>에 이어서 포스팅하도록 하겠습니다.</p>
+
+<hr />
+
+<ol>
+  <li><a href="http://web.stanford.edu/class/cs234/slides/lecture1.pdf">CS234 Winter 2019 course Lecture 1</a></li>
+  <li><a href="http://incompleteideas.net/book/bookdraft2017nov5.pdf">Richard S. Sutton and Andre G. Barto : Reinforcement Learning : An Introduction</a></li>
+  <li><a href="https://www.davidsilver.uk/wp-content/uploads/2020/03/intro_RL.pdf">David Silver Lecture 1</a></li>
+  <li><a href="https://medium.com/@SmartLabAI/a-brief-overview-of-imitation-learning-8a8a75c44a9c">Imitation learning : a brief over view of imitation learning, https://medium.com/@SmartLabAI/a-brief-overview-of-imitation-learning-8a8a75c44a9c</a></li>
+</ol>
+
+
+    <article>
+    <div class="post-more">
+      
+      <a href="/reinforcement%20learning/2020/07/11/introRL(1)/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
+      
+      <a href="/reinforcement%20learning/2020/07/11/introRL(1)/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
+    </div>
+  </div>
+  
+</div>
+
+<div class="pagination">
+  
+    <a class="pagination-item older" href="/blog/page5">Older</a>
+  
+  
+    
+      <a class="pagination-item newer" href="/blog/page3">Newer</a>
+    
+  
+</div>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if (target === toggle) {
+            checkbox.checked = !checkbox.checked;
+            e.preventDefault();
+          } else if (checkbox.checked && !sidebar.contains(target)) {
+            /* click outside the sidebar when sidebar is open */
+            checkbox.checked = false;
+          }
+        }, false);
+      })(document);
+    </script>
+    
+    <script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-166283746-1', 'auto');
+ga('send', 'pageview');
+    </script>
+    
+  </body>
+  
+  <script id="dsq-count-scr" src="//ralasun-github-io.disqus.com/count.js" async></script>
+  
+</html>

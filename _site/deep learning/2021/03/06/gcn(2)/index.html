@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Graph Convolutional Network에 대하여 - Spectral Graph Convolution(2)(작성 중) &middot; Ralasun Resarch Blog
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/main.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://raw.githubusercontent.com/ralasun/ralasun.github.io/master/public/favicon.png">
+  <link rel="shortcut icon" href="https://raw.githubusercontent.com/ralasun/ralasun.github.io/master/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  
+  <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_SVG"> </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });
+  </script>
+  
+</head>
+
+
+  <body>
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="sidebar-personal-info">
+      <div class="sidebar-personal-info-section">
+        <img src="http://localhost:4000/public/img/profile_v1.jpg"/>
+      </div>
+      <div class="sidebar-personal-info-section">
+        <p><strong>한걸음씩</strong>, 그리고 <strong>꾸준히</strong> 나아가기</p>
+      </div>
+      
+      
+      
+      <div class="sidebar-personal-info-section">
+        <p> Follow me: 
+        
+        
+        
+        <a href="https://www.linkedin.com/in/ralasun">
+          <i class="fa fa-linkedin" aria-hidden="true"></i>
+        </a>
+        
+        |
+        
+        
+        
+        <a href="https://github.com/ralasun">
+          <i class="fa fa-github" aria-hidden="true"></i>
+        </a>
+        
+        |
+        
+        
+        
+        <a href="mailto:sunhwalsh91@gmail.com">
+          <i class="fa fa-envelope" aria-hidden="true"></i>
+        </a>
+        
+        
+        
+        </p>
+      </div>
+      
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    
+      
+      
+      
+
+      
+
+      <span class="">
+        <a class="sidebar-nav-item " href="/">
+          Home
+        </a>
+
+        
+      </span>
+
+    
+      
+      
+      
+
+      
+
+      <span class="foldable">
+        <a class="sidebar-nav-item " href="/blog/">
+          Blog
+        </a>
+
+        
+          
+            
+            
+            
+              <a class="sidebar-nav-item sidebar-nav-item-sub " href="/blog/categories/">
+                Posts
+              </a>
+          
+        
+          
+            
+            
+            
+              <a class="sidebar-nav-item sidebar-nav-item-sub " href="/blog/tags/">
+                Tags
+              </a>
+          
+        
+      </span>
+
+    
+      
+      
+      
+
+      
+
+      <span class="">
+        <a class="sidebar-nav-item " href="/about/">
+          About
+        </a>
+
+        
+      </span>
+
+    
+  </nav>
+
+  <div class="sidebar-item">
+    <p>
+    &copy; 2021 Seonhwa Lee. This work is liscensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home" title="Ralasun Resarch Blog">
+              <img class="masthead-logo" width="200" height="30" src="http://localhost:4000/public/logo.jpg"/>
+            </a>
+            <small>research blog for data science</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="post">
+  <h1 class="post-title">Graph Convolutional Network에 대하여 - Spectral Graph Convolution(2)(작성 중)</h1>
+  <span class="post-date">06 Mar 2021</span>
+   | 
+  
+    <a href="/blog/tags/#graph-neural-network" class="post-tag">graph-neural-network</a>
+  
+  
+  <article>
+    <blockquote>
+  <p>아직 작성 중에 있는 포스팅입니다.</p>
+</blockquote>
+
+<p>지난 포스팅 <a href="https://ralasun.github.io/deep%20learning/2021/02/15/gcn/">&lt;Graph Convolutional Network에 대하여 - Spectral Graph Convolution&gt;</a> 에 이어서, Kipf et. al의 Graph convolutional Network에 대해서 살펴보도록 하겠습니다.</p>
+
+<hr />
+
+<h1>Spectral Graph Convolutional Network</h1>
+
+<p align="center"><img src="https://imgur.com/hnw3IeK.png" /><figcaption align="center">그림 1. convolution theorem</figcaption></p>
+
+<p>지난 포스팅에서 마지막에 언급한 spectral graph convolution 수식을 다시 살펴보도록 하겠습니다.</p>
+
+\[\mathbf {x} * G \mathbf {g} = \mathcal F^{-1}(\mathcal {F}(\mathbf {x}) \odot \mathcal {F}(\mathbf {g})) = \mathbf {U}(\mathbf {U^{\intercal}x} \odot \mathbf {U^{\intercal}g}) \tag1\]
+
+\[\mathbf {x} * \mathbf {g}_\theta = \mathbf {U} \mathbf {g}_{\theta} \mathbf {U^{\intercal}x} \tag2\]
+
+<p>수식 (1)에서 어떻게 수식(2)로 표현이 가능할까요 ? graph fourier transform은 Laplacian 행렬의 eigenvector의 선형결합이라고 하였습니다. 이 때, 학습해야 할 filte $\mathbf g$ 가 그림 1에서 time domain에서의 filter가 아니라, <span style="text-decoration:underline">(1)이미 frequency 영역에서의 filter $\mathbf g$ 라고 둔다면,</span> 푸리에 변환된 signal과 단순 곱으로 계산할 수 있기 때문에 학습이 용이해집니다.</p>
+
+<p>지난 포스팅에서, convolution 연산의 특징 중 하나가 특정 signal이 시스템의 특성이 반영되어 필터링된 signal이 되는 것이라고 하였습니다. 그렇다면 GCN에서 이 filter를 어떻게 구축해야 signal의 특징을 잘 추출하고, filter의 특성도 잘 학습할 수 있을까요 ?</p>
+
+<p>푸리에 변환된 graph signal은 eigenvector들의 요소로 분해가 된 것입니다.</p>
+
+<hr />
+
+<ol>
+  <li><a href="https://arxiv.org/pdf/1312.6203.pdf%20http://arxiv.org/abs/1312.6203">Bruna, Joan, et al. “Spectral networks and locally connected networks on graphs.” arXiv preprint arXiv:1312.6203 (2013).</a></li>
+</ol>
+
+
+  </article>
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/signal%20analysis/2021/06/21/stft-dwt/">
+            Short-time Fourier Transform(STFT) 과 Discrete Wavelet Transform(DWT)
+            <small>21 Jun 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/signal%20analysis/2021/06/18/ft-vs-wt/">
+            Discrete Fourier Transform에 대하여
+            <small>18 Jun 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/deep%20learning/2021/02/15/gcn/">
+            Graph Convolutional Network에 대하여 - Spectral Graph Convolution
+            <small>15 Feb 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+
+<div class="comments">
+  <h2>Comments</h2>
+  <div id="disqus_thread"></div>
+  <script>
+var disqus_config = function () {
+  this.page.url = 'http://localhost:4000/deep%20learning/2021/03/06/gcn(2)/'; // Replace PAGE_URL with your page's canonical URL variable
+  this.page.identifier = '/deep%20learning/2021/03/06/gcn(2)'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = '//ralasun-github-io.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if (target === toggle) {
+            checkbox.checked = !checkbox.checked;
+            e.preventDefault();
+          } else if (checkbox.checked && !sidebar.contains(target)) {
+            /* click outside the sidebar when sidebar is open */
+            checkbox.checked = false;
+          }
+        }, false);
+      })(document);
+    </script>
+    
+    <script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-166283746-1', 'auto');
+ga('send', 'pageview');
+    </script>
+    
+  </body>
+  
+  <script id="dsq-count-scr" src="//ralasun-github-io.disqus.com/count.js" async></script>
+  
+</html>

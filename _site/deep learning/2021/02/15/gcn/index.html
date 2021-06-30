@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Graph Convolutional Network에 대하여 - Spectral Graph Convolution &middot; Ralasun Resarch Blog
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/main.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://raw.githubusercontent.com/ralasun/ralasun.github.io/master/public/favicon.png">
+  <link rel="shortcut icon" href="https://raw.githubusercontent.com/ralasun/ralasun.github.io/master/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  
+  <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_SVG"> </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });
+  </script>
+  
+</head>
+
+
+  <body>
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="sidebar-personal-info">
+      <div class="sidebar-personal-info-section">
+        <img src="http://localhost:4000/public/img/profile_v1.jpg"/>
+      </div>
+      <div class="sidebar-personal-info-section">
+        <p><strong>한걸음씩</strong>, 그리고 <strong>꾸준히</strong> 나아가기</p>
+      </div>
+      
+      
+      
+      <div class="sidebar-personal-info-section">
+        <p> Follow me: 
+        
+        
+        
+        <a href="https://www.linkedin.com/in/ralasun">
+          <i class="fa fa-linkedin" aria-hidden="true"></i>
+        </a>
+        
+        |
+        
+        
+        
+        <a href="https://github.com/ralasun">
+          <i class="fa fa-github" aria-hidden="true"></i>
+        </a>
+        
+        |
+        
+        
+        
+        <a href="mailto:sunhwalsh91@gmail.com">
+          <i class="fa fa-envelope" aria-hidden="true"></i>
+        </a>
+        
+        
+        
+        </p>
+      </div>
+      
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    
+      
+      
+      
+
+      
+
+      <span class="">
+        <a class="sidebar-nav-item " href="/">
+          Home
+        </a>
+
+        
+      </span>
+
+    
+      
+      
+      
+
+      
+
+      <span class="foldable">
+        <a class="sidebar-nav-item " href="/blog/">
+          Blog
+        </a>
+
+        
+          
+            
+            
+            
+              <a class="sidebar-nav-item sidebar-nav-item-sub " href="/blog/categories/">
+                Posts
+              </a>
+          
+        
+          
+            
+            
+            
+              <a class="sidebar-nav-item sidebar-nav-item-sub " href="/blog/tags/">
+                Tags
+              </a>
+          
+        
+      </span>
+
+    
+      
+      
+      
+
+      
+
+      <span class="">
+        <a class="sidebar-nav-item " href="/about/">
+          About
+        </a>
+
+        
+      </span>
+
+    
+  </nav>
+
+  <div class="sidebar-item">
+    <p>
+    &copy; 2021 Seonhwa Lee. This work is liscensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home" title="Ralasun Resarch Blog">
+              <img class="masthead-logo" width="200" height="30" src="http://localhost:4000/public/logo.jpg"/>
+            </a>
+            <small>research blog for data science</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="post">
+  <h1 class="post-title">Graph Convolutional Network에 대하여 - Spectral Graph Convolution</h1>
+  <span class="post-date">15 Feb 2021</span>
+   | 
+  
+    <a href="/blog/tags/#graph-neural-network" class="post-tag">graph-neural-network</a>
+  
+  
+  <article>
+    <p>지난 GNN 포스팅&lt;<a href="https://ralasun.github.io/deep%20learning/2021/02/11/gcn/">Introduction to Graph Neural Network - GNN 소개 및 개념</a>&gt;에서 graph neural network의 전반적인 개념에 대해 소개하였습니다. 이번 포스팅은 graph neural network가 더욱 유명해진 계기가 된 <a href="https://arxiv.org/abs/1609.02907">Kipf. et, al.의 Graph Convolutional Neural Network</a>에 대해 다루도록 하겠습니다.</p>
+
+<p>Kipf. et al.의 GCN을 이해하기 위해서는 먼저, spectral graph convolution에서부터 시작해야 합니다. 그러나 :spectral” 이라는 부분이 생소하신 분들이 많을 거라 생각됩니다. 반면에 일반적인 CNN 동작 방식은 많이 알려져 있습니다. 일반적인 CNN 동작은 spatial convolution입니다. 따라서 이를 유사하게 graph에 적용하는 방식을 spatial graph convolution입니다. 따라서, 이번 포스팅에서는 spectral 방식과 spatial 방식을 비교하고, spectral graph convolution에 대해 자세히 설명한 뒤에 Kipf. et al의 Graph Convolutional Network에 대해 다루도록 하겠습니다.</p>
+
+<hr />
+
+<h1>Spatial Graph Convolution vs. <br />Spectral Graph Convolution</h1>
+
+<p>Graph convolution은 크게 2가지 방법이 있습니다. Spatial graph convolution과 Spectral graph convolution입니다. Spatial graph convolution은 convolution 연산을 graph위에서 직접 수행하는 방식으로, 각 노드와 가깝게 연결된 이웃 노드들에 한해서 convolution 연산을 수행합니다. 즉, 노드와 이웃노드들을 특정 grid form으로 재배열하여 convolution 연산을 수행하는 것입니다. 그러나, 우리가 일반적으로 아는 CNN의 filter는 고정된 사이즈를 가집니다(그림 1.).</p>
+
+<p align="center"><img src="https://i.stack.imgur.com/S5B1k.png" /><figcaption align="center">그림 1. CNN operation with fixed-size filter(3x3)</figcaption></p>
+
+<p>따라서, <b><i>spatial graph convolution 방식의 관건은 고정된 크기의 이웃 노드를 선택하는 것입니다.</i></b> 뿐만 아니라, CNN의 특징 중 하나는 “local invariance” 입니다. 입력의 위치가 바뀌어도 출력은 동일함을 의미합니다. 즉, 이미지 내의 강아지 위치가 달라도 CNN은 강아지라는 아웃풋을 출력함을 의미합니다.</p>
+
+<p align="center"><img src="https://miro.medium.com/max/1400/1*HUJ3-xs3nUv-wY_GTBVUMg.png" /><figcaption align="center">그림 2. Local invariance</figcaption></p>
+
+<p>따라서, <b><i>Spatial graph convolution의 또다른 관건은 바로 “local invariance”를 유지를 해야한다는 것입니다.</i></b></p>
+
+<p>앞에서 언급한 spatial graph convolution이 다뤄야 할 문제점과 별개로 또다른 문제점이 존재합니다. <b>Spatial graph convolution은 고정된 이웃 노드에서만 정보는 받아서 노드의 정보를 업데이트를 한다는 점입니다.</b></p>
+<p align="center"><img width="300" src="https://imgur.com/KWmqbgk.png" /><figcaption align="center">그림 3. Select neighborhood of red node</figcaption></p>
+
+<p>그러나, 그래프에서의 한 노드의 정보는 시간에 따라 여러 노드들의 정보의 혼합으로 표현될 수 있습니다. &lt;그림 4.&gt;를 살펴보도록 하겠습니다. 1번노드의 t=0일 때 정보는 [1,-1] 이지만 시간에 따라 여러 노드들의 정보(노드들의 signal)들이 밀려 들어오게 됩니다. 즉, 고정된 이웃노드 말고도 멀리 연결되어 있는 노드의 정보도 시간이 흐르면서 밀려 들어올 수 있는 것입니다. 이를 노드 간 message passing이라 합니다.</p>
+
+<p align="center"><img src="https://imgur.com/Fv2FJbC.png" /><figcaption align="center">그림 4. Message Passing in graph</figcaption>
+</p>
+
+<p>즉, 한 노드의 정보는 여러 노드의 signal이 혼재해 있는 것으로, 이를 time domain이 아닌 frequency 도메인으로 분석한다면, 한 노드 내에 혼재된 signal들을 여러 signal의 요소로 나눠서 node의 특징을 더 잘 추출할 수 있습니다. 이것에 관한 것이 바로 “Spectral Graph Convolution”입니다. Spectral graph convolution은 spectral 영역에서 convolution을 수행하는 것입니다. 이에 대해 자세히 살펴보도록 하겠습니다.</p>
+
+<h1>Dive into Spectral Graph Convolution</h1>
+
+<p>Signal Processing 분야에서 “spectral analysis”라는 것은 이미지/음성/그래프 신호(signal)을 time/spatial domain이 아니라 frequency domain으로 바꿔서 분석을 진행하는 것입니다. 즉, <em>어떤 특정 신호를 단순한 요소의 합으로 분해하는 것</em>을 의미합니다. 대표적으로 이를 수행할 수 있는 방법이 푸리에 변환(Fourier Transform)입니다.</p>
+
+<blockquote>
+  <p>spectral analysis에서 입력 신호가 전파/음성신호면 time domain을 frequency domain으로 변환하는 것이고, 컴퓨터 비전/그래프/영상처리 분야이면 spatial domain을 frequency domain으로 변환하는 것입니다.</p>
+</blockquote>
+
+<p>푸리에 변환이란, <span style="text-decoration: underline"><b>임의의 입력 신호를 다양한 주파수를 갖는 주기함수들의 합으로 분해하여 표현</b></span>하는 것입니다. 아래 그림처럼 빨간색 신호를 파란색의 주기함수들의 성분으로 나누는 작업이 바로 푸리에 변환입니다. 즉, 파란색 주기함수들을 합하면 결국 빨간색 신호가 되는 것입니다.</p>
+
+<p align="center"><img src="https://t1.daumcdn.net/cfile/tistory/9967FA3359B63D8122" /><figcaption align="center">그림 5. 푸리에 변환</figcaption></p>
+
+<p>그렇다면 graph signal에서의 푸리에 변환은 어떤 걸까요 ?</p>
+
+<p>결론부터 얘기하면, <span style="text-decoration: underline"><b>graph signal의 푸리에 변환은 graph의 Laplacian matrix를 eigen-decomposition하는 것</b></span>입니다. 아래에서 수식과 함께 자세히 살펴보도록 하겠습니다.</p>
+
+<h3>Fourier transform</h3>
+
+<p>먼저, 푸리에 변환 식에 대해서 살펴봅시다. <span style="color:gray"><del>저도 푸리에 변환에 대한 이해가 아직 한없이 부족합니다. 최대한 공부하고 이해한 내용을 풀어볼려고 노력하였습니다.</del></span></p>
+
+\[\hat{f}(\xi) = \int_{\mathbf{R}^d} f(x)e^{2\pi ix\xi} \,dx \tag{1}\]
+
+\[f(x) = \int_{\mathbf{R}^d} \hat{f}(\xi) e^{-2\pi ix\xi} \,d\xi \tag{2}\]
+
+<p>(1)은 f의 푸리에 변환이고, (2)는 푸리에 역변환입니다. 푸리에 변환은 위에서 설명드린 것처럼, time domain을 frequency domain으로 변환한 것으로, 다양한 주파수를 갖는 주기함수의 합입니다. 그렇다면, 푸리에 역변환은 frequency domain의 함수를 다시 time domain으로 변환하는 것입니다. 푸리에 변환을 바라보는 관점은 여러가지가 존재하지만 그 중 하나는 ‘내적’입니다.</p>
+
+<p align="center">"임의의 주파수 $f(x)$ 에 대하여, $\hat{f}(\xi)$ 는 $f(x)$ 와 $e^{-2\pi ix\xi}$ 의 내적"</p>
+
+<p>‘내적’이 내포하고 있는 의미는 유사도입니다. 즉, “a와 b의 내적은 a와 b가 얼마나 닮았는가”를 뜻합니다. 결국 푸리에 변환은 다시 풀어쓰면 아래와 같은 의미를 가지고 있습니다.</p>
+
+<p align="center">"임의의 주파수 $f(x)$ 에 대하여, $\hat{f}(\xi)$ 는 $f(x)$ 와 $e^{-2\pi ix\xi}$ 가 얼마나 닮았는가"</p>
+
+<p>그렇다면, $e^{-2\pi ix\xi}$ 의 의미는 무엇일까요 ? 이를 이해하기 위해선 ‘오일러 공식’이 필요합니다. 오일러 공식은 복소지수함수(complext exponential function)를 삼각함수(trigonometric function)로 표현하는 유명한 식입니다.</p>
+
+\[e^{ix} = cost + isinx \tag{3}\]
+
+<p>따라서, 오일러 공식에 의해 (1)식의 $e^{2\pi ix\xi}$ 부분을 cos요소와 sin요소의 합으로 표현할 수 있습니다.</p>
+
+\[e^{2\pi ix\xi} = cos(2\pi x\xi) + i sin(2\pi x\xi) \tag{4}\]
+
+<p>즉, 주어진 주파수 f(x)에 대해 cosine에서 유사한 정도와 sine과 유사한 정도의 합이 푸리에 변환이라고 생각할 수 있습니다.</p>
+
+<p>이번엔 푸리에 변환의 선형대수(linear algebra)적인 의미를 살펴보도록 하겠습니다. 선형 대수에서, 벡터 $a \in R^d$ 를 d차원의 orthonormal basis를 찾을 수 있다면, 벡터 $a$ 를 orhonormal basis의 선형결합으로 표현할 수 있습니다. 이 orthonormal basis를 찾는 방법 중 하나가 바로 Eigen-value decomposition 입니다.</p>
+
+<blockquote>
+  <p>orthonormal이란 서로 직교하면서 길이가 1인 벡터들을 의미합니다. 또한, 모든 matrix에 대해서 eigen-value decomposition 결과로 찾은 basis가 orthonormal은 아닙니다. 하지만 real-symmetric matrix에 대하여 구한 eigenvector들은 orthgonal한 관계입니다.</p>
+</blockquote>
+
+<p>다시 돌아와서, 푸리에 변환에서 주기함수 요소인 sine과 cosine에 대해 살펴봅시다. 아래와 같이 sine과 sine, sine과 cosine, cosine과 cosine을 내적하면 모두 다 0이 나옵니다. 이는 즉 삼각함수는 직교함을 알 수 있습니다(삼각함수의 직교성).</p>
+
+<p align="center"><img src="https://imgur.com/Bdo17jG.png" /><figcaption align="center">그림 6. 삼각함수의 직교성</figcaption></p>
+
+<p>그렇다면, 선형대수 관점에서, <span style="text-decoration: underline">sine과 cosine 기저들의 선형결합이 즉 푸리에 변환이 되는 것</span>입니다. 즉, <span style="text-decoration:underline; color:red">어떤 특정 graph signal에 관한 행렬이 존재하고 이 행렬이 real-symmetric matrix이며 이들의 eigenvectors를 구할 수 있다면, eigenvector의 선형결합이 graph signal의 푸리에 변환</span>임을 의미하는 것입니다.</p>
+
+<h3>Laplacian(Laplace Operator)</h3>
+
+<p>Graph laplacian을 보기 전에 Laplace Operator에 대해 살펴보도록 하겠습니다. Laplace operator는 differential operator로, 벡터 기울기의 발산(Divergence)을 의미합니다.</p>
+
+\[\triangle f= \triangledown \cdot \triangledown f = \triangledown^2 f \tag{5}\]
+
+<p>$\triangledown f$ 는 $f$ 의 기울기를 의미하는 것으로 1차함수의 기울기처럼, 한 점에서의 변화하는 정도를 의미합니다. 이를 그림으로 나타나면 아래와 같습니다.</p>
+
+<p align="center"><img src="https://raw.githubusercontent.com/angeloyeo/angeloyeo.github.io/master/pics/2019-08-28_laplacian/noname01.png" /><figcaption align="center">그림 7. Scalar 함수</figcaption></p>
+
+<p>&lt;그림 7.&gt;의 scalar 함수의 gradient는 아래와 같습니다.</p>
+
+<p align="center"><img src="https://raw.githubusercontent.com/angeloyeo/angeloyeo.github.io/master/pics/2019-08-28_laplacian/noname03.png" /><figcaption align="center">그림 8. Scalar 함수의 gradient</figcaption></p>
+
+<p>&lt;그림 7.&gt;과 &lt;그림 8.&gt;을 보시면, (x,y)=(0,2) 부근에는 수렴하는 형태의 gradient가 형성되어 있고, (x,y)=(0,-2) 부근에는 발산하는 형태의 gradient가 형성되어 있습니다. Laplace 연산자를 이용해서 이 기울기의 발산 $\triangle f$ 을 구해주면, 아래와 같습니다.</p>
+
+<p align="center"><img src="https://raw.githubusercontent.com/angeloyeo/angeloyeo.github.io/master/pics/2019-08-28_laplacian/noname04.png" /><figcaption align="center">그림 9. Divergence</figcaption></p>
+
+<p>divergence가 나타내는 의미, 즉, Laplace operator가 나타내는 의미는 무엇일까요 ? 이 함수의 높고 낮음을 표시하는 것입니다. 고등학교 때, 배운 2차 편미분과 비슷합니다. 이차 편미분 값이 양수면 아래로 볼록이고, 이차 편미분 값이 음수면 위로 볼록인 것과 유사합니다. 즉, 노란 부분일수록 양수 이기때문에 위로볼록인 모양이고, 파란부분일수록 음수값이기 때문에 아래로 볼록입니다.</p>
+
+<p>그렇다면, graph signal 영역에서 Laplace operator가 갖는 의미가 무엇일까요 ? graph signal 영역에서 Laplace operator를 적용한다는 건, 한 노드에서의 signal의 흩어짐 정도, 즉, 흐르는 정도를 알 수 있습니다. <span styple="text-decoration:underline; color:red">특정 노드에서 signal이 들어왔을 때 그 signal이 특정 노드와 연결된 노드들로 각각 얼마만큼 빠르게 흩어지는지를 알 수 있고 이는 즉 그 노드의 특징이 될 수 있는 것입니다.</span> 위의 그림을 예를 들어서 설명한다면, 만약에 한 signal이 그림 7.의 가장 높은 부분(노란색 부분)에서 시작된다면 가장 낮은 부분(파란색 부분)까지 빠른 속도로 흘러갈 것입니다.</p>
+
+<blockquote>
+  <p>빨간색으로 강조한 부분이 왜 laplacian matrix의 eigen-value decomposition이 fourier transform과 연결되는지에 관한 부분입니다. 포스팅을 쭉 끝까지 읽어보시면 아하! 하면서 이해가 되실겁니다.</p>
+</blockquote>
+
+<p>아래는 이와 관련된 gif이미지입니다. Grid 격자를 어떤 graph라고 생각한다면, 어떤 노드에서 signal이 들어왔을 때 흩어지는 양상을 보실 수 있습니다. 이 흩어지는 양상을 자세히 알기 위해서는 laplcian operator를 이용하여 계산하면 됩니다.</p>
+
+<p align="center"><img src="https://miro.medium.com/max/1120/1*gz2hyrcSSJG9MtDzmQLe3w.gif" /><figcaption align="center">그림 9. Diffusion of some signal in a regular grid graph based on the graph Laplacian</figcaption></p>
+
+<h3>Graph Laplacian</h3>
+
+<p>그러나, 이제까지 설명한 laplacian operator는 지난 포스팅에서 언급한 Laplacian matrix랑 무슨 관련이 있는 걸까요? 이름이 비슷한 걸 보니, laplacian matrix도 어떤 differential operator, 즉 ‘변화’에 관한 행렬임을 짐작할 수 있습니다.</p>
+
+\[\triangle f = \triangledown^2 f =\sum_{i=1}^{n}\frac{\partial^2 f}{\partial {x_i}^2} \tag{6}\]
+
+<p>1차원에서의 laplacian operator는 <a href="https://en.wikipedia.org/wiki/Second_derivative">이차도함수 극한 정의</a>와 동일합니다.</p>
+
+\[\triangledown^2 f = \lim_{h \rightarrow 0} \frac{f(x+h) - 2f(x) - f(x-h)}{h^2} \tag{7}\]
+
+<p>그렇다면 위 laplacian operator가 graph 상에서 적용되면 어떻게 될까요 ? 위 식 (7)은 아래 그림과 같이 표현될 수 있습니다. 즉, x노드의 signal f(x)와 x노드와 h사이 만큼 떨어진 이웃노드의 signal f(x+h), f(x-h) 와의 변화량을 통해 x노드의 signal 특징을 구한 것입니다.이것이 바로 x노드 signal에 laplacian operator를 적용한 거라고 생각될 수 있습니다. 따라서, 한 노드 의 특징은 해당 노드와 연결된 이웃노드와의 관계라는 관점에서 표현될 수 있고, 즉 이 표현을 위해 이웃 노드와의 차이(즉, 변화)를 이용한 것이 laplacian operator가 됩니다.</p>
+
+<p align="center"><img width="400" src="https://imgur.com/BYvjBKt.png" /><figcaption align="center">그림 10. discretized laplacian operator</figcaption></p>
+
+<p>또한 graph laplacian은 연속적인 성질(continuous)이 아닌 이산적인 성질(discrete)을 띕니다. 이제까지 언급한 특징을 정리되면 아래의 graph laplacian 식이 이해가 되실 것입니다. 아래는 $v_i$ 노드에서 graph laplacian operator를 적용한 것입니다.</p>
+
+\[\triangle f(v_i) = Lf|_{v_i} = \sum_{v_j ~ v_i}[f(v_i) - f(v_j)] \tag{8}\]
+
+<p>weighted undirected graph인 경우, weighted undirected graph는 노드간 엣지에 가중치가 있는 경우입니다. graph laplacian operator는 아래와 같습니다.</p>
+
+<p align="center"><img width="400" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRUOW9mJ2mNgmHDw7_q7uiK2m1slCZgiah1Q&amp;usqp=CAU.png" /><figcaption align="center">그림 11. weighted undirected graph</figcaption></p>
+
+\[\triangle f(v_i) = \sum_{j \in N_i}W_{ij}[f(v_i) - f(v_j)] \tag{9}\]
+
+<p>여기서 $v_i$ 는 특정노드를 가르키는 인덱스이고, $f(v_i)$ 는 각 노드의 signal 입니다. 즉, 함수 $f \in R^N$ 는 각 노드의 특성을 signal로 맵핑해주는 함수라고 생각하시면 됩니다.</p>
+
+<p>Graph laplacian 예를 들어봅시다. 아래와 같은 간단한 graph가 있을 때, 각 노드에 대한 laplacian operator는 아래와 같습니다.</p>
+
+<p align="center"><img width="400" src="https://imgur.com/DYfJGS9.png" /><figcaption align="center">그림 12. Graph laplacian example</figcaption></p>
+
+\[\triangle f(v_1) = 2f(v_1) - f(v_2) - f(v_3)\]
+
+\[\triangle f(v_2) = 3f(v_2) - f(v_1) - f(v_3) - f(v_4)\]
+
+\[\triangle f(v_3) = 2f(v_3) - f(v_1) - f(v_2)\]
+
+\[\triangle f(v_4) = f(v_4) - f(v_2)\]
+
+<p>이를 행렬로 표현하면 아래와 같습니다.</p>
+
+\[M = \begin{bmatrix}
+       2 &amp; -1 &amp; -1 &amp; 0 \\
+       -1 &amp; 3 &amp; -1 &amp; -1 \\
+       0 &amp; -1 &amp; 0 &amp; 1\end{bmatrix} 
+       \begin{bmatrix} f(v_1) \\ f(v_2) \\ f(v_3) \\ f(v_4)\end{bmatrix} \tag{10}\]
+
+<p>위 식 (10) 의 앞부분 행렬은 지난 GNN 포스팅&lt;<a href="https://ralasun.github.io/deep%20learning/2021/02/11/gcn/">Introduction to Graph Neural Network - GNN 소개 및 개념</a>&gt; 에서 소개한 Laplacian matrix 입니다. 즉, <span style="text-decoration:underline">laplacian matrix란 graph representation 중에서 이웃 노드와의 변화 흐름을 통해 노드의 특징을 나타내는 그래프 표현이라고 생각할 수 있습니다.</span></p>
+
+<p>이웃 노드와의 차이(변화, variation)는 결국 노드 간의 매끄러움 정도(smoothness)를 의미합니다. 한 노드가 이웃 노드와의 차이가 작다는 건 그 노드는 이웃 노드와 특성이 비슷한 경우이고, 이를 ‘매끄럽다’라고 생각할 수 있습니다. 반면에, 이웃 노드와의 차이가 크다는 건 그 노드는 이웃 노드와 특성이 상이하다는 것이고 이는 ‘매끄럽지 않다’라고 생각할 수 있습니다. 따라서 Laplacian Matrix는 graph의 smoothness와 관련이 있습니다.</p>
+
+<p>이를 ‘신호’라는 관점에서 다시 생각해봅시다. 어떤 한 노드 내에서 흐르는 신호는 크게 2가지로 나눈다면, 나와 비슷한 특성을 가진 이웃노드에서 들어오는 신호와 나와 상이한 특성을 가진 이웃노드에서 들어오는 신호로 나눌 수 있습니다. 즉, <span style="text-decoration:underline; color:red">한 노드 내에 혼잡해 있는 신호는 나와 유사한 특성을 가진 노드에서 오는 신호와 나와 상이한 특성을 가진 노드에서 오는 신호의 결합으로 생각할 수 있습니다.</span> 이는 결국 푸리에 변환과 관련된 개념입니다. 그리고 나와 유사한 속성의 노드와 상이한 속성의 노드를 나눌 수 있는 것에 관한 정보가 바로 Laplacian matrix에 담겨져 있는 것입니다. 따라서, <span style="text-decoration:underline; color:red">lapalcian matrix를 이용한 푸리에 변환이 바로 “Graph Fourier Transform” 이며, 이는 위에서 언급한 “eigen-value decomposition”과 관련이 있는 것입니다.</span></p>
+
+<h3>Graph Fourier Transform</h3>
+
+<p>그렇다면, graph fourier transform이 왜 Laplacian matrix를 eigen-decomposition을 하는지에 대한 궁금증이 여기서 생깁니다. 이 부분을 이제 짚고 넘어가겠습니다. 이 부분까지 이해가 되신다면, 이 이후에 진행할 spectral graph convolution을 제대로 이해하실 수 있으실 것입니다.</p>
+
+<p>위에서 특정 노드와 유사한 노드 집단과 상이한 노드집단을 나눌 수 있다면 특정 노드에 혼잡해 있는 신호를 여러 특성의 신호로 분해할 수 있다고 하였습니다. 그렇다면 먼저 이 집단을 구별할까요 ? 아래 식을 살펴봅시다. 아래 식은 결국, 노드 간의 차이의 합입니다.</p>
+
+\[S = \sum_{(i,j) \in \epsilon}W_{ij}[f(i) - f(j)]^2 = \mathbf {f^{\intercal}Lf} \tag{11}\]
+
+<p>이는 결국 graph의 smoothness와 관련된 것이며, Laplacian quadratic form으로 표현가능합니다. 위의 식을 최소화하게 하는 $\mathbf f$ 를 찾는다면, 특정 노드와 특성이 유사한 노드 집단과 상이한 노드 집단을 구분할 수 있습니다.</p>
+
+\[min_{f \in R^N, \,||f||_2 = 1} \mathbf {f^{\intercal}Lf} \tag{12}\]
+
+<p>Lagrange 방정식에 의해 최적화 방정식으로 바꿀 수 있습니다.</p>
+
+\[L = \mathbf {f^{\intercal}Lf} - \lambda(\mathbf {f^{\intercal}f} - 1) \tag{13}\]
+
+<p>위 식을 최소가 되게 하기 위한 $\mathbf f$ 를 찾기 위해 $\mathbf f$ 로 미분하면 아래와 같습니다.</p>
+
+\[\frac{\partial L}{\partial f} = 2\mathbf {Lf} - 2\lambda \mathbf f = 0 \tag{14}\]
+
+<p>따라서, 최소가 되는 $\mathbf f$ 는 아래 식을 만족해야 합니다.</p>
+
+\[\mathbf {Lf} = \lambda \mathbf f \tag{15}\]
+
+<p>위의 식은 laplacian 행렬의 eigen-value decomposition입니다. laplacian matrix의 eigenvector eigen vector들이 특정 노드와 유사한 노드집단과 상이한 노드집단을 구분하는 기준이 되고, 특히 작은 값의 eigenvalue의 대응하는 eigenvector일수록 graph를 더욱 smooth하게 나누는 기준이 됩니다.</p>
+
+<p>laplacian matrix의 eigenvector의 예를 들어봅시다. 아래 그림은 사람의 behavior를 graph으로 표현했을 때, 해당 graph의 laplacian 행렬의 eigenvector $u_2, u_3, u_4, u_8, \,\,, (0 &lt; \lambda_2 \leq \lambda_3 \leq \lambda_4 \leq \lambda_8)$ 에 graph 노드를 임베딩한 것입니다. 즉, 그래프 노드 $f(v_i)$ 라면, $u^{\intercal}f(v_i)$ 를 계산한 겁니다.</p>
+
+<p align="center"><img width="400" src="https://imgur.com/JWVlsGQ.png" /><figcaption align="center">그림 12. Projection on eigenvector of Laplacian Matrix with each graph node</figcaption></p>
+
+<p>사람의 행동을 graph로 표현했을 때, 위의 그림처럼 가까이에 있는 부분끼리 이웃노드에 해당될 가능성이 높습니다. 머리 쪽과 팔쪽은 가까우니깐 이웃노드일 가능성이 높고, 머리와 다리 쪽은 상이한 노드일 가능성이 높습니다. 따라서, eigenvalue가 가장 작은 eigenvector $u_2$ 에 임베딩했을 때, 해당 graph의 노드들을 이웃노드 집단과 상이한 노드 집단으로 잘 분리되는 것을 보실 수 있습니다.</p>
+
+<p>이를 다시 돌아와서 fourier transform 관점에서 해석해봅시다. <span style="text-decoration:underline; color:red">graph의 특정 노드 signal을 $f(v_i)$ 를 작은 값의 eigenvalue에 대응되는 eigenvector에 사영시키면, 혼재되어 있는 signal 중 가까운 이웃노드에서 들어오는 signal의 성분을 추출한 것으로 볼 수 있고, 큰 값의 eigenvalue에 대응되는 eigenvector에 사영시키면, 혼재되어 있는 signal 중 멀리 있는 상이한 노드에서 들어오는 signal의 성분을 추출한 것입니다.</span> 따라서, 혼재되어 있는 graph signal을 eigenvector의 선형결합으로 표현하여, 여러 집단(가장 유사한 집단 &lt; … &lt; 매우 상이한 집단)에서 들어오는 signal의 합으로 표현할 수 있습니다.</p>
+
+<p>또한 위에서, fourier transform은  혼합 signal을 sine과 cosine의 주파수의 성분으로 쪼개어 이 성분들의 선형결합이라고 하였습니다. 그리고, 이 때 주파수의 성분은 삼각함수의 직교성으로 인해, 직교기저를 이룬다고 하였습니다. 마찬가지로, laplacian matrix은 real-symmetric 행렬이어서 eigenvector들이 직교기저를 이룹니다. 즉, graph signal을 laplacian eigenvector 행렬에 사영시키면, graph signal을 laplacian의 직교 기저들의 성분으로 분해하여 이를 합한 선형결합에 해당됩니다.</p>
+
+<p>이제까지 설명한 것을 토대로 Graph Fourier Transform은 바로 Laplacian 행렬의 Eigen-value decomposition과 관련이 있게 되는 것입니다. 수식으로도 왜 그렇게 되는지 알 수 있는데, 이는 다음과 같습니다.</p>
+
+<p>Fourier transform의 식을 다시 쓰면 아래와 같습니다.</p>
+
+\[\hat{f}(\xi) = &lt;f, e^{2\pi ix\xi}&gt;\int_{\mathbf{R}^d} f(x)e^{2\pi ix\xi} \,dx \tag{16}\]
+
+<p>주파수 성분은 $e^{2\pi ix\xi}$ 이며, 여기에 laplace operator를 적용하면 아래와 같습니다.</p>
+
+\[Lf = -\triangle(e^{2\pi ix\xi}) = -\frac{\partial^2}{\partial x^2}e^{2\pi ix\xi} = (2\pi \xi)^2 e^{2\pi ix\xi} = \lambda f \tag{17}\]
+
+<p>즉, 주파수 성분 $e^{2\pi ix\xi}$ 도 laplace operator의 eigen-function라고 볼 수 있습니다.</p>
+
+<blockquote>
+  <p>1차원 같은 경우, eigen-function이라 한 이유는 eigen-vector는 2차원 이상일 때의 eigen-function이라고 볼 수 있기 때문입니다.</p>
+</blockquote>
+
+<p>이제까지는 왜 Graph Fourier Transform이 Laplacian 행렬이 eigen-value decomposition과 관련 있는지 개념적인 이유와 수식적인 이유에 대해서 살펴봤습니다. 그러면 마지막으로, Graph Fourier Transform의 수식을 정리해보도록 하겠습니다.</p>
+
+<p>Laplacian 행렬의 eigen-value decomposition은 아래와 같습니다.</p>
+
+\[\mathbf {L} = \mathbf {U^{\intercal}\Lambda U} \tag{18}\]
+
+<p>이를 이용한 graph fourier transform과 inverse graph fourier transform은 아래와 같습니다.</p>
+
+\[\mathcal {F}(\mathbf x) = \mathbf {U^{\intercal}x} \tag{19}\]
+
+\[\mathcal {F^{-1}}(\hat {\mathbf {x}}) = \mathbf {U} \hat {\mathbf {x}} \tag{20}\]
+
+<blockquote>
+  <p>inverse fourier transform은 frequency domain으로 변환된 signal을 다시 time domain으로 변환하는 것입니다.</p>
+</blockquote>
+
+<h3>Spectral Graph Convolution</h3>
+
+<p>드디어 Spectral Graph Convolution 입니다. 꽤 많이 돌아왔으나, Spectral Graph Convolution을 이해하기 위해서 필요한 Fourier Transform, Graph Laplacian, Graph Fourier Transform을 살펴봤습니다. 그렇다면 이제까지 배운 개념을 가지고 Spectral Graph Convolution이 어떻게 작동하는지 알아보겠습니다.</p>
+
+<h5>convolution theorem</h5>
+
+<p>입력과 출력이 있는 시스템에서, 출력 값은 현재의 입력에만 영향을 받는 것이 아니라 이전의 입력값에도 영향을 받습니다. <span style="text-decoration:underline">따라서 이전의 값까지의 영향을 고려하여 시스템의 출력을 계산하기 위한 연산이 convolution입니다.</span> 어떤 시스템에 입력신호가 들어가서 출력신호가 있다고 했을 때, 출력신호는 입력신호와 시스템함수의 convolution 연산을 통해서 나오는 것입니다.</p>
+
+<p align="center"><img width="400" src="https://imgur.com/dk7otIh.png" /><figcaption align="center">그림 13. convolution</figcaption></p>
+
+\[(f*g)(t) = \int_{-\infty}^{\infty}f(\tau)g(t-\tau)d\tau \tag{21}\]
+
+<p>convolution의 특징은 <span style="text-decoration:underline">시스템의 출력으로 ‘시스템의 특성’을 알 수 있다는 점입니다.</span> &lt;그림 13.&gt;에서 시스템의 특성이 담긴 시스템 함수가 위와 같은 모양이라면, 출력도 시스템 함수와 유사한 모양으로 나옵니다.</p>
+
+<p>&lt;그림 14&gt;와 같은 모양을 가진 시스템 함수라면, 출력도 시스템 함수와 유사한 모양이 나옵니다.</p>
+
+<p align="center"><img width="400" src="https://t1.daumcdn.net/cfile/tistory/11297E0F4CFB6C3721" /><figcaption align="center">그림 14. convolution(2)</figcaption></p>
+
+<p>이 개념을 적용한 것이 CNN에서의 filter에 해당되는 것입니다. 이미지 영역내에서의 convolution은 filter라는 시스템에 이미지라는 신호를 입력하여 filter에 해당되는 특징을 출력해 내는 것입니다.</p>
+
+<p align="center"><img width="400" src="https://imgur.com/wvuTh7M.png" /><figcaption align="center">그림 15. 이미지와 특정 filter의 convolution 연산 수행 후</figcaption></p>
+
+<p>convolution의 기본 개념에 대해서 대략적으로 살펴봤습니다. graph convolution은 그렇다면 우리는 어떤 graph의 특징을 추출해 낼 수 있는 filter를 학습으로 얻고 싶은 것입니다.</p>
+
+<p>convolution theorem은 그럼 어떤 것일까요 ? ‘time 영역에서의 signal과 시스템 함수와의 convolution 연산은 각각 frequency 영역으로 변환한 뒤의 곱과 같다’가 바로 convolution theorem 입니다. ‘time 영역에서의 signal과 시스템 함수와의 convolution 연산은 각각 frequency 영역으로 변환한 뒤의 곱과 같다’가 바로 convolution theorem 입니다.</p>
+
+<blockquote>
+  <p>convolution in spatial/time domain is equivalent to multiplication in Fourier domain</p>
+</blockquote>
+
+<p align="center"><img src="https://imgur.com/hnw3IeK.png" /><figcaption align="center">그림 16. convolution theorem</figcaption></p>
+
+<p>frequency 영역에서의 convolution은 단순 곱으로 계산될 수 있기 때문에 훨씬 편리합니다. 마찬가지로 graph 영역에서도 graph signal을 fourier transform으로 frequency 도메인으로 바꿔서 계산하면 마찬가지로 편리해집니다. 또한 노드와 가까이 있는 이웃노드에서부터 멀리 떨어져 있는 노드에서 오는 신호까지 모두 고려하여 graph signal의 특징을 추출할 수 있게 되는 것입니다. 이것이 바로 ‘spectral graph convolution’ 입니다.</p>
+
+<blockquote>
+  <p>멀리 떨어져 있는 노드에서 오는 신호까지 고려한다는 것이 사실 ‘convolution’ 입니다. convolution은 현재 출력 값은 현재 입력값 뿐만 아니라 이전 입력값에도 영향을 받는다는 것을 고려한 연산입니다. 즉, 멀리 떨어져 있는 노드에서 오는 신호는 비교적 최근에 온 신호가 될 것이고, 이웃노드에서 온 신호가 비교적 이전 시간에서 이미 영향을 준 신호입니다. 그러나 이를 모든 시간에 대해 분해에서 연산하기가 어렵기 때문에(시간 영역에서의 convolution 연산이 어렵기 때문에) frequency 영역으로 바꿔서 간편하게 계산을 하는 것입니다.</p>
+</blockquote>
+
+<p>따라서, spectral graph convolution 식은 아래와 같습니다. 이 식에서 학습할 filter는 $\mathbf g$ 입니다.</p>
+
+\[\mathbf {x} * G \mathbf {g} = \mathcal F^{-1}(\mathcal {F}(\mathbf {x}) \odot \mathcal {F}(\mathbf {g})) = \mathbf {U}(\mathbf {U^{\intercal}x} \odot \mathbf {U^{\intercal}g})\]
+
+<p>$\mathbf {g}_\theta = diag(\mathbf {U^{\intercal}g})$ 라 가정한다면(학습할 filter가 대각요소만 있다고 가정한다면), 위의 식은 아래와 같이 됩니다.</p>
+
+\[\mathbf {x} * \mathbf {g}_\theta = \mathbf {U} \mathbf {g}_{\theta} \mathbf {U^{\intercal}x}\]
+
+<hr />
+
+<p>이번 포스팅은 spectral graph convolution 연산을 이해하기 위해서 fourier transform, laplacian operator 와 graph fourier transform을 살펴보고, 마지막으로 spectral graph convolution을 설명하였습니다. <a href="https://ralasun.github.io/deep%20learning/2021/03/06/gcn(2)/">다음 포스팅</a>에서 이어서 spectral-based CNN에 대해서 살펴보도록 하겠습니다.</p>
+
+<p>spectral-based CNN을 깊게 이해하기 위해 리서치를 하고 이해한 내용을 최대한 정리하였으나 전공 분야가 아니라 부족한 부분이 많을 거라고 예상됩니다. 혹시나 내용이 틀렸거나 문의가 있으시면 메일이나 댓글 달아주세요!</p>
+
+<hr />
+
+<ol>
+  <li><a href="https://arxiv.org/abs/1609.02907">Kipf, Thomas N., and Max Welling. “Semi-supervised classification with graph convolutional networks.” arXiv preprint arXiv:1609.02907 (2016).</a></li>
+  <li><a href="https://arxiv.org/abs/1812.08434">Zhou, Jie, et al. “Graph neural networks: A review of methods and applications.” arXiv preprint arXiv:1812.08434 (2018).</a></li>
+  <li><a href="http://dsba.korea.ac.kr/seminar/?mod=document&amp;pageid=1&amp;keyword=spectral&amp;uid=1330">DSBA 연구실 세미나 자료, [Paper Review] MultiSAGE - Spatial GCN with Contextual Embedding</a></li>
+  <li>푸리에 변환 참고 페이지
+    <ul>
+      <li><a href="https://darkpgmr.tistory.com/171">https://darkpgmr.tistory.com/171</a></li>
+      <li><a href="https://www.math.ucla.edu/~tao/preprints/fourier.pdf">https://www.math.ucla.edu/~tao/preprints/fourier.pdf</a></li>
+      <li><a href="https://angeloyeo.github.io/2019/10/11/Fourier_Phase.html">https://angeloyeo.github.io/2019/10/11/Fourier_Phase.html</a></li>
+    </ul>
+  </li>
+  <li>Laplacian Operator
+    <ul>
+      <li><a href="https://angeloyeo.github.io/2019/08/25/laplacian.html">https://angeloyeo.github.io/2019/08/28/laplacian.html</a></li>
+      <li><a href="https://towardsdatascience.com/spectral-graph-convolution-explained-and-implemented-step-by-step-2e495b57f801">https://towardsdatascience.com/spectral-graph-convolution-explained-and-implemented-step-by-step-2e495b57f801</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Second_derivative">https://en.wikipedia.org/wiki/Second_derivative</a></li>
+    </ul>
+  </li>
+  <li>Graph Fourier Transform
+    <ul>
+      <li><a href="https://arxiv.org/pdf/1211.0053">Shuman, David I., et al. “The emerging field of signal processing on graphs: Extending high-dimensional data analysis to networks and other irregular domains.” IEEE signal processing magazine 30.3 (2013): 83-98.</a></li>
+    </ul>
+  </li>
+  <li>spectral graph convolution
+    <ul>
+      <li><a href="https://trip2ee.tistory.com/101">https://trip2ee.tistory.com/101</a></li>
+      <li><a href="https://m.blog.naver.com/PostView.nhn?blogId=namunny&amp;logNo=110183516999&amp;proxyReferer=https:%2F%2Fwww.google.com%2F">https://m.blog.naver.com/PostView.nhn?blogId=namunny&amp;logNo=110183516999&amp;proxyReferer=https:%2F%2Fwww.google.com%2F</a></li>
+      <li><a href="https://arxiv.org/pdf/1312.6203.pdf%20http://arxiv.org/abs/1312.6203">Bruna, Joan, et al. “Spectral networks and locally connected networks on graphs.” arXiv preprint arXiv:1312.6203 (2013).</a></li>
+    </ul>
+  </li>
+</ol>
+
+
+  </article>
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/signal%20analysis/2021/06/21/stft-dwt/">
+            Short-time Fourier Transform(STFT) 과 Discrete Wavelet Transform(DWT)
+            <small>21 Jun 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/signal%20analysis/2021/06/18/ft-vs-wt/">
+            Discrete Fourier Transform에 대하여
+            <small>18 Jun 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/deep%20learning/2021/03/06/gcn(2)/">
+            Graph Convolutional Network에 대하여 - Spectral Graph Convolution(2)(작성 중)
+            <small>06 Mar 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+
+<div class="comments">
+  <h2>Comments</h2>
+  <div id="disqus_thread"></div>
+  <script>
+var disqus_config = function () {
+  this.page.url = 'http://localhost:4000/deep%20learning/2021/02/15/gcn/'; // Replace PAGE_URL with your page's canonical URL variable
+  this.page.identifier = '/deep%20learning/2021/02/15/gcn'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = '//ralasun-github-io.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if (target === toggle) {
+            checkbox.checked = !checkbox.checked;
+            e.preventDefault();
+          } else if (checkbox.checked && !sidebar.contains(target)) {
+            /* click outside the sidebar when sidebar is open */
+            checkbox.checked = false;
+          }
+        }, false);
+      })(document);
+    </script>
+    
+    <script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-166283746-1', 'auto');
+ga('send', 'pageview');
+    </script>
+    
+  </body>
+  
+  <script id="dsq-count-scr" src="//ralasun-github-io.disqus.com/count.js" async></script>
+  
+</html>

@@ -182,8 +182,265 @@ MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], proces
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/signal%20analysis/2021/06/21/stft-dwt/">
+        Short-time Fourier Transform(STFT) 과 Discrete Wavelet Transform(DWT)
+      </a>
+    </h1>
+
+    <span class="post-date">21 Jun 2021</span>
+     | 
+    
+    <a href="/blog/tags/#signal-analysis" class="post-tag">signal-analysis</a>
+    
+    
+
+    <article>
+      <p>Fourier Transform의 단점은 무한히 흘러가는 파동에 대한 주파수 분석만 가능하기 때문에 국소적인 시간 부분 단위로는 주파수 분석을 할 수가 없습니다. 따라서 시간-주파수 영역 모두 분석할 수 있는 방법으로 Short-term Fourier Transform과 Discrete Wavelet Transform이 있습니다.</p>
+
+<h1>Limitation of Fourier Transform</h1>
+
+<p align="center"><img width="500" src="https://imgur.com/2Xr5hU4.png" /></p>
+<figcaption align="center">그림 1. Fourier Transform</figcaption>
+
+<p>&lt;그림 1.&gt;을 보면, 시간에 따라 주파수가 변화는 신호에 대해서 푸리에 변환은 시간에 따른 변화 정보를 담지 못합니다. 일정한 속도로 진동하는 정현파(sine함수와 cosine함수)가 아니라 갑자기 sharp한 포인트를 가지는 파동같은 경우에도 이러한 변화를 푸리에 변환을 통해선 확인할 수가 없습니다.</p>
+
+<p>따라서, 일정한 시간 블럭(window)로 나눠서 각각 블럭에 대해 푸리에 변환을 적용한다면 이러한 푸리에 변환의 단점을 어느정도 완화시킬 수 있습니다. 이 방법이 바로 국소 푸리에 변환(Short-Time Fourier Transform, STFT)입니다.</p>
+
+<h1>Short-Time Fourier Transform(STFT)</h1>
+
+<p>[\hat f(t, u) = \int_{-\infty}^{\infty}f(t’)w(t’-t)e^{-i2\pi t’u}dt’ \tag{1}]</p>
+
+<p>국소 푸리에 변환은 신호를 슬라이딩 윈도우 기법처럼 특정 길이를 가진 윈도우를 시그널 위에 움직이면서, 각각 윈도우에서 푸리에 변환을 하는 것입니다. 특정 시간 t에 대해서 푸리에 변환을 여러번 계산하게 되는데, 계산한 횟수만큼 평균을 구해서 특정 시간 t에서의 주파수 스펙트럼을 구합니다.</p>
+
+<p>그렇다면 <span style="text-decoration: underline">국소 푸리에 변환의 결과에 영향을 주는 변수</span>는 어떤걸까요? 바로 <span style="text-decoration: underline"><b>슬라이딩 윈도우</b></span>의 크기입니다.</p>
+
+<h2>Trade-offs between frequency resolution and time resolution</h2>
+
+<p align="center"><img width="500" src="https://imgur.com/7DE3e69.png" /></p>
+<figcaption align="center">그림 2. Trade-Offs between Frequency and Time in STFT</figcaption>
+
+<p>윈도우 크기가 너무 작으면(narrow window), 주파수 영역의 해상도가 떨어집니다. 조금만 생각하면 이해하기 쉽습니다. 푸리에 변환하는 대상인 윈도우를 크기를 작게해서 변환하는 윈도우 갯수를 늘린다면, 비슷한 시각 근처의 윈도우들의 분석 결과가 대부분 유사할 것입니다. 따라서, 특정 시간 t 주변에 frequency 스펙트럼이 비슷하게 그려지기 때문에, &lt;그림 2.&gt; 처럼 frequency 축으로 ‘spread-out’ 되어 해상도가 떨어집니다. 반대로 윈도우 크기가 너무 크면(broad window), 반대로 주파수 영역 해상도는 올라가지만 time 영역 해상도가 떨어집니다. &lt;그림 2.&gt;를 보시면, 왼쪽그림으로 갈수록 시간 영역에 흐릿한 영역이 넓어지는 것을 확인할 수 있습니다.</p>
+
+<p>그렇다면, 어떻게 해야 시간 영역과 주파수 영역 모두 해상도를 높게 가져갈 수 있을까요 ? <span style="text-decoration: underline">&lt;그림 1.&gt;의 신호에서 진동이 빠른 부분(높은 주파수)은 윈도우 크기를 작게 가져가고, 진동이 느린 부분(낮은 주파수)은 윈도우 크기를 넓게 가져가는 것입니다.</span> 그러나, STFT는 고정된 윈도우 사이즈에 대해서만 계산이 가능합니다. 이의 단점을 해결한 것이 바로 <b>웨이블릿 변환(Wavelet Transform)</b>입니다.</p>
+
+<h1>Wavelet Transform</h1>
+
+<p>푸리에 변환은 cosine과 sine으로 구성된 기저함수로의 분해입니다. 여기서 cosine과 sine은 정현파로, 시간에 따라 변하지 않고 일정한 속도와 크기로 움직입니다. 반면에 웨이블릿 변환은 ‘웨이블릿(wavelet)’이라는 기저함수로 분해됩니다. Wave는 파동, let은 ‘작다’ 라는 의미로, 작은 파동을 뜻합니다. <span style="text-decoration: underline">웨이블릿 변환은 사전에 정의된 웨이블릿 기저함수들로 분해</span>하는 것입니다. 그렇다면 웨이블릿 변환은 왜 시간과 주파수 영역 둘 다에서 높은 해상도를 가지는 걸까요 ? 웨이블릿의 특징을 살펴보면 알 수 있습니다.</p>
+
+<p align="center"><img src="https://miro.medium.com/max/1400/1*Ioee_j_s29XVULQVUN_OmA.png" /></p>
+<figcaption align="center">그림 3. Example Wavelets</figcaption>
+
+<p>&lt;그림 1.&gt;은 웨이블릿 함수의 예입니다. 웨이블릿은 국소 시간 부분에만 파동이 존재하고, 대부분은 0의 값을 가지는 파동입니다.</p>
+
+<blockquote>
+  <p>A Wavelet is wave-like oscillation that is localized in time</p>
+</blockquote>
+
+<p>웨이블릿은 2가지 파라미터가 있습니다. scale과 location입니다. Scale은   웨이블릿 파동을 늘이거나 줄이는데 관여합니다.</p>
+
+<p align="center"><img src="https://miro.medium.com/max/1400/1*F4yPDvEePSWVLb7C9rRuag.png" /></p>
+<figcaption align="center">그림 4. 웨이블릿의 scale변수</figcaption>
+
+<p>scale값이 크면, 웨이블릿은 늘어난 형태로 즉 작은 주파수를 가지게 되고, 국소 시간 부분의 크기가 증가합니다. 반대로 scale이 작아지면 웨이블릿은 큰 주파수를 가지게 되고 국소 시간 부분의 크기가 감소합니다.</p>
+
+<p align="center"><img src="https://miro.medium.com/max/1400/1*QUAYlxYNrdRX0f4gRjTLtA.png" /></p>
+<figcaption align="center">그림 5. 웨이블릿의 location변수</figcaption>
+
+<p>location변수는 wavelet의 이동과 관련됩니다. 주어진 location 변수만큼 웨이블릿은 주어진 신호를 슬라이딩하면서 변환을 계산하는 것입니다. 이러한 특징 때문에 웨이블릿 변환은 <b>합성곱(convolution)</b>으로 볼 수 있습니다.</p>
+
+<p algin="center"><img src="https://miro.medium.com/max/1200/1*4fXf0Yy8TMLSk7LXoZDDWw.gif" /></p>
+<figcaption align="center">그림 6. 웨이블릿 변환 애니메이션</figcaption>
+
+<p>따라서, <span style="text-decoration: underline">웨이블릿 변환은 작은 주파수에 대해선 넓은 윈도우 크기를 가지고, 큰 주파수에 대해선 좁은 윈도우 크기를 가지기 때문에 시간과 주파수 두 영역 모두에서 높은 해상도를 가질 수 있게 되는 것</span>입니다.</p>
+
+<h2>Differences among FT, STFT, and WT</h2>
+
+<p align="center"><img src="https://imgur.com/ueD0HKr.png" /><figcaption align="center">그림 5. FT, STFT 와 WT 비교</figcaption></p>
+
+<p>&lt;그림 5.&gt;는 푸리에 변환, 국소 푸리에 변환과 웨이블릿 변환을 비교한 그림입니다. FT는 time domain영역에 대한 주파수 변화는 볼 수 없고, STFT는 모두 동일한 윈도우 크기에 대해서만 주파수 영역을 분석할 수 있습니다. 반면에 WT는 주파수 크기에 따른 유연한 윈도우 크기를 설정하여 시간과 주파수 영역에 대한 해상도를 높일 수 있습니다.</p>
+
+<h2>Various kinds of Wavelets</h2>
+
+<p>아래는 다양한 웨이블릿 함수입니다.</p>
+
+<p align="center"><img src="https://miro.medium.com/max/1400/1*mkdL9Wjoj2MjbPtkrpoZjA.png" /></p>
+<figcaption align="center">그림 6. 웨이블릿 종류들</figcaption>
+
+<p>그림에서 다양한 웨이블릿인 것처럼, 어떤 웨이블릿을 선택하느냐에 따라 다른 변환 결과를 갖게 될 것입니다. 따라서, 주어진 신호에서 어떠한 특징을 뽑고 싶은지를 판단해야 하므로, 각 웨이블릿의 특징들을 살펴봐야 합니다. 여기서는 생략하도록 하겠습니다.</p>
+
+<h2>Discrete Wavelet Transform</h2>
+
+<p>좀 더 들어가서, 이산 웨이블릿 변환의 계산과정에 대해 살펴보겠습니다. 웨이블릿 변환은 해당 신호가 주어진 scale과 location 변수를 가진 wavelet과 얼마만큼 닮았는지에 대한 양에 해당되는 계수를 구하는 과정입니다. 따라서 이 계수들은 filter-bank를 반복적으로 적용하는 형태로 순차적으로 계산됩니다.</p>
+
+<p align="center"><img src="https://imgur.com/7KNw6xP.png" /></p>
+<figcaption align="center">그림 7. Filter bank view of wavelet decomposition</figcaption>
+
+<p>이산 웨이블릿 변환에서는 두 변수 scale(a)과 location(b)은 2의 배수씩 증가시켜서 다양한 웨이블릿 형태를 얻습니다.</p>
+
+<p>[a^j = 2^j , \,\,\,\, b_{j,k} = 2^jk \triangle t, \where \,\, j = 1, 2, \dots, \infty, \k=-\infty, \dots, -2, -1, 0, 1, 2, \dots, \infty]</p>
+
+<p>직관적으로 이해하면, scale이 커질수록 주파수가 작아지기 때문에 국소 시간 부분의 크기가 증가합니다. 따라서, 여기에 맞춰서 scale이 커질수록 shift되는 정도도 큼직해야하고, 반면에 샘플링 정도는 작아져야 합니다. 그렇게 되어야 시간-주파수 영역에서의 해상도를 유지할 수 있습니다(그림 8.).</p>
+
+<p align="center"><img src="https://imgur.com/eCoFXbq.png" /><figcaption align="center">그림 8. dyadic sampling</figcaption></p>
+
+<p>따라서 처음에 적용하는 웨이블릿은 scale이 가장 작기 때문에, 높은 주파수 영역대의 웨이블릿과의 신호와의 합성곱의 결과로 해당 웨이블릿과 유산한 양이 계산됩니다. 그렇다면 나머지 주파수 영역대에 대해서도 그 다음 scale인 2배된 scale을 통과해야 하는데 이는 마치 high-pass filter를 통과하고 난 나머지 부분에 대해서 처음 적용했던 필터보단 낮지만 높은 주파수 영역대를 살펴보는 또다른 high-pass filter를 통과시키는 것과 같은 과정을 거치게 됩니다. 따라서 결국엔 recursive한 형태를 보이게 되는 겁니다.</p>
+
+<p align="center"><img src="https://imgur.com/WN4GtSe.png" /><figcaption align="center">그림 9. filter bank view of wavelet decomposition(2)</figcaption></p>
+
+<hr />
+
+<p>이상으로 포스팅을 마치겠습니다.</p>
+
+<hr />
+
+<ol>
+  <li>The Wavelet Transform, <a href="https://towardsdatascience.com/the-wavelet-transform-e9cfa85d7b34">https://towardsdatascience.com/the-wavelet-transform-e9cfa85d7b34</a></li>
+  <li>Lecture 16 : Limitations of the Fourier Transform: STFT, <a href="https://qiml.radiology.wisc.edu/wp-content/uploads/sites/760/2020/10/notes_016_stft.pdf">https://qiml.radiology.wisc.edu/wp-content/uploads/sites/760/2020/10/notes_016_stft.pdf</a></li>
+  <li>Lecture 17 : Wavelets: Motivation and Description, <a href="https://qiml.radiology.wisc.edu/wp-content/uploads/sites/760/2020/10/notes_017_wavelets_intro.pdf">https://qiml.radiology.wisc.edu/wp-content/uploads/sites/760/2020/10/notes_017_wavelets_intro.pdf</a></li>
+</ol>
+
+    <article>
+    <div class="post-more">
+      
+      <a href="/signal%20analysis/2021/06/21/stft-dwt/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
+      
+      <a href="/signal%20analysis/2021/06/21/stft-dwt/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
+    </div>
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/signal%20analysis/2021/06/18/ft-vs-wt/">
+        Discrete Fourier Transform에 대하여
+      </a>
+    </h1>
+
+    <span class="post-date">18 Jun 2021</span>
+     | 
+    
+    <a href="/blog/tags/#signal-analysis" class="post-tag">signal-analysis</a>
+    
+    
+
+    <article>
+      <p>이산 푸리에 변환에 대해 알아보도록 하겠습니다.</p>
+
+<h1> Fourier transform </h1>
+
+<p>푸리에 변환이란 <span style="text-decoration: underline"><b>임의의 입력 신호를 다양한 주파수를 갖는 주기함수들의 합으로 분해하여 표현</b></span>한 것입니다. 여러 주기함수가 혼합되어 있는 신호를 봤을 땐 신호의 특성을 살피기 어려우나, 푸리에 변환은 아래 그림처럼 혼합된 신호(빨간색)을 여러 종류의 주파수를 갖는 주기함수들(파란색)로 분해할 수 있기 때문에, 신호의 특징을 살펴볼 수 있습니다.</p>
+
+<p align="center">
+<img src="https://t1.daumcdn.net/cfile/tistory/9967FA3359B63D8122" /><figcaption align="center"> 그림 1. 푸리에 변환 </figcaption></p>
+
+<p align="center"><img width="500" src="https://i.imgur.com/GrX9rSd.png" /><figcaption align="center"> 그림 2. 푸리에 변환(2) </figcaption></p>
+
+<p>푸리에 변환의 수학적 의미는 Time Domain(x축 : 시간, y축 : 진폭)을 Frequency Domain으로 변환(x축 : Frequency, y축 : 푸리에 변환 결과에 해당되는 계수)하는 것입니다. 아래는 일반 신호를 푸리에 변환한 결과(Spectogram)를 나타냅니다. Input 신호는 두 개의 주파수가 메인인 신호의 합성파입니다. 이처럼 푸리에 변환을 통해서 raw 데이터에서 볼 수 없는 특징을 찾아낼 수 있습니다.</p>
+
+<p align="center"><img width="500" src="https://imgur.com/gXJGsN2.png" /><figcaption align="center"> 그림 3. 푸리에 변환 결과 </figcaption></p>
+
+<p>일반적으로 Audio나 EEG 등 signal 데이터는 연속적일 수 없습니다. 왜냐하면, 기계를 통해 신호가 수집(sampling)이 되기 때문에 이산(Discrete)적인 특징을 띄고 있습니다. 예를 들어 256Hz로 샘플링 되는 신호라는 뜻은 1초에 256개 신호 sample을 수집한다는 뜻입니다.</p>
+
+<p align="center"><img src="https://imgur.com/OQw4chB.png" /><figcaption align="center">그림 4. 연속신호(continuous signal)와 디지털 신호(discretized signal)</figcaption></p>
+
+<p>따라서, 이산적인 특징을 다룰 수 있는 이산 푸리에 변환(Discrete Fourier Transform)을 사용합니다. 연속 푸리에 변환과 이산 푸리에 변환식은 아래와 같습니다.</p>
+
+<p>[\hat{f}(\xi) = \int_{\mathbf{R}^d} f(x)e^{2\pi ix\xi} \,dx \tag{1}]</p>
+
+<figcaption align="center">수식 1. 연속 푸리에 변환</figcaption>
+
+<p>[\mathnormal{X}<em>k = \sum</em>{n=0}^{N-1}x_n\cdot e^{\frac{-2\pi i}{N}kn} \tag{2}]</p>
+
+<figcaption align="center">수식 2. 이산 푸리에 변환</figcaption>
+
+<h2>Concept of Fourier Transform</h2>
+
+<p>푸리에 변환은 위에서 언급했듯이 여러 종류의 주파수를 갖는 함수로 분해하는 과정이라 하였습니다. 이 부분에 관한 의미를 2가지 측면으로 살펴보겠습니다. 푸리에 변환의 파동적인 측면에서의 개념(기본적 개념)과 선형대수적 개념입니다.</p>
+
+<h3>1. 푸리에 변환의 기본적 개념</h3>
+
+<p>푸리에 변환은 위에서 언급했듯이 여러 종류의 주파수를 갖는 함수로 분해하는 과정이라고 하였습니다. 어떤 방식으로 분해하는 걸까요 ? 이를 이해하기 위해선 오일러 공식을 알아야 합니다. 오일러 공식에 따르면, 복소지수함수 $e^{ix}$ 는 코사인과 사인의 합으로 구성됩니다. 오일러 공식을 좌표평면위에 나타나면 &lt;그림 4.&gt;와 같습니다. 이는 반지름이 1인 단위 원 위에 각 $x$ (그림에선 $\omega$) 성분을 가진 점으로 표현됩니다.</p>
+
+<p>[e^{ix} = cost + isinx \tag{3}]</p>
+
+<figcaption align="center">수식 3. 오일러 공식</figcaption>
+<p align="center">
+<img width="300" src="https://i.imgur.com/iVBkQVd.png" /><figcaption align="center">그림 4. Euler's Formula</figcaption></p>
+
+<p align="center"><img src="https://imgur.com/dEe9227.gif" /><figcaption align="center">그림 5. 푸리에 변환의 시각적 표현</figcaption></p>
+
+<p>&lt;수식 1.&gt;와 &lt;수식 2.&gt;를 보면 오일러 공식 부분을 대입해서 다시 쓰면 아래와 같습니다(이산 푸리에 변환에 대해서만 진행).</p>
+
+<p>[\mathnormal{X_k} = \sum_{n=0}^{N-1}x_n \cdot [cos(\frac{2\pi}{N}kn) - isin(\frac{2\pi}{N}kn)] \tag{4}]</p>
+
+<figcaption align="center">수식 4. 푸리에 변환</figcaption>
+
+<p>&lt;그림 4.&gt;에서 단위 원 위에 있는 점이 일정한 속도로 움직이고, 이를 time domain 위에 그림을 그리면 &lt;그림 5.&gt;의 1번째 그림이 됩니다(1번째 그림이 단위 원이라고 가정한 것입니다). 여기서 속도를 결정하는 것이 바로 주파수에 해당됩니다. 즉 $\frac{2 \pi k}{N}$ 가 크면 클수록 원 위의 점이 빨리 움직이게 됩니다. &lt;그림 5.&gt;에서의 2번째그림에서 4번째 그림으로 갈수록 점의 움직임이 빨라지는 것을 볼 수 있는데, 이는 아래로 갈수록 큰 주파수를 가지는 것을 뜻합니다.</p>
+
+<p>마지막으로 &lt;수식 4.&gt;에서 $x_n$ 은 원의 반지름을 결정하는 요소입니다. 즉, $x_n$ 이 작을수록 작은 크기의 원 위의 점의 움직임에 해당되는 것입니다. &lt;그림 5&gt;에서 4번째 그림에 해당되는 것입니다.</p>
+
+<p>즉 푸리에 변환이란 &lt;그림 5.&gt;의 마지막 그림처럼 여러 크기와 주파수를 가진 복소수 함수의 분해를 뜻하는 것입니다. 마지막 그림에서 그려지는 신호는 결국 1~4번째 단일 신호들의 합으로 표현되는 것과 마찬가지입니다.</p>
+
+<p>푸리에 변환의 결과인 $\mathnormal{X_k}$ 가 뜻하는 건 이산화된 신호 $x_1, \cdots, x_n$ 인 각 지점에서 $\frac{2\pi k}{N}$ 주파수를 가진 주기함수를 얼마만큼 가지고 있느냐를 계산한 후 합한 것입니다. 즉, 전체적으로 해당 주파수를 가진 부분을 신호가 얼마만큼 가지고 있는지에 대한 정도를 하나의 계수로 표현한 것입니다. 따라서 &lt;그림 3.&gt; 에서 y축은 해당 주파수를 가진 주기함수가 이 신호에 얼마만큼 들어있는지에 대한 양을 나타내는 것입니다.</p>
+
+<h2>2. 푸리에 변환의 선형대수적 개념</h2>
+
+<p>다음으론 푸리에 변환의 선형대수적 개념에 대해 살펴보도록 하겠습니다. 이를 살펴보기 위해선 선형대수 지식이 필요합니다. 선형대수에서 N차원에서 N개의 직교기저가 있다면 이들 기저의 선형결합으로 N차원 위의 모든 점을 표현할 수 있습니다. 예를 들어 3차원 공간에서, 3개의 직교기저 (1,0,0), (0,1,0), (0,0,1)의 선형결합으로 3차원 위의 모든 점을 표현할 수 있습니다.</p>
+
+<p>[(x, y, z) = x(1, 0, 0) + y(0,1,0) + z(0,0,1) \tag{5}]</p>
+
+<p>이산 푸리에 변환의 행렬 표현을 보면, 선형대수적인 개념을 확인할 수 있습니다.  &lt;수식 2.&gt;와 &lt;수식 4.&gt;에서 k=4까지의 이산 푸리에 변환 행렬은 아래와 같습니다.</p>
+
+<p>마찬가지로, 푸리에변환도 cosine과 sine로 구성된 직교 주기 함수의 선형결합으로, 신호가 N개로 이뤄진 벡터라면, cosine과 sine로 구성된 N차원의 선형결합으로 분석하고자 하는 신호를 표현한 것입니다. 이산 푸리에 변환을 행렬로 표현하는 과정을 보면 쉽게 이해하실 수 있습니다.</p>
+
+<p>전체 신호의 길이가 N인 이산 신호 $x_n$ 와 길이가 N인 주파수 성분 $\mathnormal X_k$ 에 대하여, &lt;수식 2.&gt;를 전개해보면 아래와 같습니다.</p>
+
+<p>[\mathnormal X_0 = x_0e^{-i\frac{2 \pi 0}{N}0} + x_1e^{-i\frac{2 \pi 0}{N}1} + x_2e^{-i\frac{2 \pi 0}{N}2} + \cdots + x_{N-1}e^{-i\frac{2 \pi 0}{N}(N-1)} \tag{6}]</p>
+
+<p>[\mathnormal X_1 = x_0e^{-i\frac{2 \pi 1}{N}0} + x_1e^{-i\frac{2 \pi 1}{N}1} + x_2e^{-i\frac{2 \pi 1}{N}2} + \cdots + x_{N-1}e^{-i\frac{2 \pi 1}{N}(N-1)} \tag{7}]</p>
+
+<p>$w = e^{-i\frac{2 \pi}{N}}$ 이라 한다면, 아래와 같이 선형 결합의 행렬 형태로 표현할 수 있습니다.</p>
+
+<p>[\begin{bmatrix}
+   \ X_0 \ X_1 \ \vdots \ X_{N-1}\end{bmatrix} =
+   \begin{bmatrix}
+    \ 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1 <br />
+    \ 1 &amp; w^1 &amp; w^2 &amp;\cdots &amp; w^{N-1} <br />
+    \ \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots <br />
+    \ 1 &amp; w^{N-1} &amp; w^{(N-1)2} &amp; \cdots &amp; w^{(N-1)(N-1)}\end{bmatrix} \begin{bmatrix} 
+    \ x_0 \ x_1 \ \vdots \ x_{N-1} \\end{bmatrix} \tag{8}]</p>
+
+<p>행렬의 선형 결합은 행렬 곱으로서 생각한다면, ‘내적’의 의미로도 해석할 수 있습니다. 내적의 의미는 곱해지는 벡터가 행렬의 열벡터와 얼마만큼 닮았는가를 의미하는데, 특정 주파수의 함량이 높다라는 건 해당 주파수와 이산 신호가 유사함을 높다라는 것을 뜻합니다.</p>
+
+<p align="center"><img src="https://raw.githubusercontent.com/angeloyeo/angeloyeo.github.io/master/pics/2019-07-14-Freq_Sampling/pic1.png" /><figcaption align="center">그림 6. 주파수 계수의 의미</figcaption>
+</p>
+
+<hr />
+
+<p>이상으로 포스팅을 마치겠습니다.</p>
+
+<hr />
+
+<ol>
+  <li>푸리에 변환 참고, <a href="https://ralasun.github.io/deep%20learning/2021/02/15/gcn/">https://ralasun.github.io/deep%20learning/2021/02/15/gcn/</a></li>
+  <li>선형대수와 푸리에 변환 - 공돌이의 수학노트, <a href="https://angeloyeo.github.io/2020/11/08/linear_algebra_and_Fourier_transform.html">https://angeloyeo.github.io/2020/11/08/linear_algebra_and_Fourier_transform.html</a></li>
+  <li>Fourier Transform, <a href="https://ratsgo.github.io/speechbook/docs/fe/ft">https://ratsgo.github.io/speechbook/docs/fe/ft</a></li>
+  <li>Discrete Fourier Transform, <a href="https://en.wikipedia.org/wiki/Discrete_Fourier_transform">https://en.wikipedia.org/wiki/Discrete_Fourier_transform</a></li>
+</ol>
+
+
+    <article>
+    <div class="post-more">
+      
+      <a href="/signal%20analysis/2021/06/18/ft-vs-wt/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
+      
+      <a href="/signal%20analysis/2021/06/18/ft-vs-wt/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
+    </div>
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/deep%20learning/2021/03/06/gcn(2)/">
-        Graph Convolutional Network에 대하여 - Spectral Graph Convolution(2)
+        Graph Convolutional Network에 대하여 - Spectral Graph Convolution(2)(작성 중)
       </a>
     </h1>
 
@@ -195,7 +452,36 @@ MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], proces
     
 
     <article>
-      <p>gcn(2)</p>
+      <blockquote>
+  <p>아직 작성 중에 있는 포스팅입니다.</p>
+</blockquote>
+
+<p>지난 포스팅 <a href="https://ralasun.github.io/deep%20learning/2021/02/15/gcn/">&lt;Graph Convolutional Network에 대하여 - Spectral Graph Convolution&gt;</a> 에 이어서, Kipf et. al의 Graph convolutional Network에 대해서 살펴보도록 하겠습니다.</p>
+
+<hr />
+
+<h1>Spectral Graph Convolutional Network</h1>
+
+<p align="center"><img src="https://imgur.com/hnw3IeK.png" /><figcaption align="center">그림 1. convolution theorem</figcaption></p>
+
+<p>지난 포스팅에서 마지막에 언급한 spectral graph convolution 수식을 다시 살펴보도록 하겠습니다.</p>
+
+<p>[\mathbf {x} * G \mathbf {g} = \mathcal F^{-1}(\mathcal {F}(\mathbf {x}) \odot \mathcal {F}(\mathbf {g})) = \mathbf {U}(\mathbf {U^{\intercal}x} \odot \mathbf {U^{\intercal}g}) \tag1]</p>
+
+<p>[\mathbf {x} * \mathbf {g}<em>\theta = \mathbf {U} \mathbf {g}</em>{\theta} \mathbf {U^{\intercal}x} \tag2]</p>
+
+<p>수식 (1)에서 어떻게 수식(2)로 표현이 가능할까요 ? graph fourier transform은 Laplacian 행렬의 eigenvector의 선형결합이라고 하였습니다. 이 때, 학습해야 할 filte $\mathbf g$ 가 그림 1에서 time domain에서의 filter가 아니라, <span style="text-decoration:underline">(1)이미 frequency 영역에서의 filter $\mathbf g$ 라고 둔다면,</span> 푸리에 변환된 signal과 단순 곱으로 계산할 수 있기 때문에 학습이 용이해집니다.</p>
+
+<p>지난 포스팅에서, convolution 연산의 특징 중 하나가 특정 signal이 시스템의 특성이 반영되어 필터링된 signal이 되는 것이라고 하였습니다. 그렇다면 GCN에서 이 filter를 어떻게 구축해야 signal의 특징을 잘 추출하고, filter의 특성도 잘 학습할 수 있을까요 ?</p>
+
+<p>푸리에 변환된 graph signal은 eigenvector들의 요소로 분해가 된 것입니다.</p>
+
+<hr />
+
+<ol>
+  <li><a href="https://arxiv.org/pdf/1312.6203.pdf%20http://arxiv.org/abs/1312.6203">Bruna, Joan, et al. “Spectral networks and locally connected networks on graphs.” arXiv preprint arXiv:1312.6203 (2013).</a></li>
+</ol>
+
 
     <article>
     <div class="post-more">
@@ -269,9 +555,9 @@ MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], proces
 
 <p>먼저, 푸리에 변환 식에 대해서 살펴봅시다. <span style="color:gray"><del>저도 푸리에 변환에 대한 이해가 아직 한없이 부족합니다. 최대한 공부하고 이해한 내용을 풀어볼려고 노력하였습니다.</del></span></p>
 
-<script type="math/tex; mode=display">\hat{f}(\xi) = \int_{\mathbf{R}^d} f(x)e^{2\pi ix\xi} \,dx \tag{1}</script>
+<p>[\hat{f}(\xi) = \int_{\mathbf{R}^d} f(x)e^{2\pi ix\xi} \,dx \tag{1}]</p>
 
-<script type="math/tex; mode=display">f(x) = \int_{\mathbf{R}^d} \hat{f}(\xi) e^{-2\pi ix\xi} \,d\xi \tag{2}</script>
+<p>[f(x) = \int_{\mathbf{R}^d} \hat{f}(\xi) e^{-2\pi ix\xi} \,d\xi \tag{2}]</p>
 
 <p>(1)은 f의 푸리에 변환이고, (2)는 푸리에 역변환입니다. 푸리에 변환은 위에서 설명드린 것처럼, time domain을 frequency domain으로 변환한 것으로, 다양한 주파수를 갖는 주기함수의 합입니다. 그렇다면, 푸리에 역변환은 frequency domain의 함수를 다시 time domain으로 변환하는 것입니다. 푸리에 변환을 바라보는 관점은 여러가지가 존재하지만 그 중 하나는 ‘내적’입니다.</p>
 
@@ -283,11 +569,11 @@ MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], proces
 
 <p>그렇다면, $e^{-2\pi ix\xi}$ 의 의미는 무엇일까요 ? 이를 이해하기 위해선 ‘오일러 공식’이 필요합니다. 오일러 공식은 복소지수함수(complext exponential function)를 삼각함수(trigonometric function)로 표현하는 유명한 식입니다.</p>
 
-<script type="math/tex; mode=display">e^{ix} = cost + isinx \tag{3}</script>
+<p>[e^{ix} = cost + isinx \tag{3}]</p>
 
 <p>따라서, 오일러 공식에 의해 (1)식의 $e^{2\pi ix\xi}$ 부분을 cos요소와 sin요소의 합으로 표현할 수 있습니다.</p>
 
-<script type="math/tex; mode=display">e^{2\pi ix\xi} = cos(2\pi x\xi) + i sin(2\pi x\xi) \tag{4}</script>
+<p>[e^{2\pi ix\xi} = cos(2\pi x\xi) + i sin(2\pi x\xi) \tag{4}]</p>
 
 <p>즉, 주어진 주파수 f(x)에 대해 cosine에서 유사한 정도와 sine과 유사한 정도의 합이 푸리에 변환이라고 생각할 수 있습니다.</p>
 
@@ -307,7 +593,7 @@ MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], proces
 
 <p>Graph laplacian을 보기 전에 Laplace Operator에 대해 살펴보도록 하겠습니다. Laplace operator는 differential operator로, 벡터 기울기의 발산(Divergence)을 의미합니다.</p>
 
-<script type="math/tex; mode=display">\triangle f= \triangledown \cdot \triangledown f = \triangledown^2 f \tag{5}</script>
+<p>[\triangle f= \triangledown \cdot \triangledown f = \triangledown^2 f \tag{5}]</p>
 
 <p>$\triangledown f$ 는 $f$ 의 기울기를 의미하는 것으로 1차함수의 기울기처럼, 한 점에서의 변화하는 정도를 의미합니다. 이를 그림으로 나타나면 아래와 같습니다.</p>
 
@@ -337,11 +623,11 @@ MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], proces
 
 <p>그러나, 이제까지 설명한 laplacian operator는 지난 포스팅에서 언급한 Laplacian matrix랑 무슨 관련이 있는 걸까요? 이름이 비슷한 걸 보니, laplacian matrix도 어떤 differential operator, 즉 ‘변화’에 관한 행렬임을 짐작할 수 있습니다.</p>
 
-<script type="math/tex; mode=display">\triangle f = \triangledown^2 f =\sum_{i=1}^{n}\frac{\partial^2 f}{\partial {x_i}^2} \tag{6}</script>
+<p>[\triangle f = \triangledown^2 f =\sum_{i=1}^{n}\frac{\partial^2 f}{\partial {x_i}^2} \tag{6}]</p>
 
 <p>1차원에서의 laplacian operator는 <a href="https://en.wikipedia.org/wiki/Second_derivative">이차도함수 극한 정의</a>와 동일합니다.</p>
 
-<script type="math/tex; mode=display">\triangledown^2 f = \lim_{h \rightarrow 0} \frac{f(x+h) - 2f(x) - f(x-h)}{h^2} \tag{7}</script>
+<p>[\triangledown^2 f = \lim_{h \rightarrow 0} \frac{f(x+h) - 2f(x) - f(x-h)}{h^2} \tag{7}]</p>
 
 <p>그렇다면 위 laplacian operator가 graph 상에서 적용되면 어떻게 될까요 ? 위 식 (7)은 아래 그림과 같이 표현될 수 있습니다. 즉, x노드의 signal f(x)와 x노드와 h사이 만큼 떨어진 이웃노드의 signal f(x+h), f(x-h) 와의 변화량을 통해 x노드의 signal 특징을 구한 것입니다.이것이 바로 x노드 signal에 laplacian operator를 적용한 거라고 생각될 수 있습니다. 따라서, 한 노드 의 특징은 해당 노드와 연결된 이웃노드와의 관계라는 관점에서 표현될 수 있고, 즉 이 표현을 위해 이웃 노드와의 차이(즉, 변화)를 이용한 것이 laplacian operator가 됩니다.</p>
 
@@ -349,13 +635,20 @@ MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], proces
 
 <p>또한 graph laplacian은 연속적인 성질(continuous)이 아닌 이산적인 성질(discrete)을 띕니다. 이제까지 언급한 특징을 정리되면 아래의 graph laplacian 식이 이해가 되실 것입니다. 아래는 $v_i$ 노드에서 graph laplacian operator를 적용한 것입니다.</p>
 
-<script type="math/tex; mode=display">\triangle f(v_i) = Lf|_{v_i} = \sum_{v_j ~ v_i}[f(v_i) - f(v_j)] \tag{8}</script>
+<table>
+  <tbody>
+    <tr>
+      <td>[\triangle f(v_i) = Lf</td>
+      <td><em>{v_i} = \sum</em>{v_j ~ v_i}[f(v_i) - f(v_j)] \tag{8}]</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>weighted undirected graph인 경우, weighted undirected graph는 노드간 엣지에 가중치가 있는 경우입니다. graph laplacian operator는 아래와 같습니다.</p>
 
 <p align="center"><img width="400" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRUOW9mJ2mNgmHDw7_q7uiK2m1slCZgiah1Q&amp;usqp=CAU.png" /><figcaption align="center">그림 11. weighted undirected graph</figcaption></p>
 
-<script type="math/tex; mode=display">\triangle f(v_i) = \sum_{j \in N_i}W_{ij}[f(v_i) - f(v_j)] \tag{9}</script>
+<p>[\triangle f(v_i) = \sum_{j \in N_i}W_{ij}[f(v_i) - f(v_j)] \tag{9}]</p>
 
 <p>여기서 $v_i$ 는 특정노드를 가르키는 인덱스이고, $f(v_i)$ 는 각 노드의 signal 입니다. 즉, 함수 $f \in R^N$ 는 각 노드의 특성을 signal로 맵핑해주는 함수라고 생각하시면 됩니다.</p>
 
@@ -363,22 +656,21 @@ MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], proces
 
 <p align="center"><img width="400" src="https://imgur.com/DYfJGS9.png" /><figcaption align="center">그림 12. Graph laplacian example</figcaption></p>
 
-<script type="math/tex; mode=display">\triangle f(v_1) = 2f(v_1) - f(v_2) - f(v_3)</script>
+<p>[\triangle f(v_1) = 2f(v_1) - f(v_2) - f(v_3)]</p>
 
-<script type="math/tex; mode=display">\triangle f(v_2) = 3f(v_2) - f(v_1) - f(v_3) - f(v_4)</script>
+<p>[\triangle f(v_2) = 3f(v_2) - f(v_1) - f(v_3) - f(v_4)]</p>
 
-<script type="math/tex; mode=display">\triangle f(v_3) = 2f(v_3) - f(v_1) - f(v_2)</script>
+<p>[\triangle f(v_3) = 2f(v_3) - f(v_1) - f(v_2)]</p>
 
-<script type="math/tex; mode=display">\triangle f(v_4) = f(v_4) - f(v_2)</script>
+<p>[\triangle f(v_4) = f(v_4) - f(v_2)]</p>
 
 <p>이를 행렬로 표현하면 아래와 같습니다.</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-M = \begin{bmatrix}
-       2 & -1 & -1 & 0 \\
-       -1 & 3 & -1 & -1 \\
-       0 & -1 & 0 & 1\end{bmatrix} 
-       \begin{bmatrix} f(v_1) \\ f(v_2) \\ f(v_3) \\ f(v_4)\end{bmatrix} \tag{10} %]]></script>
+<p>[M = \begin{bmatrix}
+       2 &amp; -1 &amp; -1 &amp; 0 <br />
+       -1 &amp; 3 &amp; -1 &amp; -1 <br />
+       0 &amp; -1 &amp; 0 &amp; 1\end{bmatrix} 
+       \begin{bmatrix} f(v_1) \ f(v_2) \ f(v_3) \ f(v_4)\end{bmatrix} \tag{10}]</p>
 
 <p>위 식 (10) 의 앞부분 행렬은 지난 GNN 포스팅&lt;<a href="https://ralasun.github.io/deep%20learning/2021/02/11/gcn/">Introduction to Graph Neural Network - GNN 소개 및 개념</a>&gt; 에서 소개한 Laplacian matrix 입니다. 즉, <span style="text-decoration:underline">laplacian matrix란 graph representation 중에서 이웃 노드와의 변화 흐름을 통해 노드의 특징을 나타내는 그래프 표현이라고 생각할 수 있습니다.</span></p>
 
@@ -392,23 +684,33 @@ M = \begin{bmatrix}
 
 <p>위에서 특정 노드와 유사한 노드 집단과 상이한 노드집단을 나눌 수 있다면 특정 노드에 혼잡해 있는 신호를 여러 특성의 신호로 분해할 수 있다고 하였습니다. 그렇다면 먼저 이 집단을 구별할까요 ? 아래 식을 살펴봅시다. 아래 식은 결국, 노드 간의 차이의 합입니다.</p>
 
-<script type="math/tex; mode=display">S = \sum_{(i,j) \in \epsilon}W_{ij}[f(i) - f(j)]^2 = \mathbf {f^{\intercal}Lf} \tag{11}</script>
+<p>[S = \sum_{(i,j) \in \epsilon}W_{ij}[f(i) - f(j)]^2 = \mathbf {f^{\intercal}Lf} \tag{11}]</p>
 
 <p>이는 결국 graph의 smoothness와 관련된 것이며, Laplacian quadratic form으로 표현가능합니다. 위의 식을 최소화하게 하는 $\mathbf f$ 를 찾는다면, 특정 노드와 특성이 유사한 노드 집단과 상이한 노드 집단을 구분할 수 있습니다.</p>
 
-<script type="math/tex; mode=display">min_{f \in R^N, \,||f||_2 = 1} \mathbf {f^{\intercal}Lf} \tag{12}</script>
+<table>
+  <tbody>
+    <tr>
+      <td>[min_{f \in R^N, \,</td>
+      <td> </td>
+      <td>f</td>
+      <td> </td>
+      <td>_2 = 1} \mathbf {f^{\intercal}Lf} \tag{12}]</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>Lagrange 방정식에 의해 최적화 방정식으로 바꿀 수 있습니다.</p>
 
-<script type="math/tex; mode=display">L = \mathbf {f^{\intercal}Lf} - \lambda(\mathbf {f^{\intercal}f} - 1) \tag{13}</script>
+<p>[L = \mathbf {f^{\intercal}Lf} - \lambda(\mathbf {f^{\intercal}f} - 1) \tag{13}]</p>
 
 <p>위 식을 최소가 되게 하기 위한 $\mathbf f$ 를 찾기 위해 $\mathbf f$ 로 미분하면 아래와 같습니다.</p>
 
-<script type="math/tex; mode=display">\frac{\partial L}{\partial f} = 2\mathbf {Lf} - 2\lambda \mathbf f = 0 \tag{14}</script>
+<p>[\frac{\partial L}{\partial f} = 2\mathbf {Lf} - 2\lambda \mathbf f = 0 \tag{14}]</p>
 
 <p>따라서, 최소가 되는 $\mathbf f$ 는 아래 식을 만족해야 합니다.</p>
 
-<script type="math/tex; mode=display">\mathbf {Lf} = \lambda \mathbf f \tag{15}</script>
+<p>[\mathbf {Lf} = \lambda \mathbf f \tag{15}]</p>
 
 <p>위의 식은 laplacian 행렬의 eigen-value decomposition입니다. laplacian matrix의 eigenvector eigen vector들이 특정 노드와 유사한 노드집단과 상이한 노드집단을 구분하는 기준이 되고, 특히 작은 값의 eigenvalue의 대응하는 eigenvector일수록 graph를 더욱 smooth하게 나누는 기준이 됩니다.</p>
 
@@ -426,12 +728,11 @@ M = \begin{bmatrix}
 
 <p>Fourier transform의 식을 다시 쓰면 아래와 같습니다.</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\hat{f}(\xi) = <f, e^{2\pi ix\xi}>\int_{\mathbf{R}^d} f(x)e^{2\pi ix\xi} \,dx \tag{16} %]]></script>
+<p>[\hat{f}(\xi) = &lt;f, e^{2\pi ix\xi}&gt;\int_{\mathbf{R}^d} f(x)e^{2\pi ix\xi} \,dx \tag{16}]</p>
 
 <p>주파수 성분은 $e^{2\pi ix\xi}$ 이며, 여기에 laplace operator를 적용하면 아래와 같습니다.</p>
 
-<script type="math/tex; mode=display">Lf = -\triangle(e^{2\pi ix\xi}) = -\frac{\partial^2}{\partial x^2}e^{2\pi ix\xi} = (2\pi \xi)^2 e^{2\pi ix\xi} = \lambda f \tag{17}</script>
+<p>[Lf = -\triangle(e^{2\pi ix\xi}) = -\frac{\partial^2}{\partial x^2}e^{2\pi ix\xi} = (2\pi \xi)^2 e^{2\pi ix\xi} = \lambda f \tag{17}]</p>
 
 <p>즉, 주파수 성분 $e^{2\pi ix\xi}$ 도 laplace operator의 eigen-function라고 볼 수 있습니다.</p>
 
@@ -443,13 +744,13 @@ M = \begin{bmatrix}
 
 <p>Laplacian 행렬의 eigen-value decomposition은 아래와 같습니다.</p>
 
-<script type="math/tex; mode=display">\mathbf {L} = \mathbf {U^{\intercal}\Lambda U} \tag{18}</script>
+<p>[\mathbf {L} = \mathbf {U^{\intercal}\Lambda U} \tag{18}]</p>
 
 <p>이를 이용한 graph fourier transform과 inverse graph fourier transform은 아래와 같습니다.</p>
 
-<script type="math/tex; mode=display">\mathcal {F}(\mathbf x) = \mathbf {U^{\intercal}x} \tag{19}</script>
+<p>[\mathcal {F}(\mathbf x) = \mathbf {U^{\intercal}x} \tag{19}]</p>
 
-<script type="math/tex; mode=display">\mathcal {F^{-1}}(\hat {\mathbf {x}}) = \mathbf {U} \hat {\mathbf {x}} \tag{20}</script>
+<p>[\mathcal {F^{-1}}(\hat {\mathbf {x}}) = \mathbf {U} \hat {\mathbf {x}} \tag{20}]</p>
 
 <blockquote>
   <p>inverse fourier transform은 frequency domain으로 변환된 signal을 다시 time domain으로 변환하는 것입니다.</p>
@@ -465,7 +766,7 @@ M = \begin{bmatrix}
 
 <p align="center"><img width="400" src="https://imgur.com/dk7otIh.png" /><figcaption align="center">그림 13. convolution</figcaption></p>
 
-<script type="math/tex; mode=display">(f*g)(t) = \int_{-\infty}^{\infty}f(\tau)g(t-\tau)d\tau \tag{21}</script>
+<p>[(f*g)(t) = \int_{-\infty}^{\infty}f(\tau)g(t-\tau)d\tau \tag{21}]</p>
 
 <p>convolution의 특징은 <span style="text-decoration:underline">시스템의 출력으로 ‘시스템의 특성’을 알 수 있다는 점입니다.</span> &lt;그림 13.&gt;에서 시스템의 특성이 담긴 시스템 함수가 위와 같은 모양이라면, 출력도 시스템 함수와 유사한 모양으로 나옵니다.</p>
 
@@ -493,13 +794,13 @@ M = \begin{bmatrix}
   <p>멀리 떨어져 있는 노드에서 오는 신호까지 고려한다는 것이 사실 ‘convolution’ 입니다. convolution은 현재 출력 값은 현재 입력값 뿐만 아니라 이전 입력값에도 영향을 받는다는 것을 고려한 연산입니다. 즉, 멀리 떨어져 있는 노드에서 오는 신호는 비교적 최근에 온 신호가 될 것이고, 이웃노드에서 온 신호가 비교적 이전 시간에서 이미 영향을 준 신호입니다. 그러나 이를 모든 시간에 대해 분해에서 연산하기가 어렵기 때문에(시간 영역에서의 convolution 연산이 어렵기 때문에) frequency 영역으로 바꿔서 간편하게 계산을 하는 것입니다.</p>
 </blockquote>
 
-<p>따라서, spectral graph convolution 식은 아래와 같습니다.</p>
+<p>따라서, spectral graph convolution 식은 아래와 같습니다. 이 식에서 학습할 filter는 $\mathbf g$ 입니다.</p>
 
-<script type="math/tex; mode=display">\mathbf {x} * G \mathbf {g} = \mathcal F^{-1}(\mathcal {F}(\mathbf {x}) \odot \mathcal {F}(\mathbf {g})) = \mathbf {U}(\mathbf {U^{\intercal}x} \odot \mathbf {U^{\intercal}g})</script>
+<p>[\mathbf {x} * G \mathbf {g} = \mathcal F^{-1}(\mathcal {F}(\mathbf {x}) \odot \mathcal {F}(\mathbf {g})) = \mathbf {U}(\mathbf {U^{\intercal}x} \odot \mathbf {U^{\intercal}g})]</p>
 
 <p>$\mathbf {g}_\theta = diag(\mathbf {U^{\intercal}g})$ 라 가정한다면(학습할 filter가 대각요소만 있다고 가정한다면), 위의 식은 아래와 같이 됩니다.</p>
 
-<script type="math/tex; mode=display">\mathbf {x} * \mathbf {g}_\theta = \mathbf {U} \mathbf {g}_{\theta} \mathbf {U^{\intercal}x}</script>
+<p>[\mathbf {x} * \mathbf {g}<em>\theta = \mathbf {U} \mathbf {g}</em>{\theta} \mathbf {U^{\intercal}x}]</p>
 
 <hr />
 
@@ -602,19 +903,19 @@ M = \begin{bmatrix}
 
 <p>Degree 행렬은 그래프 노드의 개수가 N개라면 NxN 크기를 가지는 대각행렬입니다. 각 꼭짓점의 차수에 대한 정보를 포함하고 있는 행렬로, 꼭짓점의 차수란 꼭짓점와 연결된 엣지의 갯수를 말합니다.</p>
 
-<script type="math/tex; mode=display">D_{i,j} = \begin{cases} deg(v_i) \quad if \,\, i=j \\
-		                      0 \quad otherwise \end{cases}</script>
+<p>[D_{i,j} = \begin{cases} deg(v_i) \quad if \,\, i=j <br />
+		                      0 \quad otherwise \end{cases}]</p>
 
 <p><b>Laplacian matrix</b><br /></p>
 
 <p>adjacency 행렬은 노드 자신에 대한 정보가 없습니다. 그에 반해 laplacian 행렬은 노드와 연결된 이웃노드와 자기 자신에 대한 정보가 모두 포함된 행렬입니다. laplacian 행렬은 degree 행렬에서 adjacency 행렬을 빼준 것입니다.</p>
 
-<script type="math/tex; mode=display">L = D - A</script>
+<p>[L = D - A]</p>
 
-<script type="math/tex; mode=display">L_{i,j} = \begin{cases}
-		deg(v_i) \quad if \,\, i=j \\
-		 -1 \quad if \,\, i \neq j \\
-		  0 \quad otherwise \end{cases}</script>
+<p>[L_{i,j} = \begin{cases}
+		deg(v_i) \quad if \,\, i=j <br />
+		 -1 \quad if \,\, i \neq j <br />
+		  0 \quad otherwise \end{cases}]</p>
 
 <h1>Motivation : GNN $\approx$ CNN</h1>
 
@@ -657,9 +958,9 @@ M = \begin{bmatrix}
 
 <p>이를 수식으로 표현하면 아래와 같습니다.</p>
 
-<script type="math/tex; mode=display">x_n = f_w(l_n, l_{co[n]}, x_{ne[n]}, l_{ne[n]})</script>
+<p>[x_n = f_w(l_n, l_{co[n]}, x_{ne[n]}, l_{ne[n]})]</p>
 
-<script type="math/tex; mode=display">o_n = g_w(x_n, l_n)</script>
+<p>[o_n = g_w(x_n, l_n)]</p>
 
 <p>이때, $l_n, l_{co[n]}, x_{ne[n]}, l_{ne[n]}$ 은 각각 n 노드의 라벨, n노드와 연결된 엣지들의 라벨, 이웃노드들의 states, 이웃노드들의 라벨입니다. 또한 $f_w$ 와 $o_w$ 는 각각 propagation function(논문에선 transition function 이라 표현함)와 output function입니다.</p>
 
@@ -692,9 +993,9 @@ M = \begin{bmatrix}
 
 <p>다시 돌아와서, 그렇다면 iterative method식으로 수식을 전개하면 아래와 같이 전개할 수 있습니다.</p>
 
-<script type="math/tex; mode=display">x_n(t+1) = f_w(l_n, l_{co[n]}, x_{ne[n]}(t), l_{ne[n]})</script>
+<p>[x_n(t+1) = f_w(l_n, l_{co[n]}, x_{ne[n]}(t), l_{ne[n]})]</p>
 
-<script type="math/tex; mode=display">o_n(t) = g_w(x_n(t), l_n), \quad n \in N</script>
+<p>[o_n(t) = g_w(x_n(t), l_n), \quad n \in N]</p>
 
 <p>fixed 된 $x_n, o_n$ 을 얻으면 아래와 같은 loss를 계산할 수 있고, gradient 계산을 통해 weight을 업데이트합니다. 여기서 weight은 $F_w$ 의 파라미터 입니다. neural network 라면 network의 가중치가 됩니다.</p>
 
@@ -718,207 +1019,6 @@ M = \begin{bmatrix}
       <a href="/deep%20learning/2021/02/11/gcn/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
       
       <a href="/deep%20learning/2021/02/11/gcn/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
-    </div>
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/deep%20learning/2021/01/18/tada/">
-        TADA, Trend Alignment with Dual-Attention Multi-Task Recurrent Neural Networks for Sales Prediction 논문 리뷰
-      </a>
-    </h1>
-
-    <span class="post-date">18 Jan 2021</span>
-     | 
-    
-    <a href="/blog/tags/#time-series-analysis" class="post-tag">time-series-analysis</a>
-    
-    
-
-    <article>
-      <hr />
-
-<p>다변량 시계열 예측 모델에 관한 논문으로, 다변량 시계열 데이터를 가지고 encoder-decoder RNN 모델 기반으로 dual-attention과 multi-task RNN으로 구성된 모델입니다.</p>
-
-<hr />
-
-<h2>Problem</h2>
-<p>다변량 시계열 예측을 위한 여러 통계 기반 모델링이 있으나, 판매량에 영향을 주는 변수들 간의 관계를 파악하기 어렵고, 이 변수들로 부터 의미있는 정보(contextual information)을 추출하는 건 더욱 어렵습니다. 예를 들어, 겨울의복은 날씨에 영향에 두드러지게 받지만, 일반적인 셔츠는 사계절내내 잘 입는 옷이기 때문에 겨울의복보단 계절의 영향을 덜 받습니다. 또한 소비자의 주관적인 선호도(브랜드 선호도, 상품 선호도 등)에 따라 상품 판매는 크게 또한 달라지게 됩니다. 따라서, 본 논문에서 주목하는 다변량 시계열 예측에서의 문제는 아래와 같이 크게 세가지입니다.</p>
-
-<ol><li>how to fully capture the dynamic dependencies among multiple influential factors?<br />
-판매에 영향을 주는 여러 변수들 간의 관계는 시간에 따라 변할 가능성이 높습니다. 그렇다면 매 스텝마다 변수들 간의 관계를 어떻게 포착할 수 있을까요 ?</li><li>how can we possibly glean wisdoms form the past to compensate for the unpredictability of influential factors?<br />이 변수들이 미래에 어떻게 변할지는 아무도 모릅니다. 그렇다면 과거 이 변수들의 정보만을 가지고 어떻게 미래를 눈여겨 볼 수 있는 정보를 추출할지는 생각해 봐야 합니다.</li>
-<li>how to align the upcoming trend with historical sales trends?<br />현실 시계에서의 판매 트랜드는 전혀 규칙적이지 않습니다. 그렇다면 과거 판매 트렌드를 어떻게 하면 현실 트렌드와 연관지을 수 있을까요 ?</li></ol>
-
-<h2>TADA : Trend Alignment with Dual-Attention Multi-Task RNN</h2>
-
-<h3>Problem Formulation</h3>
-
-<p>본 논문에서 풀고자 하는 다변량 시계열 예측 문제는 아래와 같이 수학적으로 정의됩니다.</p>
-
-<script type="math/tex; mode=display">\{\hat{y_t\}}^{T+\triangle}_{t=T+1} = F({\{\mathbf x_t\}}^{T}_{t=1}, {\{y_t\}}^{T}_{t=1})</script>
-
-<p>$\mathbf x_t$ 는 influential factors로 판매량 이외의 변수(ex. 날씨, 브랜드, 상품인덱스 등)이고, $y_t$ 는 판매량 입니다.</p>
-
-<h3>TADA 모델 개요</h3>
-<p align="center"><img src="https://imgur.com/w09ZSHF.png" /><figcaption align="center">그림 1. 모델 개요</figcaption></p>
-
-<p>위의 그림은 본 논문의 모델 개요입니다. 크게 아래와 같이 구성되어 있습니다.</p>
-<ul>
-  <li>Multi-task based Encoder Structures</li>
-  <li>Dual-Attention based Decoder Structures
-    <ul>
-      <li>Attention got weighted decoder input mapping</li>
-      <li>attention for trend alignment</li>
-    </ul>
-  </li>
-</ul>
-
-<h4>Multi-task based Encoder Structures</h4>
-<p align="center"><img src="https://imgur.com/leH0yfV.png" /><figcaption align="center">그림 2. Multi-task based Encoder</figcaption></p>
-
-<p>influential factor의 semantic한 특징을 잘 추출한다면 분명 예측에 도움이 될 것입니다. 그러나 매 타임 스텝마다 어떻게 하면 판매량 예측에 도움될 semantic한 특징을 추출할 수 있을까요 ? 본 논문에서는 influential factor를 크게 intrinsic한 속성과 objective한 속성으로 나누어 LSTM을 이용한 인코딩을 각각 따로하였습니다. 이를 통해 각각 두 개의 LSTM(intrinsic LSTM, external LSTM)을 통해 각기 다른 semantic한 특징을 추출할 수 있습니다. 따라서, 위의 문제 정의는 아래와 같이 다시 정의될 수 있습니다.</p>
-
-<script type="math/tex; mode=display">\{\hat{y_t\}}^{T+\triangle}_{t=T+1} = F({\{\mathbf x_t^{int}\}}^{T}_{t=1}, {\{\mathbf x_t^{ext}\}}^{T}_{t=1}, {\{y_t\}}^{T}_{t=1})</script>
-
-<p>intrinsic한 속성이란 브랜드, 카테고리, 가격등 상품과 관련된 것이고, objective한 속성은 날씨, 휴일유무, 할인등과 관련된 속성입니다. 아래 표는 논문에서 실험한 데이터의 intrinsic/objective 속성입니다.</p>
-
-<p>하지만 우리가 구하고 싶은 건 두 가지의 다른 semantic한 feature를 적절하게 결합하여 의미있는 <strong>contextual vector</strong>를 만드는 것입니다. 따라서 또다른 LSTM 네트워크인 Synergic LSTM을 구축하여 joint representation을 학습합니다. 이때, Synergic LSTM에 입력으로 들어가는 건 각 타임스텝에 해당되는 $h_t^{int}$ 와 $h_t^{ext}$ 뿐만 아니라 판매량 $y_t$ 도 같이 joint space가 구축되도록 학습됩니다.</p>
-
-<p>먼저, 두 타입스텝 t에서의 두 개의 hidden state을 $h_t^{int}$ 와 $h_t^{ext}$ 이용하여 Synergic LSTM의 인풋인 $\mathbf X_t^{syn}$ 을 아래와 같이 계산합니다.</p>
-
-<script type="math/tex; mode=display">\mathbf X_t^{syn} = \mathbf W_{syn}[\mathbf h_t^{int};\mathbf h_t^{ext};y_t]</script>
-
-<p>그런 다음, intrinsic LSTM/external LSTM과 동일하게 각 타임스텝마다 두 정보가 결합되어 인코딩된 hidden stated인 $\mathbf h^{con}_t$ 를 계산합니다.</p>
-
-<p align="center"><img src="https://imgur.com/ijwajF4.png" /><figcaption align="center">그림 3. Multi-task based Encoder(2)</figcaption></p>
-
-<h4>Dual-Attention based Decoder Structures</h4>
-<p>Multi-task Encoder를 통해 과거 판매량 시계열 데이터를 인코딩하면 contextual vectors인 ${\mathbf h_t^{con}}^T_{t=1}$ 이 계산되어 나옵니다. $h_t^{con}$ 은 타임스텝 t까지의 시계열 데이터에 대한 contextual 정보를 품고 있습니다.</p>
-
-<p>LSTM decoder도 encoder와 유사하게 예측에 필요한 contextual vector $\mathbf d_t^{con}$ 을 생성합니다. 따라서, $T &lt; t \leq T + \Delta$ 에 대해 decoder 수학식은 아래와 같습니다.</p>
-
-<script type="math/tex; mode=display">\mathbf d_t^{con} = LSTM^{dec}(\mathbf x_t^{dec}, \mathbf d^{con}_{t-1})</script>
-
-<p>위 식에서 $\mathbf x_t^{dec}$ 는 attention weighted input입니다. 그러면 contextual vector가 어떻게 만들어지는지 보기 전에 attention weighted input 계산 과정을 살펴봅시다.</p>
-
-<h5>Attention for Weighted Decoder Input Mapping</h5>
-
-<p align="center"><img src="https://imgur.com/NvCkYMs.png" /><figcaption align="center">그림 4. Attention for Weighted Decoder Input</figcaption></p>
-
-<p>Decoder에 입력될 Input은 encoder contextual vector들에서 각 디코터 타임 스텝에 필요한 정보를 적절하게 취하도록 하기 위해 attention 메카니즘을 통해 생성합니다.</p>
-
-<script type="math/tex; mode=display">\mathbf x_t^{dec} = \mathbf W_{dec}\left[\sum_{t'=1}^T \alpha_{tt'}^{int}\mathbf h_{t'}^{int};\sum_{t'=1}^T \alpha_{tt'}^{ext}\mathbf h_{t'}^{ext}\right] + \mathbf b_{dec}</script>
-
-<p>$\alpha_{tt’}^{int}$ 와 $\alpha_{tt’}^{ext}$ 는 어텐션 가중치를 의미합니다. 어텐션 가중치는 아래 과정을 통해 계산됩니다.</p>
-
-<script type="math/tex; mode=display">e^{int}_{tt'} = \mathbf v^{\mathrm T}_{int}tanh(\mathbf M_{int}\mathbf d_{t-1}^{con} + \mathbf H_{int}\mathbf h_{t'}^{int})</script>
-
-<script type="math/tex; mode=display">e^{ext}_{tt'} = \mathbf v^{\mathrm T}_{ext}tanh(\mathbf M_{int}\mathbf d_{t-1}^{con} + \mathbf H_{ext}\mathbf h_{t'}^{ext})</script>
-
-<script type="math/tex; mode=display">\alpha_{tt'}^{int} = \frac{exp(e_{tt'}^{int})}{\sum_{s=1}^{T}exp(e_{ts}^{int})}</script>
-
-<script type="math/tex; mode=display">\alpha_{tt'}^{ext} = \frac{exp(e_{tt'}^{ext})}{\sum_{s=1}^{T}exp(e_{ts}^{ext})}</script>
-
-<p>이때, $\sum_{t’=1}^{T}\alpha_{tt’}^{int} = \sum_{t’=1}^{T}\alpha_{tt’}^{ext} = 1$ 이 여야 합니다.</p>
-
-<h5>Attention for Trend Alignment</h5>
-
-<p align="center"><img src="https://imgur.com/riUczJ9.png" /><figcaption align="center">그림 5. Attention for Trend Alignment</figcaption></p>
-
-<p>미래를 예측하기 위해선 과거의 trend 패턴을 안다면 좀 더 수월할 수 있습니다. 따라서, 미래에 예상되는 패턴과 유사한 패턴을 과거에서 찾는 작업을 attention을 통해 진행하는 과정을 본 논문에서 제안하였습니다. 그러나, 
-일반적으로 attention 메카니즘은 현 타임스텝에서 아웃풋을 출력하기 위해 이전 hidden state들중에서 가장 align되는 정보를 선택합니다. 과거 정보들 중에서 <strong>미래의 트렌드와 유사한 트렌드 정보</strong>를 선택적으로 이용하고 싶다면 전통적인 attention 메카니즘을 그대로 사용하기는 어렵습니다. 왜냐하면, 일반적인 데이터에선 trend외에 노이즈도 많이 포함하고 있기 때문입니다. 즉, 전체 데이터에 trend + noise라서 이전 모든 과거들에서 유사한 trend 패턴만을 집중하는 건 힘듭니다. 따라서 논문 저자는 아래와 같은 방법을 고안하였습니다.</p>
-
-<p>먼저, ${\mathbf h_t^{con}}_{t=1}^T$ 를 $\triangle$ 타임 스텝 크기에 해당되는  contextual vector를 이어붙여서 $\triangle$ -step trend vector를 생성합니다.</p>
-
-<p align="center"><img src="https://imgur.com/yUmHRP0.png" /></p>
-
-<p>$\mathbf p_i$ 는 과거 시계열 데이터에서 $\triangle$ 간격에 해당되는 구간의 트렌드를 나타냅니다. $i$ 가 1씩 증가하므로, 마치 슬라이딩 윈도우 1씩 움직이면서 트렌드를 포착하는 것과 유사합니다.</p>
-
-<p>마찬가지 방식으로 decoder hidden state들을 이어 붙여 미래에 예상될 트렌드 정보를 생성합니다.</p>
-
-<p align="center"><img src="https://imgur.com/I9C1wnQ.png" /></p>
-
-<p>따라서, 그림5 처럼 과거에 생성된 트렌드 벡터과 미래 트렌드 벡터를 각각 내적하여 가장 큰 값에 해당되는 인덱스 i를 반환합니다. 내적값이 가장 크다는 것은 가장 유사함을 의미합니다.</p>
-
-<script type="math/tex; mode=display">e_i^{trd} = \mathbf p_i^{\mathrm T} \tilde{\mathbf p}</script>
-
-<script type="math/tex; mode=display">i' = argmax(e_i^{trd} , e_{i+1}^{trd},\dots, e_{T+\triangle -1}^{trd})</script>
-
-<p>그 다음 $\mathbf p_{i’}$ 내의 각 ${\mathbf d_t^{con}}$ 와 $\mathbf h_t^{con}$ 을 아래와 같은 계산과정을 거쳐서 $\tilde {\mathbf d}^{con}$ 을 생성합니다.</p>
-
-<p align="center"><img src="https://imgur.com/haL8Udd.png" /></p>
-
-<p>$\tilde {\mathbf d}^{con}$ 은 타임스텝 t에서의 과거 유사한 트렌드 정보에 집중하여 생성된 aligned contextual vector 입니다.</p>
-
-<h4>Sales Prediction and Model Learning</h4>
-
-<p>위에서 생성된 aligned contextual vector ${\widetilde {\mathbf d_t}^{con}}$ 를 가지고 판매량을 예측합니다.</p>
-
-<script type="math/tex; mode=display">\hat y_t = \mathbf v_y^{\mathrm T} \mathbf {\widetilde d}^{con} + b_y</script>
-
-<p>$\hat y_t , \,\,(T+1 \leq t \leq T+\Delta)$ 는 타임스텝 T에서의 예측된 판매량입니다.</p>
-
-<p>본 논문에서 학습은 L2 regularization과 함께 Mean Squared Error를 minimize하였습니다.</p>
-
-<h2>Experiment and result.</h2>
-
-<p>전체적인 결과에 관한 건 논문을 참고 바랍니다. trend alignment 부분에 대한 결과를 살펴보면 과거 유사하다고 찾은 trend와 예측된 trend는 아래 그래프와 같이 나왔습니다.</p>
-
-<p align="center"><img src="https://imgur.com/F5w1W2o.png" /></p>
-<p>보면 어느정도 과거 매치된 트렌드와 유사한 트렌드를 따르는 것을 확인할 수 있었습니다.</p>
-
-<h2>Lessons Learned</h2>
-<ul>
-  <li>결과를 보면 어느정도 lag가 발생하는 것으로 보입니다.</li>
-  <li>trend에 대한 파악을 먼저하고 판매량 데이터 입력을 나중에 하면 어떨까?</li>
-  <li>dual-stage attention에서의 input attention 모듈과 multi-tasked encoder를 결합하는 건 어떨까 ??</li>
-</ul>
-
-<hr />
-
-<p>이상으로 본 논문 리뷰를 마치겠습니다.</p>
-
-<hr />
-
-<ol>
-  <li>Chen, Tong, et al. “Tada: trend alignment with dual-attention multi-task recurrent neural networks for sales prediction.” 2018 IEEE International Conference on Data Mining (ICDM). IEEE, 2018.</li>
-</ol>
-
-    <article>
-    <div class="post-more">
-      
-      <a href="/deep%20learning/2021/01/18/tada/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
-      
-      <a href="/deep%20learning/2021/01/18/tada/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
-    </div>
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/deep%20learning/2021/01/18/dual-stage-attention/">
-        A Dual-Stage Attention-Based Recurrent Neural Network for Time-Series Prediction 논문 리뷰
-      </a>
-    </h1>
-
-    <span class="post-date">18 Jan 2021</span>
-     | 
-    
-    <a href="/blog/tags/#time-series-analysis" class="post-tag">time-series-analysis</a>
-    
-    
-
-    <article>
-      <p>A Dual-Stage Attention-Based Recurrent Neural Network는 다변량 시계열 예측 모델입니다(Multi-Variate Time Series Prediction). Bahdanau et al.의 <a href="https://arxiv.org/abs/1409.0473">Attention network 기반 시퀀스 모델</a> 을 베이스로, 인코더 뿐만 아니라 디코더에도 Attention netowork를 이용해 예측을 위한 다변량 시계열 변수 간 상대적인 중요도와 타임 스텝 간 상대적인 중요도를 모두 고려한 모델입니다.</p>
-
-<h2>Problem</h2>
-
-
-    <article>
-    <div class="post-more">
-      
-      <a href="/deep%20learning/2021/01/18/dual-stage-attention/#disqus_thread"> <i class="fa fa-comments" aria-hidden="true"></i>Comment</a>&nbsp;
-      
-      <a href="/deep%20learning/2021/01/18/dual-stage-attention/"><i class="fa fa-plus-circle" aria-hidden="true"></i>Read more</a>
     </div>
   </div>
   

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      스파크(Spark) 소개 &middot; Ralasun Resarch Blog
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/main.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://raw.githubusercontent.com/ralasun/ralasun.github.io/master/public/favicon.png">
+  <link rel="shortcut icon" href="https://raw.githubusercontent.com/ralasun/ralasun.github.io/master/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  
+  <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_SVG"> </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });
+  </script>
+  
+</head>
+
+
+  <body>
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="sidebar-personal-info">
+      <div class="sidebar-personal-info-section">
+        <img src="http://localhost:4000/public/img/profile_v1.jpg"/>
+      </div>
+      <div class="sidebar-personal-info-section">
+        <p><strong>한걸음씩</strong>, 그리고 <strong>꾸준히</strong> 나아가기</p>
+      </div>
+      
+      
+      
+      <div class="sidebar-personal-info-section">
+        <p> Follow me: 
+        
+        
+        
+        <a href="https://www.linkedin.com/in/ralasun">
+          <i class="fa fa-linkedin" aria-hidden="true"></i>
+        </a>
+        
+        |
+        
+        
+        
+        <a href="https://github.com/ralasun">
+          <i class="fa fa-github" aria-hidden="true"></i>
+        </a>
+        
+        |
+        
+        
+        
+        <a href="mailto:sunhwalsh91@gmail.com">
+          <i class="fa fa-envelope" aria-hidden="true"></i>
+        </a>
+        
+        
+        
+        </p>
+      </div>
+      
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    
+      
+      
+      
+
+      
+
+      <span class="">
+        <a class="sidebar-nav-item " href="/">
+          Home
+        </a>
+
+        
+      </span>
+
+    
+      
+      
+      
+
+      
+
+      <span class="foldable">
+        <a class="sidebar-nav-item " href="/blog/">
+          Blog
+        </a>
+
+        
+          
+            
+            
+            
+              <a class="sidebar-nav-item sidebar-nav-item-sub " href="/blog/categories/">
+                Posts
+              </a>
+          
+        
+          
+            
+            
+            
+              <a class="sidebar-nav-item sidebar-nav-item-sub " href="/blog/tags/">
+                Tags
+              </a>
+          
+        
+      </span>
+
+    
+      
+      
+      
+
+      
+
+      <span class="">
+        <a class="sidebar-nav-item " href="/about/">
+          About
+        </a>
+
+        
+      </span>
+
+    
+  </nav>
+
+  <div class="sidebar-item">
+    <p>
+    &copy; 2021 Seonhwa Lee. This work is liscensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home" title="Ralasun Resarch Blog">
+              <img class="masthead-logo" width="200" height="30" src="http://localhost:4000/public/logo.jpg"/>
+            </a>
+            <small>research blog for data science</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="post">
+  <h1 class="post-title">스파크(Spark) 소개</h1>
+  <span class="post-date">17 Nov 2020</span>
+   | 
+  
+    <a href="/blog/tags/#data-engineering" class="post-tag">data-engineering</a>
+  
+  
+  <article>
+    <p>데이터 분석가의 역할이 점차 데이터 분석 영역에서 벗어나 조금씩 엔지니어의 영역까지 요구되고 있는 것 같아, 데이터 엔지니어링 관련 공부에 대한 필요성을 느꼈습니다. 데이터 분석을 직업으로 함에도 불구하고, 하둡이나 스파크 등과 같은 빅데이터 분석 쪽은 많이 접해보지 못했습니다. 따라서 이번 포스팅을 시작해서 해당 관련 포스팅을 틈틈히 올리도록 하겠습니다.</p>
+
+<p>먼저, 교재 &lt;빅데이터 분석을 위한 스파크2 프로그래밍, 대용량 데이터 처리부터 머신러닝까지 - 백성민 저자&gt;를 읽고 포스팅을 진행하도록 하겠습니다. 본 포스팅은 &lt;ch1. 스파크 소개&gt; 에 대해 다뤘습니다.</p>
+
+<hr />
+
+<h1>빅데이터의 등장 및 정의</h1>
+<ul>
+  <li>4차 산업 혁명과 더불어 데이터 처리 기술이 발달함</li>
+  <li>빅데이터를 크기(volume), 다양성(variety), 속도(velocity)를 이용해서 초기에 정의 내림
+    <ul>
+      <li>다양한 형태를 지닌 대량의 데이터가 빠른 속도로 쌓이고 있다면 이를 빅데이터라 부름</li>
+    </ul>
+  </li>
+  <li>그러나 추후에 가변성(variability), 정확성(veracity), 복잡성(complexity), 시인성(visibility)가 추가됨</li>
+</ul>
+
+<h1>스파크</h1>
+<p>스파크는 하둡의 단점이 개선되어 나온 것으로, 하둡은 아래와 같음</p>
+
+<h3>하둡이란?</h3>
+<ul>
+  <li>구글이 대용량 처리와 관련된 두 개의 논문을 더그 커팅이 실제 구현하면서 시작된 아파치 프로젝트임</li>
+  <li>분산 환경의 병렬처리 프레임워크로, 분산 파일 시스템인 HDFS와 데이터 처리를 위한 맵리듀스 프레임워크로 구성됨
+    <ul>
+      <li>이후에 CPU, 메모리 등 컴퓨팅 자원 관리를 전담하는 리소스 관림 시스템인 Yarn을 포함해, 기존 맵리듀스 프로그래밍 모델을 Yarn 기반으로 구축 관리할 수 있게 함</li>
+    </ul>
+  </li>
+  <li>여러대의 서버를 하나의 클러스터로 구성하여, 클러스터 컴퓨팅 환경 제공</li>
+  <li>기본적인 동작 방법은, 데이터는  HDFS에 저장하고 데이터 처리를 맵리듀스 프로그래밍을 이용하여 HDFS 위에서 수행</li>
+  <li><b>HDFS?</b>
+    <ul>
+      <li>하나의 네임노드와 여러  데이터노드로 구성됨</li>
+      <li>하나의 네임노드가 다른 데이터노드를 관리하는 형태로 시스템이 돌아감.</li>
+      <li>전체 데이터는 일정한 크기(블록)로 나눠서 여러 데이터 노드에 분산되어 저장하고, 각 블록이 어디에 저장되어 있는지에 대한 메타 정보가 네임노드에 저장됨</li>
+    </ul>
+  </li>
+</ul>
+
+<p align="center">
+<img width="500" src="https://imgur.com/6WwaRY4.png" /><figcaption align="center">그림 1. HDFS</figcaption></p>
+
+<ul>
+  <li><b>맵리듀스 프레임워크?</b>
+    <ul>
+      <li>데이터 처리 프레임워크로 데이터를 여러 개의 맵 프로세스와 리듀서 프로세스로 나눠서 처리하는 방식</li>
+      <li>위 그림에서 맵리듀스 잡이 실행되면 네임노드로부터 메타정보를 읽어서 데이터 위치를 확인하고, 데이터를 처리함</li>
+      <li>맵 프로세스는 여러 데이터 노드에 분산 저장된 데이터를 각 서버에서 병렬로 나누어 처리하며, 리듀서는 그러한 맵 프로세스들의 결과를 조합해 최종 결과를 만들어냄</li>
+      <li>그러나, 하둡의 맵리듀스 잡은 대부분의 연산 작업을 파일시스템 기반으로 처리하기 때문에 데이터 처리 성능이 떨어짐</li>
+      <li>반면에, 스파크는 메모리를 이용한 데이터 처리 방식을 제공함으로써 높은 성능을 보여줌</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>스파크란?</h3>
+<ul>
+  <li>스파크는 하둡 기반의 맵리듀스 작업의 단점을 보완한 것으로, 데이터를 메모리 기반으로 처리하기 때문에 처리 성능이 향상됨</li>
+  <li>또한 작업을 실행하기 전에 최적의 처리 흐름을 찾는 과정을 포함함</li>
+  <li>맵리듀스에 비해 훨씬 다양한 데이터 처리 함수 제공</li>
+</ul>
+
+<h2>RDD, 데이터프레임, 데이터셋 소개와 연산</h2>
+<ul>
+  <li>스파크 프로그램 내에서 ‘데이터’를 표현하고 처리하기 위한 프로그래밍 모델로, RDD, 데이터프레임(Dataframe), 데이터셋(Dataset)이 있음
+    <ul>
+      <li>데이터프레임과 데이터셋은 RDD가 보완되서 나온 것이므로, RDD가 기본임</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>RDD</h3>
+<ul>
+  <li>RDD란, resilient distributed dataset으로, 병렬 처리가 가능한 요소로 구성되며 데이터를 처리하는 과정에서 일시적인 문제가 발생하더라도 스스로 에러를 복구할 수 있는 능력을 지닌 데이터 모델임</li>
+  <li>RDD에 속한 요소들은 파티션이라는 단위로 나눠질 수 있는데, 스파크는 데이터 처리 작업을 수행할 때, 파티션 단위로 나뉘어서 병렬 처리함. <del>하둡에서 맵 프로세스가 여러 데이터 노드에 분산 저장된 데이터를 각 서버에서 병렬 처리하는 것과 유사하다고 생각함</del></li>
+  <li>
+    <p>기존 RDD는 덧셈 연산, 그룹화 연산등을 적용 시, 파티션에 속한 데이터들이 네트워크를 통해 다른 서버로 이동하는 셔플링이 발생될 수 있음</p>
+  </li>
+  <li>그런데, 작업 도중에 장애가 발생하여 결과가 유실될 수 있으나, 스파크 같은 경우는 RDD의 생성 과정을 기록해 뒀다가 다시 복구해 주는 기능을 가지고 있음. 이를 수행 하기 위해선 한번 생성된 RDD는 바뀌지 않아야 하는 조건이 있음
+    <ul>
+      <li>이렇게 스파크에서 RDD 생성 과정을 기록해 둔 것을 리니지(lineage)라고 함</li>
+    </ul>
+  </li>
+</ul>
+
+<h2>DAG</h2>
+<ul>
+  <li>맵 리듀스 작업으로 데이터 처리 시, 데이터 처리 방법의 너무 복잡한 경우나 데이터의 크기가 너무 큰 경우 서버의 가용량을 넘겨서 문제가 발생하는 경우가 발생</li>
+  <li>따라서, 한번의 작업으로 모든 것을 끝낸다기 보다는 하나의 작업을 여러 개의 작은 작업으로 나눠 놓고 각 작업을 최적화해서 일련의 순서대로 나누어 실행하는 경우가 종종 있음</li>
+  <li>일련의 작업 흐름을 나타내는 워크플로우는 DAG(Directed acyclic graph)를 구성하고, 이를 이용해 일련의 작업을 수행하면 다양한 라이브러리를 연동해서 데이터 처리를 수행 가능
+    <ul>
+      <li>DAG? 란 꼭짓점과 방향성을 가진 엣지로 구성된 그래프 모델임</li>
+      <li>빅데이터는 DAG를 이용해 복잡한 일련의 작업 흐름을 나타냄</li>
+      <li>예) 우지 워크플로우 오픈소스</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>스파크 내에서의 DAG</h3>
+<ul>
+  <li>스파크에서 DAG 처리를 담당하는 부분 : DAG스케쥴러</li>
+  <li>스파크는 전체 작업을 스테이지로 나누고, 다시 여러개의 태스크로 나눠서 수행</li>
+  <li>드라이버의 메인 함수에서는 스파크 애플리케이션과 스파크 클러스터 연동을 담당하는 스파크 컨텍스트가 있음. 스파크 컨텍스트를 이용해 잡을 실행하고 종료하는 역할을 함
+    <ul>
+      <li>드라이버란 ? RDD를 생성하고 각종 연산을 호출하는 프로그램</li>
+    </ul>
+  </li>
+  <li>드라이버가 스파크 컨텍스트를 통해 RDD의 연산 정보를 DAG스케쥴러에 전달하면 스케쥴러는 이 정보를 가지고 실행계획을 수립. 그 후, 클러스터 매니저에게 전달함</li>
+  <li>DAG스케쥴러는 데이터에 대한 지역성을 높이는 전략과 관련된 것. 즉, 전체 데이터 처리 흐름을 분석해서 네트워크를 통한 데이터 이동이 최소화되도록 스테이지를 구성하는 것이 스케쥴링의 역할임
+    <ul>
+      <li><b>데이터의 지역성</b>이란 ? 데이터를 처리하는 장소로 따로 보내 처리하는 것이 아니라, 데이터가 저장되어 있는 서버(블록별로 저장되어 있음)에서 처리하는 것.</li>
+    </ul>
+  </li>
+  <li>데이터 이동이 최소화되도록 한다는 것은 네트워크를 통한 데이터 이동 즉 <b>“셔플링”</b>을 최소화하는 것임</li>
+  <li>셔플링 관련 예시</li>
+</ul>
+<ul><li>방법 1)</li> 
+<ol><li>10대 서버에 저장된 모든 로그를 상품에 따라 재분류 한다.</li>
+<li>상품별 총 판매건수를 계산한 후 원하는 상품의 정보만을 출력한다.</li></ol>
+<li>방법 2)</li>
+<ol><li>전체 로그를 분류하기 전에 각 서버별로 원하는 상품 정보만 걸러낸 후 상품별 총 판매건수를 계산한다.</li><li>각 서버별로 따로 계산된 상품별 판매건수를 한 곳으로 모아서 더한 후 출력한다.</li></ol></ul>
+
+<ul>
+  <li>방법 1의 경우, 10대 서버의 모든 로그 파일을 상품별로 재분류하는 것으로 작업을 시작하나, 동일한 상품번호를 가진 로그파일이 10대의 서버의 무작위로 흩어져 있음. 따라서, 재분류를 위한 “셔플링”이 대량으로 발생함</li>
+  <li>방법 2의 경우, 셔플을 수행하기 전에 각 서버에 먼저 상품별 부분 집계를 수행한 후 집계된 결과 파일만을 대상으로 네트워크를 통한 2차 합계 연산을 수행하기 때문에, 방법 1에 비해 셔플이 적음</li>
+  <li><b>$\rightarrow$ 셔플이 최소화되는 방향으로 연산 수행해야 함</b></li>
+</ul>
+
+<h2>람다 아키텍쳐</h2>
+<ul>
+  <li>빅데이터 처리를 위한 시스템을 구성하는 방법 중 하나로, 네이선 마츠가 제안한 아키텍쳐 모델</li>
+  <li>기존과 같은 대용량 데이터 처리 뿐만 아니라 실시간 로그 분석과 같은 실시간 처리도 중요해짐에 따라 두가지 요구를 충족시키는 아키텍쳐가 필요해졌음</li>
+</ul>
+
+<p align="center"><img width="500" src="https://t1.daumcdn.net/cfile/tistory/9995AE4F5BFCC50B20" /><figcaption align="center">그림 2. 람다 아키텍쳐<sup>[1]</sup></figcaption></p>
+
+<ul>
+  <li>람다 아키텍쳐 운영 방법</li>
+</ul>
+
+<ol><li>새로운 데이터는 일괄 처리 계층(Batch layer)과 속도 계층(speed layer) 모두에게 전달됨</li>
+<li>일괄 처리 계층(Batch layer)은 원본 데이터를 저장하고 일정 주기마다 한번 씩 일괄적으로 가공해서 배치뷰를 생성함. 이때 배치란, 특정시간마다 주기적으로 계산을 수행하는 것을 말함. 뷰라고 한 부분은 외부에 보여지는 데이터, 결과 데이터임</li>
+<li>속도 계층은 들어오는 데이터를 즉시 또는 매우 짧은 주기로 철리해 실시간 뷰(Real-time view)를 생성함</li>
+<li>서빙 계층(serving layer)은 실시간 뷰와 배치 뷰의 결과를 적절히 조합하여 사용자에게 데이터를 전달함. 물론 서빙 계층을 거치지 않고 배치뷰 또는 실시간뷰를 직접 조회(query)할 수 있음</li>
+</ol>
+
+<ul>
+  <li>즉, 일괄 처리 작업을 통해 데이터를 처리하지만 아직 배치 처리가 수행되지 않은 부분은 실시간 처리를 통해 보완함</li>
+</ul>
+
+<hr />
+
+<p>이상으로, 본 포스팅을 마치겠습니다. 다음 포스팅은 <a href="https://ralasun.github.io/spark%20programming/2020/11/20/rdd/">&lt;RDD, Resilient Distributed DataSet에 대하여[1]&gt;</a> 에 대해 진행하도록 하겠습니다.</p>
+
+<hr />
+
+<p><a name="lambda-archi">1. <a href="https://jhleed.tistory.com/122">람다 아키텍쳐, https://jhleed.tistory.com/122</a></a></p>
+
+
+  </article>
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/signal%20analysis/2021/06/21/stft-dwt/">
+            Short-time Fourier Transform(STFT) 과 Discrete Wavelet Transform(DWT)
+            <small>21 Jun 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/signal%20analysis/2021/06/18/ft-vs-wt/">
+            Discrete Fourier Transform에 대하여
+            <small>18 Jun 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/deep%20learning/2021/03/06/gcn(2)/">
+            Graph Convolutional Network에 대하여 - Spectral Graph Convolution(2)(작성 중)
+            <small>06 Mar 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+
+<div class="comments">
+  <h2>Comments</h2>
+  <div id="disqus_thread"></div>
+  <script>
+var disqus_config = function () {
+  this.page.url = 'http://localhost:4000/spark%20programming/2020/11/17/introspark/'; // Replace PAGE_URL with your page's canonical URL variable
+  this.page.identifier = '/spark%20programming/2020/11/17/introspark'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = '//ralasun-github-io.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if (target === toggle) {
+            checkbox.checked = !checkbox.checked;
+            e.preventDefault();
+          } else if (checkbox.checked && !sidebar.contains(target)) {
+            /* click outside the sidebar when sidebar is open */
+            checkbox.checked = false;
+          }
+        }, false);
+      })(document);
+    </script>
+    
+    <script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-166283746-1', 'auto');
+ga('send', 'pageview');
+    </script>
+    
+  </body>
+  
+  <script id="dsq-count-scr" src="//ralasun-github-io.disqus.com/count.js" async></script>
+  
+</html>

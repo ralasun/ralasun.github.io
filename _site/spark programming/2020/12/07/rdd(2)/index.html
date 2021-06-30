@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      RDD, Resilient Distributed Dataset에 대하여[2] - RDD기본액션, RDD트랜스포메이션 &middot; Ralasun Resarch Blog
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/main.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://raw.githubusercontent.com/ralasun/ralasun.github.io/master/public/favicon.png">
+  <link rel="shortcut icon" href="https://raw.githubusercontent.com/ralasun/ralasun.github.io/master/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  
+  <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_SVG"> </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes: true } });
+  </script>
+  
+</head>
+
+
+  <body>
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="sidebar-personal-info">
+      <div class="sidebar-personal-info-section">
+        <img src="http://localhost:4000/public/img/profile_v1.jpg"/>
+      </div>
+      <div class="sidebar-personal-info-section">
+        <p><strong>한걸음씩</strong>, 그리고 <strong>꾸준히</strong> 나아가기</p>
+      </div>
+      
+      
+      
+      <div class="sidebar-personal-info-section">
+        <p> Follow me: 
+        
+        
+        
+        <a href="https://www.linkedin.com/in/ralasun">
+          <i class="fa fa-linkedin" aria-hidden="true"></i>
+        </a>
+        
+        |
+        
+        
+        
+        <a href="https://github.com/ralasun">
+          <i class="fa fa-github" aria-hidden="true"></i>
+        </a>
+        
+        |
+        
+        
+        
+        <a href="mailto:sunhwalsh91@gmail.com">
+          <i class="fa fa-envelope" aria-hidden="true"></i>
+        </a>
+        
+        
+        
+        </p>
+      </div>
+      
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    
+      
+      
+      
+
+      
+
+      <span class="">
+        <a class="sidebar-nav-item " href="/">
+          Home
+        </a>
+
+        
+      </span>
+
+    
+      
+      
+      
+
+      
+
+      <span class="foldable">
+        <a class="sidebar-nav-item " href="/blog/">
+          Blog
+        </a>
+
+        
+          
+            
+            
+            
+              <a class="sidebar-nav-item sidebar-nav-item-sub " href="/blog/categories/">
+                Posts
+              </a>
+          
+        
+          
+            
+            
+            
+              <a class="sidebar-nav-item sidebar-nav-item-sub " href="/blog/tags/">
+                Tags
+              </a>
+          
+        
+      </span>
+
+    
+      
+      
+      
+
+      
+
+      <span class="">
+        <a class="sidebar-nav-item " href="/about/">
+          About
+        </a>
+
+        
+      </span>
+
+    
+  </nav>
+
+  <div class="sidebar-item">
+    <p>
+    &copy; 2021 Seonhwa Lee. This work is liscensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home" title="Ralasun Resarch Blog">
+              <img class="masthead-logo" width="200" height="30" src="http://localhost:4000/public/logo.jpg"/>
+            </a>
+            <small>research blog for data science</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="post">
+  <h1 class="post-title">RDD, Resilient Distributed Dataset에 대하여[2] - RDD기본액션, RDD트랜스포메이션</h1>
+  <span class="post-date">07 Dec 2020</span>
+   | 
+  
+    <a href="/blog/tags/#data-engineering" class="post-tag">data-engineering</a>
+  
+  
+  <article>
+    <p>이번 포스팅은 지난 포스팅 &lt;RDD, Resilient Distributed DataSet에 대하여[1]&gt; 에 이어서 진행하도록 하겠습니다. 교재는 빅데이터 분석을 위한 스파크2 프로그래밍을 참고하였습니다.</p>
+
+<hr />
+
+<h1>2. RDD</h1>
+
+<h2>2.1.1 들어가기에 앞서</h2>
+<p>지난 포스팅 <a href="https://ralasun.github.io/spark%20programming/2020/11/20/rdd/">2-1. RDD Resilient Distributed Dataset에 대하여</a> 에서 다뤘습니다.</p>
+
+<h2>2.1.2. 스파크컨텍스트 생성</h2>
+<ul>
+  <li>스파크 컨텍스트는 스파크 애플리케이션과 클러스터의 연결을 관리하는 객체임</li>
+  <li>따라서, 스파크 애플리케이션을 사용하려면 무조건 스파크 컨텍스트를 생성하고 이용해야 함</li>
+  <li>RDD 생성도 스파크컨텍스트를 이용해 생성 가능함</li>
+</ul>
+
+<pre><code class="language-Scala">val conf = new SparkConf().setMaster(“local[*]”).setAppName(“RDDCreateSample”)
+val sc = new SparkContext(conf)
+</code></pre>
+<figcaption align="center">[예] scala - sparkcontext 생성</figcaption>
+<p> </p>
+
+<pre><code class="language-Python"> sc = SparkContext(master=“local[*], appName=“RDDCreateTest”, conf=conf)
+</code></pre>
+<figcaption align="center">[예] python - spark context 생성</figcaption>
+<p> </p>
+
+<ul>
+  <li>스파크 동작에 필요한 여러 설정 정보 지정 가능함</li>
+  <li>SparkConf(), conf=conf 부분에서 config을 통과시켜서 지정 가능함</li>
+  <li>지정해야 하는 정보 중에, master 정보와 appName 정보는 필수 지정 정보임
+    <ul>
+      <li>master 정보란 ? 스파크가 동작할 클러스터의 마스터 서버를 의미하는 것. 로컬모드에서 local, local[3], local[*]와 같이 사용. [*]는 쓰레드 개수를 의미하며, *는 사용 가능한 모든 쓰레드를 이용하겠다는 이야기임</li>
+      <li>appName은 애플리케이션 이름으로, 구분하기 위한 목적임. 스파크 UI화면에 사용됨</li>
+    </ul>
+  </li>
+</ul>
+
+<h2>2.1.3. RDD생성</h2>
+<ul>
+  <li>RDD를 생성하는 방법은 크게 2가지임</li>
+</ul>
+
+<ol><li> 드라이버 프로그램의 컬렉션 객체 이용</li>
+<ul><li>
+자바 or 파이썬 ? 리스트 이용, 스칼라 ? 시퀀스타입 이용</li>
+<li>드라이버 프로그램?<br />
+	- 최초로 메인 함수를 실행해 RDD등을 생성하고 각종 연산을 호출하는 프로그램<br />
+	- 드라이버 내의 메인 함수는 스파크 애플리케이션과 스파크 컨텍스트 객체를 생성함<br />
+	- 스파크 컨텍스트를 통해 RDD의 연산 정보를 DAG스케쥴러에 전달하면 스케쥴러는 이 정보를 가지고 실행 계획을 수립한 후 이를 클러스터 매니저에게 전달함<br /></li>
+
+<pre lang="Scala"><code>
+val rdd1 = sc.parallelize(List("a","b","c","d","e"))</code></pre>
+<figcaption align="center">[예] scala - rdd 생성</figcaption> 
+
+<p align="center"><img src="https://imgur.com/MxtJV7I.png" /><figcaption align="center">[예] python - 드라이버의 컬렉션 객체를 이용한 RDD 생성</figcaption></p>
+
+<li>
+문자열을 포함한 컬렉션 객체 생성 example) python : ['a','b','c','d']</li>
+<li>parallelize() 메서드를 이용해 RDD 생성<br /> - RDD의 파티션 수를 지정하고 싶을 때,  parallelize() 메서드의 두 번째 매개변수로 파티션 개수 지정 가능</li>
+
+<pre lang="scala"><code>
+val rdd1 = sc.parallelize(1 to 1000, 10)
+</code></pre></ul>
+
+<li>외부 데이터를 읽어서 새로운 RDD를 생성</li> 
+<ul>
+<li>기본적으로 하둡의 다루는 모든 입출력 유형 가능</li>
+<li>내부적으로 하둡의 입출력을 사용하기 때문임</li></ul>
+
+<p align="center"><img src="https://imgur.com/eByLARc.png" /><figcaption align="center">[예] python - 외부데이터를 이용한 RDD 생성</figcaption></p></ol>
+
+<h2>2.1.4 RDD 기본 액션</h2>
+<p>기본 액션 연산의 종류에 대해 알아보도록 하겠습니다.</p>
+
+<h3>1. collect</h3>
+<ul>
+  <li>collect은 RDD의 모든 원소를 모아서 배열로 리턴</li>
+  <li><b>반환 타입이 RDD가 아닌 배열</b>이므로 액션 연산</li>
+  <li>RDD에 있는 모든 요소들이 서버의 메모리에 수집됨. 즉, 대용량 데이터를 다룰 땐 조심하고, 주로 작은 용량의 데이터 디버깅용으로 사용함</li>
+</ul>
+
+<p align="center"><img src="https://imgur.com/a1uu1V0.png" /><figcaption align="center">[예] python - collect 연산</figcaption></p>
+
+<h3>2. count</h3>
+<ul>
+  <li>RDD 구성하는 전체 요소 개수 반환</li>
+</ul>
+
+<h2>2.1.5 RDD 트랜스포메이션</h2>
+<p>기존 RDD를 이용해 새로운 RDD를 생성하는 연산입니다.</p>
+
+<h3>1. Map 연산</h3>
+<ul>
+  <li>RDD에 속하는 <b>모든 요소에 적용</b>하여 새로운 RDD 생성하는 연산</li>
+  <li>RDD의 몇몇 연산은 특정 데이터 타입에만 적용 가능함</li>
+</ul>
+
+<h4>1.1. map</h4>
+<ul>
+  <li><b>하나의 인자를 받는 함수 자체</b>가 map의 인자로 들어감</li>
+  <li>이 함수를 이용해 rdd의 모든 요소에 적용한 뒤 새로운 RDD 리턴</li>
+  <li></li>
+</ul>
+<p align="center"><img src="https://imgur.com/1nFR0IH.png" /><figcaption align="center">[예] python - map 연산</figcaption></p>
+
+<ul>
+  <li>map()에 전달되는 함수의 입력 데이터 타입과 출력 데이터 타입이 일치할 필요 없음. 문자열을 입력받아 정수로 반환하는 함수 사용 가능</li>
+</ul>
+
+<p align="center"><img src="https://imgur.com/lHGsvGD.png" /><figcaption align="center">[예] python - map 연산, 입력/출력 일치하지 않는 경우</figcaption></p>
+
+<h4>1.2. flatMap</h4>
+<ul>
+  <li>map()과 마찬가지로, 하나의 인자를 받는 함수가 flatMap의 인자로 들어감</li>
+  <li>map()과 차이점은 각 함수의 인자가 반환하는 값의 타입이 다름</li>
+  <li>flatMap()에 사용하는 함수 f는 반환값으로 리스트나 시퀀스 같은 여러 개의 값을 담은 (이터레이션이 가능한) 일종의 컬렉션과 유사한 타입의 값을 반환해야 함
+    <ul>
+      <li>map[U](f:(T) -&gt; U):RDD[U]</li>
+      <li>flatMap<a href="f:(T) -&gt; TraversableOnce\[U\]\">U</a>:RDD[U])
+        <ul>
+          <li>TraversableOnce는 이터레이터 타입을 의미</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h5>map()과 flatMap() 차이점 예시</h5>
+<p align="center"><img src="https://imgur.com/hQ7sfCG.png" /><figcaption align="center">[예] python - map 연산 vs. flatMap 연산</figcaption></p>
+
+<ul>
+  <li>map연산은 문자열의 배열로 구성된 RDD를 생성함</li>
+  <li>각 요소의 문자열(T)이 단어가 포함된 배열(U)이기 때문임</li>
+  <li>반면, flatMap 연산은 문자열로 구성된 RDD를 생성함</li>
+  <li>TraversableOnce(U)이기 때문에 문자열의 배열 내의 요소가 모두 끄집어져 나오는 작업을 하게 됨</li>
+  <li>flatMap()은 하나의 입력값(“apple, orange”)에 대해 출력 값이 여러개인 경우([“apple”, “orange”]) 유용하게 사용할 수 있음</li>
+</ul>
+
+<h4>1.3. mapPartitions</h4>
+<ul>
+  <li>map과 flatMap은 하나의 인자만을 받는 함수가 인자로 들어가지만, mapPartitions은 여러 인자를 받는 함수가 인자로 들어갈 수 있음 ex) 이터레이터를 인자로 받는 함수</li>
+  <li>mapartitions은 인자로 받은 함수가 파티션 단위로 적용하여 새로운 RDD를 생성함. 반면에, map과 flatMap은 인자로 받은 함수가 요소 한개 단위로 적용됨</li>
+</ul>
+
+<p align="center"><img src="https://imgur.com/bAIoEqG.png" /><figcaption align="center">[예] python - mapPartitions</figcaption></p>
+
+<ul>
+  <li>sc.parallelize(range(1,11),3)으로 파티션 3개로 나뉨</li>
+  <li>DB 연결!!! 가 세번 출력된 걸 보니 파티션 단위로 처리한 것을 확인할 수 있음</li>
+  <li>increase함수는 각 파티션 내의 요소에 대한 이터레이터를 전달받아 함수 내부에서 파티션의 개별 요소에 대한 작업을 처리하고 그 결과를 다시 이터레이터 타입으로 반환</li>
+</ul>
+
+<h4>1.4. mapPartitionsWithIndex</h4>
+<ul>
+  <li>mapPartions와 동일하고 다른 점은 인자로 전달되는 함수를 호출할 때 파티션에 속한 요소의 정보뿐만 아니라 해당 파티션의 인덱스 정보도 함께 전달해 준다는 것임</li>
+</ul>
+
+<pre><code class="language-Python">def IncreaseWithIndex(idx, numbers):
+	for i in numbers:
+		if(idx == 1):
+			yield i+1
+</code></pre>
+
+<ul>
+  <li>mapPartitionswithIndex에 인자로 들어갈 함수는 위와 같이 인덱스 정보도 같이 들어감</li>
+</ul>
+
+<p align="center"><img src="https://imgur.com/wO8pOFo.png" /><figcaption align="center">[예] python - mapPartitionsWithIndex</figcaption></p>
+
+<h4>1.5. mapValues</h4>
+<ul>
+  <li>RDD의 모든 요소들이 키와 값의 쌍을 이루고 있는 경우에만 사용 가능한 메서드이며, 인자로 전달받은 함수를 “값”에 해당하는 요소에만 적용하고 그 결과로 구성된 새로운 RDD를 생성</li>
+</ul>
+
+<pre><code class="language-Python">rdd1 = sc.parallelize(["a","b","c"]).map(lambda v:(v,1)) //(키,값)으로 구성된 rdd생성
+rdd2 = rdd1.mapValues(lambda i:i+1)
+print(rdd2.collect())
+</code></pre>
+
+<p align="center"><img src="https://imgur.com/aFNZfuf.png" /><figcaption align="center">[예] python - mapValues</figcaption></p>
+
+<h4>1.6. flatMapValues</h4>
+<ul>
+  <li>MapValues 처럼 키에 해당되는 값에 함수를 적용하나 flatMap() 연산을 적용할 수 있음</li>
+</ul>
+
+<pre><code class="language-Python">rdd1 = sc.parallelize([(1, "a,b"),(2, "a,c"),(3, "d,e")])
+rdd2 = rdd1.flatMapValues(lambda v:v.split(','))
+rdd2.collect()
+</code></pre>
+
+<p align="center"><img src="https://imgur.com/5J8kSE1.png" /><figcaption align="center">[예] python - flatMapValues</figcaption></p>
+
+<h3>2. 그룹화 연산</h3>
+<ul>
+  <li>특정 조건에 따라 요소를 그룹화하거나 특정 함수 적용</li>
+</ul>
+
+<h4>2.1. zip</h4>
+<ul>
+  <li>두 개의 서로 다른 RDD를 각 요소의 인덱스에 따라 첫번째 RDD의 ‘인덱스’번째를 키로, 두번째 RDD의 ‘인덱스’번째를 값으로 하는 순서쌍을 생성</li>
+  <li>두 개 RDD는 같은 개수의 파티션과 각 파티션 당 요소개수가 동일해야 함</li>
+</ul>
+
+<pre><code class="language-Python">rdd1 = sc.parallelize(["a","b","c"])
+rdd2 = sc.parallelize([1,2,3])
+rdd3 = rdd1.zip(rdd2)
+rdd3.collect()
+&gt;&gt;&gt; [('a', 1), ('b', 2), ('c', 3)]
+</code></pre>
+
+<pre><code class="language-Python">rdd1 = sc.parallelize(range(1,10),3)
+rdd2 = sc.parallelize(range(11,20),3)
+rdd3 = rdd1.zip(rdd2)
+rdd3.collect()
+&gt;&gt;&gt; [(1, 11), (2, 12), (3, 13), (4, 14), (5, 15), (6, 16), (7, 17), (8, 18), (9, 19)]
+</code></pre>
+
+<h4>2.2. zipPartitions</h4>
+<ul>
+  <li>zip()과 다르게 파티션의 개수만 동일하면 됨</li>
+  <li>zipPartitions()은 최대 4개 RDD까지 인자로 넣을 수 있음</li>
+  <li>파이썬 사용불가!!</li>
+</ul>
+
+<h4>2.3. groupBy</h4>
+<ul>
+  <li>RDD의 요소를 <b>일정한 기준</b>에 따라 그룹을 나누고, 각 그룹으로 구성된 새로운 RDD를 생성함</li>
+  <li>각 그룹은 키와 각 키에 속한 요소의 시퀀스(iterator)로 구성됨</li>
+  <li>인자로 전달하는 함수가 각 그룹의 키를 결정하는 역할을 담당함</li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd1 = sc.parallelize(range(1,11))
+&gt;&gt;&gt; rdd2 = rdd1.groupBy(lambda v: "even" if v%2==0 else "odd") 
+/// groupBy에 인자로 전달된 함수에 의해 키(even/odd) 결정
+
+print(rdd2.collect())
+&gt;&gt;&gt; [('even', &lt;pyspark.resultiterable.ResultIterable object at 0x7fbc3f090e80&gt;), ('odd', &lt;pyspark.resultiterable.ResultIterable object at 0x7fbc3f090470&gt;)]
+/// 각 키에 해당하는 값은 iterator임을 확인할 수 있음
+
+&gt;&gt;&gt; for x in rdd2.collect():
+...     print(x[0], list(x[1]))
+... 
+even [2, 4, 6, 8, 10]
+odd [1, 3, 5, 7, 9]
+</code></pre>
+
+<h4>2.3. groupByKey</h4>
+<ul>
+  <li>이미 키와 값의 쌍으로 구성된 RDD에만 적용 가능함</li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd1 = sc.parallelize(["a","b","c","b","c"]).map(lambda v:(v,1))
+&gt;&gt;&gt; rdd1.collect()
+[('a', 1), ('b', 1), ('c', 1), ('b', 1), ('c', 1)]
+/// (키,값) 쌍으로 구성된 RDD 생성
+
+&gt;&gt;&gt; rdd2 = rdd1.groupByKey()
+&gt;&gt;&gt; rdd2.collect()
+[('b', &lt;pyspark.resultiterable.ResultIterable object at 0x7fbc3f0ab6a0&gt;), ('c', &lt;pyspark.resultiterable.ResultIterable object at 0x7fbc3f0ab6d8&gt;), ('a', &lt;pyspark.resultiterable.ResultIterable object at 0x7fbc3f0ab0b8&gt;)]
+/// 키에 따라 그룹화함. 그 결과 키에 해당하는 시퀀스 생성
+
+&gt;&gt;&gt; for x in rdd2.collect():
+...     print(x[0], list(x[1]))
+... 
+b [1, 1]
+c [1, 1]
+a [1]
+</code></pre>
+
+<h4>2.4. cogroup</h4>
+<ul>
+  <li>이미 키와 값의 쌍으로 구성된 RDD에만 적용 가능함</li>
+  <li>여러 개의 RDD를 인자로 받음(최대 3개)</li>
+  <li>여러 RDD에서 동일한 키에 해당하는 요소들로 구성된 시퀀스를 만든 후, (키, 시퀀스)의 튜플을 구성. 그 튜플들로 구성된 새로운 RDD를 생성함</li>
+  <li>Tuple(키, Tuple(rdd1요소들의 집합, rdd2요소들의 집합, …))</li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd1 = sc.parallelize([("k1","v1"),("k2","v2"),("k1","v3")])
+&gt;&gt;&gt; rdd2 = sc.parallelize([("k1","v4")])
+&gt;&gt;&gt; rdd1.collect()
+[('k1', 'v1'), ('k2', 'v2'), ('k1', 'v3')]
+&gt;&gt;&gt; rdd2.collect()
+[('k1', 'v4')]
+/// (키, 값)쌍으로 구성된 RDD 2개 생성
+
+&gt;&gt;&gt; rdd3 = rdd1.cogroup(rdd2)
+&gt;&gt;&gt; rdd3.collect()
+[('k1', (&lt;pyspark.resultiterable.ResultIterable object at 0x7fbc3f0b2fd0&gt;, &lt;pyspark.resultiterable.ResultIterable object at 0x7fbc3f00a828&gt;)), ('k2', (&lt;pyspark.resultiterable.ResultIterable object at 0x7fbc3f00ac18&gt;, &lt;pyspark.resultiterable.ResultIterable object at 0x7fbc3f00a5f8&gt;))]
+///k1 키에 대해 rdd1의 v1과 v3요소를 묶고, rdd2의 v4요소를 묶어서 튜플로 구성
+
+&gt;&gt;&gt; for x in rdd3.collect():
+...     print(x[0], list(x[1][0]), list(x[1][1]))
+... 
+k1 ['v1', 'v3'] ['v4']
+k2 ['v2'] []
+</code></pre>
+
+<h3>3. 집합 연산</h3>
+<ul>
+  <li>RDD에 포함된 요소를 하나의 집합으로 간주하여 집합 연산을 수행(합/교집합)</li>
+  <li></li>
+</ul>
+<h4>3.1. distinct</h4>
+<ul>
+  <li>RDD의 원소에서 중복을 제외한 요소로만 새로운 RDD 구성</li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd = sc.parallelize([1,2,3,1,2,3,1,2,3])
+&gt;&gt;&gt; rdd2 = rdd.distinct()
+&gt;&gt;&gt; rdd2.collect()
+[1, 2, 3]
+</code></pre>
+
+<h4>3.1. cartesian</h4>
+<ul>
+  <li>두 RDD요소의 카테시안곱을 구하고 그 결과를 요소로 하는 새로운 RDD구성</li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd1 = sc.parallelize([1,2,3])
+&gt;&gt;&gt; rdd2 = sc.parallelize(['a','b','c'])
+&gt;&gt;&gt; rdd3 = rdd1.cartesian(rdd2)
+&gt;&gt;&gt; rdd3.collect()
+[(1, 'a'), (1, 'b'), (1, 'c'), (2, 'a'), (2, 'b'), (2, 'c'), (3, 'a'), (3, 'b'), (3, 'c')]
+</code></pre>
+
+<h4>3.2. subtract</h4>
+<ul>
+  <li>rdd1.subtract(rdd2) : (rdd1의 요소집합 - rdd2의 요소집합)의 차집합</li>
+  <li>rdd2.subtract(rdd1) : (rdd2의 요소집합 - rdd1의 요소집합)의 차집합</li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd1 = sc.parallelize(["a", "b","c","d","e"])
+&gt;&gt;&gt; rdd2 = sc.parallelize(["d","e"])
+&gt;&gt;&gt; rdd3 = rdd1.subtract(rdd2)
+&gt;&gt;&gt; rdd3.collect()
+['a', 'b', 'c']  
+</code></pre>
+
+<h4>3.2. union</h4>
+<ul>
+  <li>두 RDD요소의 합집합</li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd1 = sc.parallelize(["a", "b","c","d","e"])
+&gt;&gt;&gt; rdd2 = sc.parallelize(["d","e"])
+&gt;&gt;&gt; rdd3 = rdd1.union(rdd2)
+&gt;&gt;&gt; rdd3.collect()
+['a', 'b', 'c', 'd', 'e', 'd', 'e']
+</code></pre>
+
+<h4>3.3. intersection</h4>
+<ul>
+  <li>두 RDD요소의 교집합으로 중복되지 않은 요소로 구성</li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd1 = sc.parallelize(["a","a","b","c"])
+&gt;&gt;&gt; rdd2 = sc.parallelize(["a","a","c","c"])
+&gt;&gt;&gt; rdd3 = rdd1.intersection(rdd2)
+&gt;&gt;&gt; rdd3.collect()
+['a', 'c']
+</code></pre>
+
+<h4>3.4. join</h4>
+<ul>
+  <li>RDD의 구성요소가 키와 값의 쌍으로 구성된 경우에 사용할 수 있는 메서드</li>
+  <li>공통된 키에 대해서만 join수행</li>
+  <li>join 수행 결과 Tuple(키, Tuple(첫번째 RDD요소, 두번쨰 RDD요소))</li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd1 = sc.parallelize(["a", "b","c","d","e"]).map(lambda v : (v,1))
+&gt;&gt;&gt; rdd1.collect()
+[('a', 1), ('b', 1), ('c', 1), ('d', 1), ('e', 1)]
+&gt;&gt;&gt; rdd2 = sc.parallelize(["b","c"]).map(lambda v:(v,2))
+&gt;&gt;&gt; rdd2.collect()
+[('b', 2), ('c', 2)]
+&gt;&gt;&gt; rdd3 = rdd1.join(rdd2)
+&gt;&gt;&gt; rdd3.collect()
+[('b', (1, 2)), ('c', (1, 2))]
+</code></pre>
+
+<h4>3.5. leftOuterJoin, rightOuterJoin</h4>
+<ul>
+  <li>키와 값의 쌍으로 구성된 RDD에 사용가능</li>
+  <li>leftjoin, rightjoin을 수행</li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd1 = sc.parallelize(["a", "b","c","d","e"]).map(lambda v : (v,1))
+&gt;&gt;&gt; rdd2 = sc.parallelize(["b","c"]).map(lambda v:(v,2))
+&gt;&gt;&gt; rdd3 = rdd1.leftOuterJoin(rdd2)
+&gt;&gt;&gt; rdd3.collect()
+[('a', (1, None)), ('e', (1, None)), ('b', (1, 2)), ('c', (1, 2)), ('d', (1, None))]
+///rdd2에는 a,d,e 키가 없기 때문에 해당 키에 대한 튜플 요소는 (rdd1의 요소, None)으로 구성됨
+
+&gt;&gt;&gt; rdd4 = rdd1.rightOuterJoin(rdd2)
+&gt;&gt;&gt; rdd4.collect()
+[('b', (1, 2)), ('c', (1, 2))]
+</code></pre>
+
+<h4>3.6. subtractByKey</h4>
+<ul>
+  <li>키와 값의 쌍으로 구성된 RDD에 사용가능</li>
+  <li>rdd1의 요소 중에서 rdd2와 겹치지 않는 키로 구성된 새로운 RDD 생성</li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd1 = sc.parallelize(["a","b"]).map(lambda v:(v,1))
+&gt;&gt;&gt; rdd2 = sc.parallelize(["b"]).map(lambda v:(v,1))
+&gt;&gt;&gt; rdd3 = rdd1.subtractByKey(rdd2)
+&gt;&gt;&gt; rdd3.collect()
+[('a', 1)]
+</code></pre>
+
+<h3>4. 집계와 관련된 연산들</h3>
+
+<h4>4.1 reduceByKey</h4>
+<ul>
+  <li>키와 값의 쌍으로 구성된 RDD에서 사용 가능</li>
+  <li>RDD 내의 동일한 키를 하나로 병합해 (키,값) 쌍으로 구성된 새로운 RDD 생성</li>
+  <li>함수를 인자로 받음.</li>
+  <li>왜냐하면, 파티션 별로 연산을 수행했을 때, 항상 같은 순서로 연산이 수행되는 것을 보장 못하므로, 함수가 수행하는 연산은 교환법칙과 결합법칙이 성립해야 함</li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd = sc.parallelize(['a','b','b']).map(lambda v:(v,1))
+&gt;&gt;&gt; rdd.collect()
+[('a', 1), ('b', 1), ('b', 1)]
+&gt;&gt;&gt; rdd2 = rdd.reduceByKey(lambda v1, v2:(v1+v2))
+&gt;&gt;&gt; rdd2.collect()
+[('b', 2), ('a', 1)]
+</code></pre>
+
+<blockquote><b>(키,값)쌍으로 하는 RDD를 인자로 받는 트랜스포메이션 메서드</b><br />
+- 데이터 처리 과정에서 사용할 파티셔너와 파티션 개수를 지정할 수 있는 옵션이 있음
+- 자체적으로 작성한 파티셔너나 파티션 개수를 통해 병렬 처리 수준 변경 가능
+</blockquote>
+
+<h4>4.2 foldByKey</h4>
+<ul>
+  <li>키와 값으로 구성된 RDD에 사용 가능</li>
+  <li>reduceByKey()와 유사하지만, 병합 연산의 초기값을 인자로 전달할 수 있음</li>
+</ul>
+
+<pre><code class="language-Python">rdd = sc.parallelize(["a","b","b"]).map(lambda v:(v,1))
+&gt;&gt;&gt; rdd2 = rdd.foldByKey(0, lambda v1,v2:v1+v2)
+&gt;&gt;&gt; rdd2.collect()
+[('b', 2), ('a', 1)]
+</code></pre>
+
+<p>My view) 개인적으로, foldByKey와 reduceByKey의 차이가 잘 이해가 되지 않아, 초기값과 문자열 병합으로 pyspark를 실행해 보았습니다.</p>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd = sc.parallelize(["a","b","b"]).map(lambda v:(v,1))
+
+///초기값을 1로 준 경우
+&gt;&gt;&gt; rdd2 = rdd.foldByKey(1, lambda v1,v2:v1+v2)
+
+///초기값을 0으로 준 경우와 다른 결과임
+&gt;&gt;&gt; rdd2.collect()
+[('b', 4), ('a', 2)]
+</code></pre>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd = sc.parallelize(["a","b","b"]).map(lambda v:(v,'c'))
+
+///초기값을 t로 준 경우
+&gt;&gt;&gt; rdd2 = rdd.foldByKey('t', lambda v1,v2:v1+v2)
+&gt;&gt;&gt; rdd2.collect()
+[('b', 'tctc'), ('a', 'tc')]
+</code></pre>
+
+<p>위의 두 연산를 보니, foldByKey는 초기값 처리를 아래와 같이 진행하는 것 같습니다. 예를 들어, 초기 rdd가 [(‘a’, 1), (‘b’, 1), (‘b’, 1)] 라 한다면, foldByKey는 키 ‘a’와 ‘b’에 대해 각각 초기값을 가지고 병합연산을 수행합니다. 이 때 먼저, 초기값을 가지고 병합 연산을 수행합니다. 키 ‘a’인 경우, 초기값 1라면, v1=1, v2=1(키 ‘a’에 대응되는 값)이 병합연산을 수행해 (‘a’,2)가 됩니다. 그 다음 reducebykey와 같은 연산을 수행하나, 키 ‘a’는 초기 rdd에 하나밖에 없기 때문에, v1=2, v2=None이 되어 최종 foldByKey연산 결과는 키 ‘a’에 대해서 2값을 가지게 됩니다.</p>
+
+<p>‘b’키 같은 경우도 마찬가지입니다. 먼저 초기값을 가지고 연산을 수행합니다. v1=1(초기값), v2=1(b에 대응되는 값)가 병합연산을 수행해 v1=2가 됩니다. ‘b’키는 두개가 있으므로, 나머지 ‘b’키에 대해 v1=1, v2=1가 병합연산을 거쳐 v2=2가 됩니다. 그다음 두개의 ‘b’키에 대해 다시 병합연산이 수행되어 v1=2, v2=2가 되어 최종적으로 ‘b’키에 대해 4의 값이 생성됩니다.</p>
+
+<h4>4.3 combineByKey</h4>
+<ul>
+  <li>키와 값인 RDD에 사용 가능</li>
+  <li>foldByKey와 reduceByKey와 유사함. 차이점은 병합연산 수행 결과 값의 타입이 바뀔 수 있음</li>
+</ul>
+
+<pre><code class="language-Scala">def reduceByKey(func:(V,V)=&gt;V):RDD[K,V]
+def foldByKey(zeroValue: V)(func:(V,V)=&gt;V):RDD[K,V]
+def combineByKey[C](createCombiner:(V)=&gt;C, mergeValue:(C,V)=&gt;V, mergeCombiners:(C,C)=&gt;C):RDD[K,C]
+</code></pre>
+
+<ul>
+  <li>combineByKey는 reduceByKey와 foldByKey와 다르게 타입이 C로 바뀌어 있음</li>
+  <li>위의 combineByKey를 보면 메서드가 총 createCombiner, mergeValue, mergeCombiners 세 개임을 알 수 있음</li>
+  <li>아래는 combineByKey에서 자주 등장하는 평균구하기 예시임</li>
+</ul>
+
+<pre><code class="language-Python">#record.py 에 따로 저장해야 함. 
+#아니면, _pickle.PicklingError: Can't pickle &lt;class '__main__.Record'&gt;: attribute lookup Record on __main__ failed 에러 발생.
+
+class Record:
+
+    def __init__(self, amount, number=1):
+        self.amount = amount
+        self.number = number
+        
+    def addAmt(self, amount):
+        return Record(self.amount + amount, self.number + 1)
+    
+    def __add__(self, other):
+        amount = self.amount + other.amount
+        number = self.number + other.number 
+        return Record(amount, number)
+        
+    def __str__(self):
+        return "avg:" + str(self.amount / self.number)
+
+    def __repr__(self):
+        return 'Record(%r, %r)' % (self.amount, self.number)
+</code></pre>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#createCombiner, mergeValue, mergeCombiners 정의
+def createCombiner(v):
+    return Record(v)
+
+def mergeValue(c, v):
+    return c.addAmt(v)
+
+def mergeCombiners(c1, c2):
+    return c1 + c2
+</code></pre></div></div>
+
+<pre><code class="language-Python">#combineByKey 실행
+rdd = sc.parallelize([("Math", 100), ("Eng", 80), ("Math", 50), ("Eng", 70), ("Eng", 90)])
+rdd2 = rdd.combineByKey(lambda v:createCombiner(v), lambda c,v:mergeValue(c,v), lambda c1,c2:mergeCombiners(c1,c2))
+print('Math', rdd2.collectAsMap()['Math'], 'Eng', rdd2.collectAsMap()['Eng'])
+&gt;&gt;&gt; Math avg:75.0 Eng avg:80.0
+</code></pre>
+
+<ul>
+  <li>createCombiner()
+    <ul>
+      <li>값을 병합하기 위한 컴바이너. 컴바이너는 병합을 수행하고 컴바이너 타입으로 내부에 저장함. 위의 예로는 createCombiner()는 Record클래스 타입으로 저장됨. 즉, rdd의 각 키에 해당되는 값이 record클래스 타입으로 변환되어 저장됨.</li>
+    </ul>
+  </li>
+  <li>mergeValue()
+    <ul>
+      <li>키에 대한 컴바이너가 존재한다면, 컴바이너를 이용해 값을 병합함.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>My View) 위의 예 같은 경우, rdd요소 순서대로 combineByKey가 작동한다면 먼저 (“Math”, 100)에 대해 Combiner가 생성되어, math 키에 대한 Record(100)이 생성됩니다.</p>
+
+<p>그 다음 (“Eng”, 70)에 대해 작동합니다. “Eng”키는 기존에 없던 키이기 때문에 새로 Combiner인 Record(70)이 생성됩니다.</p>
+
+<p>그 다음 (“Math”, 50)인데, 기존 Math키에 대한 컴바이너가 존재하기 때문에, 기존 Math 키 컴바이너를 이용하여 병합합니다. 즉, Record(100).addAmt(50)이 발생합니다. 이렇게 Math키와 Eng키에 대해 모든 요소에 대해 병합을 실시하게 됩니다.</p>
+
+<ul>
+  <li>mergeCombiners()
+    <ul>
+      <li>createCombiner()와 mergeValue()는 파티션별로 수행됨. 그다음 모든 파티션에 생성된 combiner를 병합하는 과정을 mergeCombiners()를 통해 수행하는 것임. 이를 통해 최종결과가 발생함</li>
+    </ul>
+  </li>
+</ul>
+
+<h4>4.4 aggregateByKey</h4>
+<ul>
+  <li>키와 값의 RDD에서 사용 가능</li>
+  <li>초깃값을 설정할 수 있는 점을 제외하면 comebineByKey와 동일</li>
+</ul>
+
+<pre><code class="language-Scala">def combineByKey[C](createCombiner:(V)=&gt;C, mergeValue:(C,V)=&gt;V, mergeCombiners:(C,C)=&gt;C):RDD[(K,C)]
+def aggregateByKey[U](zeroValue: U)(seqOp:(U,V)=&gt;U, combOp:(U,U)=&gt;U):RDD[(K,U)]
+</code></pre>
+
+<ul>
+  <li>aggregateByKey에서 seqOp는 mergeValue역할을, comOp는 mergeCombiner역할을 함.</li>
+  <li>combineByKey에서 createCombiner로 병합을 위한 초깃값을 구하지만 aggregateByKey는 함수를 이용해 초깃값을 설정하는 대신 바로 ‘값’으로 초기값을 설정함</li>
+</ul>
+
+<pre><code class="language-Python">rdd = sc.parallelize([("Math", 100), ("Eng", 80), ("Math", 50), ("Eng", 70), ("Eng", 90)])
+rdd2 = rdd.aggregateByKey(Record(0,0), lambda c,v:mergeValue(c,v), lambda c1,c2:mergeCombiners(c1,c2))
+print('Math :', rdd2.collectAsMap()['Math'], 'Eng :', rdd2.collectAsMap()['Eng'])
+&gt;&gt;&gt;Math : avg:75.0 Eng : avg:80.0
+</code></pre>
+
+<h3>5. pipe 및 파티션과 관련된 연산</h3>
+
+<h4>5.1 pipe</h4>
+<ul>
+  <li>pipe를 이용하면 데이터를 처리하는 과정에서 외부 프로세스를 활용할 수 있음</li>
+  <li>세 개의 숫자로 구성된 문자열을 리눅스의 cut 유틸리티를 이용해 분리한 뒤첫번째와 세번재 숫자를 뽑아내는 예제</li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd = sc.parallelize(["1,2,3", "4,5,6", "7,8,9"])
+&gt;&gt;&gt; rdd2 = rdd.pipe("cut -f 1,3 -d ,")
+&gt;&gt;&gt; rdd2.collect()
+['1,3', '4,6', '7,9']
+</code></pre>
+
+<h4>5.2. coalesce와 repartition</h4>
+<ul>
+  <li>현재 RDD에 사용된 파티션 개수를 조정함</li>
+  <li>coalesce는 파티션 개수를 줄이기만 되고, repartition은 늘리는 것과 줄이는 것 둘 다 가능</li>
+  <li>coalesce가 따로 있는 이유는 처리 방식에 따른 성능 차이 때문임
+    <ul>
+      <li>repartition은 셔플을 기반으로 동작을 수행하는 데 반해, coalesce는 강제로 셔플을 수행하라는 옵션을 지정하지 않는 한 셔플을 사용하지 않음.</li>
+      <li>따라서 필터링 등으로 인해 데이터 개수가 줄어든 경우 coalesce을 사용하는 것이 좋음</li>
+    </ul>
+  </li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd = sc.parallelize(list(range(1,11)),10)
+&gt;&gt;&gt; rdd2 = rdd.coalesce(5)
+&gt;&gt;&gt; rdd3 = rdd2.repartition(10)
+&gt;&gt;&gt; print("partition size : %d" 
+&gt;&gt;&gt; print("partition size : %d" %rdd2.getNumPartitions())
+partition size : 5
+&gt;&gt;&gt; print("partition size : %d" %rdd3.getNumPartitions())
+partition size : 10
+</code></pre>
+
+<h4>5.3. repartitionAndSortWithinPartitions</h4>
+<ul>
+  <li>키와 값으로 구성된 RDD에서 사용 가능</li>
+  <li>RDD를 구성하는 모든 데이터를 특정 기준에 따라 여러 개의 파티션으로 분리하고 각 파티션 단위로 정렬을 수행한 뒤 새로운 RDD를 생성해 주는 메서드임</li>
+  <li>각 데이터가 어떤 파티션에 속할지 결정하기 위한 파티셔너(org.apache.spark.Partitioner)설정
+    <ul>
+      <li>키 값을 이용하여 어떤 파티션에 속할지 결정할 뿐만 아니라 키 값을 이용한 정렬도 수행함</li>
+      <li>파티션 재할당을 위해 셔플을 수행하는 단계에서 정렬도 함께 다루게 되어 파티션과 정렬을 각각 따로하는 것에 비해 더 높은 성능을 발휘할 수 있음</li>
+    </ul>
+  </li>
+  <li>10개의 무작위 숫자를 위 메서드를 이용해 3개의 파티션으로 분리해 보는 예제</li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; data = [random.randrange(1,100) for i in range(0,10)]
+&gt;&gt;&gt; rdd1 = sc.parallelize(data).map(lambda v:(v,"-"))
+&gt;&gt;&gt; rdd2 = rdd1.repartitionAndSortWithinPartitions(3, lambda x:x)
+&gt;&gt;&gt; rdd2.foreachPartition(lambda values:print(list(values)))
+[(50, '-')]
+[(16, '-'), (52, '-'), (61, '-'), (67, '-')]
+[(6, '-'), (12, '-'), (48, '-'), (51, '-'), (87, '-')]
+</code></pre>
+
+<ul>
+  <li>pyspark에서 repartitionAndSortWithinPartitions에서 default 파티셔너는 hash 파티셔너로 되어있음</li>
+  <li>foreachPartition은 partition단위로 특정함수를 실행해주는 메서드임. 위의 예제에서는 파티션단위로 파티션에 속해있는 값을 프린트해주는 함수를 실행했음</li>
+</ul>
+
+<h4>5.4. partitionBy</h4>
+<ul>
+  <li>키와 값으로 구성된 RDD에서 사용가능</li>
+  <li>파티션을 변경하고 싶을 때 사용가능</li>
+  <li>기본적으로, hashpartitioner와 rangepartitioner가 있음</li>
+  <li>org.apache.spark.partitioner 클래스를 상속해서 파티셔너를 커스터마이징도 가능</li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd1 = sc.parallelize([("apple",1),("mouse",1),("monitor",1)],5)
+&gt;&gt;&gt; rdd1.collect()
+[('apple', 1), ('mouse', 1), ('monitor', 1)]
+&gt;&gt;&gt; rdd2 = rdd1.partitionBy(3)
+&gt;&gt;&gt; print("rdd1: %d, rdd2: %d" %(rdd1.getNumPartitions(), rdd2.getNumPartitions()))
+rdd1: 5, rdd2: 3
+</code></pre>
+
+<ul>
+  <li>위의 예제에서 partitionby에 의해 파티션 갯수가 변경된 것을 확인할 수 있음</li>
+</ul>
+
+<h3>6. 필터와 정렬 연산</h3>
+<p>특정 조건을 만족하는 요소만 선택하거나, 각 요소를 정해진 기준에 따라 정렬함</p>
+
+<h4>6.1. filter</h4>
+<ul>
+  <li>RDD의 각각 요소에 조건에 따라 True/False로 가려내는 함수를 적용하여 True에 해당하는 요소만 걸러냄</li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd1 = sc.parallelize(range(1,6))
+&gt;&gt;&gt; rdd2 = rdd1.filter(lambda i:i&gt;2)
+&gt;&gt;&gt; print(rdd2.collect())
+[3, 4, 5]
+</code></pre>
+
+<h4>6.2. sortByKey</h4>
+<ul>
+  <li>키 값을 기준으로 요소를 정렬하는 연산임</li>
+  <li>따라서, 키와 값으로 구성된 RDD에 적용 가능함</li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd1 = sc.parallelize([("q",1),("z",1),("a",1)])
+&gt;&gt;&gt; result = rdd1.sortByKey()
+&gt;&gt;&gt; print(result.collect())
+[('a', 1), ('q', 1), ('z', 1)]
+</code></pre>
+
+<h4>6.3. keys, values</h4>
+<ul>
+  <li>키와 값으로 구성된 RDD에 적용 가능함</li>
+  <li>keys는 RDD의 키 요소로 구성된 RDD를 생성하고, values는 RDD의 value요소로 구성된 RDD를 생성함</li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd1 = sc.parallelize([("q",1),("z",1),("a",1)])
+&gt;&gt;&gt; rdd2 = rdd1.keys()
+&gt;&gt;&gt; rdd3 = rdd1.values()
+&gt;&gt;&gt; print(rdd2.collect(), rdd3.collect())
+['q', 'z', 'a'] [1, 1, 1]
+</code></pre>
+
+<h4>6.4. sample</h4>
+<ul>
+  <li>샘플을 추출하는 RDD메서드</li>
+  <li>sample(withReplacement, fraction, seed=None)
+    <ul>
+      <li>withReplacement : True/False복원추출 결정</li>
+      <li>fraction
+        <ul>
+          <li>복원추출인 경우, RDD각 요소당 평균 추출횟수를 의미함</li>
+          <li>비복원추출인 경우, RDD각 요소당 샘플될 확률을 의미함</li>
+          <li>fraction이 sample사이즈를 결정하는 것은 아님. 아래 예제를 보면, sample사이즈는 random한 것을 알 수 있음.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<pre><code class="language-Python">&gt;&gt;&gt; rdd1 = sc.parallelize(range(100))
+&gt;&gt;&gt; rdd2 = rdd1.sample(True, 1.5, seed=1234)
+&gt;&gt;&gt; rdd3 = rdd1.sample(False, 0.2, seed=1234)
+&gt;&gt;&gt; 
+&gt;&gt;&gt; rdd2.collect()
+[1, 1, 2, 6, 6, 7, 7, 9, 10, 10, 11, 12, 12, 12, 13, 15, 17, 18, 19, 19, 19, 20, 21, 21, 23, 24, 25, 25, 26, 26, 26, 26, 26, 27, 28, 28, 28, 29, 30, 31, 32, 33, 33, 34, 35, 36, 36, 36, 37, 37, 38, 39, 39, 42, 42, 44, 44, 45, 45, 46, 48, 48, 48, 49, 49, 49, 50, 50, 50, 51, 53, 54, 57, 58, 59, 60, 63, 64, 65, 65, 66, 69, 71, 71, 71, 72, 72, 72, 73, 73, 75, 76, 77, 79, 80, 80, 81, 84, 84, 85, 85, 85, 86, 88, 88, 88, 89, 89, 89, 90, 90, 91, 91, 92, 92, 92, 94, 94, 95, 95, 95, 95, 96, 97, 97, 99]
+&gt;&gt;&gt; rdd3.collect()
+[0, 5, 6, 7, 8, 11, 15, 35, 39, 41, 55, 56, 58, 61, 62, 71, 72, 78, 81, 89, 90, 93, 97, 99]
+</code></pre>
+
+<hr />
+
+<p>이상으로 본 포스팅을 마치겠습니다. 다음 포스팅은 &lt;RDD, Resilient Distributed Dataset에 대하여[3] - RDD액션, RDD데이터 불러오기와 저장하기&gt; 에 대해 진행하도록 하겠습니다.</p>
+
+  </article>
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/signal%20analysis/2021/06/21/stft-dwt/">
+            Short-time Fourier Transform(STFT) 과 Discrete Wavelet Transform(DWT)
+            <small>21 Jun 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/signal%20analysis/2021/06/18/ft-vs-wt/">
+            Discrete Fourier Transform에 대하여
+            <small>18 Jun 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/deep%20learning/2021/03/06/gcn(2)/">
+            Graph Convolutional Network에 대하여 - Spectral Graph Convolution(2)(작성 중)
+            <small>06 Mar 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+
+<div class="comments">
+  <h2>Comments</h2>
+  <div id="disqus_thread"></div>
+  <script>
+var disqus_config = function () {
+  this.page.url = 'http://localhost:4000/spark%20programming/2020/12/07/rdd(2)/'; // Replace PAGE_URL with your page's canonical URL variable
+  this.page.identifier = '/spark%20programming/2020/12/07/rdd(2)'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = '//ralasun-github-io.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if (target === toggle) {
+            checkbox.checked = !checkbox.checked;
+            e.preventDefault();
+          } else if (checkbox.checked && !sidebar.contains(target)) {
+            /* click outside the sidebar when sidebar is open */
+            checkbox.checked = false;
+          }
+        }, false);
+      })(document);
+    </script>
+    
+    <script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-166283746-1', 'auto');
+ga('send', 'pageview');
+    </script>
+    
+  </body>
+  
+  <script id="dsq-count-scr" src="//ralasun-github-io.disqus.com/count.js" async></script>
+  
+</html>
